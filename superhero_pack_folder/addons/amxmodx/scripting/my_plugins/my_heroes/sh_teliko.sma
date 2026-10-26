@@ -1,6 +1,9 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
-#define I_WANT_CUSTOM_WEAPONS
+#define I_WANT_BASIC_MACROS
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_ENTITY_VECTORS
 #include "../my_include/superheromod.inc"
 #include "custom_grenades/custom_grenades.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -28,6 +31,8 @@ new gNumChaffs[SH_MAXSLOTS+1]
 new g_counter_bullets[SH_MAXSLOTS+1]
 new g_max_counter_bullets[SH_MAXSLOTS+1]
 new g_num_mega_counters_enemy[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
+
+new wpn_name_for_future_lookup[50]
 
 new g_teliko_enemies_masks[SH_MAXSLOTS+1]
 
@@ -73,7 +78,8 @@ public plugin_init()
 	pcvar_MEGA_COUNTER_EFFECTS_THRESHOLD = create_cvar("Teliko_mega_counter_effects_threshold", "3")
 	pcvar_num_chaffs = create_cvar("Teliko_num_chaffs", "8")
 
-	gHeroID=shCreateHero(gHeroName, "COUNTER!", "Accumulate counter bullets and fire them back! (Bind to weapon on Keydown)", false, "teliko_level", true)
+	wlt_get_def_name(my_weapon_ids:TELIKO_RIFLE_CLASSID,wpn_name_for_future_lookup,charsmax(wpn_name_for_future_lookup))
+	gHeroID=shCreateHero(gHeroName, "COUNTER!", "Accumulate counter bullets and fire them back! (Bind to weapon on Keydown)", false, "teliko_level")
 	
 	sh_register_superheromod_weapon_model(gHeroID,CSW_FAMAS,famas_g2_v_model,famas_g2_p_model)
 
@@ -85,8 +91,6 @@ public plugin_init()
 						true)
 
 	register_event("Damage", "Teliko_damage", "b", "2!0")
-	
-	init_explosion_defaults()
 }
 public plugin_cfg(){
 	
@@ -186,7 +190,7 @@ if ( sh_is_active() && is_user_alive(id) &&sh_get_user_has_hero(id,gHeroID)  ) {
 	colt_set_colt(id)
 	new level_diff=sh_get_user_lvl(id)-cvar_val(num, pcvar_gHeroLevel)
 	if(level_diff>=cvar_val(num, pcvar_famas_level_diff)){
-		sh_chat_message(id,gHeroID,"You are %d levels above unlock level! So now you get a free rifle at spawn! (aka a %s)",level_diff,weapon_data_structs_array[my_weapon_ids:TELIKO_RIFLE_CLASSID][wpn_struct_weapon_name]);
+		sh_chat_message(id,gHeroID,"You are %d levels above unlock level! So now you get a free rifle at spawn! (aka a %s)",level_diff,wpn_name_for_future_lookup);
 		sh_give_weapon(id, TELIKO_RIFLE_CLASSID)
 	}
 	slitter_set_slitter(id,1)
@@ -199,7 +203,7 @@ public sh_client_spawn(id)
 if (sh_get_user_has_hero(id,gHeroID) &&is_user_alive(id) && sh_is_active() ) {
 	
 	Teliko_weapons(id)
-	if(!hasRoundStarted()){
+	if(sh_is_freezetime()){
 		reset_teliko_user(id)
 		update_max_bullets(id)
 		give_start_counters(id)
@@ -274,7 +278,7 @@ public Teliko_mega_counters_effects(id,enemy){
 	
 	new mega_counter_effect=g_num_mega_counters_enemy[id][enemy]-cvar_val(num, pcvar_MEGA_COUNTER_EFFECTS_THRESHOLD);
 	if(mega_counter_effect>=0){
-		sh_set_stun(enemy,cvar_val(float, pcvar_MEGA_COUNTER_STUN_TIME),default_stun_speed);
+		sh_set_stun(enemy,cvar_val(float, pcvar_MEGA_COUNTER_STUN_TIME));
 		sh_screen_shake(enemy,9.0,cvar_val(float, pcvar_MEGA_COUNTER_STUN_TIME),4.0)
 		if(!is_user_bot(id)){
 			sh_chat_message(id,gHeroID,"Enemy %s got stunned on MEGA COUNTER #%d!",enemy_name,mega_counter_effect+cvar_val(num, pcvar_MEGA_COUNTER_EFFECTS_THRESHOLD));
@@ -395,7 +399,7 @@ public Teliko_Fire_Weapon(Victim, Attacker, Float:Damage, Float:Direction[3], Pt
 	}
 	
 	new bool:the_bool_to_use=((g_counter_bullets[Attacker])>0)
-	new bool:the_result=generic_weapon_tracer_logic(Attacker,the_bool_to_use,_,gHeroID,true)
+	new bool:the_result=generic_weapon_tracer_logic(Attacker,the_bool_to_use,_,gHeroID)
 	
 	if(the_result){
 		g_counter_bullets[Attacker]--

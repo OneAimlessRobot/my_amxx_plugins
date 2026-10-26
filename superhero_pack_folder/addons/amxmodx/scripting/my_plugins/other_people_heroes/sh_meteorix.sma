@@ -12,6 +12,7 @@ meteorix_shotmult 0.5		// Delay for multishots on holding key down.
 
 
 #define I_WANT_CONSTANTS
+#define I_WANT_RESOURCE_ALIASES
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
@@ -143,7 +144,7 @@ public meteorix_ku(id)
 		MeteorixPowerUsed[id] = false
 		// Change knife to previously weapon
 		if(gLastWeapon[id] != CSW_KNIFE) {
-			shSwitchWeaponID(id, gLastWeapon[id])
+			sh_switch_weapon(id, gLastWeapon[id])
 		}
 	}
 }
@@ -267,7 +268,7 @@ public lightnings_shot(id)
 
 	if(weaponID != CSW_KNIFE) {
 		// Switch weapon on knife
-		shSwitchWeaponID(id, CSW_KNIFE)
+		sh_switch_weapon(id, CSW_KNIFE)
 	}
 
 	if(lightnings_shots[id] != -1) {

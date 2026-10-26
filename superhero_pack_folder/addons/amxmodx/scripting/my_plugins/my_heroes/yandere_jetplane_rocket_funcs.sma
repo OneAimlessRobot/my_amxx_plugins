@@ -2,6 +2,11 @@
 #define I_WANT_MISC_FUNCS
 #define I_WANT_MATH_FUNCS
 
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_BASIC_MACROS
+#define I_WANT_PDATA_ALIASES
+#define I_WANT_ENTITY_VECTORS
 #include "../my_include/superheromod.inc"
 #include "jetplane_inc/sh_jetplane_funcs.inc"
 #include "jetplane_inc/sh_jetplane_rocket_funcs.inc"
@@ -37,7 +42,6 @@ public plugin_init()
 	pcvar_jetplane_law_rocketspeed = create_cvar("yandere_jetplane_law_rocketspeed", "5")
 	register_forward(FM_CmdStart, "CmdStart");
 	register_think(JETPLANE_LAW_CLASSNAME, "law_think")
-	init_explosion_defaults()
 
 
 	register_entity_as_wall_touchable(JETPLANE_ROCKET_CLASSNAME,"rocket_hit")
@@ -251,20 +255,19 @@ if((pTouched==jet_get_user_jet(the_owner))){
 
 explosion(gHeroID,pToucher,
 		cvar_val(float, pcvar_jetplane_law_radius),
-		cvar_val(float, pcvar_jetplane_law_dmg),
-		default_explode_knock_force_magnitude)
+		cvar_val(float, pcvar_jetplane_law_dmg))
 
 explosion_custom_entity(pToucher,
 		cvar_val(float, pcvar_jetplane_law_radius),
 		cvar_val(float, pcvar_jetplane_law_dmg),
-		JETPLANE_FUSELAGE_CLASSNAME,default_explode_knock_force_magnitude,
+		JETPLANE_FUSELAGE_CLASSNAME,_,
 		explosion_sfx_show_nothing)
 
 explosion_custom_entity(pToucher,
 		cvar_val(float, pcvar_jetplane_law_radius),
 		cvar_val(float, pcvar_jetplane_law_dmg),
 		"func_breakable",
-		default_explode_knock_force_magnitude,
+		_,
 		explosion_sfx_show_nothing)
 
 remove_entity(pToucher)

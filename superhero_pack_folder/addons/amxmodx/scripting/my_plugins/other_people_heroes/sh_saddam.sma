@@ -88,7 +88,7 @@ public saddam_kd(id)
 	userHide[id][1]=origin[1]
 	userHide[id][2]=origin[2]
 	
-	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) || !hasRoundStarted() ) return
+	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) || sh_is_freezetime() ) return
 	
 	if (sh_get_cooldown_flag(id)) 
 	{

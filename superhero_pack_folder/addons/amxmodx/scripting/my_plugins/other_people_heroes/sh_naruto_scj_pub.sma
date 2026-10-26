@@ -140,12 +140,15 @@ naruto_hitchance 65	//How often the shadow clone hits its target the given perce
 		- created
 */
 #define I_WANT_CONSTANTS
+#define I_WANT_MISC_FUNCS
+#define I_WANT_BASIC_MACROS
+#include <float>
+#include <xs>
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt17.inc"
 #include <chr_engine>
-#include <fakemeta_util>
 
 new const DEBUG_MODE = 0
 // GLOBAL VARIABLES
@@ -883,7 +886,7 @@ public find_target(ent,i)
 					entity_set_aim(ent,TargetOrigin)
 					aimtargetfound[i] = true
 					new Float:gun_cooldown = get_pcvar_float(pCvarGunCooldown)
-					if (fm_is_ent_visible(ent,nearestPlayer) && !sh_get_cooldown_flag(i))
+					if (my_is_ent_visible(ent,nearestPlayer) && !sh_get_cooldown_flag(i))
 					{
 						target_found(ent,i,nearestPlayer )
 						if ( gun_cooldown > 0.0 ) sh_set_cooldown(i, gun_cooldown)
@@ -1047,7 +1050,7 @@ stock naruto_remove_entity(index)
 {	
 	set_pev(index, pev_solid, SOLID_NOT)
 
-	fm_remove_entity(index)
+	my_remove_entity(index)
 }
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
 *{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang1033\\ f0\\ fs16 \n\\ par }

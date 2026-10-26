@@ -12,6 +12,8 @@ cable_mulishot 0.02			//Delay for multishots on holding key down
 */
 
 #define I_WANT_CONSTANTS
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_RESOURCE_ALIASES
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
@@ -97,7 +99,7 @@ switch(key)
 // RESPOND TO KEYDOWN
 public cable_kd(id)
 {
-	if ( !hasRoundStarted() ) return PLUGIN_HANDLED
+	if ( sh_is_freezetime() ) return PLUGIN_HANDLED
 
 	if ( !is_user_alive(id) ) return PLUGIN_HANDLED
 

@@ -4,6 +4,7 @@
 #define sh_bknife_fx
 
 
+#define PIERCE_WOUND_SFX "hornet/ag_hornethit1.wav"
 
 enum fx_bleed_type{
 	BLEED_NONE=0,

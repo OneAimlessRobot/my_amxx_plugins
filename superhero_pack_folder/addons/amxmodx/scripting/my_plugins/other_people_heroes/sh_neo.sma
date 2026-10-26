@@ -17,6 +17,7 @@ neo_toggle 0		//Def=0
 
 */
 #define I_WANT_CONSTANTS
+#define I_WANT_BASIC_MACROS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
@@ -109,7 +110,7 @@ public make_neo(id)
 		velocityvec[0]=aimvec[0]-vec[0]
 		velocityvec[1]=aimvec[1]-vec[1]
 		velocityvec[2]=aimvec[2]-vec[2]
-		length=sqrt(velocityvec[0]*velocityvec[0]+velocityvec[1]*velocityvec[1]+velocityvec[2]*velocityvec[2])
+		length=sqroot(velocityvec[0]*velocityvec[0]+velocityvec[1]*velocityvec[1]+velocityvec[2]*velocityvec[2])
 		velocityvec[0]=velocityvec[0]*speed/length
 		velocityvec[1]=velocityvec[1]*speed/length
 		velocityvec[2]=velocityvec[2]*speed/length

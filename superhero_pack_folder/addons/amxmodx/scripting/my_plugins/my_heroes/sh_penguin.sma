@@ -30,6 +30,7 @@ penguin_nadespeed 900		//Speed of Penguin grenades when seeking (def 900)
 */
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_ENTITY_VECTORS
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 

@@ -80,9 +80,7 @@ public plugin_init(){
 	register_think(TELIKO_SLITTER_DUMMY_ENTITY_CLASSNAME,"slitter_think")
 	register_forward(FM_CmdStart, "CmdStart")
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
-	
 
-	init_explosion_defaults()
 }
 
 stop_dragging(id,target=-1,bool:deduct=false){
@@ -255,7 +253,7 @@ public slitter_think(ent)
 	entity_set_vector(vic, EV_VEC_velocity, fl_Velocity)
 	
 	orient_user(vic,vAngles,vAngle)
-	sh_set_stun(vic,2.0,default_stun_speed)
+	sh_set_stun(vic,2.0)
 	set_user_maxspeed(id,cvar_val(float, pcvar_slitter_drag_speed))
 
 	times_left--;

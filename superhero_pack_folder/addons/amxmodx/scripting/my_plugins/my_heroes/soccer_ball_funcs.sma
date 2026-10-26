@@ -2,6 +2,10 @@
 #define I_WANT_MATH_FUNCS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_QUICK_CHECKS
+#define I_WANT_ENTITY_VECTORS
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_BASIC_MACROS
 #include "../my_include/superheromod.inc"
 #include "soccer_ball_inc/sh_roberto_get_set.inc"
 #include "soccer_ball_inc/sh_soccer_funcs.inc"
@@ -28,7 +32,6 @@ public plugin_init(){
 	
 	register_entity_as_wall_touchable(BALL_CLASSNAME,"FwdTouchWorld")
 	register_custom_touchable(BALL_CLASSNAME,"ball_touch_player",player_vector,1)
-	init_explosion_defaults()
 
 	init_gravity_pcvar()
 }
@@ -132,7 +135,7 @@ public ball_touch_player(Ball, Player ) {
 						SH_NEW_DMG_BLUNT_TRAUMA,
 						custom_dmg_id_free_kick)
 				
-				sh_set_stun(Player,3.0,default_stun_speed)
+				sh_set_stun(Player,3.0)
 				emit_sound(0, CHAN_AUTO, cheers, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 				sh_chat_message(oid,gHeroID,"*WWWWWWWWHHHHHHOOOOOAAAAAAAHHHHHHH!!!!*");
 			}

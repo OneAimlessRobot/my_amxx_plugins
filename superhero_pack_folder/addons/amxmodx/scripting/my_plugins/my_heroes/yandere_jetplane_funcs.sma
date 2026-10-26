@@ -1,6 +1,11 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_MATH_FUNCS
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_BASIC_MACROS
+#define I_WANT_PDATA_ALIASES
+#define I_WANT_ENTITY_VECTORS
 
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
@@ -92,7 +97,6 @@ public plugin_init()
 	JET_HUD_TASKID=allocate_typed_task_id(player_task)
 	JET_SOUND_TASKID=allocate_typed_task_id(player_task)
 
-	init_explosion_defaults()
 }
 public plugin_natives(){
 	
@@ -429,16 +433,16 @@ public FwdTouchWorld( jet, World ) {
 		if((get_entity_velocity(jet)/cvar_val(float, pcvar_jetplane_speed))>JETPLANE_MIN_CRASH_SPEED_COEFF){
 
 
-			explosion(gHeroID,jet,cvar_val(float, pcvar_jetplane_hp),cvar_val(float, pcvar_jetplane_hp), default_explode_knock_force_magnitude)
+			explosion(gHeroID,jet,cvar_val(float, pcvar_jetplane_hp),cvar_val(float, pcvar_jetplane_hp))
 			explosion_custom_entity(jet,cvar_val(float, pcvar_jetplane_hp),cvar_val(float, pcvar_jetplane_hp),JETPLANE_FUSELAGE_CLASSNAME,
-						default_explode_knock_force_magnitude,
+						_,
 						explosion_sfx_show_nothing)
 
 			explosion_custom_entity(jet,
 				cvar_val(float, pcvar_jetplane_hp),
 				cvar_val(float, pcvar_jetplane_hp),
 				"func_breakable",
-				default_explode_knock_force_magnitude,
+				_,
 				explosion_sfx_show_nothing)
 			
 			jet_destroy(owner)
@@ -489,7 +493,7 @@ public jet_think(ent)
 		
 		new wpnid=get_user_weapon(owner)
 		if(wpnid!=CSW_KNIFE){
-			shSwitchWeaponID(owner,CSW_KNIFE)
+			sh_switch_weapon(owner,CSW_KNIFE)
 		}
 		
 		new Float:vOrigin[3]

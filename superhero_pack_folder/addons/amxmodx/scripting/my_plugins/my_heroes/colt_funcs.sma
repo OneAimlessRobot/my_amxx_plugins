@@ -1,4 +1,3 @@
-#define AUX_STUFF_GIVE_WEAPONS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_CUSTOM_WEAPONS
 #include "../my_include/superheromod.inc"
@@ -13,7 +12,7 @@
 
 
 new pPlayer, HookChain:TakeDamage, g_Msg_WeaponList = -1
-
+new wpn_name_for_future_lookup[50]
 new weapon_secret_code = ID_M1911A1
 new cached_ammo_id_colt = -1,
 	cached_max_bp_ammo = -1 ,
@@ -29,11 +28,14 @@ public plugin_init()
 
 	cached_def_pos = wlt_get_def_pos(MY_CSW_FIVESEVEN)
 
-	RegisterHam(Ham_Item_Deploy, weapon_data_structs_array[MY_CSW_FIVESEVEN][wpn_struct_weapon_name], "fw_ItemDeployPre",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[MY_CSW_FIVESEVEN][wpn_struct_weapon_name], "fw_WeaponPrimaryAttackPre",_,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[MY_CSW_FIVESEVEN][wpn_struct_weapon_name], "fw_WeaponReloadPre",_,true)
-	RegisterHam(Ham_Weapon_WeaponIdle, weapon_data_structs_array[MY_CSW_FIVESEVEN][wpn_struct_weapon_name], "fw_WeaponWeaponIdlePost", 1,true)
-	RegisterHam(Ham_Item_AddToPlayer, weapon_data_structs_array[MY_CSW_FIVESEVEN][wpn_struct_weapon_name], "fw_ItemAddToPlayerPost", 1,true)
+	
+	wlt_get_def_name(MY_CSW_FIVESEVEN,wpn_name_for_future_lookup,charsmax(wpn_name_for_future_lookup))
+
+	RegisterHam(Ham_Item_Deploy, wpn_name_for_future_lookup, "fw_ItemDeployPre",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, wpn_name_for_future_lookup, "fw_WeaponPrimaryAttackPre",_,true)
+	RegisterHam(Ham_Weapon_Reload, wpn_name_for_future_lookup, "fw_WeaponReloadPre",_,true)
+	RegisterHam(Ham_Weapon_WeaponIdle, wpn_name_for_future_lookup, "fw_WeaponWeaponIdlePost", 1,true)
+	RegisterHam(Ham_Item_AddToPlayer, wpn_name_for_future_lookup, "fw_ItemAddToPlayerPost", 1,true)
 	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
 	RegisterHookChain(RG_CWeaponBox_SetModel, "rg_CWeaponBoxSetModelPre")
 	TakeDamage = RegisterHookChain(RG_CBasePlayer_TakeDamage, "rg_CBasePlayerTakeDamagePre")
@@ -77,7 +79,7 @@ public _colt_set_colt(iPlugin,iParams){
 public _colt_unset_colt(iPlugin,iParams){
 	
 	new id= get_param(1)
-	engclient_cmd(id, "drop", weapon_data_structs_array[MY_CSW_FIVESEVEN][wpn_struct_weapon_name])
+	engclient_cmd(id, "drop", wpn_name_for_future_lookup)
 }
 
 
@@ -87,7 +89,7 @@ public give_m1911a1(player)
 	
 	lastinv_m1911a1(player)
 
-	new pEntity=rg_give_custom_item(player,weapon_data_structs_array[MY_CSW_FIVESEVEN][wpn_struct_weapon_name],GT_APPEND,weapon_secret_code)
+	new pEntity=rg_give_custom_item(player,wpn_name_for_future_lookup,GT_APPEND,weapon_secret_code)
 	ent_check(pEntity,)
 	
 	set_member_s(pEntity, m_Weapon_iClip, CLIP_M1911A1)
@@ -145,7 +147,7 @@ public fw_ItemAddToPlayerPost(entity, id)
 	is_custom ? 
 		copy(buff_to_use,charsmax(buff_to_use),  STRN_M1911A1 )
 								:
-		copy(buff_to_use,charsmax(buff_to_use), weapon_data_structs_array[MY_CSW_FIVESEVEN][wpn_struct_weapon_name])
+		copy(buff_to_use,charsmax(buff_to_use), wpn_name_for_future_lookup)
 	
 	send_weapon_list_stock(id,
 			buff_to_use,
@@ -256,7 +258,7 @@ public fm_PlaybackEventPre(){
 
 public lastinv_m1911a1(player){
 
-	engclient_cmd(player, weapon_data_structs_array[MY_CSW_FIVESEVEN][wpn_struct_weapon_name])
+	engclient_cmd(player, wpn_name_for_future_lookup)
 	return PLUGIN_HANDLED
 }
 

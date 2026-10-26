@@ -32,7 +32,7 @@ public plugin_init(){
 }
 public plugin_cfg(){
 
-	server_print("%s innited!^n",LIBRARY_NAME)
+	server_print("%s innited!^n",PLUGIN)
 }
 //-------
 public on_Battery_msg(msgid, dest, id){

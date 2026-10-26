@@ -1,6 +1,11 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_QUICK_CHECKS
-#define I_WANT_FAKEMETA_UTIL
+#define I_WANT_MISC_FUNCS
+#define I_WANT_BASIC_MACROS
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_RESOURCE_ALIASES
+#include <float>
+#include <xs>
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "camera_inc/sh_camman_get_set.inc"
@@ -412,7 +417,7 @@ update_camera_aiming(other_ent,cam_id){
 	static Float:vOrigin[3],Float: aim_orig[3];
 	
 	pev(cam_id,pev_origin,vOrigin);
-	fm_get_aim_origin(cam_id,aim_orig)
+	my_get_aim_origin(cam_id,aim_orig)
 
 	static Float:vector_direction_result[3]
 	
@@ -747,7 +752,7 @@ bool:camman_update_disarming(id){
 }
 public charge_task(id){
 	id-=CAMERA_CHARGE_TASKID
-	if(!hasRoundStarted()){
+	if(sh_is_freezetime()){
 		UnSet_BitVar(camera_armed_mask, id)
 		return
 	

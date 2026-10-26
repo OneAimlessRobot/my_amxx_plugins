@@ -15,6 +15,7 @@ ricochet_extradamage 5	//Additional damage (not a damage mult)
 *    Requested by fikstress.
 */
 #define I_WANT_CONSTANTS
+#define I_WANT_RESOURCE_ALIASES
 #include <float>
 #include <xs>
 #include "../my_include/superheromod.inc"

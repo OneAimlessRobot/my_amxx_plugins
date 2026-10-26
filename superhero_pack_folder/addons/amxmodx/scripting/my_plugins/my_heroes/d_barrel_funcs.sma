@@ -1,8 +1,10 @@
 #define AUX_STUFF_GIVE_WEAPONS
 #define I_WANT_CONSTANTS
-#define I_WANT_FAKEMETA_UTIL
 #define I_WANT_MISC_FUNCS
 #define I_WANT_CUSTOM_WEAPONS
+#define I_WANT_PDATA_ALIASES
+#include <float>
+#include <xs>
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "d_barrel_inc/sh_d_barrel.inc"
@@ -36,7 +38,7 @@ new g_Volcano, g_OldWeapon[33]
 new g_Had_Volcano, Float:g_punchangles[33][3], g_gatling_event, g_smokepuff_id, m_iBlood[2]
 new g_SpecialShot
 
-
+new wpn_name_for_future_lookup[50]
 
 new weapon_secret_code = CSW_GATLING_SECRET_CODE
 
@@ -58,12 +60,13 @@ public plugin_init()
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack",_,true)
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Post", 1,true)
 	
-	RegisterHam(Ham_Item_Deploy, weapon_data_structs_array[CSW_GATLING][wpn_struct_weapon_name], "fw_Item_Deploy_Post", 1,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[CSW_GATLING][wpn_struct_weapon_name], "fw_Weapon_Reload_Post", 1,true)
-	RegisterHam(Ham_Item_PostFrame, weapon_data_structs_array[CSW_GATLING][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)
-	RegisterHam(Ham_Item_AddToPlayer, weapon_data_structs_array[CSW_GATLING][wpn_struct_weapon_name], "fw_Item_AddToPlayer_Post", 1,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[CSW_GATLING][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[CSW_GATLING][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack_Post", 1,true)
+	wlt_get_def_name(CSW_GATLING,wpn_name_for_future_lookup,charsmax(wpn_name_for_future_lookup))
+	RegisterHam(Ham_Item_Deploy, wpn_name_for_future_lookup, "fw_Item_Deploy_Post", 1,true)
+	RegisterHam(Ham_Weapon_Reload, wpn_name_for_future_lookup, "fw_Weapon_Reload_Post", 1,true)
+	RegisterHam(Ham_Item_PostFrame, wpn_name_for_future_lookup, "fw_Item_PostFrame",_,true)
+	RegisterHam(Ham_Item_AddToPlayer, wpn_name_for_future_lookup, "fw_Item_AddToPlayer_Post", 1,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, wpn_name_for_future_lookup, "fw_Weapon_PrimaryAttack",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, wpn_name_for_future_lookup, "fw_Weapon_PrimaryAttack_Post", 1,true)
 
 
 	weapon_secret_code = allocate_weapon_secret_code()
@@ -129,10 +132,10 @@ public Mileage_WeaponRemove(id, ItemID)
 public get_gatling(id)
 {
 	Set_BitVar(g_Had_Volcano, id)
-	fm_give_item(id, weapon_data_structs_array[CSW_GATLING][wpn_struct_weapon_name])
+	my_give_item(id, wpn_name_for_future_lookup)
 	
 	// Set Clip
-	static ent; ent = fm_get_user_weapon_entity(id, _:CSW_GATLING)
+	static ent; ent = my_get_user_weapon_entity(id, _:CSW_GATLING)
 	if(pev_valid(ent)) cs_set_weapon_ammo(ent, D_BARREL_DEFAULT_CLIP)
 	
 	// Set BpAmmo
@@ -153,7 +156,7 @@ public Event_CurWeapon(id)
 
 	if((CSWID == _:CSW_GATLING && g_OldWeapon[id] == _:_:CSW_GATLING) && Get_BitVar(g_Had_Volcano, id)) 
 	{
-		static Ent; Ent = fm_get_user_weapon_entity(id, _:_:CSW_GATLING)
+		static Ent; Ent = my_get_user_weapon_entity(id, _:_:CSW_GATLING)
 		if(pev_valid(Ent)==PDATA_SAFE) 
 		{
 			set_pdata_float(Ent, m_flNextPrimaryAttack,
@@ -180,7 +183,7 @@ public fw_CmdStart(id, uc_handle, seed)
 	}
 
 	static CurButton; CurButton = get_uc(uc_handle, UC_Buttons)
-	static Ent; Ent = fm_get_user_weapon_entity(id, _:CSW_GATLING)
+	static Ent; Ent = my_get_user_weapon_entity(id, _:CSW_GATLING)
 	
 	ent_check(Ent,FMRES_IGNORED)
 	
@@ -193,7 +196,7 @@ public fw_CmdStart(id, uc_handle, seed)
 		CurButton &= ~IN_RELOAD
 		set_uc(uc_handle, UC_Buttons, CurButton)
 		
-		static ent; ent = fm_get_user_weapon_entity(id, _:CSW_GATLING)
+		static ent; ent = my_get_user_weapon_entity(id, _:CSW_GATLING)
 		
 		ent_check(ent,FMRES_IGNORED)
 
@@ -250,7 +253,7 @@ public fw_SetModel(entity, model[])
 	if(equal(model, DEFAULT_W_MODEL))
 	{
 		static weapon
-		weapon = fm_find_ent_by_owner(-1, weapon_data_structs_array[CSW_GATLING][wpn_struct_weapon_name], entity)
+		weapon = my_find_ent_by_owner(-1, wpn_name_for_future_lookup, entity)
 		
 		
 		ent_check(weapon,FMRES_IGNORED)

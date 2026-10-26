@@ -51,6 +51,7 @@ gokukt_health 800 // How much HP does goku have in kaioken mode.
 */
 
 #define I_WANT_CONSTANTS
+#define I_WANT_CUSTOM_COLORS
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include <amxmodx>
 #include "../my_include/superheromod.inc"
@@ -128,7 +129,7 @@ switch(key)
 // RESPOND TO KEYDOWN
 public gokukt_kd(id)
 {
-	if ( !hasRoundStarted() ) return;
+	if ( sh_is_freezetime() ) return;
 	
 	if ( !is_user_alive(id) ) return;
 	

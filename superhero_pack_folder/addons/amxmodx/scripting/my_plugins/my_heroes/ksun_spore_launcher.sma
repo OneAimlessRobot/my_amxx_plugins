@@ -1,4 +1,7 @@
 #define I_WANT_CONSTANTS
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_ENTITY_VECTORS
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
@@ -239,8 +242,8 @@ distance[1] = originlook[1]-originplayer[1]
 
 new unitsinfront = 80
 
-aimvec[0]=originplayer[0]+(unitsinfront*distance[0])/sqrt(distance[0]*distance[0]+distance[1]*distance[1])
-aimvec[1]=originplayer[1]+(unitsinfront*distance[1])/sqrt(distance[0]*distance[0]+distance[1]*distance[1])
+aimvec[0]=originplayer[0]+(unitsinfront*distance[0])/sqroot(distance[0]*distance[0]+distance[1]*distance[1])
+aimvec[1]=originplayer[1]+(unitsinfront*distance[1])/sqroot(distance[0]*distance[0]+distance[1]*distance[1])
 aimvec[2]=originplayer[2]+UNITS_ABOVE
 
 b_orig[0] = float(aimvec[0]);

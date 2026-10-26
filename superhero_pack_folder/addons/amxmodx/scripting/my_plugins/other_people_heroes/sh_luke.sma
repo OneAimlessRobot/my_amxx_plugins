@@ -54,7 +54,7 @@ switch(key)
 
 public luke_kd(id) 
 {
-	if ( !hasRoundStarted() ) return PLUGIN_HANDLED
+	if ( sh_is_freezetime() ) return PLUGIN_HANDLED
 
 	if ( sh_get_cooldown_flag(id))
 	{
@@ -110,7 +110,7 @@ public lightsaber(id[]){
 	lseffvec[0]=aimvec[0]-vec[0] 
 	lseffvec[1]=aimvec[1]-vec[1] 
 	lseffvec[2]=aimvec[2]-vec[2] 
-	length=sqrt(lseffvec[0]*lseffvec[0]+lseffvec[1]*lseffvec[1]+lseffvec[2]*lseffvec[2]) 
+	length=sqroot(lseffvec[0]*lseffvec[0]+lseffvec[1]*lseffvec[1]+lseffvec[2]*lseffvec[2]) 
 	lseffvec[0]=lseffvec[0]*speed/length 
 	lseffvec[1]=lseffvec[1]*speed/length 
 	lseffvec[2]=lseffvec[2]*speed/length 
@@ -130,7 +130,7 @@ public lightsaber(id[]){
 							user_kill(a,1)
 							set_user_frags(id[0], get_user_frags(id[0])+1) 
 							cs_set_user_money(id[0], cs_get_user_money(id[0])+150)
-							shAddXP(id[0], a, 1.0)
+							sh_add_kill_xp(id[0], a, 1.0)
 							client_print(a,print_chat,"[AMX] The power of the force has killed you.")
 							//Public Hummiliaton
 							message_begin( MSG_ALL, get_user_msgid("DeathMsg"),{0,0,0},0)
@@ -158,7 +158,7 @@ public lightsaber(id[]){
 						user_kill(a,1)
 						set_user_frags(id[0], get_user_frags(id[0])-1) 
 						cs_set_user_money(id[0], cs_get_user_money(id[0])-500, 0)
-						shAddXP(id[0], a, -1.0)
+						sh_add_kill_xp(id[0], a, -1.0)
 						client_print(a,print_chat,"[AMX] The power of the force has killed you.")
 						//Public Hummiliaton
 						message_begin( MSG_ALL, get_user_msgid("DeathMsg"),{0,0,0},0)

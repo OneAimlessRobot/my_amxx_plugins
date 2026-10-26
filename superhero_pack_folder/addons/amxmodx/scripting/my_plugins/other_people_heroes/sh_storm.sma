@@ -5,6 +5,8 @@
  
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_RESOURCE_ALIASES
 #include <amxmisc>
 #include <csx>
 #include "../my_include/superheromod.inc"
@@ -294,7 +296,7 @@ switch(key)
  //----------------------------------------------------------------------------------------------
  public Storm_loop()
  {
- 	if (!hasRoundStarted()) return
+ 	if (sh_is_freezetime()) return
 
 	for ( new id=1; id< sh_maxplayers()+1; id++ )
 	{

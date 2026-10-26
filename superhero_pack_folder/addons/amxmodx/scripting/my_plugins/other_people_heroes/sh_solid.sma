@@ -11,6 +11,8 @@ solid_ration_health 50		// How many health you have per ration?
 
 */
 #define I_WANT_CONSTANTS
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_BASIC_MACROS
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"

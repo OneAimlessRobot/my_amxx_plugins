@@ -11,8 +11,11 @@
 */
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
-#define I_WANT_CUSTOM_WEAPONS
 #define I_WANT_QUICK_CHECKS
+#define I_WANT_BASIC_MACROS
+#define I_WANT_ENTITY_VECTORS
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_RESOURCE_ALIASES
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
@@ -238,7 +241,7 @@ public make_tracer(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, Dama
 		return
 	}
 	
-	generic_weapon_tracer_logic(Attacker,_,THRASHER_WEAPON_ID,gHeroID,true,sh_custom_color:{PINK,PINK,PINK})
+	generic_weapon_tracer_logic(Attacker,_,THRASHER_WEAPON_ID,gHeroID,sh_custom_color:{PINK,PINK,PINK})
 
 }
 

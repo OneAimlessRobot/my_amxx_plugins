@@ -11,7 +11,7 @@ leviathan_underwaterdmg 1.5 - how much dmg does Leviathan do when in flood ?
 */
 
 #define I_WANT_CONSTANTS
-#define I_WANT_MISC_FUNCS
+#define I_WANT_BASIC_MACROS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/leviathan_inc/leviathan_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"

@@ -1,4 +1,5 @@
 #define I_WANT_CONSTANTS
+#define I_WANT_CUSTOM_COLORS
 #include <amxmisc>
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -12,7 +13,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt12.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/auxiliar_stuff.inc"
-
+new heal_hp_hud_msg_sync
 
 static bool:lib_initted = false;
 
@@ -42,7 +43,10 @@ new sh_hero_healthcaps[TRUE_MAX_HEALTHCAPS][sh_healthcap_hero_struct]
 
 public plugin_init(){
 
+
 	register_plugin(PLUGIN, VERSION, AUTHOR);
+
+	heal_hp_hud_msg_sync=CreateHudSyncObj()
 
 	sh_init_healthcap_lib(false)
 
@@ -86,7 +90,7 @@ public sh_hero_healthcaps_print(id,level,cid){
 public plugin_cfg(){
 
 
-	server_print("%s innited!^n",LIBRARY_NAME)
+	server_print("%s innited!^n",PLUGIN)
 	
 }
 
@@ -125,16 +129,15 @@ public Float:_sh_get_player_healthcap(iPlugin,iParams){
 }
 
 public bool:_generic_heal(iPlugins, iParms){
-	new hud_msg_sync=get_param(1),
-		id= get_param(2),
-		Float:added_hp=get_param_f(3),
-		max_hp_to_clamp=get_param(4),
-		sh_custom_color:color_const=sh_custom_color:get_param(5),
-		user_will_glow=get_param(6),
-		Float:glow_remove_timer=get_param_f(7),
-		hud_alpha=get_param(8),
-		hud_will_glow=get_param(9),
-		make_sound=get_param(10),
+	new id= get_param(1),
+		Float:added_hp=get_param_f(2),
+		max_hp_to_clamp=get_param(3),
+		sh_custom_color:color_const=sh_custom_color:get_param(4),
+		user_will_glow=get_param(5),
+		Float:glow_remove_timer=get_param_f(6),
+		hud_alpha=get_param(7),
+		hud_will_glow=get_param(8),
+		make_sound=get_param(9),
 		Float: mate_health=float(get_user_health(id))
 
 	if(sh_get_player_has_hero_prop(id,SH_UNHEALABLE_HERO)){
@@ -169,10 +172,10 @@ public bool:_generic_heal(iPlugins, iParms){
 	if((user_will_glow>0)&&(true_hp_to_add>0.0)){
 		set_render_with_color_const(id,color_const,user_will_glow,_,hud_alpha,hud_will_glow,_,glow_remove_timer,0,_,kRenderNormal,PRIO_RENDER_INFORMATIVE)
 	}
-	if(hud_msg_sync>0){
+	if(heal_hp_hud_msg_sync>0){
 		
 		set_hudmessage(LineColors[color_const][0], LineColors[color_const][1], LineColors[color_const][2], -1.0, 0.48, 2, 0.1, 2.0, 0.02, 0.02, -1)
-		ShowSyncHudMsg(id, hud_msg_sync, "%0.2f", true_hp_to_add)
+		ShowSyncHudMsg(id, heal_hp_hud_msg_sync, "%0.2f", true_hp_to_add)
 	
 	}
 	return true

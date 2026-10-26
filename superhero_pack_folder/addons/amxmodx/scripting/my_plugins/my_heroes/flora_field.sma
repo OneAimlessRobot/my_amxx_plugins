@@ -2,6 +2,9 @@
 #define I_WANT_MISC_FUNCS
 #define I_WANT_MATH_FUNCS
 #define I_WANT_QUICK_CHECKS
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_MATH_VECTORS
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -103,7 +106,6 @@ public plugin_init()
 	set_task(0.35,"flora_checks",FLORA_GLOBAL_TASKID,_,_,"b")
 
 	register_think(FLORA_FIELD_CLASSNAME, "field_think")
-	init_hud_syncs()
 
 }
 
@@ -340,7 +342,7 @@ destroy_field(field_id,make_sound=0,planting=0, bool:start_of_round= false){
 		if(make_sound){
 			emit_sound(field_id, CHAN_AUTO, FIELD_DESTROYED, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		}
-		suck_in_sound(field_id,0)
+		suck_in_fx(field_id,0)
 		emit_sound(field_id, CHAN_ITEM, FIELD_HUM, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 		emit_sound(field_id, CHAN_ITEM, FIELD_CHARGING, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 		if(is_user_connected(owner)){
@@ -936,7 +938,7 @@ public field_think(ent)
 				set_render_with_color_const(pid,g_flora_dmg_color[owner],1,255,90,1,_,
 								cvar_val(float,pcvar_flora_stun_time),0,_,_,PRIO_RENDER_INFORMATIVE)
 				set_damage_icon(pid,2,DMG_ICON_BIO,LineColors[g_flora_dmg_color[owner]],1.0)
-				generic_heal(heal_hp_hud_msg_sync,owner,fdamage,_,g_flora_dmg_color[owner],FLORA_HEAL_GLOWING_ON,FLORA_HEAL_GLOW_TIME,100,1,1,FIELD_HEAL)
+				generic_heal(owner,fdamage,_,g_flora_dmg_color[owner],FLORA_HEAL_GLOWING_ON,FLORA_HEAL_GLOW_TIME,100,1,1,FIELD_HEAL)
 			}
 		}
 		entity_set_float(ent,EV_FL_nextthink,floatadd(gametime,FLORA_THINK_PERIOD))

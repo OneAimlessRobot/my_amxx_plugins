@@ -90,7 +90,7 @@ public sh_client_spawn(id)
 		{
 			// If spawned during round don't check or add to catround
 			// This function should be changed to actual rounds, this is only a bandaid
-			if ( hasRoundStarted() )
+			if ( !sh_is_freezetime() )
 				return
 
 			new sneakLevel, max = get_cvar_num("catwoman_maxrounds"), min = get_cvar_num("catwoman_minrounds")
@@ -189,7 +189,7 @@ public catwoman_sneak(id)
 
 	client_print(id, print_chat, "[SH](%s) You snuck into the enemy base.", gHeroName)
 
-	sh_screenShake(id, 14, 14, 14)
+	sh_screen_shake(id, 14.0, 14.0, 14.0)
 
 	gCatWomanmns[id] = true
 	gCatWomanSneak[id] = false

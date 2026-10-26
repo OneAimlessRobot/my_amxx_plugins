@@ -14,6 +14,10 @@ arcticPredator_explode_maxdamage 250
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_QUICK_CHECKS
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_BASIC_MACROS
+#define I_WANT_PDATA_ALIASES
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -70,7 +74,7 @@ public plugin_init()
 	create_cvar("arcticPredator_cooldown", "30" )
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	gHeroID=shCreateHero(gHeroName, "Hunter", "Invisble Hunt Mode, Press N to toggle Hunter Helmet Power, Throw Predator Disc.", true, "arcticPredator_level", true )
+	gHeroID=shCreateHero(gHeroName, "Hunter", "Invisble Hunt Mode, Press N to toggle Hunter Helmet Power, Throw Predator Disc.", true, "arcticPredator_level")
 	
 
 	sh_register_superheromod_model(gHeroID,
@@ -115,8 +119,6 @@ public plugin_init()
 	TASKID_LOOP = allocate_typed_task_id(player_task)
 	TASKID_REVENGE = allocate_typed_task_id(player_task)
 	TASKID_NVG = allocate_typed_task_id(player_task)
-
-	init_explosion_defaults()
 
 	ArcticPred_Revenge_HudSync = CreateHudSyncObj()
 }
@@ -638,8 +640,8 @@ distance[1] = originlook[1]-originplayer[1]
 
 new unitsinfront = 80
 
-aimvec[0]=originplayer[0]+(unitsinfront*distance[0])/sqrt(distance[0]*distance[0]+distance[1]*distance[1])
-aimvec[1]=originplayer[1]+(unitsinfront*distance[1])/sqrt(distance[0]*distance[0]+distance[1]*distance[1])
+aimvec[0]=originplayer[0]+(unitsinfront*distance[0])/sqroot(distance[0]*distance[0]+distance[1]*distance[1])
+aimvec[1]=originplayer[1]+(unitsinfront*distance[1])/sqroot(distance[0]*distance[0]+distance[1]*distance[1])
 aimvec[2]=originplayer[2]-8
 
 b_orig[0] = float(aimvec[0]);

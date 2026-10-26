@@ -13,6 +13,7 @@ iceman2_armor 100			//How much armor does ironman start with?
 */
 
 #define I_WANT_CONSTANTS
+#define I_WANT_CUSTOM_COLORS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
@@ -146,8 +147,8 @@ public iceman2_loop(id)
    
 		new unitsinfront = 1
 
-		aimvec[0]=user_origin[0]+(unitsinfront*distance2[0])/sqrt(distance2[0]*distance2[0]+distance2[1]*distance2[1]) 
-		aimvec[1]=user_origin[1]+(unitsinfront*distance2[1])/sqrt(distance2[0]*distance2[0]+distance2[1]*distance2[1]) 
+		aimvec[0]=user_origin[0]+(unitsinfront*distance2[0])/sqroot(distance2[0]*distance2[0]+distance2[1]*distance2[1]) 
+		aimvec[1]=user_origin[1]+(unitsinfront*distance2[1])/sqroot(distance2[0]*distance2[0]+distance2[1]*distance2[1]) 
 		aimvec[2]=user_origin[2]-34
 		
 		b_orig[0] = float(aimvec[0]); 
@@ -184,7 +185,7 @@ switch(key)
 // RESPOND TO KEYDOWN
 public iceman2_kd(id)
 {
-	if ( !hasRoundStarted() || !is_user_alive(id))
+	if ( sh_is_freezetime() || !is_user_alive(id))
 	{
 		sh_sound_deny(id)
 		g_jetPackRunning[id] = 0

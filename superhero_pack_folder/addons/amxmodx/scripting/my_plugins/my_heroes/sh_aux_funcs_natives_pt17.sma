@@ -1,15 +1,11 @@
-#define I_WANT_CONSTANTS
-#define I_WANT_MISC_FUNCS
 #include <amxmisc>
 #include "../my_include/superheromod.inc"
-#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
-#include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt17.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt17.inc"
 
 new the_current_map_name[STRING_SIZE_FOR_MAP_STRING]
 
-#define MAX_HERO_MAP_RESTRICTIONS SH_MAXHEROS
+#define MAX_HERO_MAP_RESTRICTIONS 10
 
 new curr_num_map_restrictions = 0;
 enum hero_map_restriction_struct{
@@ -39,7 +35,7 @@ public plugin_init(){
 public plugin_cfg(){
 
 
-	server_print("%s innited!^n",LIBRARY_NAME)
+	server_print("%s innited!^n",PLUGIN)
 	server_print("The current map name is: %s!^n",the_current_map_name)
 	
 }

@@ -2,6 +2,10 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_MATH_FUNCS
+#define I_WANT_ENTITY_VECTORS
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_BASIC_MACROS
+#define I_WANT_RESOURCE_ALIASES
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
@@ -258,8 +262,8 @@ public spawn_spore(id){
 
 	new unitsinfront = 80
 
-	aimvec[0]=originplayer[0]+(unitsinfront*distance[0])/sqrt(distance[0]*distance[0]+distance[1]*distance[1])
-	aimvec[1]=originplayer[1]+(unitsinfront*distance[1])/sqrt(distance[0]*distance[0]+distance[1]*distance[1])
+	aimvec[0]=originplayer[0]+(unitsinfront*distance[0])/sqroot(distance[0]*distance[0]+distance[1]*distance[1])
+	aimvec[1]=originplayer[1]+(unitsinfront*distance[1])/sqroot(distance[0]*distance[0]+distance[1]*distance[1])
 	aimvec[2]=originplayer[2]+UNITS_ABOVE
 
 	b_orig[0] = float(aimvec[0]);

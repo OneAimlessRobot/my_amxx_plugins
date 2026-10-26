@@ -1,6 +1,10 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_BASIC_MACROS
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_PDATA_ALIASES
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
@@ -72,7 +76,7 @@ public plugin_init()
 	pcvar_dmg_points_pct = create_cvar("maria_dmg_points_pct", "0.1")
 	pcvar_selfless_index = create_cvar("maria_selfless_index", "0.9")
 	pcvar_points_heal_coeff = create_cvar("maria_points_heal_coeff", "4")
-	gHeroID=shCreateHero(gHeroName, "Maria", "Martyr! Heal nearby teamates & become transparent", false, "maria_level",true )
+	gHeroID=shCreateHero(gHeroName, "Maria", "Martyr! Heal nearby teamates & become transparent", false, "maria_level")
 	
 
 	sh_assign_hero_bit(gHeroID,SH_EXPLOSION_POWERS, true)
@@ -81,8 +85,6 @@ public plugin_init()
 	
 	register_forward(FM_TraceLine,"fw_traceline");
 	register_event("Damage", "maria_damage", "b", "2!0")
-
-	init_hud_syncs()
 
 	sh_assign_hero_projectile_weapon_bit(gHeroID,my_weapon_ids:MARIA_WEAPON_CLASSID,true)
 }
@@ -222,7 +224,7 @@ hp_to_give = (hp_to_give/(float(num_of_teamates_around)))
 
 bool:heal_teamate(id,i,Float:hp_to_give){
 	
-	new bool:result=generic_heal(heal_hp_hud_msg_sync,i,hp_to_give*
+	new bool:result=generic_heal(i,hp_to_give*
 			cvar_val(float, pcvar_points_heal_coeff),_,INVIS,1,heal_period*2,_,1,0)
 	if(result){
 		heal_stream(id,i,_,190)
@@ -322,7 +324,10 @@ public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id,  trace)
 		return FMRES_IGNORED;
 	}
 
-	
+	if(trace){
+
+		return FMRES_IGNORED
+	}
 	new ent= get_tr2(trace,TR_pHit)
 	
 	// if looking at something

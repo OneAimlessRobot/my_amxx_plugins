@@ -60,7 +60,7 @@ public speed_kd(id) {
 }
 
 public sh_client_spawn(id) {
-	if(!is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) || !hasRoundStarted()) return;
+	if(!is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) || sh_is_freezetime()) return;
 
 	gCanJump[id] = true
 }

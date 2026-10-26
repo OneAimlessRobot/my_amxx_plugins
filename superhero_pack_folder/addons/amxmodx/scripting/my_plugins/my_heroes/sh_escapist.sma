@@ -11,9 +11,10 @@ shock_fuelcost 2			//Armor Used (def=2)
 shock_armor 250			//Armor Starts with (def=250)
 
 */
-#define I_WANT_QUICK_CHECKS
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_ENTITY_VECTORS
+#define I_WANT_CUSTOM_COLORS
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -85,14 +86,14 @@ wpn_switch_primitive(id){
 
 	if(sh_is_freezetime()&&((gPlayerLevel[id]-gHeroLevel)>=gLvlsForFullMastery)){
 		if(gFastWeapon[id]>0){
-			shSwitchWeaponID(id,gFastWeapon[id])
+			sh_switch_weapon(id,gFastWeapon[id])
 			set_user_maxspeed_controlled(id,gEscapeSpeed[id],true,true)
 		}
 		return
 	}
 	if(g_is_climbing[id]){
 
-		shSwitchWeaponID(id,CSW_KNIFE)
+		sh_switch_weapon(id,CSW_KNIFE)
 
 	}
 }
@@ -238,7 +239,7 @@ public escapist_loop(id)
 public escapist_kd(id)
 {
 
-	if ( !hasRoundStarted() || !is_user_alive(id)||!is_user_connected(id))
+	if ( sh_is_freezetime() || !is_user_alive(id)||!is_user_connected(id))
 	{
 		sh_sound_deny(id)
 		return

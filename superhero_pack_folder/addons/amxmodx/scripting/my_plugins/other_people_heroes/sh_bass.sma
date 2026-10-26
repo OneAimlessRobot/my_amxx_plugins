@@ -32,6 +32,8 @@ bass_multishot 0.1			//Delay for multishots on holding key down, set to -1 for o
 */
 
 #define I_WANT_CONSTANTS
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_BASIC_MACROS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
@@ -152,7 +154,7 @@ switch(key)
 // RESPOND TO KEYDOWN
 public bass_kd(id)
 {
-	if ( !hasRoundStarted() ) return
+	if ( sh_is_freezetime() ) return
 
 	if ( !is_user_alive(id) ) return
 
@@ -179,7 +181,7 @@ public bass_ku(id)
 {
 	remove_task(id)
 
-	if ( !hasRoundStarted() || sh_get_cooldown_flag(id) || !gLaserFired[id] ) return
+	if ( sh_is_freezetime() || sh_get_cooldown_flag(id) || !gLaserFired[id] ) return
 
 	// Use the ultimate
 	if ( get_cvar_float("bass_cooldown") > 0.0 ) sh_set_cooldown(id, get_cvar_float("bass_cooldown"))

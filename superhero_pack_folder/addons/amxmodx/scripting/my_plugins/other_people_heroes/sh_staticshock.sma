@@ -146,8 +146,8 @@ public shock_loop(id)
    
 		new unitsinfront = 1
 
-		aimvec[0]=user_origin[0]+(unitsinfront*distance2[0])/sqrt(distance2[0]*distance2[0]+distance2[1]*distance2[1]) 
-		aimvec[1]=user_origin[1]+(unitsinfront*distance2[1])/sqrt(distance2[0]*distance2[0]+distance2[1]*distance2[1]) 
+		aimvec[0]=user_origin[0]+(unitsinfront*distance2[0])/sqroot(distance2[0]*distance2[0]+distance2[1]*distance2[1]) 
+		aimvec[1]=user_origin[1]+(unitsinfront*distance2[1])/sqroot(distance2[0]*distance2[0]+distance2[1]*distance2[1]) 
 		aimvec[2]=user_origin[2]-34
 		
 		b_orig[0] = float(aimvec[0]); 
@@ -185,7 +185,7 @@ switch(key)
 public shock_kd(id)
 {
 
-	if ( !hasRoundStarted() || !is_user_alive(id))
+	if ( sh_is_freezetime() || !is_user_alive(id))
 	{
 		sh_sound_deny(id)
 		g_jetPackRunning[id] = 0

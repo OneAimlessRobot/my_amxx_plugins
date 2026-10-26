@@ -19,6 +19,7 @@ Forge_effects 2			//1 Regualy missile, no effects
 
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_ENTITY_VECTORS
 
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
@@ -67,7 +68,7 @@ switch(key)
 // RESPOND TO KEYDOWN
 public Forge_kd(id)
 {
-	if ( !hasRoundStarted() ) return PLUGIN_HANDLED
+	if ( sh_is_freezetime() ) return PLUGIN_HANDLED
 
 	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
 	if ( sh_get_cooldown_flag(id)) {

@@ -1,4 +1,7 @@
 #define I_WANT_CONSTANTS
+#define I_WANT_BASIC_MACROS
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_CUSTOM_COLORS
 #include "../my_include/superheromod.inc"
 #include "shock_fx_inc/shock_fx.inc"
 #include "wet_fx_inc/wet_fx.inc"

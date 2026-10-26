@@ -1,6 +1,7 @@
-#define I_WANT_QUICK_CHECKS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_CONSTANTS
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_MATH_VECTORS
 #include "../../include/float.inc"
 #include <xs>
 #include "../my_include/superheromod.inc"

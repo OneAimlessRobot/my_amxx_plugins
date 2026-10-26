@@ -1,7 +1,3 @@
-
-#define Struct enum
-
-
 #define PLUGIN_NAME "Level xp generator"
 #define VERSION "1.0"
 

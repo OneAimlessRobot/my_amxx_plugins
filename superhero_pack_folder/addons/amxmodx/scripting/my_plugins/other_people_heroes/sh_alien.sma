@@ -34,6 +34,7 @@ alien_knifemode 0	//1-knife only can't change weapons, 0-Alien Vision on only wh
 */
 
 #define I_WANT_CONSTANTS
+#define I_WANT_CUSTOM_COLORS
 #include <amxmodx>
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"

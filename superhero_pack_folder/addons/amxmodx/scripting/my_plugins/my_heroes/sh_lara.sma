@@ -1,6 +1,5 @@
 #define I_WANT_CONSTANTS
-#define I_WANT_QUICK_CHECKS
-#define I_WANT_MISC_FUNCS
+#define I_WANT_BASIC_MACROS
 #include "../my_include/superheromod.inc"
 #include "lara_spear_inc/sh_lara_get_set.inc"
 #include "lara_spear_inc/sh_spear_funcs.inc"

@@ -1,11 +1,13 @@
 #define I_WANT_CONSTANTS
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_PDATA_ALIASES
+#define I_WANT_RESOURCE_ALIASES
 #include "../my_include/superheromod.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "special_fx_inc/sh_needle_funcs.inc"
-#include "tranq_gun_inc/sh_tranq_fx.inc"
 
 
 #define PLUGIN "Superhero yakui mk2 needles"
@@ -41,7 +43,7 @@ public weaponChange(id)
 	if (!sh_get_user_has_hero(id,gHeroID) ||!sh_is_active()) return PLUGIN_CONTINUE
 	
 	new wpnid = read_data(2)
-	if ((wpnid == CSW_KNIFE)&&gatling_get_needle(id)) {
+	if ((wpnid == CSW_KNIFE)&&Get_BitVar(needle_on_mask, id)) {
 		entity_set_string(id, EV_SZ_viewmodel, NEEDLE_V_MODEL)
 		if(!sh_get_id_bit(id, SH_IS_SLEEPING)){
 			gatling_needle_cycle_fx(id)
@@ -81,7 +83,7 @@ public Ham_Needle_Swing(weapon_ent)
 
 		return HAM_IGNORED
 	}
-	if(!gatling_get_needle(owner)){
+	if(!Get_BitVar(needle_on_mask, owner)){
 
 		return HAM_IGNORED
 	}
@@ -100,7 +102,7 @@ public Ham_Needle(id, idinflictor, attacker, Float:damage, damagebits)
 
 		return HAM_IGNORED
 	}
-	if(!gatling_get_needle(attacker)){
+	if(!Get_BitVar(needle_on_mask, attacker)){
 
 		return HAM_IGNORED
 	}
@@ -109,7 +111,7 @@ public Ham_Needle(id, idinflictor, attacker, Float:damage, damagebits)
 	new CsTeams:att_team=cs_get_user_team(attacker)
 	if((cs_get_user_team(id)==att_team)) return HAM_IGNORED
 	
-	if((weapon==CSW_KNIFE)&&gatling_get_needle(attacker)){
+	if((weapon==CSW_KNIFE)&&Get_BitVar(needle_on_mask, attacker)){
 		new button = pev(attacker, pev_button);
 		new bool:stabbing;
 		if(button & IN_ATTACK2){
@@ -169,7 +171,7 @@ public _gatling_needle_cycle_fx(iPlugin,iParams){
 
 		return
 	}
-	if(!gatling_get_needle(id)){
+	if(!Get_BitVar(needle_on_mask, id)){
 
 		return
 	}

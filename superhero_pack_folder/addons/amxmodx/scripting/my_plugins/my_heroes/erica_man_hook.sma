@@ -1,6 +1,8 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_QUICK_CHECKS
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_RESOURCE_ALIASES
 #include <float>
 #include <xs>
 #include "../my_include/superheromod.inc"

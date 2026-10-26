@@ -2,98 +2,223 @@
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
-#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_BASIC_MACROS
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_damage_sources_inc/sh_damage_sources_aux_code.inc"
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt3.inc"
-#include "sh_aux_stuff/sh_aux_quick_checks.inc"
-#include "sh_aux_stuff/sh_aux_math_funcs_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
-#include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
-#include "sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
-#include "special_fx_inc/sh_gatling_special_fx.inc"
-#include "shinobu_knife/shinobu_general.inc"
-#include "tranq_gun_inc/sh_tranq_fx.inc"
-#include "arcticpredator_inc/arcticpredator.inc"
 
-new generic_frag_blast_wpn_id = -1
+
+#define SH_DEFAULT_EXPLODE_FORCE 4.0
+stock Float:default_explode_knock_force_magnitude=SH_DEFAULT_EXPLODE_FORCE;
+
+
+#define SH_DEFAULT_DAMAGE_FRAC_EXPLOSION_IGNORE_OWNER 0.5
+stock Float:default_explode_owner_ignore_frac=SH_DEFAULT_DAMAGE_FRAC_EXPLOSION_IGNORE_OWNER;
+
+stock sh_default_explode_knock_force_magnitude_cvar,
+	sh_default_explode_owner_ignore_frac_cvar,
+	generic_frag_blast_wpn_id = -1
 
 #define PLUGIN "SH_AuxFun3: explosion mngr"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
+new white, smoke;
+
+new precached_explosion_sprite1,precached_explosion_sprite2
+
 public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
+	sh_default_explode_knock_force_magnitude_cvar = create_cvar("sh_default_explode_knock_force_magnitude","3.0")
+	sh_default_explode_owner_ignore_frac_cvar = create_cvar("sh_default_explode_owner_ignore_frac","0.5")
 	prepare_shero_aux_lib_pt3()
 
     
 	
 }
+
 public plugin_cfg(){
 
 	generic_frag_blast_wpn_id = get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_FRAG_BLAST)
 }
 public plugin_precache(){
-	engfunc(EngFunc_PrecacheSound,  crush_stunned)
-	engfunc(EngFunc_PrecacheSound, SPORE_HEAL_SFX)
+
+
+	smoke = engfunc(EngFunc_PrecacheModel,"sprites/steam1.spr")
+	white = engfunc(EngFunc_PrecacheModel,"sprites/shockwave.spr")
+	precached_explosion_sprite1 = engfunc(EngFunc_PrecacheModel,"sprites/explode1.spr")
+	precached_explosion_sprite2 = engfunc(EngFunc_PrecacheModel,"sprites/shmod/zerogxplode2.spr")
+	
+	engfunc(EngFunc_PrecacheSound, crush_stunned)
+	engfunc(EngFunc_PrecacheSound, EXPLOSION_TANK_SHOT_SOUND)
 }
 
 
 				
 public plugin_natives(){
 
-
-	register_native("prepare_shero_aux_lib_pt3","_prepare_shero_aux_lib_pt3");
 	register_native("explosion","_explosion");
 	register_native("explosion_custom_entity","_explosion_custom_entity");
-	register_native("sh_damage_display_stock","_sh_damage_display_stock")
-	register_native("superhero_protected_hud_message","_superhero_protected_hud_message")
+	register_native("tank_impact_shot_fx","_tank_impact_shot_fx");
+}
+prepare_shero_aux_lib_pt3(){
+
+	server_print("%s innited!^n",PLUGIN)
 }
 
+public _tank_impact_shot_fx(iPlugin,iParms){
 
-public _prepare_shero_aux_lib_pt3(iPlugins, iParams){
-	
-	init_explosion_defaults()
-	server_print("%s innited!^n",LIBRARY_NAME)
-}
+		new ent=get_param(1)
+		if(!is_valid_ent(ent)) return 
+		
+		new Float:origin[3]
 
-//native sh_damage_display_stock(victim, attacker,bool:att_bool=true,bool:vic_bool=true,damage);
+		get_array_f(2,origin,3)
+		new radius=get_param(3)
+		
+		new brightness= get_param(4)
 
-public _sh_damage_display_stock(iPlugin,iParams){
-	new hud_msg_sync_vic=get_param(1),
-		hud_msg_sync_att=get_param(2),
-		victim= get_param(3),
-		attacker= get_param(4),
-		att_bool=get_param(5),
-		vic_bool=get_param(6),
-		damage=get_param(7);
+		new Float:rel_height= get_param_f(5)
 
-	if(!is_user_connected(victim)||!is_user_connected(attacker)) return
+		new bool:show_burndecal = bool:get_param(6)
 
-	if((hud_msg_sync_vic<=0)||(hud_msg_sync_att<=0)) return
-	if ( !is_user_connected(victim) || !is_user_connected(attacker) ) return
-	if(sh_clients_are_same_team(victim,attacker)) return
+		new bool:make_custom_sound = bool:get_param(7)
+		
 
-	if(!is_user_bot(attacker)){
-		if ( att_bool&&(attacker!=victim)) {
-			set_hudmessage(0, 100, 200, -1.0, 0.55, 2, 0.1, 2.0, 0.02, 0.02, -1)
-			ShowSyncHudMsg(attacker,hud_msg_sync_att, "%d", damage)
+		new custom_sound_sample[128]
+
+		
+
+		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
+		write_byte(TE_SPRITE)
+		write_coord_f(origin[0])
+		write_coord_f(origin[1])
+		write_coord_f(origin[2] + rel_height)
+		write_short(precached_explosion_sprite2)
+		write_byte(radius)
+		write_byte(brightness)
+		message_end()
+		if(make_custom_sound){
+			get_string(8,custom_sound_sample,(sizeof custom_sound_sample)-1)
+
+
 		}
+		emit_sound(ent, CHAN_WEAPON,make_custom_sound?custom_sound_sample:EXPLOSION_TANK_SHOT_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+		if(!show_burndecal){
+
+			return
+		}
+		new decal_id
+		if ( radius <= 18 ) {
+			
+			decal_id = g_burnDecal[generate_int(0,sizeof(g_burnDecal)-1)]
+		}
+		else {
+			decal_id = g_burnDecalBig[generate_int(0,sizeof(g_burnDecalBig)-1)]
+		}
+
+		// Create the burn decal
+		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
+		write_byte(TE_GUNSHOTDECAL)		//TE_GUNSHOTDECAL
+		write_coord_f(origin[0])
+		write_coord_f(origin[1])
+		write_coord_f(origin[2])
+		write_short(0)			//?
+		write_byte(decal_id)	//decal
+		message_end()
+
+}
+/*
+
+native explode_fx( vec1[3] ,radius, sh_custom_color:fx_color=WHITE,alpha=255,
+            explosion_sfx_flags:sfx_mask=(explosion_sfx_show_shockwave|
+                                            explosion_sfx_show_fireball|
+                                            explosion_sfx_show_smoke|
+                                            explosion_sfx_show_burn_decal))
+											*/
+//-----------------------------------------------------------------------------------------------
+
+explode_fx( vec1[3] ,radius, sh_custom_color:fx_color=WHITE,alpha=255,
+            explosion_sfx_flags:sfx_mask=(explosion_sfx_show_shockwave|
+                                            explosion_sfx_show_fireball|
+                                            explosion_sfx_show_smoke|
+                                            explosion_sfx_show_burn_decal)){
+
+
+	if((sfx_mask&explosion_sfx_show_shockwave)){
+		// blast circles
+		message_begin( MSG_BROADCAST,SVC_TEMPENTITY,vec1)
+		write_byte( TE_BEAMCYLINDER )
+		write_coord(vec1[0])
+		write_coord(vec1[1])
+		write_coord(vec1[2] + 16)
+		write_coord(vec1[0])
+		write_coord(vec1[1])
+		write_coord(vec1[2] + radius*3)
+		write_short( white )
+		write_byte( 0 ) // startframe
+		write_byte( 0 ) // framerate
+		write_byte( 2 ) // life 2
+		write_byte( 60 ) // width 16
+		write_byte( 0 ) // noise
+		write_byte( LineColors[fx_color][0] ) // r
+		write_byte( LineColors[fx_color][1] ) // g
+		write_byte( LineColors[fx_color][2]  ) // b
+		write_byte( alpha ) //brightness
+		write_byte( 0 ) // speed
+		message_end()
 	}
 
+	if((sfx_mask&explosion_sfx_show_fireball)){
+		static TE_FLAG = 0
+
+		TE_FLAG |= TE_EXPLFLAG_NODLIGHTS
+		TE_FLAG |= ((sfx_mask&explosion_sfx_show_custom_sound)?TE_EXPLFLAG_NOSOUND:0)
+		TE_FLAG |= TE_EXPLFLAG_NOPARTICLES
+
+		//TE_Explosion
+		message_begin( MSG_BROADCAST,SVC_TEMPENTITY,vec1)
+		write_byte( TE_EXPLOSION )
+		write_coord(vec1[0] + generate_int( -100, 100 ))
+		write_coord(vec1[1] + generate_int( -100, 100 ))
+		write_coord(vec1[2]+ generate_int( -50, 50 ))
+		write_short( precached_explosion_sprite1 )
+		write_byte(  radius/9  ) // byte (scale in 0.1's) 188
+		write_byte( 12 ) // byte (framerate)
+		write_byte( TE_FLAG ) // byte flags
+		message_end()
+	}
+	if((sfx_mask&explosion_sfx_show_smoke)){
+		//Smoke
+		message_begin( MSG_BROADCAST,SVC_TEMPENTITY,vec1)
+		write_byte( TE_SMOKE  ) // 5
+		write_coord(vec1[0] + generate_int( -100, 100 ))
+		write_coord(vec1[1] + generate_int( -100, 100 ))
+		write_coord(vec1[2] + generate_int( -50, 50 ))
+		write_short( smoke )
+		write_byte( radius/14 )  // 2
+		write_byte( 10 )  // 10
+		message_end()
+	}
+	if((sfx_mask&explosion_sfx_show_burn_decal)){
 	
-	if(!is_user_bot(victim)){
-		if ( vic_bool) {
-			set_hudmessage(200, 0, 0, -1.0, 0.48, 2, 0.1, 2.0, 0.02, 0.02, -1)
-			ShowSyncHudMsg(victim, hud_msg_sync_vic, "%d", damage)
-		}
+		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
+		write_byte(TE_GUNSHOTDECAL)		// decal and ricochet sound
+		write_coord(vec1[0])	// pos
+		write_coord(vec1[1])
+		write_coord(vec1[2])
+		write_short(0)			// I have no idea what thats supposed to be
+		write_byte(g_burnDecalBig[0])			// decal
+		message_end()
 	}
 }
-
 public _explosion(iPlugins,iParams){
 
 
@@ -108,6 +233,14 @@ public _explosion(iPlugins,iParams){
 		explosion_sfx_flags:sfx_mask=explosion_sfx_flags:get_param(9),
 		sh_custom_color:fx_color=sh_custom_color:get_param(10)
 
+	if(optional_force < 0.0){
+
+		optional_force = get_pcvar_float(sh_default_explode_knock_force_magnitude_cvar);
+	}
+	if(damage_frac_ignore_owner < 0.0){
+
+		damage_frac_ignore_owner = get_pcvar_float(sh_default_explode_owner_ignore_frac_cvar)
+	}
 	new custom_sound_sample[128]
 
 	get_string(11,custom_sound_sample,(sizeof custom_sound_sample)-1)
@@ -281,7 +414,7 @@ damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,Float:op
 	set_velocity_from_origin(pid,mine_origin,force)
 
 	if(set_stun){
-		sh_set_stun(pid,3.0,default_stun_speed)
+		sh_set_stun(pid,3.0)
 		sh_screen_shake(pid,10.0,3.0,10.0)
 	}
 	
@@ -340,43 +473,3 @@ damage_entity(ent_id,owner_id,tg_id,Float:radius,Float:peak_power,ignore_owner=1
 	
 }
 
-
-public _superhero_protected_hud_message(iPlugin,iParams){
-
-	new hud_msg_sync=get_param(1),
-		id= get_param(2),
-		r=get_param(5),
-		g=get_param(6),
-		b=get_param(7),
-		Float:param1=get_param_f(8),
-		Float:param2=get_param_f(9),
-		param3=get_param(10),
-		Float:param4=get_param_f(11),
-		Float:param5=get_param_f(12),
-		Float:param6=get_param_f(13),
-		Float:param7=get_param_f(14)
-
-	
-	if(hud_msg_sync<=0){
-
-		return
-	}
-	static message_text[SH_HUD_MSG_BUFF_SIZE+1],
-		string[SH_HUD_MSG_BUFF_SIZE+1]
-	
-	get_string(3,message_text,SH_HUD_MSG_BUFF_SIZE)
-	get_string(4,string,SH_HUD_MSG_BUFF_SIZE)
-
-	if(is_user_connected(id)&&!is_user_bot(id)){
-		
-		set_hudmessage(r,g,b,param1,param2,param3,param4,param5,param6,param7)
-		if(strlen(string)){
-			ShowSyncHudMsg(id,hud_msg_sync,message_text,string)
-		}
-		else{
-
-			ShowSyncHudMsg(id,hud_msg_sync,message_text)
-		}
-	}
-
-}

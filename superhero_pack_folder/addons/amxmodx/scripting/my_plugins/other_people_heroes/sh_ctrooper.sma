@@ -27,9 +27,12 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_CUSTOM_WEAPONS
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_ENTITY_VECTORS
+#define I_WANT_BASIC_MACROS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
-#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt14.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 #include "../my_include/my_author_header.inc"
@@ -106,7 +109,7 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 		return
 	}
 	
-	generic_weapon_tracer_logic(Attacker,_,CTROOPER_LASERGUN_CLASSID,gHeroID,true,sh_custom_color:{RED,GREEN,GREEN},
+	generic_weapon_tracer_logic(Attacker,_,CTROOPER_LASERGUN_CLASSID,gHeroID,sh_custom_color:{RED,GREEN,GREEN},
 				tracer_sfx_show_laser_line|tracer_sfx_show_play_shoot_sound|tracer_sfx_show_glow_aura)
 	
 

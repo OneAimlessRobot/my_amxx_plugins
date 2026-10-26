@@ -9,110 +9,52 @@
 #include "./metamod_stuff_and_other_includes/amxxmodule.h"
 
 
-/*
- * 
- * 
- * 
- * for all of these,
- * the only arg is the wpnid.
- * 
- * it will give you an error if wpnid is invalid!
- * 
- *  
-
-*/
-
-static cell AMX_NATIVE_CALL wlt_get_def_clip(AMX *amx,cell *params)
+static cell AMX_NATIVE_CALL clt_init_lib(AMX *amx,cell *params)
+{	(void)amx;
+	(void)params;
+	printf("Color lookup table test init!\nClamp of %d between %d and %d is %d\n",5,19,6, clamp(5,19,6));
+	return 1;
+}
+static cell AMX_NATIVE_CALL sh_fetch_std_color(AMX *amx,cell *params)
 {
-	if(!is_valid_cs_weapon(params[1])) 
+	int* array = MF_GetAmxAddr( amx, params[1] );
+	int len = MF_GetAmxStringLen( array );
+	if(params[2] > len) 
 	{
-		MF_LogError(amx,AMX_ERR_NATIVE,"Invalid wpnid Specified!");
+		MF_LogError(amx,AMX_ERR_NATIVE,"Incorrect Length Specified");
 		return -1;
 	}
-	return weapon_data_structs_array[params[1]].wpn_struct_max_clip;
+	array = generator.RandomArray(params[2]);
+	return 1;
 }
-static cell AMX_NATIVE_CALL wlt_get_def_pos(AMX *amx,cell *params)
+static cell AMX_NATIVE_CALL sh_fetch_fx_color(AMX *amx,cell *params)
 {
-	if(!is_valid_cs_weapon(params[1])) 
+	int* array = MF_GetAmxAddr( amx, params[1] );
+	int len = MF_GetAmxStringLen( array );
+	if(params[2] > len) 
 	{
-		MF_LogError(amx,AMX_ERR_NATIVE,"Invalid wpnid Specified!");
+		MF_LogError(amx,AMX_ERR_NATIVE,"Incorrect Length Specified");
 		return -1;
 	}
-	return weapon_data_structs_array[params[1]].wpn_struct_wpn_position;
+	array = generator.RandomArray(params[2]);
+	return 1;
 }
-static cell AMX_NATIVE_CALL wlt_get_def_slot(AMX *amx,cell *params)
-{
-	if(!is_valid_cs_weapon(params[1])) 
-	{
-		MF_LogError(amx,AMX_ERR_NATIVE,"Invalid wpnid Specified!");
-		return -1;
-	}
-	return weapon_data_structs_array[params[1]].wpn_slot;
+static cell AMX_NATIVE_CALL sh_fetch_color(AMX *amx,cell *params)
+{	(void)amx;
+	sh_custom_color the_color_num = 
+	printf("Color lookup table test init!\nClamp of %d between %d and %d is %d\n",5,19,6, clamp(5,19,6));
+	return 1;
 }
-
-static cell AMX_NATIVE_CALL wlt_get_def_bp_ammo(AMX *amx,cell *params)
+AMX_NATIVE_INFO color_lookup_table_exports[] = 
 {
-	if(!is_valid_cs_weapon(params[1])) 
-	{
-		MF_LogError(amx,AMX_ERR_NATIVE,"Invalid wpnid Specified!");
-		return -1;
-	}
-	return weapon_data_structs_array[params[1]].wpn_struct_max_bp_ammo;
-}
-static cell AMX_NATIVE_CALL wlt_get_def_ammo_id(AMX *amx,cell *params)
-{
-	if(!is_valid_cs_weapon(params[1])) 
-	{
-		MF_LogError(amx,AMX_ERR_NATIVE,"Invalid wpnid Specified!");
-		return -1;
-	}
-	return weapon_data_structs_array[params[1]].wpn_struct_ammo_id;
-}
-
-static cell AMX_NATIVE_CALL wlt_get_def_prim_atk_delay(AMX *amx,cell *params)
-{
-	if(!is_valid_cs_weapon(params[1])) 
-	{
-		MF_LogError(amx,AMX_ERR_NATIVE,"Invalid wpnid Specified!");
-		return -1;
-	}
-	return amx_ftoc(weapon_data_structs_array[params[1]].wpn_struct_primary_attack_delay );
-}
-
-static cell AMX_NATIVE_CALL wlt_get_def_scnd_atk_delay(AMX *amx,cell *params)
-{
-	if(!is_valid_cs_weapon(params[1])) 
-	{
-		MF_LogError(amx,AMX_ERR_NATIVE,"Invalid wpnid Specified!");
-		return -1;
-	}
-	return amx_ftoc(weapon_data_structs_array[params[1]].wpn_struct_secondary_attack_delay );
-}
-
-static cell AMX_NATIVE_CALL wlt_get_def_rld_delay(AMX *amx,cell *params)
-{
-	if(!is_valid_cs_weapon(params[1])) 
-	{
-		MF_LogError(amx,AMX_ERR_NATIVE,"Invalid wpnid Specified!");
-		return -1;
-	}
-	return amx_ftoc(weapon_data_structs_array[params[1]].wpn_struct_reload_delay );
-}
-
-AMX_NATIVE_INFO weapon_lookup_table_exports[] = 
-{
-	{ "wlt_get_def_clip", wlt_get_def_clip },
-	{ "wlt_get_def_bp_ammo", wlt_get_def_bp_ammo },
-	{ "wlt_get_def_prim_atk_delay", wlt_get_def_prim_atk_delay },
-	{ "wlt_get_def_scnd_atk_delay", wlt_get_def_scnd_atk_delay },
-	{ "wlt_get_def_rld_delay", wlt_get_def_rld_delay },
-	{ "wlt_get_def_ammo_id", wlt_get_def_ammo_id },
-	{ "wlt_get_def_pos", wlt_get_def_pos },
-	{ "wlt_get_def_slot", wlt_get_def_slot },
+	{ "clt_init_lib", clt_init_lib },
+	{ "sh_fetch_std_color", sh_fetch_std_color},
+	{ "sh_fetch_fx_color", sh_fetch_fx_color},
 	{ NULL, NULL }
 };
 
 void OnAmxxAttach()
 {	
-	MF_AddNatives(weapon_lookup_table_exports);
+	clt_init_lib(NULL,NULL);
+	MF_AddNatives(color_lookup_table_exports);
 }

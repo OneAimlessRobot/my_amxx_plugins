@@ -1,6 +1,11 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_QUICK_CHECKS
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_ENTITY_VECTORS
+#define I_WANT_PDATA_ALIASES
+#define I_WANT_BASIC_MACROS
 
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
@@ -119,7 +124,7 @@ public CmdStart(id, uc_handle)
 		return FMRES_IGNORED
 	}
 	if ( !is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)) return FMRES_IGNORED;
-	if(!hasRoundStarted()){
+	if(sh_is_freezetime()){
 	
 		uncharge_user(id)
 		return FMRES_IGNORED

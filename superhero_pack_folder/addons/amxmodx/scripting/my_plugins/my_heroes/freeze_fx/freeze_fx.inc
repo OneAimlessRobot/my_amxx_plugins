@@ -3,6 +3,9 @@
 #endif
 #define sh_freeze_fx
 
+
+#define FROZEN_SFX "shmod/frostnova.wav" 
+
 #define FREEZE_TIME 5.0
 
 #define FREEZE_DAMAGE_MULTIPLIER 2.0 

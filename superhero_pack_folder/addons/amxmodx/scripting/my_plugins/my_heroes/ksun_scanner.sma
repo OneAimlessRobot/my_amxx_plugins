@@ -1,5 +1,7 @@
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_CONSTANTS
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_CUSTOM_COLORS
 
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"

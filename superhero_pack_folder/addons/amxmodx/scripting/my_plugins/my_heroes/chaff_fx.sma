@@ -1,4 +1,6 @@
 #define I_WANT_CONSTANTS
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_RESOURCE_ALIASES
 #include "../my_include/superheromod.inc"
 #include "chaff_fx_inc/chaff_fx.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"

@@ -2,6 +2,8 @@
 
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_PDATA_ALIASES
+#define I_WANT_BASIC_MACROS
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "trash_gun_inc/trash_gun.inc"

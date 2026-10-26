@@ -1,4 +1,5 @@
 #define I_WANT_CONSTANTS
+#define I_WANT_PDATA_ALIASES
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "shinobu_knife/shinobu_general.inc"
@@ -16,7 +17,7 @@
 
 
 new g_shinobu_curr_ammo[SH_MAXSLOTS+1]
-
+new wpn_name_for_future_lookup[50]
 new dmg_source_name_short_shinobu_pistol[SAFE_BUFFER_SIZE+1]="shinobu_usp"
 new dmg_source_name_log_shinobu_pistol[SAFE_BUFFER_SIZE+1]="shinobu_usp"
 new custom_weapon_shinobu_pistol
@@ -27,7 +28,8 @@ public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	register_forward(FM_CmdStart,"fw_Shut_Shinobu_Usp_Up")
 	RegisterHam(Ham_TraceAttack,"player","trace_shinobu_usp",_,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[my_weapon_ids:SHINOBU_WEAPON_CLASSID][wpn_struct_weapon_name], "track_shinobu_usp_ammo",_,true)
+	wlt_get_def_name(my_weapon_ids:SHINOBU_WEAPON_CLASSID,wpn_name_for_future_lookup,charsmax(wpn_name_for_future_lookup))
+	RegisterHam(Ham_Weapon_Reload, wpn_name_for_future_lookup, "track_shinobu_usp_ammo",_,true)
 	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
 	register_event("CurWeapon", "on_Usp_Weapon_Change", "be", "1=1")
 	

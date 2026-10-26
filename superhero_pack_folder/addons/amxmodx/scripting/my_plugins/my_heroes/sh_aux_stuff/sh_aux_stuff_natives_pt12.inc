@@ -3,8 +3,9 @@
 #endif
 #define sh_aux_natives_pt12
 
-native bool:generic_heal(hud_msg_sync=-1,
-					id,
+#define SPORE_HEAL_SFX "shmod/ration.wav"
+
+native bool:generic_heal(id,
 					Float:added_hp,
 					max_hp_to_clamp=-1,
 					color_const=GREEN,

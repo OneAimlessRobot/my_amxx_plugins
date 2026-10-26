@@ -22,6 +22,7 @@ casper_stuckcheck 1		//Kill user if stuck in wall/ground after noclip, 0=no 1=ye
 */
 
 #define I_WANT_CONSTANTS
+#define I_WANT_CUSTOM_COLORS
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include <amxmodx>
 #include "../my_include/superheromod.inc"
@@ -112,7 +113,7 @@ switch(key)
 //-----------------------------------------------------------------------------------------------
 public casper_kd(id)
 {
-	if ( !hasRoundStarted() ) return
+	if ( sh_is_freezetime() ) return
 
 	if ( !sh_get_user_has_hero(id,gHeroID) || !is_user_alive(id) ) return
 
@@ -196,7 +197,7 @@ public casper_loop(id)
 //------------------------------------------------------------------------------------------------
 public casper_ku(id)
 {
-	if ( !hasRoundStarted() ) return
+	if ( sh_is_freezetime() ) return
 
 	if ( !sh_get_user_has_hero(id,gHeroID)|| !is_user_alive(id) || !gInGhostMode[id] ) return
 
@@ -218,7 +219,7 @@ public casper_removeghost(id)
 
 	remove_glow_user(id, PRIO_RENDER_INVISIBILITY,0)
 
-	if ( is_user_alive(id) && gInGhostMode[id] && hasRoundStarted() ) {
+	if ( is_user_alive(id) && gInGhostMode[id] && !sh_is_freezetime() ) {
 
 		// reset users HP and Ghost Mode mode HP
 		if ( gUserHealth[id] > gGhostHealth[id] ) {

@@ -1,4 +1,5 @@
 #define I_WANT_CONSTANTS
+#define I_WANT_BASIC_MACROS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_include/my_author_header.inc"

@@ -2,6 +2,10 @@
 #define I_WANT_MISC_FUNCS
 #define I_WANT_MATH_FUNCS
 #define I_WANT_QUICK_CHECKS
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_ENTITY_VECTORS
+#define I_WANT_PDATA_ALIASES
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "ester_inc/ester_global.inc"
@@ -334,7 +338,7 @@ public OnCmdStart(id, uc_handle)
 			}
 			Set_BitVar(g_draining_mask,id)
 		}
-		if(generate_int(0, FlameAndSoundRate) <3)
+		if(generate_int(0, 10) <3)
 		{
 			static Float:Velocity[3]
 
@@ -597,7 +601,7 @@ public BlowUp(param[1],id)
 		explosion(gHeroID,id,
 			cvar_val(float,pcvar_ester_explosion_radius),
 			cvar_val(float,pcvar_ester_explosion_damage)
-			,default_explode_knock_force_magnitude,
+			,_,
 			cvar_val(bool,pcvar_ester_explosion_ignore_user))
 		set_task(ESTER_REBORN_EXPLOSION_PERIOD,"BlowUp",id+ESTER_REBORN_EXPLOSION_DELAY_TASKID,param,1)
 	}

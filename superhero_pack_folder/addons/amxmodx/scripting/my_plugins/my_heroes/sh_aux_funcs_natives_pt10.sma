@@ -1,7 +1,5 @@
-#define I_WANT_CONSTANTS
 #include <amxmisc>
 #include "../my_include/superheromod.inc"
-#include "sh_aux_stuff/sh_aux_inc.inc"
 
 
 #define PLUGIN "SH_AuxFun10: pairwise restricting"
@@ -119,7 +117,7 @@ public plugin_cfg(){
 	
 
 
-	server_print("%s innited!^n",LIBRARY_NAME)
+	server_print("%s innited!^n",PLUGIN)
 	
 
 }

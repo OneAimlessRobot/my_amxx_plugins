@@ -23,6 +23,11 @@ Marksman_sg550mult 2.0		//Damage multiplyer for his PSG1 sniper rifle
 
 //------- Do not edit below this point ------//
 #define I_WANT_CONSTANTS
+#define I_WANT_MISC_FUNCS
+#define I_WANT_BASIC_MACROS
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_ENTITY_VECTORS
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"

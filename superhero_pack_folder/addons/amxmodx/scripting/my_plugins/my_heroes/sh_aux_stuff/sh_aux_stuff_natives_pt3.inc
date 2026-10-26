@@ -40,8 +40,21 @@ stock set_velocity_from_origin( ent, Float:fOrigin[3], Float:fSpeed )
 }
 
 
+/**
 
-native prepare_shero_aux_lib_pt3()
+Explosion sfx masks!
+
+*/
+
+enum explosion_sfx_flags (<<= 1){
+	explosion_sfx_show_nothing = 0,
+	explosion_sfx_show_shockwave = 1,
+	explosion_sfx_show_fireball,
+	explosion_sfx_show_smoke,
+	explosion_sfx_show_burn_decal,
+	explosion_sfx_show_custom_sound
+
+}
 
 
 /** 
@@ -62,10 +75,10 @@ enum explosion_sfx_flags (<<= 1){
 */
 native explosion(hero_id,ent_id,Float:explosion_radius,
 					Float:peak_power,
-					Float:optional_force=0.0,
+					Float:optional_force=-1.0,
 					ignore_owner=1,
 					set_stun=0,
-					Float:damage_frac_ignore_owner=SH_DEFAULT_DAMAGE_FRAC_EXPLOSION_IGNORE_OWNER,
+					Float:damage_frac_ignore_owner=-1.0,
 					explosion_sfx_flags:sfx_mask=(explosion_sfx_show_shockwave|
 											explosion_sfx_show_fireball|
 											explosion_sfx_show_smoke|
@@ -91,11 +104,28 @@ enum explosion_sfx_flags (<<= 1){
 
 
 */
+/**
+Explosion sfx masks!
+
+
+enum explosion_sfx_flags (<<= 1){
+	explosion_sfx_show_nothing = 0,
+	explosion_sfx_show_shockwave = 1,
+	explosion_sfx_show_fireball,
+	explosion_sfx_show_smoke,
+  explosion_sfx_show_burn_decal,
+	explosion_sfx_show_custom_sound
+
+}
+
+*/
+native tank_impact_shot_fx(ent_id, Float:origin[3],radius=18, brightness=200, Float:rel_height= 0.0, bool:show_burndecal = true, bool:show_custom_sound=false, const custom_sound_sample[128] = EXPLOSION_TANK_SHOT_SOUND)
+
 
 native explosion_custom_entity(ent_id,Float:explosion_radius,
 					Float:peak_power,
 					ent_classname[]="player",
-					Float:optional_force=0.0,
+					Float:optional_force=-1.0,
 					explosion_sfx_flags:sfx_mask=(explosion_sfx_show_shockwave|
 							explosion_sfx_show_fireball|
 							explosion_sfx_show_smoke|
@@ -103,22 +133,3 @@ native explosion_custom_entity(ent_id,Float:explosion_radius,
 
 					sh_custom_color:color_const=WHITE,
 					const custom_sound_sample[128]=crush_stunned);
-
-
-native sh_damage_display_stock(hud_msg_sync_vic=-1,hud_msg_sync_att=-1,victim, attacker,bool:att_bool=true,bool:vic_bool=true,damage);
-
-
-native superhero_protected_hud_message(hud_msg_sync=-1,
-				id,
-				const message_text[SH_HUD_MSG_BUFF_SIZE],
-				string[SH_HUD_MSG_BUFF_SIZE]="",
-				r=50,
-				g=205,
-				b=50,
-				Float:param1=-1.0,
-				Float:param2=0.40,
-				param3=2,
-				Float:param4=0.02,
-				Float:param5=4.0,
-				Float:param6=0.01,
-				Float:param7=0.1);

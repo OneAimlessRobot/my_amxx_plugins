@@ -1,6 +1,7 @@
 
 
 #define I_WANT_CONSTANTS
+#define I_WANT_RESOURCE_ALIASES
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
@@ -78,7 +79,7 @@ public sh_client_death(id)
 //----------------------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
-  if ( !hasRoundStarted() )
+  if ( sh_is_freezetime() )
   {
     laser_shots[id] = get_cvar_num("megaman_laser_ammo")
   }
@@ -106,7 +107,7 @@ switch(key)
 
 public megaman_kd(id) 
 {
-  if ( !hasRoundStarted() ) return PLUGIN_HANDLED 
+  if ( sh_is_freezetime() ) return PLUGIN_HANDLED 
 
   if ( !is_user_alive(id) ) return PLUGIN_HANDLED   
   

@@ -1,6 +1,8 @@
 #define I_WANT_CONSTANTS
-#define I_WANT_QUICK_CHECKS
 #define I_WANT_MATH_FUNCS
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_PDATA_ALIASES
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "grim_reaper_inc/grim_reaper_inc.inc"

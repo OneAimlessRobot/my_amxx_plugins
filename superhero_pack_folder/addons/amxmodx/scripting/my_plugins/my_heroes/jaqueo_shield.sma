@@ -1,4 +1,7 @@
 #define I_WANT_CONSTANTS
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_ENTITY_VECTORS
 
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
@@ -320,7 +323,7 @@ public charge_task(parm[],id){
 		return
 	}
 	
-	if(!hasRoundStarted()){
+	if(sh_is_freezetime()){
 	
 		uncharge_user(id)
 		return

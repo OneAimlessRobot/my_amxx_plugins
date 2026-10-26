@@ -1,6 +1,9 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_QUICK_CHECKS
+#define I_WANT_BASIC_MACROS
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_RESOURCE_ALIASES
 #include <float>
 #include <xs>
 #include "../my_include/superheromod.inc"
@@ -11,8 +14,6 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt12.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
-#include "freeze_fx/freeze_fx.inc"
-#include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 
 
@@ -65,8 +66,6 @@ custom_dmg_id_shanking=sh_log_custom_damage_source(-1,
 				dmg_source_name_short_shanking,
 				dmg_source_name_log_shanking,
 				0)
-
-init_hud_syncs()
 
 }
 public plugin_cfg(){
@@ -258,8 +257,7 @@ public bleed_task(any:array[5],id){
 							bleed_task_parameters[fx_bleed_type:array[0]][bleed_task_period],_,_,_,PRIO_RENDER_EFFECT_ACTIVE)
 							
 	if(array[2]){
-		generic_heal(heal_hp_hud_msg_sync,
-					array[1],
+		generic_heal(array[1],
 					damage_to_deal,
 					_,
 					RED,

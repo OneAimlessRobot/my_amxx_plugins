@@ -84,7 +84,7 @@ switch(key)
 // Ludwigs flame thrower
 public afterburn_kd(id)
 {
-	if ( !hasRoundStarted() ) return
+	if ( sh_is_freezetime() ) return
 
 	// This is the original only change from human torch,
 	// this makes sure you are dead to use the power... wow what a rip.
@@ -163,7 +163,7 @@ public afterburn_kd(id)
 	velocityvec[0] = aimvec[0] - vec[0]
 	velocityvec[1] = aimvec[1] - vec[1]
 	velocityvec[2] = aimvec[2] - vec[2]
-	length = sqrt(velocityvec[0]*velocityvec[0] + velocityvec[1]*velocityvec[1] + velocityvec[2]*velocityvec[2])
+	length = sqroot(velocityvec[0]*velocityvec[0] + velocityvec[1]*velocityvec[1] + velocityvec[2]*velocityvec[2])
 	if (!length) length = 1
 	velocityvec[0] = velocityvec[0]*speed / length
 	velocityvec[1] = velocityvec[1]*speed / length
@@ -221,7 +221,7 @@ check_burnzone(id, vec[], aimvec[], speed1, speed2, radius)
 	burnvec1[1] = aimvec[1]-vec[1]
 	burnvec1[2] = aimvec[2]-vec[2]
 
-	length1 = sqrt(burnvec1[0]*burnvec1[0] + burnvec1[1]*burnvec1[1] + burnvec1[2]*burnvec1[2])
+	length1 = sqroot(burnvec1[0]*burnvec1[0] + burnvec1[1]*burnvec1[1] + burnvec1[2]*burnvec1[2])
 	if (!length1) length1 = 1
 	burnvec2[0] = burnvec1[0]*speed2 / length1
 	burnvec2[1] = burnvec1[1]*speed2 / length1

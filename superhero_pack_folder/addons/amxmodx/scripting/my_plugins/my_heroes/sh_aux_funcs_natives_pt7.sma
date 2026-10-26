@@ -1,4 +1,6 @@
 #define I_WANT_CONSTANTS
+#define I_WANT_BASIC_MACROS
+#define I_WANT_RESOURCE_ALIASES
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 
@@ -85,7 +87,7 @@ public plugin_natives(){
 public _prepare_shero_aux_lib_pt7(iPlugins, iParams){
 	
 
-	server_print("%s innited!^n",LIBRARY_NAME)
+	server_print("%s innited!^n",PLUGIN)
 }
 /**
 

@@ -14,11 +14,12 @@ anibus_showchat 1		//(0|1) - hide|show ghostchat messages..
 *	- Added ablily to disable the ghostchat like function
 *		for servers that already have ghostchat
 */
-#define I_WANT_MISC_FUNCS
+#define I_WANT_MISC_FUNCS_2
 #define I_WANT_CONSTANTS
+#define I_WANT_QUICK_CHECKS
+#define I_WANT_BASIC_MACROS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
-#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "../my_include/my_author_header.inc"
 
 // GLOBAL VARIABLES
@@ -50,6 +51,8 @@ public plugin_init()
 	init_hud_syncs()
 
 }
+
+
 //----------------------------------------------------------------------------------------------
 public _FM_Voice_SetClientListening(iReceiver, iSender, bool:bListen)
 {
@@ -114,7 +117,7 @@ public client_damage(attacker, victim, damage)
 {
 	if ( !sh_is_active() || !get_pcvar_num(gPcvarShowDamage)) return
 	
-	sh_damage_display_stock(victim_dmg_hud_msg_sync,attacker_dmg_hud_msg_sync,victim,attacker,
+	sh_damage_display_stock(victim,attacker,
 							sh_get_user_has_hero(attacker,gHeroID),
 							sh_get_user_has_hero(victim,gHeroID),
 							damage)

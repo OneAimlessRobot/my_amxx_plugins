@@ -1,4 +1,3 @@
-
 #include "../include/nvault.inc"
 #include "../include/amxmod.inc"
 #include "../include/amxmodx.inc"
@@ -12,6 +11,9 @@
 #include "../include/csx.inc"
 #include "../include/cstrike.inc"
 #include "../include/Vexd_Utilities.inc"
+
+#define Struct enum
+
 #include "my_include/codmw4_classenum.inc"
 #include "my_include/codmw4_classes.inc"
 #include "my_include/codmw4_cmds.inc"

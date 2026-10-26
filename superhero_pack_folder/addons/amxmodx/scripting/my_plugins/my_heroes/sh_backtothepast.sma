@@ -235,7 +235,7 @@ public return_to_past_now(id){
 	gJeremyPowerUsedTimes[id]++
 	gTeamUseCount[gUserTeam[id]]++
 	gGameUseCount++;
-	sh_setScreenFlash(id, 255, 255, 255, 255, 200)
+	setScreenFlash(id, 255, 255, 255, 255, 200)
 	
 
 
@@ -258,7 +258,7 @@ public sh_hero_key(id, heroID, sh_key_mode:key)
 public jeremy_kd(id) 
 {
 
-if ( !hasRoundStarted()|| !is_user_alive(id) ||!sh_get_user_has_hero(id,gHeroID) ||!is_user_connected(id))
+if ( sh_is_freezetime()|| !is_user_alive(id) ||!sh_get_user_has_hero(id,gHeroID) ||!is_user_connected(id))
 {
 	sh_sound_deny(id)
 	return 

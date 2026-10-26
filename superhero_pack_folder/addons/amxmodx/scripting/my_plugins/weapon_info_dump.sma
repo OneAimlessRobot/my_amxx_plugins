@@ -22,6 +22,7 @@
 #include <engine>
 #include "my_include/randomx.inc"
 #define AUX_STUFF_GIVE_WEAPONS
+#define I_WANT_PDATA_ALIASES
 #include "my_include/auxiliar_stuff.inc"
 #include "my_heroes/sh_aux_stuff/sh_aux_consts.inc"
 #include "my_heroes/sh_aux_stuff/sh_aux_funcs_misc.inc"

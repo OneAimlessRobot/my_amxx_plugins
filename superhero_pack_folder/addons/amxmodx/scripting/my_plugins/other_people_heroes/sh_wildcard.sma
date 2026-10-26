@@ -11,11 +11,11 @@ wildcard_damage 20		//Damage AK47 burst fire does
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_MATH_FUNCS
+#define I_WANT_PDATA_ALIASES
+#define I_WANT_ENTITY_VECTORS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/bleed_knife_inc/sh_bknife_fx.inc"
-
-#define MAX_WEAPONS       30   // --| Max number of weapons. ( cs1.6/cz )
 
 #define sg_start_reload   5    // --| Shotgun start reload sequence.
 

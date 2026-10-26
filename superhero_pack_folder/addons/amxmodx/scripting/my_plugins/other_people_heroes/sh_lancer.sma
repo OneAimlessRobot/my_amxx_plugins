@@ -15,6 +15,8 @@ lancer_blast_decals 1			//Show the burn decals from blast (Default 1)
 
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_ENTITY_VECTORS
 
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
@@ -394,7 +396,7 @@ public torpedo_touch(pToucher, pTouched) {
 			fl_vicVelocity[1] = 150.0
 
 			entity_set_vector(vic, EV_VEC_velocity, fl_vicVelocity)
-			sh_screenShake(vic, 12, 12, 12)
+			sh_screen_shake(vic, 12.0, 12.0, 12.0)
 		}
 	}
 

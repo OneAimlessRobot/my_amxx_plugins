@@ -1,8 +1,13 @@
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
-#define I_WANT_CUSTOM_WEAPONS
+#define I_WANT_MISC_FUNCS_2
+#define I_WANT_BASIC_MACROS
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_ENTITY_VECTORS
 #include "../my_include/superheromod.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 #include "yandere_inc/sh_yandere_inc.inc"
 #include "yandere_inc/sh_yandere_psychosis.inc"
 #include "jetplane_inc/sh_jetplane_mg_funcs.inc"
@@ -10,7 +15,6 @@
 #include "jetplane_inc/sh_jetplane_bomb_funcs.inc"
 #include "jetplane_inc/sh_yandere_get_set.inc"
 #include "jetplane_inc/sh_jetplane_rocket_funcs.inc"
-#include "sh_aux_stuff/sh_aux_inc.inc"
 #include "./superheromod_help_files_includes/superheromod_help_files.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt14.inc"
@@ -19,7 +23,6 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt12.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt9.inc"
-#include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
@@ -84,7 +87,7 @@ public plugin_init()
 	pcvar_degen_health_extra_threshold = create_cvar("yandere_degen_health_extra_threshold", "500.0")
 	pcvar_angry_hitheal_pct = create_cvar("yandere_angry_hitheal_pct", "1.0")
 	pcvar_min_players = create_cvar("yandere_min_players", "6")
-	gHeroID=shCreateHero(gHeroName, "YANDERE!", "Protect live teamates and avenge dead ones!", true, "yandere_level",true )
+	gHeroID=shCreateHero(gHeroName, "YANDERE!", "Protect live teamates and avenge dead ones!", true, "yandere_level" )
 	
 
 	sh_assign_hero_bit(gHeroID,SH_EXPLOSION_POWERS, true)
@@ -155,7 +158,6 @@ public plugin_init()
 	set_task( YANDERE_CYCLE_PERIOD, "yandere_loop", _, _, _, "b")
 
 	init_hud_syncs()
-	init_explosion_defaults()
 }
 public plugin_natives(){
 
@@ -538,9 +540,9 @@ public yandere_damage(id)
 				static attacker_name[128],client_name[128]
 				get_user_name(attacker,attacker_name,127)
 				get_user_name(id,client_name,127)
-				sh_set_stun(id,2.0,default_stun_speed)
+				sh_set_stun(id,2.0)
 			
-				generic_heal(heal_hp_hud_msg_sync,attacker,extraDamage*
+				generic_heal(attacker,extraDamage*
 					cvar_val(float,pcvar_angry_hitheal_pct),
 					cvar_val(num,pcvar_overheal_hp_max),RED,1,_,70,1)
 				if(!is_user_alive(id)){
@@ -725,7 +727,7 @@ public sh_round_end(){
 
 public Yandere_Fire_Weapon(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
 {
-	generic_weapon_tracer_logic(Attacker,bool:Get_BitVar(gSuperAngryMask,Attacker),_,gHeroID,true,sh_custom_color:{RED,RED,RED})
+	generic_weapon_tracer_logic(Attacker,bool:Get_BitVar(gSuperAngryMask,Attacker),_,gHeroID,sh_custom_color:{RED,RED,RED})
 
 }
 
@@ -772,7 +774,7 @@ public BlowUp(id)
 	explosion(gHeroID,id,
 		cvar_val(float,pcvar_explode_radius),
 		cvar_val(float,pcvar_explode_maxdamage)
-		,default_explode_knock_force_magnitude,1)
+		,_,1)
 	
 }
 //----------------------------------------------------------------------------------------------

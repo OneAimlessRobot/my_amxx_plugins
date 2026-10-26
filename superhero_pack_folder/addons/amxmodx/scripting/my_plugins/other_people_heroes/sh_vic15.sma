@@ -149,7 +149,7 @@ public positionChangeTimer(id)
 //----------------------------------------------------------------------------------------------
 public vic15_auraloop()
 {
-	if ( !sh_is_active() || !hasRoundStarted() ) return
+	if ( !sh_is_active() || sh_is_freezetime() ) return
 
 	new Distance, Origin[3], eOrigin[3]
 	new Radius = get_cvar_num("vic15_auraradius")
@@ -181,7 +181,7 @@ public vic15_auraloop()
 //----------------------------------------------------------------------------------------------
 public vic15_ringloop()
 {
-	if ( !sh_is_active() || !hasRoundStarted() ) return
+	if ( !sh_is_active() || sh_is_freezetime() ) return
 
 	new Distance, Origin[3], eOrigin[3]
 	new Radius = get_cvar_num("vic15_auraradius")

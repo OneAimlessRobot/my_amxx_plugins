@@ -23,6 +23,11 @@ phoenix_maxdamage 90	//Maximum damage dealt spread over radius (Default 90)
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_BASIC_MACROS
+#define I_WANT_PDATA_ALIASES
+#define I_WANT_ENTITY_VECTORS
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
@@ -30,6 +35,8 @@ phoenix_maxdamage 90	//Maximum damage dealt spread over radius (Default 90)
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 
 new g_heroName[]="Phoenix"
+
+new gPhoenixHudSync
 
 new bool:g_phoenixPowerUsed[SH_MAXSLOTS+1]
 new CsTeams:g_userTeam[SH_MAXSLOTS+1]
@@ -51,9 +58,7 @@ public plugin_init()
 
 	sh_assign_hero_bit(gHeroID,SH_RESPAWN_HERO, true)
 
-
-	init_hud_syncs()
-	init_explosion_defaults()
+	gPhoenixHudSync = CreateHudSyncObj()
 }
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
@@ -166,14 +171,11 @@ public BlowUp(id)
 	new dmgRadius = get_cvar_num("phoenix_radius")
 	new maxDamage = get_cvar_num("phoenix_maxdamage")
 
-
-	superhero_protected_hud_message(superhero_hud_msg_sync,0,"Someone was Re-Born using the power of the Phoenix!",_,248, 20, 25, 0.05, 0.65, 2, 0.02, 3.0, 0.01, 0.1)
-
 	new name[32]
 	get_user_name(id,name,31)
 	remove_glow_user(id, PRIO_RENDER_POWERUP,16,kRenderNormal,_,gHeroID)
-	set_dhudmessage(0, 100, 200, 0.05, 0.65, 2, 0.02, 1.0, 0.01, 0.1)
-	show_dhudmessage(0,"%s has exploded.",name)
+	set_hudmessage(48, 20, 25, 0.05, 0.65, 2, 0.02, 3.0, 0.01, 0.1)
+	ShowSyncHudMsg(0,gPhoenixHudSync,"%s was Re-Born using the power of the Phoenix!",name)
 	explosion(gHeroID,id,float(dmgRadius),float(maxDamage),_,1,_,_,_,RED)
 
 }

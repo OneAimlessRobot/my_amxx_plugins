@@ -1,4 +1,5 @@
 #include <amxmisc>
+#define I_WANT_BASIC_MACROS
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_consts.inc"
 #include "./superheromod_help_files_includes/superheromod_help_files.inc"
@@ -89,11 +90,7 @@ set_hero_id_entry_to_default(hero_id){
 	add(superhero_help_files[hero_id][TITLE],STRLEN_FOR_FILES,default_title, charsmax(default_title))
 	add(superhero_help_files[hero_id][HERO_NAME],STRLEN_FOR_NAMES,default_hero_name, charsmax(default_hero_name))
 }
-public plugin_cfg(){
-
-
-	loadCVARS()
-}//----------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------
 public cl_say(id)
 {
 	static said[192]

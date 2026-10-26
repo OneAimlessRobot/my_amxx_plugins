@@ -1,6 +1,7 @@
 #define I_WANT_CONSTANTS
-#define I_WANT_CUSTOM_WEAPONS
-#include <amxmisc>
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_PDATA_ALIASES
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 
@@ -11,8 +12,8 @@
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt14.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt14.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt15.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
-#include "../my_include/auxiliar_stuff.inc"
 
 
 public plugin_init(){
@@ -26,7 +27,7 @@ public plugin_init(){
 public plugin_cfg(){
 
 
-	server_print("%s innited!^n",LIBRARY_NAME)
+	server_print("%s innited!^n",PLUGIN)
 	
 }
 public plugin_natives(){
@@ -40,17 +41,16 @@ public bool:_generic_weapon_tracer_logic(iPlugins, iParams){
 	new Attacker = get_param(1),
 		bool:custom_boolean = bool:get_param(2),
 		weapon_id = get_param(3),
-		hero_id = get_param(4),
-		bool:exclude_custom_weapons = bool:get_param(5)
+		hero_id = get_param(4)
 
 	static sh_custom_color:color_vector_indices[3],
 			shoot_sound_sample[128]
 
-	get_array(6,color_vector_indices, sizeof( color_vector_indices))
+	get_array(5,color_vector_indices, sizeof( color_vector_indices))
 
-	new weapon_tracer_fx_flags:the_bitsum_flags = weapon_tracer_fx_flags:get_param(7)
+	new weapon_tracer_fx_flags:the_bitsum_flags = weapon_tracer_fx_flags:get_param(6)
 
-	get_string(8,shoot_sound_sample, charsmax(shoot_sound_sample))
+	get_string(7,shoot_sound_sample, charsmax(shoot_sound_sample))
 
 	if(!is_user_alive(Attacker)){
 		return false
@@ -64,6 +64,8 @@ public bool:_generic_weapon_tracer_logic(iPlugins, iParams){
 
 		return false
 	}
+
+
 	static item; item = get_pdata_cbase(Attacker, m_pActiveItem, XO_PLAYER)
 
 	if(pev_valid(item)!=2){
@@ -71,8 +73,8 @@ public bool:_generic_weapon_tracer_logic(iPlugins, iParams){
 	}
 
 	static iId; iId = get_pdata_int(item, m_iId, XO_WEAPON)
-
 	if((iId==CSW_KNIFE)){
+
 
 		return false
 	}
@@ -83,10 +85,10 @@ public bool:_generic_weapon_tracer_logic(iPlugins, iParams){
 			return false
 		}
 	}
-
-	static weapon_secret_code = -1
-	weapon_secret_code = get_weapon_secret_code(item)
-	if(exclude_custom_weapons && (weapon_secret_code >=0 )){
+	
+	
+	if(sh_get_player_has_hero_projectile_weapon(Attacker,my_weapon_ids:iId)){
+		
 
 		return false
 	}

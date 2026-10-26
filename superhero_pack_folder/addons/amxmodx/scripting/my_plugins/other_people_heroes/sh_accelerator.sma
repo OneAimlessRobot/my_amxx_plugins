@@ -1,5 +1,6 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_BASIC_MACROS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
@@ -23,7 +24,7 @@ public plugin_init()
 //----------------------------------------------------------------------------------------------
 public acc_loop()
 {
-	if ( !sh_is_active() || !hasRoundStarted() ) return
+	if ( !sh_is_active() || sh_is_freezetime() ) return
 
 	new the_players[SH_MAXSLOTS], pnum, id		
 	get_players(the_players, pnum, "a")

@@ -10,6 +10,7 @@
  */
 
 #define I_WANT_CONSTANTS
+#define I_WANT_BASIC_MACROS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
@@ -172,7 +173,7 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 			set_user_money(attacker, get_user_money(attacker)+150)
 			#endif
 
-			shAddXP(attacker, id, 1.0)
+			sh_add_kill_xp(attacker, id, 1.0)
 		}
 		else
 		{
@@ -185,7 +186,7 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 			set_user_money(attacker, get_user_money(attacker)-500, 0)
 			#endif
 
-			shAddXP(attacker, id, -1.0)
+			sh_add_kill_xp(attacker, id, -1.0)
 		}
 	}
 	return PLUGIN_CONTINUE

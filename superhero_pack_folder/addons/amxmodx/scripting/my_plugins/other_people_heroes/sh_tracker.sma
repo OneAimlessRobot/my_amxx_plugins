@@ -1,6 +1,5 @@
 
 #include "../my_include/superheromod.inc"
-#include "../my_heroes/sh_aux_stuff/sh_aux_consts.inc"
 
 /* CVARS - COPY AND PASTE INTO shconfig.cfg
 

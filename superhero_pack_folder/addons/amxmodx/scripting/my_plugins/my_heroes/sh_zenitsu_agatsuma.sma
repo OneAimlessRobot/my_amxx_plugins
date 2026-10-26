@@ -1,9 +1,7 @@
-#define I_WANT_CONSTANTS
 #include "../my_include/superheromod.inc"
 #include "zenitsu_inc/zenitsu_charge_funcs.inc"
 #include "zenitsu_inc/zenitsu_general_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
-#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "../my_include/my_author_header.inc"
 

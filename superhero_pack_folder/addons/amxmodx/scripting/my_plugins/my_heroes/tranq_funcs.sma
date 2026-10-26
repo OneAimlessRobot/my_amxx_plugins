@@ -3,6 +3,11 @@
 #define I_WANT_MISC_FUNCS
 #define I_WANT_MATH_FUNCS
 #define I_WANT_CUSTOM_WEAPONS
+#define I_WANT_PDATA_ALIASES
+#define I_WANT_ENTITY_VECTORS
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_BASIC_MACROS
 #include "../my_include/superheromod.inc"
 #include "tranq_gun_inc/sh_erica_get_set.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -23,7 +28,7 @@ new trigger_is_down_mask = 0
 new trigger_was_down_mask = 0
 new g_Tranq_Clip[SH_MAXSLOTS+1]
 
-
+new wpn_name_for_future_lookup[50]
 new super_dart_weapon_id
 new dmg_source_name_short_super_dart[SAFE_BUFFER_SIZE+1]="super_dart"
 new dmg_source_name_log_super_dart[SAFE_BUFFER_SIZE+1]="super_dart"
@@ -38,14 +43,15 @@ public plugin_init(){
 	register_forward(FM_CmdStart, "CmdStart");
 	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
 
-	RegisterHam(Ham_Item_Deploy, weapon_data_structs_array[my_weapon_ids:DART_GUN_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_ItemDeployPre",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[my_weapon_ids:DART_GUN_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_WeaponPrimaryAttackPre",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[my_weapon_ids:DART_GUN_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack_Post", 1,true)
+	wlt_get_def_name(my_weapon_ids:DART_GUN_WEAPON_CLASSID,wpn_name_for_future_lookup,charsmax(wpn_name_for_future_lookup))
+	RegisterHam(Ham_Item_Deploy,wpn_name_for_future_lookup, "fw_ItemDeployPre",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack,wpn_name_for_future_lookup, "fw_WeaponPrimaryAttackPre",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack,wpn_name_for_future_lookup, "fw_Weapon_PrimaryAttack_Post", 1,true)
 	
-	RegisterHam(Ham_Item_PostFrame, weapon_data_structs_array[my_weapon_ids:DART_GUN_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)
+	RegisterHam(Ham_Item_PostFrame,wpn_name_for_future_lookup, "fw_Item_PostFrame",_,true)
 
-	RegisterHam(Ham_Weapon_Reload,weapon_data_structs_array[my_weapon_ids:DART_GUN_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_WeaponReloadPre",_,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[my_weapon_ids:DART_GUN_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_Weapon_Reload_Post", 1,true)
+	RegisterHam(Ham_Weapon_Reload,wpn_name_for_future_lookup, "fw_WeaponReloadPre",_,true)
+	RegisterHam(Ham_Weapon_Reload,wpn_name_for_future_lookup, "fw_Weapon_Reload_Post", 1,true)
 
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Player",_,true)
 	
@@ -274,7 +280,7 @@ public fw_WeaponPrimaryAttackPre(entity)
 	}
 	static pPlayer; pPlayer = get_pdata_cbase(entity, m_pPlayer,XO_WEAPON)
 
-	if ( !is_user_alive(pPlayer)||!hasRoundStarted()) return HAM_IGNORED;
+	if ( !is_user_alive(pPlayer)||sh_is_freezetime()) return HAM_IGNORED;
 	if(!sh_get_user_has_hero(pPlayer,gHeroID)){
 
 		return HAM_IGNORED

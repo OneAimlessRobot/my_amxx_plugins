@@ -3,6 +3,9 @@
 #define I_WANT_MATH_FUNCS
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_CUSTOM_WEAPONS
+#define I_WANT_PDATA_ALIASES
+#define I_WANT_ENTITY_VECTORS
+#define I_WANT_BASIC_MACROS
 
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"

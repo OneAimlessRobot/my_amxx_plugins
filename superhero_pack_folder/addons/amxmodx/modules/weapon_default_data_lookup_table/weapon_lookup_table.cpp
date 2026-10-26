@@ -22,6 +22,27 @@
 
 */
 
+static cell AMX_NATIVE_CALL wlt_get_def_name(AMX *amx,cell *params)
+{
+	return MF_SetAmxString( amx , params[2] , weapon_data_structs_array[params[1]].wpn_struct_weapon_name ,
+						(int32_t)min(sizeof(weapon_data_structs_array[params[1]].wpn_struct_weapon_name),(state_cell_type_t)params[3]) -1 );
+}
+static cell AMX_NATIVE_CALL wlt_get_fruity_name(AMX *amx,cell *params)
+{
+	return MF_SetAmxString( amx , params[2] , weapon_data_structs_array[params[1]].wpn_struct_fruity_name ,
+						(int32_t)min(sizeof(weapon_data_structs_array[params[1]].wpn_struct_fruity_name),(state_cell_type_t)params[3]) -1 );
+}
+static cell AMX_NATIVE_CALL wlt_get_ammo_name(AMX *amx,cell *params)
+{
+	return MF_SetAmxString( amx , params[2] , weapon_data_structs_array[params[1]].wpn_struct_ammo_name ,
+						(int32_t)min(sizeof(weapon_data_structs_array[params[1]].wpn_struct_ammo_name),(state_cell_type_t)params[3]) -1 );
+}
+static cell AMX_NATIVE_CALL wlt_get_events_file(AMX *amx,cell *params)
+{
+	return MF_SetAmxString( amx , params[2] , weapon_data_structs_array[params[1]].wpn_struct_events_file,
+						(int32_t)min(sizeof(weapon_data_structs_array[params[1]].wpn_struct_events_file),(state_cell_type_t)params[3]) -1 );
+}
+
 static cell AMX_NATIVE_CALL wlt_get_def_clip(AMX *amx,cell *params)
 {
 	if(!is_valid_cs_weapon(params[1])) 
@@ -101,8 +122,12 @@ static cell AMX_NATIVE_CALL wlt_get_def_rld_delay(AMX *amx,cell *params)
 
 AMX_NATIVE_INFO weapon_lookup_table_exports[] = 
 {
-	{ "wlt_get_def_clip", wlt_get_def_clip },
+	{ "wlt_get_def_name", wlt_get_def_name },
+	{ "wlt_get_fruity_name", wlt_get_fruity_name },
+	{ "wlt_get_ammo_name", wlt_get_ammo_name },
+	{ "wlt_get_events_file", wlt_get_events_file },
 	{ "wlt_get_def_bp_ammo", wlt_get_def_bp_ammo },
+	{ "wlt_get_def_clip", wlt_get_def_clip },
 	{ "wlt_get_def_prim_atk_delay", wlt_get_def_prim_atk_delay },
 	{ "wlt_get_def_scnd_atk_delay", wlt_get_def_scnd_atk_delay },
 	{ "wlt_get_def_rld_delay", wlt_get_def_rld_delay },

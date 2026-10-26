@@ -24,6 +24,10 @@
 
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_ENTITY_VECTORS
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_BASIC_MACROS
 #include "sh_aux_stuff/sh_aux_inc.inc"
 
 #include "track_fx_inc/track_fx.inc"
@@ -47,7 +51,8 @@ enum sh_grenade_struct{
     sh_grenade_name[128],
     sh_grenade_modelname[128],
     sh_grenade_break_sound[128],
-	sh_grenade_weapon_classid,
+	sh_grenade_def_wpn_name[50],
+	my_weapon_ids:sh_grenade_weapon_classid,
 	sh_custom_color:grenade_color_num,
 	Float:blast_radius,
     Float:sh_grenade_throw_speed,
@@ -63,7 +68,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 
 	{"none","",
 					"",
-					0,
+					"",
+					my_weapon_ids:0,
 					CUSTOM,
 					0.0,
 					0.0,
@@ -75,8 +81,9 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 	
 	{"molotov_cocktail",
 					"models/shmod/custom_nades_hackaround/w_hegrenade.mdl",
-					GLASS_VIAL_BREAK,
-					CSW_HEGRENADE,
+					"shmod/erica/molotov/molotov_crack.wav",
+					"",
+					MY_CSW_HEGRENADE,
 					PINK,
 					500.0,
 					3000.0,
@@ -87,7 +94,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 
 	{"chaff_grenade","models/shmod/custom_nades_hackaround/w_smokegrenade.mdl",
 					crush_stunned,
-					CSW_SMOKEGRENADE,
+					"",
+					MY_CSW_SMOKEGRENADE,
 					WHITE,
 					500.0,
 					3000.0,
@@ -98,7 +106,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 
 	{"sleep_grenade","models/shmod/custom_nades_hackaround/w_smokegrenade.mdl",
 					SMOKE_EXPLODE_SOUND,
-					CSW_SMOKEGRENADE,
+					"",
+					MY_CSW_SMOKEGRENADE,
 					BLUE,
 					500.0,
 					3000.0,
@@ -110,7 +119,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 	{"CO2_grenade",
 					"models/shmod/custom_nades_hackaround/w_smokegrenade.mdl",
 					EXTINGUISH_FIRE_SOUND,
-					CSW_SMOKEGRENADE,
+					"",
+					MY_CSW_SMOKEGRENADE,
 					LTGREEN,
 					500.0,
 					3000.0,
@@ -122,7 +132,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 	{"shock_grenade",
 					"models/shmod/custom_nades_hackaround/w_flashbang.mdl",
 					SHOCK_GRENADE_SOUND,
-					CSW_FLASHBANG,
+					"",
+					MY_CSW_FLASHBANG,
 					LTBLUE,
 					500.0,
 					3000.0,
@@ -134,7 +145,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 	{"freeze_grenade",
 					"models/shmod/custom_nades_hackaround/w_smokegrenade.mdl",
 					FROZEN_SFX,
-					CSW_SMOKEGRENADE,
+					"",
+					MY_CSW_SMOKEGRENADE,
 					FROZEN_BLUE,
 					500.0,
 					3000.0,
@@ -146,7 +158,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 	{"disrupt_grenade",
 					"models/shmod/custom_nades_hackaround/w_flashbang.mdl",
 					crush_stunned,
-					CSW_FLASHBANG,
+					"",
+					MY_CSW_FLASHBANG,
 					YELLOW,
 					500.0,
 					3000.0,
@@ -158,7 +171,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 	{"shrapnel_grenade",
 					"models/shmod/custom_nades_hackaround/w_hegrenade.mdl",
 					PIERCE_WOUND_SFX,
-					CSW_HEGRENADE,
+					"",
+					MY_CSW_HEGRENADE,
 					RED,
 					500.0,
 					3000.0,
@@ -170,7 +184,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 	{"marker_grenade",
 					"models/shmod/custom_nades_hackaround/w_hegrenade.mdl",
 					"shmod/komak/fast_shot.wav",
-					CSW_HEGRENADE,
+					"",
+					MY_CSW_HEGRENADE,
 					ORANGE,
 					500.0,
 					3000.0,
@@ -182,7 +197,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 	{"conc_grenade",
 					"models/shmod/custom_nades_hackaround/w_hegrenade.mdl",
 					"",
-					CSW_HEGRENADE,
+					"",
+					MY_CSW_HEGRENADE,
 					BLACK,
 					500.0,
 					3000.0,
@@ -194,7 +210,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 	{"wet_grenade",
 					"models/shmod/custom_nades_hackaround/w_flashbang.mdl",
 					"",
-					CSW_FLASHBANG,
+					"",
+					MY_CSW_FLASHBANG,
 					BABY_BLUE,
 					500.0,
 					3000.0,
@@ -215,7 +232,6 @@ new sh_grenade_armed_mask = 0
 new Float:curr_charge[SH_MAXSLOTS+1]
 
 new curr_grenade_ammo[SH_MAXSLOTS+1][sh_grenade_type]
-/**
 
 
 enum cs_grenade_animation_sequences{
@@ -227,8 +243,6 @@ enum cs_grenade_animation_sequences{
 
 
 }
-
- */
 switch_grenade_animation_on_player(id, cs_grenade_animation_sequences:the_sequence_id){
 
 
@@ -243,15 +257,15 @@ bool:is_weapon_id_grenade(wpn_id){
 
 }
 
-bool:user_has_grenade_on(id,&weapon_id=-1){
+bool:user_has_grenade_on(id,&my_weapon_ids:weapon_id=my_weapon_ids:0){
 
 	if(!is_user_connected(id)) return false
 
-	new wpn_id=get_user_weapon(id)
+	new my_weapon_ids:wpn_id=my_weapon_ids:get_user_weapon(id)
 	
 	new bool:result=is_weapon_id_grenade(wpn_id)
 
-	weapon_id=(result?(wpn_id):-1)
+	weapon_id=(result?(wpn_id):my_weapon_ids:-1)
 
 	return result
 
@@ -261,6 +275,17 @@ public plugin_init(){
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	
+	for(new sh_grenade_type:i = sh_grenade_type:1; i<sh_grenade_type;i++ ){
+
+		wlt_get_def_name(sh_grenade_structs_arr[i][sh_grenade_weapon_classid],
+						
+						sh_grenade_structs_arr[i][sh_grenade_def_wpn_name]
+						
+						,49)
+
+
+	}
+
 	register_forward(FM_CmdStart, "CmdStart");
 	
 	SH_CUSTOM_GRENADE_CHARGE_TASKID=allocate_typed_task_id(player_task)
@@ -273,6 +298,7 @@ public plugin_init(){
 
 	register_event("CurWeapon","event_curr_grenade","be", "1=1")
 	
+
 }
 
 public plugin_natives(){
@@ -303,7 +329,7 @@ public event_curr_grenade(id){
 	
 	if(!sh_is_active()) return PLUGIN_CONTINUE;	
 	
-	new wpn_id=-1
+	new my_weapon_ids:wpn_id=my_weapon_ids:0
 	new bool:user_has_grenade=user_has_grenade_on(id, wpn_id)
 
 	prev_user_grenade[id]=curr_user_grenade[id]
@@ -336,7 +362,7 @@ public event_curr_grenade(id){
 	return PLUGIN_CONTINUE
 }
 
-bool:switch_grenade_logic(id,wpn_id){
+bool:switch_grenade_logic(id,my_weapon_ids:wpn_id){
 	
 	static bool:changed_greande;
 	
@@ -384,7 +410,7 @@ bool:handle_grenade_change_button(id,wpn_id,uc_handle, button){
 		if(!Get_BitVar(grenade_change_button_pressed_mask,id)){
 			Set_BitVar(grenade_change_button_pressed_mask,id)
 
-			changed_greande = switch_grenade_logic(id, wpn_id)
+			changed_greande = switch_grenade_logic(id, my_weapon_ids:wpn_id)
 
 		}
 	}
@@ -404,12 +430,12 @@ public CmdStart(id, uc_handle)
 	if (!is_user_alive(id)) return FMRES_IGNORED;
 	
 	new sh_grenade_type:gren_type=curr_user_grenade[id]
-	new wpn_id=-1
+	new my_weapon_ids:wpn_id=my_weapon_ids:-1
 	if(!user_has_grenade_on(id,wpn_id)||(gren_type<=GREN_NONE)){
 
 		return FMRES_IGNORED
 	}
-	new ent = my_find_ent_by_owner(-1, weapon_data_structs_array[my_weapon_ids:wpn_id][wpn_struct_weapon_name], id);
+	new ent = my_find_ent_by_owner(-1,sh_grenade_structs_arr[gren_type][sh_grenade_def_wpn_name], id);
 
 	static button;
 	button = get_uc(uc_handle, UC_Buttons);
@@ -511,7 +537,7 @@ public charge_task(any:param[1],id){
 	if(!is_user_alive(id)) return
 
 
-	new wpn_id=get_user_weapon(id)
+	new my_weapon_ids:wpn_id=my_weapon_ids:get_user_weapon(id)
 
 	curr_charge[id]=floatadd(curr_charge[id],SH_CUSTOM_GRENADE_CHARGE_PERIOD)
 	
@@ -611,7 +637,7 @@ set_pev(Ent, pev_velocity ,Velocity)
 
 uncharge_user_primitive(id)
 
-new the_wpn_gren_id = sh_grenade_structs_arr[the_type][sh_grenade_weapon_classid]
+new my_weapon_ids:the_wpn_gren_id = sh_grenade_structs_arr[the_type][sh_grenade_weapon_classid]
 
 
 curr_grenade_ammo[id][the_type]=max(0,curr_grenade_ammo[id][the_type]-1)
@@ -642,7 +668,7 @@ else{
 }
 
 
-engclient_cmd(id, weapon_data_structs_array[my_weapon_ids:CSW_KNIFE][wpn_struct_weapon_name])
+engclient_cmd(id, "weapon_knife")
 emit_sound(id, CHAN_WEAPON, THROWABLE_LAUNCH_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 trail(Ent,sh_grenade_structs_arr[the_type][grenade_color_num],10,5)
 

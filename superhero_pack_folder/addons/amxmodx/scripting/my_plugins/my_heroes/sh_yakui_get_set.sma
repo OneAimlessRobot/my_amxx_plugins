@@ -1,8 +1,10 @@
 #define I_WANT_CONSTANTS
+#define I_WANT_MISC_FUNCS
+#define I_WANT_BASIC_MACROS
+#define I_WANT_CUSTOM_COLORS
 
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
-#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"

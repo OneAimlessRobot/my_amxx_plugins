@@ -39,10 +39,6 @@ stock progressBar(id, seconds)
 
 
 */
-stock init_progress_bar_msg_var(){
-
-	g_msgBarTime = get_user_msgid("BarTime")
-}
 //----------------------------------------------------------------------------------------------
 stock progressBar(id, seconds)
 {
@@ -50,6 +46,10 @@ stock progressBar(id, seconds)
 	write_byte(seconds)
 	write_byte(0)
 	message_end()
+}
+stock init_progress_bar_msg_var(){
+
+	g_msgBarTime = get_user_msgid("BarTime")
 }
 
 stock Eject_Shell(id, Shell_ModelIndex, Float:Time) // By Dias
@@ -77,9 +77,12 @@ stock native_playanim(id,anim)
 only use this at plugin_init forward!!!
 */
 stock register_entity_as_wall_touchable(const entity_name[], const func_name[]){
+	
+	static tmp_array_for_touched_entities[50];
 
-	for( new i; i < sizeof szWallEntities; i++ ){
-		register_touch( entity_name, szWallEntities[ i ], func_name );
+	for( new entity_type_ids_for_arrays:i = enum_zero; i < entity_type_ids_for_arrays:(sizeof szWallEntities); i++ ){
+		ecnlt_get_name(szWallEntities[ i ],tmp_array_for_touched_entities,charsmax(tmp_array_for_touched_entities))
+		register_touch( entity_name, tmp_array_for_touched_entities, func_name );
 	}
 }
 /**
@@ -87,15 +90,16 @@ this one maps an entity to multiple others
 in a parameter sized array
 to a SINGLE FUNCTION!
 */
-stock register_custom_touchable(const entity_name[], const func_name[], const tg_entities[][], tg_entities_length){
+stock register_custom_touchable(const entity_name[], const func_name[], const entity_type_ids_for_arrays:tg_entities[], tg_entities_length){
+	static tmp_array_for_touched_entities[50];
 
-	for( new i; i < tg_entities_length; i++ ){
-		register_touch( entity_name, tg_entities[ i ], func_name );
+	for( new entity_type_ids_for_arrays:i=enum_zero; i < entity_type_ids_for_arrays:tg_entities_length; i++ ){
+		ecnlt_get_name(tg_entities[ i ],tmp_array_for_touched_entities,charsmax(tmp_array_for_touched_entities))
+
+		register_touch( entity_name, tmp_array_for_touched_entities, func_name);
 	}
 }
 #endif
-
-stock attacker_dmg_hud_msg_sync, victim_dmg_hud_msg_sync, heal_hp_hud_msg_sync, superhero_hud_msg_sync
 
 stock sh_get_player_cloak_pct(id){
 
@@ -284,7 +288,42 @@ stock print_entity_info(id, ent){
 }
 
 
+stock my_get_aim_origin(index, Float:origin[3]) {
+	new Float:start[3], Float:view_ofs[3];
+	pev(index, pev_origin, start);
+	pev(index, pev_view_ofs, view_ofs);
+	xs_vec_add(start, view_ofs, start);
 
+	new Float:dest[3];
+	pev(index, pev_v_angle, dest);
+	engfunc(EngFunc_MakeVectors, dest);
+	global_get(glb_v_forward, dest);
+	xs_vec_mul_scalar(dest, 9999.0, dest);
+	xs_vec_add(start, dest, dest);
+
+	engfunc(EngFunc_TraceLine, start, dest, 0, index, 0);
+	get_tr2(0, TR_vecEndPos, origin);
+
+	return 1;
+}
+#define my_remove_entity(%1) engfunc(EngFunc_RemoveEntity, %1)
+
+stock bool:my_is_ent_visible(index, entity, ignoremonsters = 0) {
+	new Float:start[3], Float:dest[3];
+	pev(index, pev_origin, start);
+	pev(index, pev_view_ofs, dest);
+	xs_vec_add(start, dest, start);
+
+	pev(entity, pev_origin, dest);
+	engfunc(EngFunc_TraceLine, start, dest, ignoremonsters, index, 0);
+
+	new Float:fraction;
+	get_tr2(0, TR_flFraction, fraction);
+	if (fraction == 1.0 || get_tr2(0, TR_pHit) == entity)
+		return true;
+
+	return false;
+}
 stock do_fast_shot(Ent,Float:speed=1.0){
 	
 	static secret_code = -1;
@@ -348,10 +387,13 @@ stock get_weapon_ent_of_player(id,wpnid=0)
 /**
 hook several entities with given Ham enum in one go
 */
-stock register_ham_hook_multiple(Ham:the_enum_to_hook,  const tg_entities[][], tg_entities_length, const func_name[], is_it_post=0, bool:is_it_special_bot=true){
+stock register_ham_hook_multiple(Ham:the_enum_to_hook,  const entity_type_ids_for_arrays:tg_entities[], tg_entities_length, const func_name[], is_it_post=0, bool:is_it_special_bot=true){
+	
+	static tmp_array_for_touched_entities[50];
 
-	for( new i; i < tg_entities_length; i++ ){
-		RegisterHam(the_enum_to_hook, tg_entities[ i ], func_name, is_it_post, is_it_special_bot);
+	for( new entity_type_ids_for_arrays:i=enum_zero; i < entity_type_ids_for_arrays:tg_entities_length; i++ ){
+		ecnlt_get_name(tg_entities[ i ],tmp_array_for_touched_entities,charsmax(tmp_array_for_touched_entities))
+		RegisterHam(the_enum_to_hook, tmp_array_for_touched_entities, func_name, is_it_post, is_it_special_bot);
 	}
 }
 
@@ -362,34 +404,19 @@ stock register_ham_hook_multiple(Ham:the_enum_to_hook,  const tg_entities[][], t
 	- true: only include guns on the bitsum
 
 */
-
 stock register_ham_for_weapon_bitsum(Ham:ham_constant,weapon_bitsum,const function_name[],is_it_post=0, bool:is_it_special_bot=true, bool:include_mode=true){
 	
+	static array_for_fruity_name[50]
 	new bit_sum_to_actually_do = include_mode ? (weapon_bitsum): (~(weapon_bitsum))
 	for ( new my_weapon_ids:wpnId = MY_CSW_P228; wpnId < my_weapon_ids; wpnId++ )
 	{	
 		new bool:do_eht= bool:((bit_sum_to_actually_do & (enum_one<<wpnId)))
 		if ( do_eht && is_weaponid_valid(_:wpnId))
-		{
-				RegisterHam(ham_constant, weapon_data_structs_array[wpnId][wpn_struct_weapon_name], function_name, is_it_post,is_it_special_bot) 
+		{	
+			wlt_get_def_name(wpnId,array_for_fruity_name,charsmax(array_for_fruity_name))
+			RegisterHam(ham_constant, array_for_fruity_name, function_name, is_it_post,is_it_special_bot) 
 		}
 	}
-}
-stock init_hud_syncs(){
-
-	attacker_dmg_hud_msg_sync=CreateHudSyncObj()
-	victim_dmg_hud_msg_sync=CreateHudSyncObj()
-	heal_hp_hud_msg_sync=CreateHudSyncObj()
-	superhero_hud_msg_sync=CreateHudSyncObj()
-
-
-}
-stock init_explosion_defaults(){
-
-	default_explode_knock_force_magnitude=sh_get_max_force_knockback_explosion()
-	default_explode_owner_ignore_frac=sh_get_default_explode_owner_ignore_frac()
-	default_stun_speed=sh_get_default_stun_speed()
-
 }
 stock bool:is_entity_brush(ent_id){
 	if(!is_valid_ent(ent_id)){
@@ -575,7 +602,7 @@ stock fake_smoke(id, trace_result, sprite_id)
 stock make_bullet(id, Float:Origin[3])
 {
 	// Find target
-	new decal = random_num(41, 45)
+	new decal = random_num(38, 42)
 	const loop_time = 2
 	
 	static Body, Target

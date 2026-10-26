@@ -40,6 +40,7 @@ ghostface_healpoints 5		//The # of HP healed per second, Default 5
 
 //------- Do not edit below this point ------//
 #define I_WANT_CONSTANTS
+#define I_WANT_BASIC_MACROS
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"

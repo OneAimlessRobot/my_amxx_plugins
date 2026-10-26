@@ -8,14 +8,12 @@ models/rpgrocket.mdl
 models/gib_skull.mdl
 models/player/vip/vip.mdl
 models/metalgibs.mdl
-sprites/smoke.spr
 sprites/shockwave.spr
+sprites/smoke.spr
 sprites/xfire.spr
 sprites/black_smoke3.spr
-sprites/explode1.spr
 sprites/flame.spr
 sprites/laserbeam.spr
-sprites/shmod/zerogxplode2.spr
 sprites/blood.spr
 sprites/bloodspray.spr
 models/Fleshgibs.mdl
@@ -24,6 +22,8 @@ models/GIB_Skull.mdl
 models/GIB_B_Bone.mdl
 models/GIB_Lung.mdl
 models/GIB_Legbone.mdl
+sprites/explode1.spr
+sprites/shmod/zerogxplode2.spr
 models/shmod/custom_nades_hackaround/w_hegrenade.mdl
 models/shmod/custom_nades_hackaround/w_smokegrenade.mdl
 models/shmod/custom_nades_hackaround/w_flashbang.mdl

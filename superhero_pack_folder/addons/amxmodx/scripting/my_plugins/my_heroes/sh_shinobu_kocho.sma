@@ -2,6 +2,9 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_QUICK_CHECKS
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_BASIC_MACROS
 #include <amxconst>
 #include <csx>
 #include "../my_include/superheromod.inc"
@@ -53,7 +56,7 @@ public plugin_init()
  
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	gHeroID=shCreateHero(gHeroName, "Poison Hashira", "Be polite, be sneaky. And make them suffer", true, "shinobu_level",true )
+	gHeroID=shCreateHero(gHeroName, "Poison Hashira", "Be polite, be sneaky. And make them suffer", true, "shinobu_level")
 	register_event("Damage","shinobuDamage","b", "2!0")
 	
 	
@@ -78,7 +81,7 @@ public plugin_init()
 								dmg_source_name_log_poison_kick,
 								0)
 	set_task(1.0,"shinobu_step_silent",SHINOBU_GLOBAL_SILENT_FOOTSTEPS_LOOP,_,_,"b")
-	init_hud_syncs()
+
 }
 public plugin_natives(){
 	
@@ -251,7 +254,7 @@ public shinobu_burst_damage_task(array[1],attacker){
 
 	user_slap(tg, cvar_val(num, pcvar_shinobu_poison_kick_knockback),0)
 
-	generic_heal(heal_hp_hud_msg_sync,attacker,float(damage_to_cause),_,PURPLE,_,_,50,1,1)
+	generic_heal(attacker,float(damage_to_cause),_,PURPLE,_,_,50,1,1)
 
 
 	sh_screen_shake(tg, 14.0, 14.0, 14.0)
@@ -352,7 +355,7 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_h
 	}
 	if(new_dmg_type==SH_NEW_DMG_DRUG_POISON){
 		if(sh_get_user_has_hero(victim,gHeroID) ){
-			generic_heal(heal_hp_hud_msg_sync,victim,float(damage),_,PURPLE,_,_,50,1,1)
+			generic_heal(victim,float(damage),_,PURPLE,_,_,50,1,1)
 			return DMG_FWD_BLOCK
 		}
 	}

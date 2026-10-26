@@ -1,11 +1,14 @@
-#define AUX_STUFF_GIVE_WEAPONS
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
-#define I_WANT_FAKEMETA_UTIL
+#include <float>
+#include <xs>
 #define I_WANT_CUSTOM_WEAPONS
+#define I_WANT_PDATA_ALIASES
+#define I_WANT_MATH_VECTORS
 #include "../my_include/superheromod.inc"
-#include "colt_inc/sh_ethereal.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "colt_inc/sh_ethereal.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt15.inc"
 
 
 #define PLUGIN "Superhero adriano etheral"
@@ -15,7 +18,7 @@
 new g_Had_Ethereal, g_Ethereal_Clip[33], Float:g_Recoil[33][3]
 new g_Event_Ethereal, g_SmokePuff_SprId, g_Beam_SprID
 new g_Muzzleflash_Ent, g_Muzzleflash, g_Msg_WeaponList = -1
-
+new wpn_name_for_future_lookup[50]
 new weapon_secret_code = ETHEREAL_SECRET_CODE
 
 new cached_ammo_id = -1,
@@ -42,14 +45,15 @@ public plugin_init()
 	register_forward(FM_AddToFullPack, "fw_AddToFullPack_post", 1)
 	register_forward(FM_CheckVisibility, "fw_CheckVisibility")
 	
-	RegisterHam(Ham_Weapon_WeaponIdle, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name], "fw_Weapon_WeaponIdle_Post", 1,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack_Post", 1,true)	
-	RegisterHam(Ham_Item_Deploy, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name], "fw_Item_Deploy_Post", 1,true)
-	RegisterHam(Ham_Item_AddToPlayer, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name], "fw_Item_AddToPlayer_Post", 1,true)
-	RegisterHam(Ham_Item_PostFrame, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name], "fw_Weapon_Reload",_,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name], "fw_Weapon_Reload_Post", 1,true)	
+	wlt_get_def_name(CSW_ETHEREAL,wpn_name_for_future_lookup,charsmax(wpn_name_for_future_lookup))
+	RegisterHam(Ham_Weapon_WeaponIdle, wpn_name_for_future_lookup, "fw_Weapon_WeaponIdle_Post", 1,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, wpn_name_for_future_lookup, "fw_Weapon_PrimaryAttack",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, wpn_name_for_future_lookup, "fw_Weapon_PrimaryAttack_Post", 1,true)	
+	RegisterHam(Ham_Item_Deploy, wpn_name_for_future_lookup, "fw_Item_Deploy_Post", 1,true)
+	RegisterHam(Ham_Item_AddToPlayer, wpn_name_for_future_lookup, "fw_Item_AddToPlayer_Post", 1,true)
+	RegisterHam(Ham_Item_PostFrame, wpn_name_for_future_lookup, "fw_Item_PostFrame",_,true)
+	RegisterHam(Ham_Weapon_Reload, wpn_name_for_future_lookup, "fw_Weapon_Reload",_,true)
+	RegisterHam(Ham_Weapon_Reload, wpn_name_for_future_lookup, "fw_Weapon_Reload_Post", 1,true)	
 	
 	RegisterHam(Ham_TraceAttack, "worldspawn", "fw_TraceAttack_World",_,true)
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Player",_,true)
@@ -126,7 +130,7 @@ public fw_PrecacheEvent_Post(type, const name[])
 
 public Hook_Weapon(id)
 {
-	engclient_cmd(id, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name])
+	engclient_cmd(id, wpn_name_for_future_lookup)
 	return PLUGIN_HANDLED
 }
 
@@ -134,9 +138,9 @@ public Get_Ethereal(id)
 {
 	Set_BitVar(g_Had_Ethereal, id)
 	
-	fm_give_item(id, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name])
+	my_give_item(id, wpn_name_for_future_lookup)
 
-	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_ETHEREAL)
+	static Ent; Ent = my_get_user_weapon_entity(id, CSW_ETHEREAL)
 	if(!pev_valid(Ent)){
 		
 		return	
@@ -162,7 +166,7 @@ public Event_CurWeapon(id)
 		return
 
 	static Float:Delay, Float:Delay2
-	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_ETHEREAL)
+	static Ent; Ent = my_get_user_weapon_entity(id, CSW_ETHEREAL)
 	ent_check(Ent,)
 	
 	Delay = get_pdata_float(Ent, m_flNextPrimaryAttack, XO_WEAPON) * ETHEREAL_SPEED
@@ -228,7 +232,7 @@ public fw_SetModel(entity, model[])
 	
 	if(equal(model, ETHEREAL_OLDMODEL))
 	{
-		static weapon; weapon = fm_find_ent_by_owner(-1, weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name], entity)
+		static weapon; weapon = my_find_ent_by_owner(-1, wpn_name_for_future_lookup, entity)
 		
 		
 		ent_check(weapon,FMRES_IGNORED)
@@ -424,7 +428,7 @@ public fw_Item_AddToPlayer_Post(Ent, id)
 	(Get_BitVar(g_Had_Ethereal, id)) ? 
 		copy(buff_to_use,charsmax(buff_to_use),  ETHEREAL_HUD_SPRITES_NAME )
 								:
-		copy(buff_to_use,charsmax(buff_to_use), weapon_data_structs_array[CSW_ETHEREAL][wpn_struct_weapon_name])
+		copy(buff_to_use,charsmax(buff_to_use), wpn_name_for_future_lookup)
 	
 
 	send_weapon_list_stock(id,
@@ -527,13 +531,16 @@ public fw_TraceAttack_World(Victim, Attacker, Float:Damage, Float:Direction[3], 
 		return HAM_IGNORED	
 	if(get_user_weapon(Attacker) != _:CSW_ETHEREAL || !Get_BitVar(g_Had_Ethereal, Attacker))
 		return HAM_IGNORED
-		
+	
+
+	weapon_gating_macro_code_snippet(Attacker,CSW_ETHEREAL,return,HAM_IGNORED)
+
 	static Float:flEnd[3], Float:vecPlane[3]
 		
 	get_tr2(Ptr, TR_vecEndPos, flEnd)
 	get_tr2(Ptr, TR_vecPlaneNormal, vecPlane)		
 			
-	//Make_BulletHole(Attacker, flEnd, Damage)
+	Make_BulletHole(Attacker, flEnd, Damage)
 	Make_LaserLine(Attacker, flEnd)
 	Make_BulletSmoke(Attacker, Ptr)
 
@@ -552,7 +559,9 @@ public fw_TraceAttack_Player(Victim, Attacker, Float:Damage, Float:Direction[3],
 		return HAM_IGNORED	
 	if(get_user_weapon(Attacker) != _:CSW_ETHEREAL || !Get_BitVar(g_Had_Ethereal, Attacker))
 		return HAM_IGNORED
-		
+	
+	weapon_gating_macro_code_snippet(Attacker,CSW_ETHEREAL,return,HAM_IGNORED)
+
 	SetHamParamFloat(3, float(ETHEREAL_DAMAGE))
 	
 	return HAM_IGNORED
@@ -580,38 +589,6 @@ public Make_LaserLine(id, Float:Origin[3])
 	message_end()
 }
 
-
-stock Make_BulletHole(id, Float:Origin[3], Float:Damage)
-{
-	// Find target
-	static Decal; Decal = generate_int(41, 45)
-	static LoopTime; 
-	
-	if(Damage > 100.0) LoopTime = 2
-	else LoopTime = 1
-	
-	for(new i = 0; i < LoopTime; i++)
-	{
-		// Put decal on "world" (a wall)
-		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-		write_byte(TE_WORLDDECAL)
-		engfunc(EngFunc_WriteCoord, Origin[0])
-		engfunc(EngFunc_WriteCoord, Origin[1])
-		engfunc(EngFunc_WriteCoord, Origin[2])
-		write_byte(Decal)
-		message_end()
-		
-		// Show sparcles
-		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-		write_byte(TE_GUNSHOTDECAL)
-		engfunc(EngFunc_WriteCoord, Origin[0])
-		engfunc(EngFunc_WriteCoord, Origin[1])
-		engfunc(EngFunc_WriteCoord, Origin[2])
-		write_short(id)
-		write_byte(Decal)
-		message_end()
-	}
-}
 
 stock Make_BulletSmoke(id, TrResult)
 {
@@ -643,4 +620,36 @@ stock Make_BulletSmoke(id, TrResult)
 	write_byte(50)
 	write_byte(TE_FLAG)
 	message_end()
+}
+
+stock Make_BulletHole(id, Float:Origin[3], Float:Damage)
+{
+	// Find target
+	static Decal; Decal = generate_int(38, 42)
+	static LoopTime; 
+	
+	if(Damage > 100.0) LoopTime = 2
+	else LoopTime = 1
+	
+	for(new i = 0; i < LoopTime; i++)
+	{
+		// Put decal on "world" (a wall)
+		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
+		write_byte(TE_WORLDDECAL)
+		engfunc(EngFunc_WriteCoord, Origin[0])
+		engfunc(EngFunc_WriteCoord, Origin[1])
+		engfunc(EngFunc_WriteCoord, Origin[2])
+		write_byte(Decal)
+		message_end()
+		
+		// Show sparcles
+		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
+		write_byte(TE_GUNSHOTDECAL)
+		engfunc(EngFunc_WriteCoord, Origin[0])
+		engfunc(EngFunc_WriteCoord, Origin[1])
+		engfunc(EngFunc_WriteCoord, Origin[2])
+		write_short(id)
+		write_byte(Decal)
+		message_end()
+	}
 }

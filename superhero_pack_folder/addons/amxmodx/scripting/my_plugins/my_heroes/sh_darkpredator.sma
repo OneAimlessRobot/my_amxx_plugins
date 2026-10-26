@@ -22,6 +22,8 @@ darkpred_bullets 6		//How many lazer bullets does he get? Default=6
 
 */
 #define I_WANT_CONSTANTS
+#define I_WANT_BASIC_MACROS
+#define I_WANT_CUSTOM_COLORS
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -182,7 +184,7 @@ public remInvisibility(id)
 //----------------------------------------------------------------------------------------------
 public checkButtons()
 {
-	if ( !hasRoundStarted() || !sh_is_active()) return
+	if ( sh_is_freezetime() || !sh_is_active()) return
 	
 	new bool:setVisible
 	new butnprs
@@ -324,13 +326,13 @@ public darkpred_damage(id)
 			//		$id gets their suicidal -1 frag back. 
 			set_user_frags(attacker, get_user_frags(attacker)+1)
 			cs_set_user_money(attacker, cs_get_user_money(attacker)+150)
-			shAddXP(attacker, id, 1.0)
+			sh_add_kill_xp(attacker, id, 1.0)
 		} 
 		else{
 			// same team;	$attacker loses a frag and $500 and XP.
 			set_user_frags(attacker, get_user_frags(attacker)-1)
 			cs_set_user_money(attacker, cs_get_user_money(attacker)-500, 0)
-			shAddXP(attacker, id, -1.0)
+			sh_add_kill_xp(attacker, id, -1.0)
 		}
 		return PLUGIN_CONTINUE
 	} 

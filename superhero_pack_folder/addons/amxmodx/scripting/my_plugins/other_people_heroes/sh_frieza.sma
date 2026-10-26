@@ -93,7 +93,7 @@ switch(key)
 //--------------------------------------------------------------------------------------- 
 public frieza_kd(id) 
 { 
-    if(!hasRoundStarted()) return 
+    if(sh_is_freezetime()) return 
 
     if(!is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)) return 
 

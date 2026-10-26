@@ -92,7 +92,7 @@ switch(key)
 
 public libertylad_kd(id)
 	{
-	if (hasRoundStarted())
+	if (!sh_is_freezetime())
 	{
 	if (is_user_alive(id) && sh_get_user_has_hero(id,gHeroID))
 	{

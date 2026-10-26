@@ -1,7 +1,8 @@
-#define AUX_STUFF_GIVE_HITPOINTS
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_RESOURCE_ALIASES
 #define I_WANT_QUICK_CHECKS
+#define I_WANT_CUSTOM_COLORS
 #include "../my_include/superheromod.inc"
 #include "colt_inc/sh_ethereal.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -80,7 +81,7 @@ public plugin_init()
 	RegisterHam(Ham_TraceAttack,"player","trace_adriano",_,true)
 
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
-	init_hud_syncs()
+
 }
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()
@@ -174,7 +175,7 @@ public heal_teamate(id,teamate){
 	
 
 	if(sh_clients_are_same_team(id,teamate)&&(id!=teamate)){
-		new bool:result=generic_heal(heal_hp_hud_msg_sync,teamate,speed_points_heal*speed_points_heal_coeff,_,YELLOW,0,_,80,1)
+		new bool:result=generic_heal(teamate,speed_points_heal*speed_points_heal_coeff,_,YELLOW,0,_,80,1)
 		if(result){
 
 			add_speed_points(id,speed_points_heal,false)
@@ -241,6 +242,10 @@ public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id, trace)
 		return FMRES_IGNORED;
 	}
 	
+	if(trace){
+
+		return FMRES_IGNORED
+	}
 
 	new ent= get_tr2(trace,TR_pHit)
 	

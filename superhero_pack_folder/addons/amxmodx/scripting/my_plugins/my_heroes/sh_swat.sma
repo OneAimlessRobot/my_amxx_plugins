@@ -1,6 +1,10 @@
 #define I_WANT_MISC_FUNCS
 #define I_WANT_CONSTANTS
 #define I_WANT_QUICK_CHECKS
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_BASIC_MACROS
+#define I_WANT_ENTITY_VECTORS
 
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
@@ -79,12 +83,9 @@ public plugin_init()
 								
 	register_entity_as_wall_touchable("ICBM_missile","nuke_hit")
 	register_custom_touchable("ICBM_missile","nuke_hit",player_vector,1)
-	static const custom_vector[][]={"ICBM_missile"}
-	register_custom_touchable("ICBM_missile","nuke_hit",custom_vector,1)
+	register_touch("ICBM_missile","ICBM_missile","nuke_hit")
 
 	register_think("ICBM_missile", "fm_Think")
-
-	init_explosion_defaults()
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
@@ -255,7 +256,7 @@ public nuke_hit(pToucher, pTouched) {
 	if(has_rocket[id] == pToucher)
 	has_rocket[id] = 0
 
-	explosion(gHeroID,pToucher,float(damradius),float(maxdamage), default_explode_knock_force_magnitude,_,1,_,_,RED)
+	explosion(gHeroID,pToucher,float(damradius),float(maxdamage), _,_,1,_,_,RED)
 	
 
 	emit_sound(pToucher, CHAN_WEAPON, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)

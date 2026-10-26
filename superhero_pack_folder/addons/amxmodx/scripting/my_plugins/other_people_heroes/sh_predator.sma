@@ -1,6 +1,7 @@
 
 
 #define I_WANT_CONSTANTS
+#define I_WANT_RESOURCE_ALIASES
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
@@ -117,7 +118,7 @@ public sh_client_spawn(id)
 		stillInvis(id)
 	}
 	
-	if ( !hasRoundStarted() )
+	if ( sh_is_freezetime() )
 	{
 		laser_shots[id] = get_cvar_num("pred_laser_ammo")
 		set_user_rendering(id,kRenderGlow,0,128,0,kRenderFxNone,255)
@@ -151,7 +152,7 @@ switch(key)
 public pred_kd(id) 
 {
 	
-	if ( !hasRoundStarted() ) return PLUGIN_HANDLED 
+	if ( sh_is_freezetime() ) return PLUGIN_HANDLED 
 
 	if ( !is_user_alive(id) ) return PLUGIN_HANDLED 
 	
@@ -181,8 +182,6 @@ public pred_ku(id)
 	
 	remove_task(id)
 	
-	// Switch back to previous weapon... 
-	// if ( gLastWeapon[id]!=CSW_KNIFE ) shSwitchWeaponID( id, gLastWeapon[id])
 } 
 //----------------------------------------------------------------------------------------------
 public laserEffects(id, aimvec[3] )
@@ -503,13 +502,13 @@ public pred_DLdamage(id)
 			//        $id gets their suicidal -1 frag back. 
 			set_user_frags(attacker_id, get_user_frags(attacker_id)+1) 
 			cs_set_user_money(attacker_id, cs_get_user_money(attacker_id)+150)
-			shAddXP(attacker_id, id, 1.0)
+			sh_add_kill_xp(attacker_id, id, 1.0)
 		} 
 		else { 
 			// same team;    $attacker loses a frag and $500 and XP.
 			set_user_frags(attacker_id, get_user_frags(attacker_id)-1) 
 			cs_set_user_money(attacker_id, cs_get_user_money(attacker_id)-500, 0)
-			shAddXP(attacker_id, id, -1.0)
+			sh_add_kill_xp(attacker_id, id, -1.0)
 		} 
 		return PLUGIN_CONTINUE 
 	} 

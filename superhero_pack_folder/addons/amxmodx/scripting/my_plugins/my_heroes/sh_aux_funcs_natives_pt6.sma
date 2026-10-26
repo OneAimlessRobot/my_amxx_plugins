@@ -1,4 +1,5 @@
 #define I_WANT_CONSTANTS
+#define I_WANT_BASIC_MACROS
 #include <amxmisc>
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -151,5 +152,5 @@ public _prepare_shero_aux_lib_pt6(iPlugins, iParams){
 	
 	setup_help_files_env()
 	setupHelpMotd()
-	server_print("%s innited!^n",LIBRARY_NAME)
+	server_print("%s innited!^n",PLUGIN)
 }

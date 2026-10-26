@@ -135,7 +135,7 @@ switch(key)
 // RESPOND TO KEYDOWN
 public warmachine_kd(id)
 {
-	if ( !is_user_alive(id) || !hasRoundStarted() ) return
+	if ( !is_user_alive(id) || sh_is_freezetime() ) return
 
 	gJetPackRunning[id] = true
 	set_user_info(id, "JP", "1")

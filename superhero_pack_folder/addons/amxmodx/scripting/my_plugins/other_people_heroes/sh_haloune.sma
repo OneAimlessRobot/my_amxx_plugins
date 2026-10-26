@@ -21,6 +21,7 @@ Haloune_M4A1mult 2		//Damage multiplyer for his M4A1 Default 2x
 sv_maxspeed 500
 */
 #define I_WANT_CONSTANTS
+#define I_WANT_BASIC_MACROS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"

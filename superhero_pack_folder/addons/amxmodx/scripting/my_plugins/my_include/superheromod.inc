@@ -10,17 +10,6 @@
   #pragma loadlib "SuperHero Core"
 #endif
 
-#define MAX_HERO_NAME_LENGTH 256
-#define MAX_PLAYER_SAVE_KEY_LENGTH 64
-
-//extra_damage_flags!
-enum sh_extra_damage_flags (<<= 1){
-	SH_EXTRA_DMG_FLAG_NONE = 0,
-	SH_EXTRA_DMG_FLAG_STUN = 1,
-	SH_EXTRA_DMG_FLAG_dmgFFmsg
-
-}
-
 
 #include "../my_include/primitive_includes_for_superhero.inc"
 
@@ -274,9 +263,6 @@ native sh_get_hero_name_from_id(id,truncated_hero_name_buff[MAX_HERO_NAME_LENGTH
 
 native sh_match_string_with_hero_name(id,truncated_hero_name_buff[MAX_HERO_NAME_LENGTH])
 
-native Float:sh_get_max_force_knockback_explosion()
-native Float:sh_get_default_explode_owner_ignore_frac()
-native Float:sh_get_default_stun_speed()
 
 native sh_get_player_save_key_on_db(id,key_ret_result[MAX_PLAYER_SAVE_KEY_LENGTH])
 //------------
@@ -314,13 +300,6 @@ native sh_set_hero_info(heroID, const powerInfo[] = "", const powerHelp[] = "");
  */
 native sh_set_hero_bind(heroID);
 
-/**
- * Sets the hero to be considered a core hero +power bind key
- *
- * @param heroID	The index of the hero.
- * @noreturn
- */
-native sh_set_hero_core(heroID);
 
 /**
  * Sets hero's shield restriction status. (Optional)
@@ -1173,7 +1152,7 @@ stock print_heapsize()
 // and compiling your hero. Then fix any compile errors with new functions above, below
 // can be a reference.
 //----------------------------------------------------------------------------------------------
-
+#define SH_BACKCOMPAT
 
 #if defined SH_BACKCOMPAT
 
@@ -1182,18 +1161,13 @@ stock print_heapsize()
  * BACKWARD COMPATIBILITY *
  **************************/
 
-stock shCreateHero(const heroName[], const heroPower[], const heroHelp[], bool:requiresKeyEvents = false, const heroLevel[], bool:is_core_hero=false)
+stock shCreateHero(const heroName[], const heroPower[], const heroHelp[], bool:requiresKeyEvents = false, const heroLevel[])
 {
 	new heroID = sh_create_hero(heroName, get_cvar_pointer(heroLevel));
 	if ( heroID != -1 ) {
 		sh_set_hero_info(heroID, heroPower, heroHelp);
 		if ( requiresKeyEvents ) {
 			sh_set_hero_bind(heroID);
-		}
-		if( is_core_hero){
-
-			sh_set_hero_core(heroID);
-					
 		}
 	}
 	return heroID;
@@ -1265,54 +1239,6 @@ stock shSetMinGravity(const heroName[], const heroGravityCVAR[])
 }
 
 
-
-//stock sh_sound_deny(id)
-#define playSoundDeny sh_sound_deny
-
-//stock shAddXP(id, victim, Float:multiplier = 1.0 )
-#define shAddXP sh_add_kill_xp
-
-//stock shModActive()
-#define shModActive sh_is_active
-
-//stock shGetNumLevels()
-#define shGetNumLevels sh_get_num_lvls
-
-//stock hasRoundStarted()
-#define hasRoundStarted() !sh_is_freezetime()
-
-//stock shReloadAmmo(id, dropwpn = 0)
-#define shReloadAmmo sh_reload_ammo
-
-//stock sh_extra_damage(id, attacker, damage, weaponDescription[], headshot = 0 )
-#define shExtraDamage sh_extra_damage
-
-#define getMaxClipAmmo(%1) gMaxClipAmmo[%1]
-#define getMaxBPAmmo(%1) gMaxBPAmmo[%1]
-
-//stock shResetSpeed(id)
-#define shResetSpeed sh_reset_max_speed
-
-//stock shSetGravityPower(id)
-#define shSetGravityPower sh_reset_min_gravity
-
-//stock shGiveWeapon(id, const weaponName[], bool:switchTo = false)
-#define shGiveWeapon sh_give_item
-
-//stock shGiveWeaponID(id, weaponID, bool:switchTo = false)
-#define shGiveWeaponID sh_give_weapon
-
-//stock shSwitchWeaponID(id, weaponID)
-#define shSwitchWeaponID sh_switch_weapon
-
-
-//stock shOwnsWeaponID(id, weaponID)
-#define shOwnsWeaponID user_has_weapon
-
-//stock shOwnsWeapon(id, weaponName[])
-#define shOwnsWeapon(%1, %2) user_has_weapon(%1, get_weaponid(%2))
-
-
 //stock shStun(id, secs)
 stock shStun(id, secs)
 {
@@ -1330,9 +1256,8 @@ stock debugMessage(const message[], id = 0, level = 1)
 {
 	sh_debug_message(id, level, message);
 }
-//stock sh_setScreenFlash(id, red, green, blue, decisecs, alpha)
-//stock setScreenFlash(id, red, green, blue, decisecs, alpha)
-#define sh_setScreenFlash setScreenFlash
+
+
 stock setScreenFlash(id, red, green, blue, decisecs, alpha)
 {
 	if ( !is_user_connected(id) ) return;
@@ -1340,27 +1265,13 @@ stock setScreenFlash(id, red, green, blue, decisecs, alpha)
 	sh_screen_fade(id, float(decisecs)/10.0, float(decisecs)/20.0, red, green, blue, alpha);
 }
 
-//stock sh_screenShake(id, amplitude, duration, frequency)
 //stock setScreenShake(id, amplitude, duration, frequency)
-#define sh_screenShake setScreenShake
 stock setScreenShake(id, amplitude, duration, frequency)
 {
 	if ( !is_user_connected(id) ) return;
 
 	sh_screen_shake(id, float(amplitude)/10.0, float(duration)/10.0, float(frequency)/10.0);
 }
-
-//cooldown stuff
-#define gPlayerUltimateUsedMask gPlayerInCooldownMask 
-#define ultimateTimer sh_set_cooldown
-#define enableUltimate sh_end_cooldown
-
-//Now in amxmodx 1.80.
-#define maxof floatmax
-#define minof floatmin
-
-//old cmath.inc port of sqroot no longer needed.
-#define sqrt(%1) sqroot(%1)
 
 //This stock was moved to core.
 //Forcing old heroes to throw a compile error so that they are

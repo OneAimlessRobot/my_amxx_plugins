@@ -1,4 +1,5 @@
 #define I_WANT_CONSTANTS
+#define I_WANT_BASIC_MACROS
 #include "../my_include/superheromod.inc"
 #include "flora_inc/flora_field.inc"
 #include "flora_inc/flora_global.inc"
@@ -31,7 +32,7 @@ public plugin_init()
  
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	gHeroID=shCreateHero(gHeroName, "Sprawling Garden", "Create biohazard fields which weaken enemies!", true, "flora_level", true )
+	gHeroID=shCreateHero(gHeroName, "Sprawling Garden", "Create biohazard fields which weaken enemies!", true, "flora_level")
 	sh_register_superheromod_model(gHeroID,
 							FLORA_PLAYER_MODEL,
 							FLORA_PLAYER_MODEL_T,

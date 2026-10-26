@@ -1,5 +1,7 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_PDATA_ALIASES
+#define I_WANT_BASIC_MACROS
 #include "../my_include/superheromod.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
@@ -225,7 +227,7 @@ switch(key)
 public yakui_kd(id){
 
 	new clip,ammo,wid=get_user_weapon(id,clip,ammo)
-	if ( !is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)||!hasRoundStarted()||((wid!=YAKUI_WEAPON_CLASSID)&&(wid!=CSW_KNIFE))) {
+	if ( !is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)||sh_is_freezetime()||((wid!=YAKUI_WEAPON_CLASSID)&&(wid!=CSW_KNIFE))) {
 		return PLUGIN_HANDLED
 	}
 

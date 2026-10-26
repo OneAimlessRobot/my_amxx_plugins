@@ -1,5 +1,12 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_MISC_FUNCS
+#define I_WANT_CUSTOM_WEAPONS
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_PDATA_ALIASES
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_BASIC_MACROS
+#define I_WANT_ENTITY_VECTORS
 
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
@@ -30,9 +37,7 @@ public plugin_init(){
 
 	register_entity_as_wall_touchable(ROCKET_CLASSNAME,"seringa_toqueta_de_entiteta")
 	register_custom_touchable(ROCKET_CLASSNAME,"seringa_toqueta_de_entiteta",player_vector,1)
-	static const custom_vector[][]={ROCKET_CLASSNAME}
-	register_custom_touchable(ROCKET_CLASSNAME,"seringa_toqueta_de_la_seringa",custom_vector,1)
-
+	register_touch( ROCKET_CLASSNAME, ROCKET_CLASSNAME, "seringa_toqueta_de_la_seringa");
 	register_forward(FM_CmdStart, "CmdStart");
 	RPSYRINGE_RELOAD_TIMER_TASKID =allocate_typed_task_id(player_task)
 }
@@ -105,7 +110,7 @@ public CmdStart(id, uc_handle)
 	if(!sh_is_active()||sh_is_freezetime()){
 		return FMRES_IGNORED
 	}
-	if ( !hasRoundStarted()||!client_is_hero_user(id, gHeroID)) return FMRES_IGNORED;
+	if ( sh_is_freezetime()||!client_is_hero_user(id, gHeroID)) return FMRES_IGNORED;
 	
 	new button = get_uc(uc_handle, UC_Buttons);
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);

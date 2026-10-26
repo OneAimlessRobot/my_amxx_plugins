@@ -1,5 +1,8 @@
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_CONSTANTS
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_BASIC_MACROS
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "co2_fx_inc/co2_fx.inc"

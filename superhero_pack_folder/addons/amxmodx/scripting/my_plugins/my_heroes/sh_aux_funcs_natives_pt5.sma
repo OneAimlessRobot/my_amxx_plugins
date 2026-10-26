@@ -1,8 +1,10 @@
 #define I_WANT_CONSTANTS
+#define I_WANT_MISC_FUNCS_2
 #define I_WANT_MISC_FUNCS
 #define I_WANT_QUICK_CHECKS
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_BASIC_MACROS
 #include <amxmisc>
-#include <reapi>
 #include <newmenus>
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
@@ -16,7 +18,6 @@
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
-#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 
 
 #define ITEM_STRING_SIZE 50
@@ -81,7 +82,9 @@ second macro param: in-weapon model id
 
 new curr_num_models_logged_on_wpn[CSW_LAST_WEAPON+1] = {0, ...}
 new gPlayersCurrHeroWpnModelID[SH_MAXSLOTS+1][CSW_LAST_WEAPON+1]
+
 //num weapons | models per weapon | struct
+
 new sh_array_of_wpn_model_structs[CSW_LAST_WEAPON+1][SH_MAX_WPN_MODELS_PER_WPN+1][wpn_model_array_struct]
 
 
@@ -194,6 +197,7 @@ show_weapon_model_menu_func(id){
 	new gMenuID = menu_create(WEAPON_MODEL_MENU_NAME, "show_weapon_model_weapon_menu_handler")
 	
 	static curr_menu_line_string[128],
+			weapon_fruity_name[50],
 			item_string[1]
 		
 	new bool:should_show_menu = false
@@ -227,10 +231,10 @@ show_weapon_model_menu_func(id){
 
 				item_string[0] = wpn_id
 				
+				wlt_get_fruity_name(my_weapon_ids:wpn_id,weapon_fruity_name,charsmax(weapon_fruity_name))
 
 				formatex(curr_menu_line_string,charsmax(curr_menu_line_string),
-									"%s",
-									wlt_get_fruity_name(my_weapon_ids:wpn_id))
+									"%s",weapon_fruity_name)
 
 				menu_additem(gMenuID,curr_menu_line_string,item_string)
 			}
@@ -246,13 +250,16 @@ show_weapon_model_submenu_func(id,wpn_id){
 	new gMenuID = menu_create(WEAPON_MODEL_SUBMENU_NAME, "show_weapon_model_menu_handler")
 	static curr_menu_line_string[ITEM_STRING_SIZE],
 			hero_name[MAX_HERO_NAME_LENGTH],
+			weapon_fruity_name[50],
 							item_string[2]
 
 	item_string[0] = wpn_id
 	item_string[1] = SH_MAX_WPN_MODELS_PER_WPN
 	
+	wlt_get_fruity_name(my_weapon_ids:wpn_id,weapon_fruity_name,charsmax(weapon_fruity_name))
+
 	formatex(curr_menu_line_string, charsmax(curr_menu_line_string),
-			"Remove weapon model for %s",wlt_get_fruity_name(my_weapon_ids:wpn_id))
+			"Remove weapon model for %s",weapon_fruity_name)
 
 	menu_additem(gMenuID, curr_menu_line_string, item_string)
 	
@@ -752,7 +759,7 @@ public _sh_register_superheromod_weapon_model(iPlugins, iParams){
 
 public _prepare_shero_aux_lib_pt5(iPlugins, iParams){
 	
-	server_print("%s innited!^n",LIBRARY_NAME)
+	server_print("%s innited!^n",PLUGIN)
 }
 
 weapon_model_pick_wrapper(id, wpn_id, wpn_model_id){

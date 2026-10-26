@@ -1,4 +1,6 @@
 #define I_WANT_CONSTANTS
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_RESOURCE_ALIASES
 #include <amxmisc>
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -30,7 +32,7 @@ public plugin_init(){
 public plugin_cfg(){
 
 
-	server_print("%s innited!^n",LIBRARY_NAME)
+	server_print("%s innited!^n",PLUGIN)
 	
 }
 
@@ -46,13 +48,16 @@ public bool:_sh_get_player_has_hero_projectile_weapon(iPLugin,iParams){
 	return bool:Get_BitVar(sh_player_hero_projectile_weapon_tracker[id], _:weapon_id)
 }
 stock print_player_hero_projectile_weapon_flags(id){
+	static weapon_name_buff[50]
 	server_print("The state of hero projectile weapon flags for this player is:^n^n")
 	for(new my_weapon_ids:i=enum_zero;i<my_weapon_ids;i++){
 		
 		if(Get_BitVar(sh_player_hero_projectile_weapon_tracker[id], _:i)){
+			wlt_get_def_name(i,weapon_name_buff,charsmax(weapon_name_buff))
+																	
 			server_print("The weapon number %d (which is named %s)^nPlayer: %d^nHas been:^n - picked!",
 																	i,
-																	wlt_get_def_name(i),
+																	weapon_name_buff,
 																	id)
 		}
 
@@ -78,6 +83,7 @@ public sh_print_player_projectile_weapons(id,level,cid){
 }
 public init_fwd_ret_id:sh_hero_init_pre(id,heroID, sh_init_mode:mode){
 	new init_fwd_ret_id:true_return_result = INIT_FWD_PASS
+	static weapon_name_buff[50]
 	
 	if(!client_is_within_range(id)){
 
@@ -96,9 +102,10 @@ public init_fwd_ret_id:sh_hero_init_pre(id,heroID, sh_init_mode:mode){
 		if(sh_get_hero_projectile_weapon_bit(heroID,i)){
 			if(Get_BitVar(sh_player_hero_projectile_weapon_tracker[id], _:i)){
 			
+				wlt_get_def_name(i,weapon_name_buff,charsmax(weapon_name_buff))
 
 				sh_chat_message(id,-1,"You have picked heroes with ^"%s^" projectile weapon already!...",
-							wlt_get_def_name(i))
+							weapon_name_buff)
 			
 				true_return_result =  INIT_FWD_BLOCK
 				break;

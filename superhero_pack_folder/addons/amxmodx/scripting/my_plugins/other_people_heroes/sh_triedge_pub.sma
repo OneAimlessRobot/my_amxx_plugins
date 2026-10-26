@@ -36,6 +36,7 @@ Version History:
 
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_ENTITY_VECTORS
 
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
@@ -143,7 +144,7 @@ switch(key)
 //----------------------------------------------------------------------------------------------
 public triedge_kd(id)
 {
-    if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)|| !hasRoundStarted() || !sh_is_active() ) return
+    if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)|| sh_is_freezetime() || !sh_is_active() ) return
 
     triedge_hookOn(id)
 }

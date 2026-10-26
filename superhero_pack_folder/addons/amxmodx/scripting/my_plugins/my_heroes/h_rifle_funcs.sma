@@ -2,6 +2,7 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_CUSTOM_WEAPONS
+#define I_WANT_PDATA_ALIASES
 #include "../my_include/superheromod.inc"
 #include "h_rifle_inc/sh_h_rifle.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -38,6 +39,7 @@ enum
 }
 
 // Main Vars
+new wpn_name_for_future_lookup[50]
 new g_Had_Mosin, g_Old_Weapon[33]
 new g_Event_MS
 new g_MsgCurWeapon
@@ -61,10 +63,11 @@ public plugin_init()
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack",_,true)
 	RegisterHam(Ham_TraceAttack, "worldspawn", "fw_TraceAttack",_,true)		
 	
-	RegisterHam(Ham_Item_Deploy, weapon_data_structs_array[my_weapon_ids:CSW_MOSIN][wpn_struct_weapon_name], "fw_Item_Deploy_Post", 1,true)	
-	RegisterHam(Ham_Item_AddToPlayer, weapon_data_structs_array[my_weapon_ids:CSW_MOSIN][wpn_struct_weapon_name], "fw_Item_AddToPlayer_Post", 1,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[my_weapon_ids:CSW_MOSIN][wpn_struct_weapon_name], "fw_Weapon_Reload",_,true)
-	RegisterHam(Ham_Item_PostFrame, weapon_data_structs_array[my_weapon_ids:CSW_MOSIN][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)
+	wlt_get_def_name(my_weapon_ids:CSW_MOSIN,wpn_name_for_future_lookup,charsmax(wpn_name_for_future_lookup))
+	RegisterHam(Ham_Item_Deploy, wpn_name_for_future_lookup, "fw_Item_Deploy_Post", 1,true)	
+	RegisterHam(Ham_Item_AddToPlayer, wpn_name_for_future_lookup, "fw_Item_AddToPlayer_Post", 1,true)
+	RegisterHam(Ham_Weapon_Reload, wpn_name_for_future_lookup, "fw_Weapon_Reload",_,true)
+	RegisterHam(Ham_Item_PostFrame, wpn_name_for_future_lookup, "fw_Item_PostFrame",_,true)
 	
 	weapon_secret_code = allocate_weapon_secret_code()
 
@@ -115,7 +118,7 @@ public Get_Mosin(id)
 	
 	Set_BitVar(g_Had_Mosin, id)
 	
-	give_item(id, weapon_data_structs_array[my_weapon_ids:CSW_MOSIN][wpn_struct_weapon_name])
+	give_item(id, wpn_name_for_future_lookup)
 	cs_set_user_bpammo(id, CSW_MOSIN, H_RIFLE_BPAMMO)
 	
 	static Ent; Ent = get_weapon_ent_of_player(id, CSW_MOSIN)

@@ -35,6 +35,8 @@ drstrange_cooldown 0.0			//Cooldown timer between bolt power use
 
 
 #define I_WANT_CONSTANTS
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_RESOURCE_ALIASES
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
@@ -160,7 +162,7 @@ switch(key)
 // RESPOND TO KEYDOWN
 public drstrange_kd(id)
 {
-	if ( !hasRoundStarted() ) return
+	if ( sh_is_freezetime() ) return
 
 
 	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)) return
@@ -196,7 +198,7 @@ public drstrange_ku(id)
 
 	remove_task(id)
 
-	if ( !hasRoundStarted() || !gUsingLaser[id] ) return
+	if ( sh_is_freezetime() || !gUsingLaser[id] ) return
 
 	// Use the ultimate
 	if ( get_cvar_float("drstrange_cooldown") > 0.0 ) sh_set_cooldown(id, get_cvar_float("drstrange_cooldown"))
@@ -204,7 +206,9 @@ public drstrange_ku(id)
 	gUsingLaser[id] = false
 
 	// Switch back to previous weapon...
-	if ( gLastWeapon[id] != CSW_KNIFE ) shSwitchWeaponID(id, gLastWeapon[id])
+	if ( gLastWeapon[id] != CSW_KNIFE ){
+		sh_switch_weapon(id, gLastWeapon[id])
+	}
 }
 //----------------------------------------------------------------------------------------------
 public fire_laser(id)

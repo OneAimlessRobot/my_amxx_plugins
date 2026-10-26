@@ -64,6 +64,7 @@ bazooka_spawndelay 0
 */
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_ENTITY_VECTORS
 
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
@@ -129,10 +130,9 @@ public plugin_init()
 	gHeroID=shCreateHero(gHeroName, "Rocket-Laucher", "Fire Many Different Types of Rockets", true, "bazooka_level" )
 
 
-	static custom_touchable_vec[][]={"bazooka_missile_ent"}
 	register_entity_as_wall_touchable("bazooka_missile_ent","bazooka_missile_touch")
+	register_touch( "bazooka_missile_ent", "bazooka_missile_ent", "bazooka_missile_touch");
 	register_custom_touchable("bazooka_missile_ent","bazooka_missile_touch",player_vector,1)
-	register_custom_touchable("bazooka_missile_ent","bazooka_missile_touch",custom_touchable_vec,1)
 	
 	//CLIENT QUICK COMMANDS
 	register_clcmd("bazooka_missile","fire_missile")
@@ -169,7 +169,7 @@ switch(key)
 //----------------------------------------------------------------------------------------------
 public bazooka_kd(id)
 {
-	if ( !hasRoundStarted() ) return PLUGIN_HANDLED
+	if ( sh_is_freezetime() ) return PLUGIN_HANDLED
 
 	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
 

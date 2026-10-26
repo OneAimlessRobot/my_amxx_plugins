@@ -3,6 +3,10 @@
 #endif
 #define sh_custom_grenades_inc
 
+
+
+#define CUSTOM_GRENADE_BOUNCE_SOUND "shmod/Teliko/chaff/bounce.wav"
+
 #define SH_CUSTOM_GRENADE_CHARGE_PERIOD 0.1
 
 enum sh_grenade_type{

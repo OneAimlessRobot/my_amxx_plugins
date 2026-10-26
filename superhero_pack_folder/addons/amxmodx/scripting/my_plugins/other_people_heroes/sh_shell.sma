@@ -98,7 +98,7 @@ public sh_client_spawn(id)
 //----------------------------------------------------------------------------------------------
 public shell_loop()
 {
-	if ( !sh_is_active() || !hasRoundStarted() ) return
+	if ( !sh_is_active() || sh_is_freezetime() ) return
 	for(new id=1;id< sh_maxplayers()+1;id++){
 		if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 			new gOurHealthMax = ( gHealAmount - (sh_get_user_lvl(id)* get_cvar_num("shell_hpperlev")) )

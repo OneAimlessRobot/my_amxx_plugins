@@ -1,5 +1,5 @@
 #define I_WANT_CONSTANTS
-#define I_WANT_MISC_FUNCS
+#define I_WANT_BASIC_MACROS
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "shield_inc/sh_jaqueo_get_set.inc"

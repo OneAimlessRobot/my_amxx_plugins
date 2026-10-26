@@ -10,10 +10,10 @@ pitch_cooldown 60			//Seconds till next available use of power
 
 #define I_WANT_CONSTANTS
 #define I_WANT_QUICK_CHECKS
-#define I_WANT_MISC_FUNCS
+#define I_WANT_MISC_FUNCS_2
+#define I_WANT_BASIC_MACROS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
-#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 
 // GLOBAL VARIABLES
 new gHeroName[]="Pitch Black"
@@ -23,6 +23,7 @@ new bool:NightVisionUse[SH_MAXSLOTS+1]
 new bool:lightsOut = false
 new bool:FirstSpawn = true
 new NVGToggle, numOfPB = 0
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -37,14 +38,13 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Total Darkness", "Make everything Pitch Black. Get Riddick's sight.", true, "pitch_level" )
 
-
+	init_hud_syncs()
 
 	set_task(1.0, "pitch_loop", 0, "", 0, "b")
 
 	// NightVision
 	register_clcmd("nightvision","ToggleNVG")
 	NVGToggle = get_user_msgid("NVGToggle")
-	init_hud_syncs()
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, sh_init_mode:mode){

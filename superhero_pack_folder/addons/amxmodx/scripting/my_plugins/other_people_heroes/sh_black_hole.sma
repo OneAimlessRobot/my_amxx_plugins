@@ -79,7 +79,7 @@ switch(key)
 //----------------------------------------------------------------------------------------------
 public black_kd(id)
 {
-	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) || !hasRoundStarted() || !sh_is_active() ) return 
+	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) || sh_is_freezetime() || !sh_is_active() ) return 
 
 	if ( sh_get_cooldown_flag(id)|| gBHTimer > 0 ) {
 		sh_sound_deny(id)

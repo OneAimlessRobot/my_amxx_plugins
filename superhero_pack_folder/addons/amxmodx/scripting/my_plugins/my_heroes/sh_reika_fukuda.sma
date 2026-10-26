@@ -1,6 +1,11 @@
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_BASIC_MACROS
+#define I_WANT_PDATA_ALIASES
+#define I_WANT_ENTITY_VECTORS
 #include <amxconst>
 #include <csx>
 #include "../my_include/superheromod.inc"
@@ -64,7 +69,6 @@ public plugin_init()
 
     REIKA_PARRY_TURN_OFF_DELAY_TASKID=allocate_typed_task_id(player_task)
 
-    init_explosion_defaults()
 
 }
 //----------------------------------------------------------------------------------------------

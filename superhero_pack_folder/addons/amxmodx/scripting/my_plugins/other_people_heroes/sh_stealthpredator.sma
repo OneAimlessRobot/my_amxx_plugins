@@ -1,13 +1,13 @@
 //Stealth Predator!, Unique Predator that has Invisibility
 #define I_WANT_CONSTANTS
 #define I_WANT_QUICK_CHECKS
-#define I_WANT_MISC_FUNCS
+#define I_WANT_MISC_FUNCS_2
+#define I_WANT_BASIC_MACROS
+#define I_WANT_CUSTOM_COLORS
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
-#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
-
 /*
 
 //Stealth Predator
@@ -106,7 +106,7 @@ switch(key)
 //----------------------------------------------------------------------------------------------
 public stealth_kd(id)
 {
-	if ( !hasRoundStarted()  )
+	if ( sh_is_freezetime()  )
 		return
 
 	// Remember this weapon...
@@ -148,8 +148,9 @@ public stealth_ku(id)
 		emit_sound(id, CHAN_STATIC, "shmod/stealthoninvis.wav", 1.0, ATTN_NORM, sndStop, PITCH_NORM)
 
 		// Switch back to previous weapon...
-		if ( g_lastWeapon[id] != CSW_KNIFE ) shSwitchWeaponID(id, g_lastWeapon[id])
-
+		if ( g_lastWeapon[id] != CSW_KNIFE ){
+			sh_switch_weapon(id, g_lastWeapon[id])
+		}
 		remove_glow_user(id,PRIO_RENDER_INVISIBILITY,0)
 		set_user_footsteps(id, 0)
 		
@@ -249,7 +250,9 @@ public remove_power(id, powerID)
 
 	if ( is_user_connected(id) ) {
 		// Switch back to previous weapon and reset speed...
-		if ( g_lastWeapon[id] != CSW_KNIFE ) shSwitchWeaponID(id, g_lastWeapon[id])
+		if ( g_lastWeapon[id] != CSW_KNIFE ){
+			sh_switch_weapon(id, g_lastWeapon[id])
+		}
 	}
 }
 //----------------------------------------------------------------------------------------------

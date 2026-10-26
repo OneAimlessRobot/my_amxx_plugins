@@ -24,6 +24,7 @@ exodus_toggle 1		//0-hold keydown to use, 1-toggles the grab (Default 1)
 */
 
 #define I_WANT_CONSTANTS
+#define I_WANT_CUSTOM_COLORS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
@@ -100,7 +101,7 @@ switch(key)
 // RESPOND TO KEYDOWN
 public exodus_kd(id)
 {
-	if ( !hasRoundStarted() ) return
+	if ( sh_is_freezetime() ) return
 
 	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) ) return
 
@@ -150,7 +151,7 @@ public exodus_kd(id)
 // RESPOND TO KEYUP
 public exodus_ku(id)
 {
-	if ( !hasRoundStarted() ) return
+	if ( sh_is_freezetime() ) return
 
 	// Toggle mode - keyup doesn't do anything!
 	if ( get_cvar_num("exodus_toggle") ) return

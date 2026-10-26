@@ -68,6 +68,14 @@ enum sh_thrash_brat_dmg_type{
 
 }
 
+//extra_damage_flags!
+enum sh_extra_damage_flags (<<= 1){
+	SH_EXTRA_DMG_FLAG_NONE = 0,
+	SH_EXTRA_DMG_FLAG_STUN = 1,
+	SH_EXTRA_DMG_FLAG_dmgFFmsg
+
+}
+
 //----------------------------------------------------------------------------------------------
 // Changeable DEFINE Settings, must recompile SuperHero plugins if changed
 //----------------------------------------------------------------------------------------------
@@ -81,9 +89,11 @@ enum sh_thrash_brat_dmg_type{
 // Potential of power1-power9 but limited by sh_maxbinds (3 default)
 #define SH_MAXBINDPOWERS 20
 
-#define SH_MAXCOREPOWERS 7
-// Comment out for new optimized coding only, old coded heroes will break
-#define SH_BACKCOMPAT
+
+
+
+#define MAX_HERO_NAME_LENGTH 256
+#define MAX_PLAYER_SAVE_KEY_LENGTH 64
 
 //----------------------------------------------------------------------------------------------
 // DO NOT EDIT BELOW HERE
@@ -95,18 +105,6 @@ stock const SH_VERSION_STR[] =	"1.2.1.0b";
 // Cooldown task id, required to allow core to stop task
 #define SH_COOLDOWN_TASKID	572910
 
-#define SH_DEFAULT_EXPLODE_FORCE 4.0
-stock sh_default_explode_knock_force_magnitude_cvar;
-stock Float:default_explode_knock_force_magnitude=SH_DEFAULT_EXPLODE_FORCE;
-
-
-#define SH_DEFAULT_DAMAGE_FRAC_EXPLOSION_IGNORE_OWNER 0.5
-stock sh_default_explode_owner_ignore_frac_cvar;
-stock Float:default_explode_owner_ignore_frac=SH_DEFAULT_DAMAGE_FRAC_EXPLOSION_IGNORE_OWNER;
-
-#define SH_DEFAULT_STUN_SPEED 30.0
-stock sh_default_stun_speed_pcvar;
-stock Float:default_stun_speed=SH_DEFAULT_STUN_SPEED;
 
 // Max player slots
 const SH_MAXSLOTS = 32 //the holy number

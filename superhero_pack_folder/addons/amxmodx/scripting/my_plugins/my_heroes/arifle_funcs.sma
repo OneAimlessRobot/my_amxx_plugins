@@ -1,8 +1,9 @@
-#define AUX_STUFF_GIVE_WEAPONS
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
-#define I_WANT_FAKEMETA_UTIL
+#include <float>
+#include <xs>
 #define I_WANT_CUSTOM_WEAPONS
+#define I_WANT_PDATA_ALIASES
 #include "../my_include/superheromod.inc"
 #include "arifle_inc/sh_arifle.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -20,7 +21,7 @@ new const Arifle_Sound[] = "weapons/m60-1.wav"
 new g_Had_Arifle, g_Arifle_Clip[33], Float:g_Recoil[33][3]
 new g_Event_Arifle, g_SmokePuff_SprId
 new g_Muzzleflash_Ent, g_Muzzleflash
-
+new wpn_name_for_future_lookup[50];
 new weapon_secret_code = ARIFLE_SECRET_CODE
 
 static cached_ammo_id = -1
@@ -39,15 +40,15 @@ public plugin_init()
 	
 	register_forward(FM_AddToFullPack, "fw_AddToFullPack_post", 1)
 	register_forward(FM_CheckVisibility, "fw_CheckVisibility")
-	
-	RegisterHam(Ham_Weapon_WeaponIdle, weapon_data_structs_array[CSW_ARIFLE][wpn_struct_weapon_name], "fw_Weapon_WeaponIdle_Post", 1,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[CSW_ARIFLE][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[CSW_ARIFLE][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack_Post", 1,true)
-	RegisterHam(Ham_Item_Deploy, weapon_data_structs_array[CSW_ARIFLE][wpn_struct_weapon_name], "fw_Item_Deploy_Post", 1, true)	
-	RegisterHam(Ham_Item_AddToPlayer, weapon_data_structs_array[CSW_ARIFLE][wpn_struct_weapon_name], "fw_Item_AddToPlayer_Post", 1,true)
-	RegisterHam(Ham_Item_PostFrame, weapon_data_structs_array[CSW_ARIFLE][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[CSW_ARIFLE][wpn_struct_weapon_name], "fw_Weapon_Reload",_,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[CSW_ARIFLE][wpn_struct_weapon_name], "fw_Weapon_Reload_Post", 1,true)	
+	wlt_get_def_name(CSW_ARIFLE,wpn_name_for_future_lookup,charsmax(wpn_name_for_future_lookup))
+	RegisterHam(Ham_Weapon_WeaponIdle, wpn_name_for_future_lookup, "fw_Weapon_WeaponIdle_Post", 1,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack,wpn_name_for_future_lookup, "fw_Weapon_PrimaryAttack",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, wpn_name_for_future_lookup, "fw_Weapon_PrimaryAttack_Post", 1,true)
+	RegisterHam(Ham_Item_Deploy, wpn_name_for_future_lookup, "fw_Item_Deploy_Post", 1, true)	
+	RegisterHam(Ham_Item_AddToPlayer, wpn_name_for_future_lookup, "fw_Item_AddToPlayer_Post", 1,true)
+	RegisterHam(Ham_Item_PostFrame,wpn_name_for_future_lookup, "fw_Item_PostFrame",_,true)
+	RegisterHam(Ham_Weapon_Reload, wpn_name_for_future_lookup, "fw_Weapon_Reload",_,true)
+	RegisterHam(Ham_Weapon_Reload, wpn_name_for_future_lookup, "fw_Weapon_Reload_Post", 1,true)	
 	
 	RegisterHam(Ham_TraceAttack, "worldspawn", "fw_TraceAttack_World",_,true)
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Player",_,true)
@@ -110,9 +111,9 @@ public _arifle_unset_arifle(iPlugins,iParams){
 public Get_Arifle(id)
 {
 	Set_BitVar(g_Had_Arifle, id)
-	fm_give_item(id, weapon_data_structs_array[CSW_ARIFLE][wpn_struct_weapon_name])
+	my_give_item(id, wpn_name_for_future_lookup)
 	
-	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_ARIFLE)
+	static Ent; Ent = my_get_user_weapon_entity(id, CSW_ARIFLE)
 	if(pev_valid(Ent)) cs_set_weapon_ammo(Ent, A_RIFLE_CLIP)
 
 	// Set BpAmmo
@@ -136,7 +137,7 @@ public Event_CurWeapon(id)
 		return
 
 	static Float:Delay, Float:Delay2
-	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_ARIFLE)
+	static Ent; Ent = my_get_user_weapon_entity(id, CSW_ARIFLE)
 	ent_check(Ent,)
 
 	Delay = get_pdata_float(Ent, m_flNextPrimaryAttack, XO_WEAPON) * A_RIFLE_SPEED
@@ -185,7 +186,7 @@ public fw_SetModel(entity, model[])
 	
 	if(equal(model, ARIFLE_OLDMODEL))
 	{
-		static weapon; weapon = fm_find_ent_by_owner(-1, weapon_data_structs_array[CSW_ARIFLE][wpn_struct_weapon_name], entity)
+		static weapon; weapon = my_find_ent_by_owner(-1, wpn_name_for_future_lookup, entity)
 		
 		
 		ent_check(weapon,FMRES_IGNORED)
@@ -489,7 +490,7 @@ public fw_TraceAttack_Player(Victim, Attacker, Float:Damage, Float:Direction[3],
 stock Make_BulletHole(id, Float:Origin[3], Float:Damage)
 {
 	// Find target
-	static Decal; Decal = generate_int(41, 45)
+	static Decal; Decal = generate_int(38, 42)
 	static LoopTime; 
 	
 	if(Damage > 100.0) LoopTime = 2

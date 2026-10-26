@@ -1,5 +1,8 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_PDATA_ALIASES
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -52,7 +55,6 @@ public plugin_init()
 	cmd_forward=register_forward(FM_CmdStart, "CmdStart");
 	GRACIETE_LOAD_TASKID=allocate_typed_task_id(player_task)
 	GRACIETE_CHARGE_TASKID=allocate_typed_task_id(player_task)
-	init_explosion_defaults()
 }
 
 public plugin_natives(){
@@ -153,7 +155,7 @@ public Ham_Think_Post(id) {
 				
 				emit_sound(id, CHAN_ITEM, jp_fly, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 				explosion(gHeroID,id,
-						cvar_val(float,pcvar_land_explosion_radius),g_graciete_land_power[id],default_explode_knock_force_magnitude,1)
+						cvar_val(float,pcvar_land_explosion_radius),g_graciete_land_power[id],_,1)
 				UnSet_BitVar(g_graciete_power_landing_mask,id);
 				g_graciete_land_power[id]=0.0
 				

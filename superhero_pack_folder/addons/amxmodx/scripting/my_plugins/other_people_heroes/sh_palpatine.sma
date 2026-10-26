@@ -87,7 +87,7 @@ switch(key)
 // RESPOND TO KEYDOWN
 public palpatine_kd(id) 
 {
-  if ( !hasRoundStarted() ) return PLUGIN_HANDLED
+  if ( sh_is_freezetime() ) return PLUGIN_HANDLED
   
 
   if ( !is_user_alive(id) ) return PLUGIN_HANDLED

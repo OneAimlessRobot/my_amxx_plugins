@@ -54,6 +54,11 @@ goku_blast_decals 1		//Show the burn decals on the walls (0-no 1-yes)
 #define I_WANT_CONSTANTS
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_BASIC_MACROS
+#define I_WANT_PDATA_ALIASES
+#define I_WANT_ENTITY_VECTORS
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -178,7 +183,6 @@ public plugin_init()
 	goku_hud_sync=CreateHudSyncObj()
 	// LOOP
 	set_task(1.0, "goku_loop", 0, "", 0, "b")
-	init_explosion_defaults()
 }
 
 public plugin_natives(){
@@ -367,7 +371,9 @@ public goku_ku(id)
 	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)|| !g_weaponSwitched[id] ) return
 
 	// Switch back to previous weapon... Only if power was used...
-	if (g_lastWeapon[id] != CSW_KNIFE) shSwitchWeaponID(id, g_lastWeapon[id])
+	if (g_lastWeapon[id] != CSW_KNIFE){
+		sh_switch_weapon(id, g_lastWeapon[id])
+	}
 	g_weaponSwitched[id] = false
 }
 //----------------------------------------------------------------------------------------------
@@ -646,7 +652,7 @@ public goku_power_touch(pToucher, pTouched) {
 	explosion_custom_entity(pToucher,
 									float(dmgRadius),float(maxDamage),
 									"func_breakable",
-									default_explode_knock_force_magnitude,
+									_,
 									explosion_sfx_show_nothing)
 	// Cause the Damage
 	new vicOrigin[3], Float:dRatio,  distance, damage
@@ -684,7 +690,7 @@ public goku_power_touch(pToucher, pTouched) {
 			}
 
 			// Make them feel it
-			sh_screenShake(vic, 10, 10, 10)
+			sh_screen_shake(vic, 10.0, 10.0, 10.0)
 			emit_sound(vic, CHAN_BODY, "player/pl_pain2.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
 
 			new Float:fl_Time = distance / 125.0
@@ -953,7 +959,7 @@ public shake_n_stun(id)
 		new distance = get_distance(idOrigin, vicOrigin)
 
 		if ( distance <= cvar_val(num,pcvar_radius4)) {
-			sh_screenShake(vic, 14, 14, 14)
+			sh_screen_shake(vic, 14.0, 14.0, 14.0)
 
 			if ( vic == id ) continue
 			// Let them know why they get shaken and stunned, except the person that leveled
@@ -963,7 +969,7 @@ public shake_n_stun(id)
 			ShowSyncHudMsg(id, goku_hud_sync,"Goku - %s has turned Super Saiyan 4", gokuName)
 		}
 	}
-	explosion(gHeroID,id,float(cvar_val(num, pcvar_powerup_explode_radius_ssj4)),100.0,default_explode_knock_force_magnitude*0.25,_,1)
+	explosion(gHeroID,id,float(cvar_val(num, pcvar_powerup_explode_radius_ssj4)),100.0,_,_,1)
 }
 //----------------------------------------------------------------------------------------------
 public powerup_effect(parm[])

@@ -3,17 +3,5 @@
 #endif
 #define sh_aux_fx_natives_consts_pt1
 
-#if !defined LIBRARY_NAME
-#define LIBRARY_NAME "Superhero library 1: special fx pt1"
-#endif
 
-
-#define ICON_HIDE 0
-#define ICON_SHOW 1
-
-new m_trail, white,g_msgFade,gSpriteLaser,gMsgID_Status_icon
-new gSpriteSmoke,  gSpriteBurning
-new smoke
-new g_iFireSprite, g_iSmokeSprite[2];
-new precached_explosion_sprite1,precached_explosion_sprite2
 

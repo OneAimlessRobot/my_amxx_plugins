@@ -2,11 +2,21 @@
 #include <engine>
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_BASIC_MACROS
 #include "sh_aux_stuff/sh_aux_consts.inc"
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_funcs_misc.inc"
 
+#define ICON_HIDE 0
+#define ICON_SHOW 1
+
+new m_trail, white,g_msgFade,gSpriteLaser,gMsgID_Status_icon
+new gSpriteSmoke,  gSpriteBurning
+
+new g_iFireSprite, g_iSmokeSprite[2];
 
 #define PLUGIN "Superhero fx natives pt1"
 #define VERSION "1.0.0"
@@ -90,16 +100,12 @@ public plugin_natives(){
 	register_native("laser_line","_laser_line");
 	register_native("draw_bbox","_draw_bbox");
 	register_native("gun_shot_decal","_gun_shot_decal");
-	register_native("explode_fx","_explode_fx");
 	register_native("directed_spark","_directed_spark");
 	register_native("glow","_glow");
-	register_native("suck_in_sound","_suck_in_sound");
+	register_native("suck_in_fx","_suck_in_fx");
 	register_native("ammo_hud","_ammo_hud");
 	register_native("create_fired_shot_disk","_create_fired_shot_disk");
 	register_native("draw_aim_vector","_draw_aim_vector");
-	register_native("precache_native_fx_pt1","_precache_native_fx_pt1")
-	register_native("prepare_shero_aux_lib_pt1","_prepare_shero_aux_lib_pt1");
-	register_native("tank_impact_shot_fx","_tank_impact_shot_fx")
 	register_native("big_gun_shot_decal","_big_gun_shot_decal")
 	
 
@@ -138,29 +144,24 @@ public _ammo_hud(iPlugins, iParams){
 	}
 }
 
-public _prepare_shero_aux_lib_pt1(iPlugins, iParams){
-	
-	server_print("%s innited!^n",LIBRARY_NAME)
+prepare_shero_aux_lib_pt1(){
+
+	server_print("%s innited!^n",PLUGIN)
+
 }
-public _precache_native_fx_pt1(iPlugin,iParams){
+precache_native_fx_pt1(){
 
-
-	m_trail = engfunc(EngFunc_PrecacheModel,"sprites/smoke.spr")
 	white = engfunc(EngFunc_PrecacheModel,"sprites/shockwave.spr")
+	m_trail = engfunc(EngFunc_PrecacheModel,"sprites/smoke.spr")
 	gSpriteSmoke = engfunc(EngFunc_PrecacheModel,"sprites/steam1.spr")
 	gSpriteBurning = engfunc(EngFunc_PrecacheModel,"sprites/xfire.spr")
 	g_iSmokeSprite[0] = engfunc(EngFunc_PrecacheModel,"sprites/black_smoke3.spr");
 	g_iSmokeSprite[1] = engfunc(EngFunc_PrecacheModel,"sprites/steam1.spr");
-	smoke = engfunc(EngFunc_PrecacheModel,"sprites/steam1.spr")
-	precached_explosion_sprite1 = engfunc(EngFunc_PrecacheModel,"sprites/explode1.spr")
 	g_iFireSprite = engfunc(EngFunc_PrecacheModel,"sprites/flame.spr");
 	gSpriteLaser = engfunc(EngFunc_PrecacheModel,"sprites/laserbeam.spr")
-	precached_explosion_sprite2 = engfunc(EngFunc_PrecacheModel,"sprites/shmod/zerogxplode2.spr")
 
 	engfunc(EngFunc_PrecacheSound, LASER_LINE_DEFAULT_SOUND)
-	engfunc(EngFunc_PrecacheSound, crush_stunned)
 	engfunc(EngFunc_PrecacheSound, SUCK_IN_SOUND_FILE_NAME)
-	engfunc(EngFunc_PrecacheSound, EXPLOSION_TANK_SHOT_SOUND)
 
 }
 public _trail_custom(iPlugins, iParams){
@@ -407,7 +408,7 @@ public _fade_screen_user(iPlugins, iParams){
 	message_begin(MSG_ONE, g_msgFade, {0,0,0}, id); // use the magic #1 for "one client" 
 	write_short(0); // fade lasts this long duration 
 	write_short(0); // fade lasts this long hold time 
-	write_short(FADE_HOLD); // fade type 
+	write_short(SH_FFADE_IN); // fade type 
 	write_byte(0); // fade red 
 	write_byte(0); // fade green 
 	write_byte(0); // fade blue  
@@ -422,7 +423,7 @@ public _unfade_screen_user(iPlugins, iParams){
 	message_begin(MSG_ONE, g_msgFade, {0,0,0}, id); // use the magic #1 for "one client"  
 	write_short(1<<12); // fade lasts this long duration  
 	write_short(1<<8); // fade lasts this long hold time  
-	write_short(FADE_OUT); // fade type
+	write_short(SH_FFADE_MODULATE); // fade type
 	write_byte(0); // fade red  
 	write_byte(0); // fade green  
 	write_byte(0); // fade blue	 
@@ -633,84 +634,6 @@ public _gun_shot_decal(iPlugins, iParams){
 	write_byte (decal_id) //decal
 	message_end()	
 }
-//-----------------------------------------------------------------------------------------------
-public _explode_fx(iPlugins, iParams){
-
-	new vec1[3],
-		radius=get_param(2),
-		sh_custom_color:fx_color=sh_custom_color:get_param(3),
-		alpha=get_param(4),
-		explosion_sfx_flags:sfx_mask=explosion_sfx_flags:get_param(5)
-
-	get_array(1,vec1,3)
-
-	if((sfx_mask&explosion_sfx_show_shockwave)){
-		// blast circles
-		message_begin( MSG_BROADCAST,SVC_TEMPENTITY,vec1)
-		write_byte( TE_BEAMCYLINDER )
-		write_coord(vec1[0])
-		write_coord(vec1[1])
-		write_coord(vec1[2] + 16)
-		write_coord(vec1[0])
-		write_coord(vec1[1])
-		write_coord(vec1[2] + radius*3)
-		write_short( white )
-		write_byte( 0 ) // startframe
-		write_byte( 0 ) // framerate
-		write_byte( 2 ) // life 2
-		write_byte( 60 ) // width 16
-		write_byte( 0 ) // noise
-		write_byte( LineColors[fx_color][0] ) // r
-		write_byte( LineColors[fx_color][1] ) // g
-		write_byte( LineColors[fx_color][2]  ) // b
-		write_byte( alpha ) //brightness
-		write_byte( 0 ) // speed
-		message_end()
-	}
-
-	if((sfx_mask&explosion_sfx_show_fireball)){
-		static TE_FLAG = 0
-
-		TE_FLAG |= TE_EXPLFLAG_NODLIGHTS
-		TE_FLAG |= ((sfx_mask&explosion_sfx_show_custom_sound)?TE_EXPLFLAG_NOSOUND:0)
-		TE_FLAG |= TE_EXPLFLAG_NOPARTICLES
-
-		//TE_Explosion
-		message_begin( MSG_BROADCAST,SVC_TEMPENTITY,vec1)
-		write_byte( TE_EXPLOSION )
-		write_coord(vec1[0] + generate_int( -100, 100 ))
-		write_coord(vec1[1] + generate_int( -100, 100 ))
-		write_coord(vec1[2]+ generate_int( -50, 50 ))
-		write_short( precached_explosion_sprite1 )
-		write_byte(  radius/9  ) // byte (scale in 0.1's) 188
-		write_byte( 12 ) // byte (framerate)
-		write_byte( TE_FLAG ) // byte flags
-		message_end()
-	}
-	if((sfx_mask&explosion_sfx_show_smoke)){
-		//Smoke
-		message_begin( MSG_BROADCAST,SVC_TEMPENTITY,vec1)
-		write_byte( TE_SMOKE  ) // 5
-		write_coord(vec1[0] + generate_int( -100, 100 ))
-		write_coord(vec1[1] + generate_int( -100, 100 ))
-		write_coord(vec1[2] + generate_int( -50, 50 ))
-		write_short( smoke )
-		write_byte( radius/14 )  // 2
-		write_byte( 10 )  // 10
-		message_end()
-	}
-	if((sfx_mask&explosion_sfx_show_burn_decal)){
-	
-		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-		write_byte(TE_GUNSHOTDECAL)		// decal and ricochet sound
-		write_coord(vec1[0])	// pos
-		write_coord(vec1[1])
-		write_coord(vec1[2])
-		write_short(0)			// I have no idea what thats supposed to be
-		write_byte(g_burnDecalBig[0])			// decal
-		message_end()
-	}
-}
 //(init_id, end_id,girth=10,veins=10,glowing=255,ramming_pace=8,color_constant=GREEN)
 public _directed_spark(iPlugins, iParams){
 
@@ -746,68 +669,6 @@ public _directed_spark(iPlugins, iParams){
 	write_byte( glowing)				// brightness
 	write_byte( ramming_pace )				// scroll speed
 	message_end()
-
-}
-public _tank_impact_shot_fx(iPlugin,iParms){
-
-		new ent=get_param(1)
-		if(!is_valid_ent(ent)) return 
-		
-		new Float:origin[3]
-
-		get_array_f(2,origin,3)
-		new radius=get_param(3)
-		
-		new brightness= get_param(4)
-
-		new Float:rel_height= get_param_f(5)
-
-		new bool:show_burndecal = bool:get_param(6)
-
-		new bool:make_custom_sound = bool:get_param(7)
-		
-
-		new custom_sound_sample[128]
-
-		
-
-		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-		write_byte(TE_SPRITE)
-		write_coord_f(origin[0])
-		write_coord_f(origin[1])
-		write_coord_f(origin[2] + rel_height)
-		write_short(precached_explosion_sprite2)
-		write_byte(radius)
-		write_byte(brightness)
-		message_end()
-		if(make_custom_sound){
-			get_string(8,custom_sound_sample,(sizeof custom_sound_sample)-1)
-
-
-		}
-		emit_sound(ent, CHAN_WEAPON,make_custom_sound?custom_sound_sample:EXPLOSION_TANK_SHOT_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-		if(!show_burndecal){
-
-			return
-		}
-		new decal_id
-		if ( radius <= 18 ) {
-			
-			decal_id = g_burnDecal[generate_int(0,sizeof(g_burnDecal)-1)]
-		}
-		else {
-			decal_id = g_burnDecalBig[generate_int(0,sizeof(g_burnDecalBig)-1)]
-		}
-
-		// Create the burn decal
-		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-		write_byte(TE_GUNSHOTDECAL)		//TE_GUNSHOTDECAL
-		write_coord_f(origin[0])
-		write_coord_f(origin[1])
-		write_coord_f(origin[2])
-		write_short(0)			//?
-		write_byte(decal_id)	//decal
-		message_end()
 
 }
 public _create_fired_shot_disk(iPlugin,iParms){
@@ -885,7 +746,7 @@ public _glow(iPlugins, iParams){
 	}
 }
 
-public _suck_in_sound(iPlugins, iParams){
+public _suck_in_fx(iPlugins, iParams){
 	new ent_id=get_param(1),
 		make_sound=get_param(2)
 

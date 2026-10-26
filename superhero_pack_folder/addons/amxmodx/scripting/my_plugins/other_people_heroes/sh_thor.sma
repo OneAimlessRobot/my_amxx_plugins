@@ -19,6 +19,8 @@ thor_cooldown 45		//Amount of time before next available use (def 45)
 */
 #define I_WANT_CONSTANTS
 #define I_WANT_QUICK_CHECKS
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_RESOURCE_ALIASES
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
@@ -132,7 +134,7 @@ thor_thunder_damage(attacker, tg){
 	}
 	
 	setScreenFlash(tg, 255, 255, 224, 10, alphanum)
-	sh_screenShake(tg, 12, 10, 14)
+	sh_screen_shake(tg, 12.0, 10.0, 14.0)
 	if(!is_user_alive(tg)){
 
 		static Float:origin[3]

@@ -1,5 +1,7 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_RESOURCE_ALIASES
 #include "../my_include/superheromod.inc"
 #include "disrupt_fx_inc/disrupt_fx.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
@@ -21,7 +23,6 @@ public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	DISRUPT_TASKID=allocate_typed_task_id(player_task)
 	DISORIENT_TASKID=allocate_typed_task_id(player_task)
-	init_explosion_defaults()
 
 }
 
@@ -135,7 +136,7 @@ disrupt_user(id){
 	new array[1]
 	array[0] = 0
 	sh_screen_shake(id,10.0,floatmul(DISRUPT_PERIOD,float(DISRUPT_TIMES)),10.0)
-	sh_set_stun(id,floatmul(DISRUPT_PERIOD,float(DISRUPT_TIMES)),default_stun_speed)
+	sh_set_stun(id,floatmul(DISRUPT_PERIOD,float(DISRUPT_TIMES)))
 	sh_assign_id_bit(id,SH_IS_DISRUPT, true)
 	set_damage_icon(id,2,DMG_ICON_SHOCK,LineColors[LTBLUE])
 	disrupt_task(array,id+DISRUPT_TASKID)

@@ -429,29 +429,6 @@ stock fm_set_user_rendering(index, fx = kRenderFxNone, r = 255, g = 255, b = 255
 	return fm_set_rendering(index, fx, r, g, b, render, amount);
 }
 
-stock fm_give_item(index, const item[]) {
-	if (!equal(item, "weapon_", 7) && !equal(item, "ammo_", 5) && !equal(item, "item_", 5) && !equal(item, "tf_weapon_", 10))
-		return 0;
-
-	new ent = fm_create_entity(item);
-	if (!pev_valid(ent))
-		return 0;
-
-	new Float:origin[3];
-	pev(index, pev_origin, origin);
-	set_pev(ent, pev_origin, origin);
-	set_pev(ent, pev_spawnflags, pev(ent, pev_spawnflags) | SF_NORESPAWN);
-	dllfunc(DLLFunc_Spawn, ent);
-
-	new save = pev(ent, pev_solid);
-	dllfunc(DLLFunc_Touch, ent, index);
-	if (pev(ent, pev_solid) != save)
-		return ent;
-
-	engfunc(EngFunc_RemoveEntity, ent);
-
-	return -1;
-}
 
 stock fm_set_user_maxspeed(index, Float:speed = -1.0) {
 	engfunc(EngFunc_SetClientMaxspeed, index, speed);
@@ -731,25 +708,6 @@ stock bool:fm_is_ent_visible(index, entity, ignoremonsters = 0) {
 	return false;
 }
 
-// ported from AMXX's core get_user_origin(..., 3) (suggested by Greenberet)
-stock fm_get_aim_origin(index, Float:origin[3]) {
-	new Float:start[3], Float:view_ofs[3];
-	pev(index, pev_origin, start);
-	pev(index, pev_view_ofs, view_ofs);
-	xs_vec_add(start, view_ofs, start);
-
-	new Float:dest[3];
-	pev(index, pev_v_angle, dest);
-	engfunc(EngFunc_MakeVectors, dest);
-	global_get(glb_v_forward, dest);
-	xs_vec_mul_scalar(dest, 9999.0, dest);
-	xs_vec_add(start, dest, dest);
-
-	engfunc(EngFunc_TraceLine, start, dest, 0, index, 0);
-	get_tr2(0, TR_vecEndPos, origin);
-
-	return 1;
-}
 
 stock bool:fm_get_user_longjump(index) {
 	new value[2];

@@ -34,8 +34,10 @@ poisonivy_self 1		//Can users with Poison Ivy be infected, 0=no 1=yes
 *
 *    Hero orginally created by AssKicR
 */
+#define I_WANT_RESOURCE_ALIASES
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_consts.inc"
+#include "../my_heroes/bleed_knife_inc/sh_bknife_fx.inc"
 #include "../my_heroes/special_fx_inc/sh_yakui_get_set.inc"
 #include "../my_heroes/special_fx_inc/sh_gatling_special_fx.inc"
 

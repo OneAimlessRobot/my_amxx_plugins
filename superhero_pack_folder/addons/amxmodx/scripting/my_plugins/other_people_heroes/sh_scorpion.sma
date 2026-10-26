@@ -1,6 +1,7 @@
 
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_ENTITY_VECTORS
 
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
@@ -99,7 +100,7 @@ switch(key)
 public scorpion_kd(id)
 {
 
-	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)|| !hasRoundStarted() || !sh_is_active() ) return
+	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)|| sh_is_freezetime() || !sh_is_active() ) return
 
 	scorpion_hookOn(id)
 }
@@ -287,7 +288,7 @@ public scorpion_fight_on(id, enemy)
 
 	if ( g_inKnifeFight[id] ) return
 
-	sh_setScreenFlash(id, 255, 255, 25, 10, 45)
+	setScreenFlash(id, 255, 255, 25, 10, 45)
 
 	// Remember this weapon...
 	new clip, ammo, weaponID = get_user_weapon(id, clip, ammo)
@@ -329,9 +330,11 @@ public scorpion_fight_off(id)
 				get_user_name(i, i_name, 31)
 				client_print(i, print_center, "%s WINS", i_name)
 				if ( is_user_connected(id) ) client_print(id, print_center, "%s WINS", i_name)
-				sh_setScreenFlash(i, 255, 255, 25, 10, 45)
+				setScreenFlash(i, 255, 255, 25, 10, 45)
 				// Switch back to previous weapon...
-				if ( g_lastWeapon[i] != CSW_KNIFE ) shSwitchWeaponID(i, g_lastWeapon[i])
+				if ( g_lastWeapon[i] != CSW_KNIFE ){
+					sh_switch_weapon(i, g_lastWeapon[i])
+				}
 			}
 		}
 	}

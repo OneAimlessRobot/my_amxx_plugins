@@ -3,6 +3,10 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_BASIC_MACROS
+#define I_WANT_ENTITY_VECTORS
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_RESOURCE_ALIASES
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "jvnko_inc/jvnko.inc"
@@ -85,7 +89,7 @@ public jvnko_tracer_red(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr,
 	}
 
 	new bool:the_bool_to_use=sh_get_id_bit(Attacker,SH_IS_TR45H_GUN_EQUIPPED)
-	generic_weapon_tracer_logic(Attacker,the_bool_to_use,_,gHeroID,true,sh_custom_color:{RED,RED,RED})
+	generic_weapon_tracer_logic(Attacker,the_bool_to_use,_,gHeroID,sh_custom_color:{RED,RED,RED})
 
 }
 public Jvnko_Damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits){

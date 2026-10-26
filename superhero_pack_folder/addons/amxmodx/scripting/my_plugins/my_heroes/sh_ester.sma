@@ -2,6 +2,11 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_CUSTOM_WEAPONS
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_BASIC_MACROS
+#define I_WANT_PDATA_ALIASES
+#define I_WANT_ENTITY_VECTORS
 #include "../my_include/superheromod.inc"
 #include "ester_inc/ester_global.inc"
 #include "ester_inc/ester_flight.inc"
@@ -99,7 +104,7 @@ public plugin_init()
 	pcvar_moralizing_tmp_xp_get_mult = create_cvar("ester_moralizing_tmp_xp_get_mult","5.0"); 
 	pcvar_moralizing_pan_xp_get_mult = create_cvar("ester_moralizing_pan_xp_get_mult","25.0");
 	
-	gHeroID=shCreateHero(gHeroName, "NEUROBLAST! REBORN!", "Kill everyone who wronged you! Also you have a pan", true, "ester_level",true)
+	gHeroID=shCreateHero(gHeroName, "NEUROBLAST! REBORN!", "Kill everyone who wronged you! Also you have a pan", true, "ester_level")
 	
 	sh_register_superheromod_model(gHeroID,
 								"models/player/ester/ester.mdl",
@@ -135,7 +140,6 @@ public plugin_init()
 
 	RegisterHam(Ham_BloodColor,"player","Hook_BloodColor",_, true)
 
-	init_explosion_defaults()
 
 
 	adulting_pan_wpn_id=sh_log_custom_damage_source(
@@ -159,7 +163,7 @@ public plugin_init()
 }
 
 ester_collapse(id){
-	explosion(gHeroID,id,float(get_user_health(id)+damage_to_do[id]),float(get_user_health(id)+damage_to_do[id]),default_explode_knock_force_magnitude,0)
+	explosion(gHeroID,id,float(get_user_health(id)+damage_to_do[id]),float(get_user_health(id)+damage_to_do[id]),_,0)
 	reset_status(id)
 	user_kill(id,1)
 	Set_BitVar(gFinishedMask,id)
@@ -535,7 +539,7 @@ public ester_moralizer_ray_laser(Victim, Attacker, Float:Damage, Float:Direction
 		return
 	}
 	
-	generic_weapon_tracer_logic(Attacker,_,MORALIZER_WEAPON_ID,gHeroID,true,sh_custom_color:{GREEN,GREEN,GREEN},
+	generic_weapon_tracer_logic(Attacker,_,MORALIZER_WEAPON_ID,gHeroID,sh_custom_color:{GREEN,GREEN,GREEN},
 					tracer_sfx_show_laser_line|tracer_sfx_show_play_shoot_sound)
 
 
@@ -720,7 +724,7 @@ switch(key)
 //----------------------------------------------------------------------------------------------
 public ester_kd(id)
 {
-	if ( !is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID) ||!hasRoundStarted()) {
+	if ( !is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID) ||sh_is_freezetime()) {
 		return PLUGIN_HANDLED
 	}
 
@@ -764,7 +768,7 @@ public ester_kd(id)
 
 public ester_ku(id)
 {
-	if ( !is_user_alive(id) ||!sh_get_user_has_hero(id,gHeroID) ||!gTimesLeft[id]||!Get_BitVar(gPedalIsFlooredMask,id)||!hasRoundStarted()) {
+	if ( !is_user_alive(id) ||!sh_get_user_has_hero(id,gHeroID) ||!gTimesLeft[id]||!Get_BitVar(gPedalIsFlooredMask,id)||sh_is_freezetime()) {
 		return PLUGIN_HANDLED
 	}
 	UnSet_BitVar(gPedalIsFlooredMask,id)

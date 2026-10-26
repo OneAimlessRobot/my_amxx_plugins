@@ -1,6 +1,8 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
-
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_PDATA_ALIASES
+#define I_WANT_RESOURCE_ALIASES
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
@@ -29,7 +31,6 @@ register_event("CurWeapon", "weaponChange", "be", "1=1")
 
 SLEEP_TASKID=allocate_typed_task_id(player_task)
 FULLY_WAKE_UP_TASKID=allocate_typed_task_id(player_task)
-init_explosion_defaults()
 }
 //https://forums.alliedmods.net/showthread.php?t=258006
 public Ham_PlayerPreThink(id)
@@ -102,7 +103,7 @@ stock sleep_user_switch_weapon(id){
 	new wpnid = read_data(2)
 	if(wpnid!=CSW_KNIFE){
 		sh_switch_weapon(id,CSW_KNIFE)
-		set_user_maxspeed_controlled(id,default_stun_speed,true,false)
+		set_user_maxspeed_controlled(id,0.1,true,false)
 	}
 	
 }
@@ -191,7 +192,7 @@ sleep_user(id,attacker){
 	entity_get_vector( id, EV_VEC_angles, gKeepAngles[id] )
 	sh_assign_id_bit(id,SH_IS_SLEEPING,true)
 	sleep_user_switch_weapon(id)
-	sh_set_stun(id,SLEEP_TIME*2.0,default_stun_speed)
+	sh_set_stun(id,SLEEP_TIME*2.0)
 	//fade_screen_user(id)
 	emit_sound(id, CHAN_VOICE, SLEEP_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	sleep_task(array,id+SLEEP_TASKID)

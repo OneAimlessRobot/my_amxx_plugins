@@ -1,5 +1,6 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_BASIC_MACROS
 #include "../my_include/superheromod.inc"
 #include "mines_inc/sh_sapper_get_set.inc"
 #include "mines_inc/sh_mine_funcs.inc"
@@ -33,7 +34,6 @@ public plugin_init()
 								"Sapper ready.",
 								"Mission failed.")
 
-	//sh_register_admin_only_hero(gHeroID, ADMIN_ALL, 0, "This is under maintenance. Im sorry")
 }
 
 public plugin_natives(){
@@ -133,7 +133,6 @@ public sh_client_spawn(id)
 if ( sh_get_user_has_hero(id,gHeroID) ) {
 	reset_sapper_user(id)
 	sapper_weapons(id)
-	sh_end_cooldown(id+SH_COOLDOWN_TASKID)
 }
 
 }

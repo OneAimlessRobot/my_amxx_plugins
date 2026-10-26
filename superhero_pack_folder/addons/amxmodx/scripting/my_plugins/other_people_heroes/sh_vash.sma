@@ -28,11 +28,11 @@ vash_gravity 1.0		//Default 1.0 = normal gravity (0.50 is 50% of normal gravity,
 *   Ripped from the hero - Morpheus by RadidEskimo & Freecode.
 *   Weapon model by Thin Red Paste & X-convinct, converted by SplinterCell.
 */
-#define I_WANT_MISC_FUNCS
+#define I_WANT_MISC_FUNCS_2
 #define I_WANT_CONSTANTS
+#define I_WANT_BASIC_MACROS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
-#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
 #define vash_v_deagle_model "models/shmod/vash_deagle_zk.mdl"
@@ -174,7 +174,7 @@ public vash_damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, Dama
 //----------------------------------------------------------------------------------------------
 public vash_hitzones()
 {
-	if ( !sh_is_active() || !hasRoundStarted() ) return
+	if ( !sh_is_active() || sh_is_freezetime() ) return
 
 	for ( new id = 1; id < sh_maxplayers()+1; id++ ) {
 		if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) ) {

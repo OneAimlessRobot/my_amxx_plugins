@@ -9,6 +9,9 @@ styropyro_multishot 0.1			//Delay for multishots on holding key down, set to -1 
 
 */
 #define I_WANT_CONSTANTS
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_BASIC_MACROS
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_include/my_author_header.inc"
@@ -94,7 +97,7 @@ switch(key)
 // RESPOND TO KEYDOWN
 public styropyro_kd(id)
 {
-	if ( !hasRoundStarted() ) return
+	if ( sh_is_freezetime() ) return
 
 	if ( !is_user_alive(id) ) return
 
@@ -125,7 +128,7 @@ public styropyro_ku(id)
 	
 	remove_task(id)
 
-	if ( !hasRoundStarted() || sh_get_cooldown_flag(id) || !gLaserFired[id] ) return
+	if ( sh_is_freezetime() || sh_get_cooldown_flag(id) || !gLaserFired[id] ) return
 
 	// Use the ultimate
 	if ( get_cvar_float("styropyro_cooldown") > 0.0 ) sh_set_cooldown(id, get_cvar_float("styropyro_cooldown"))
@@ -141,8 +144,8 @@ public fire_laser(id)
 
 	if ( !is_user_alive(id) ) return
 
-	sh_screenShake(id, 100, 25, 100)
-	sh_setScreenFlash(id, 255, 255, 255, 10, 200)
+	sh_screen_shake(id, 100.0, 25.0, 100.0)
+	setScreenFlash(id, 255, 255, 255, 10, 200)
 	
 	if ( gLaserShots[id] == 0 ) {
 		

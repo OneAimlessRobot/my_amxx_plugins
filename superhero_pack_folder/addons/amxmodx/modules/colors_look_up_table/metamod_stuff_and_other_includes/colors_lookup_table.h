@@ -4,431 +4,145 @@
 check pawn include for interface
   */
 
-#ifndef __WEAPON_LOOKUP_TABLE_H__
-#define __WEAPON_LOOKUP_TABLE_H__
+#ifndef __COLORS_LOOKUP_TABLE_H__
+#define __COLORS_LOOKUP_TABLE_H__
 
 #define min(a,b) ((a < b) ? a : b)
 #define max(a,b) ((a > b) ? a : b)
+#define clamp(v,m,M) ((m < M)?( ( v <= m) ? m : ( ( v >= M )? M : v) ) : ( ( v <= M) ? M : ( ( v >= m )? m : v) ) )
 
 typedef uint32_t state_cell_type_t;
 
-typedef enum {
+typedef struct color_t{
+	uint8_t color_values[3];
+	
+	
+}color_t;
 
-    MY_SLOT_PRIMARY = 0,
-    MY_SLOT_SECONDARY,
-    MY_SLOT_KNIFE,
-    MY_SLOT_GRENADE,
-    MY_SLOT_C4
+// this list includes the alphas that are meant to be applied
 
-}my_weapon_slots;
-
-typedef enum {
-	
-	CSW_NONE = 0,			//0
-	CSW_P228,				//1
-	CSW_GLOCK,				//2
-	CSW_SCOUT,				//3
-	CSW_HEGRENADE,			//4
-	CSW_XM1014,				//5
-	CSW_C4,					//6
-	CSW_MAC10,				//7
-	CSW_AUG,				//8
-	CSW_SMOKEGRENADE,		//9
-	CSW_ELITE,				//10
-	CSW_FIVESEVEN,			//11
-	CSW_UMP45,				//12
-	CSW_SG550,				//13
-	CSW_GALIL,				//14
-	CSW_FAMAS,				//15
-	CSW_USP,				//16
-	CSW_GLOCK18,			//17
-	CSW_AWP,				//18
-	CSW_MP5NAVY,			//19
-	CSW_M249,				//20
-	CSW_M3,					//21
-	CSW_M4A1,				//22
-	CSW_TMP,				//23
-	CSW_G3SG1,				//24
-	CSW_FLASHBANG,			//25
-	CSW_DEAGLE,				//26
-	CSW_SG552,				//27
-	CSW_AK47,				//28
-	CSW_KNIFE,				//29
-	CSW_P90					//30
-
-}my_weapon_ids;
-
-typedef enum{
-	
-	AMMOID_KNIFE = -1,		//-1
-	AMMOID_NONE,			//0
-	
-	/*
-	 * 
-	 * One, two, three...
-	 *
-	*/
-	
-	AMMOID_338MAGNUM,  		//1
-	AMMOID_762NATO,    		//2
-	AMMOID_556NATOBOX, 		//3
-	AMMOID_556NATO,    		//4
-	AMMOID_BUCKSHOT,   		//5
-	AMMOID_45ACP,	   		//6
-	AMMOID_57,	       		//7
-	AMMOID_50AE,	   		//8
-	AMMOID_357SIG,	   		//9
-	AMMOID_9MM,	   	   		//10
-	AMMOID_FLASHBANG,  		//11
-	AMMOID_HEGRENADE,  		//12
-	AMMOID_SMOKEGRENADE,	//13
-	AMMOID_C4				//14
-	
-	
-	
-}my_ammo_ids;
-
-#define CSW_LAST_WEAPON     CSW_P90
+// chucky blue 75, 75, 255 16 
+// grandmaster yellow 255, 255, 0, 16,
+// blink pink 219, 112, 147 16
+// breaker blue 0 255, 255, 50
+// dr strange green 0, 240, 100 16
+// exodus yellow 200, 187, 0 16
+// phoenix red 248, 20, 25 16
+// steel grey 35, 40, 50 16
+// iceman blue 50,50,250 16
+// static shock blue 50,50,250 16
+// invisible man grey 8, 8, 8
+// palpatine purple 175,0,255 25
+// godmode blue 0, 0, 128 16
 
 
-#define is_valid_cs_weapon(a) ((a > CSW_NONE) && (a != CSW_GLOCK) && (a <= CSW_LAST_WEAPON))
+typedef enum sh_custom_color{
+		CUSTOM=0,
+		RED,
+		GREEN,
+		BLUE,
+		LTBLUE,
+		YELLOW,
+		PURPLE,
+		ORANGE,
+		WHITE,
+		PINK,
+		LTGREEN,
+		INVIS,
+		BLACK,
+		MAGENTA,
+		FROZEN_BLUE,
+		BABY_BLUE,
+		LAVENDER,
+		GRIM_REAPER_GLOW,
+		ELELCTROBOOM_VIOLET,
+		CHUCKY_BLUE,
+		GRANDMASTER_YELLOW,
+		BLINK_PINK,
+		BREAKER_BLUE,
+		DR_STRANGE_GREEN,
+		EXODUS_YELLOW,
+		PHOENIX_RED,
+		STEEL_GREY,
+		ICEMAN_BLUE,
+		STATIC_SHOCK_BLUE,
+		INVISIBLE_MAN_GREY,
+		PALPATINE_PURPLE,
+		GODMODE_BLUE,
+		NUM_COLORS
+}sh_custom_color;
 
-typedef struct def_weapon_data_struct{
-	
-	char wpn_struct_fruity_name[100],
-		wpn_struct_weapon_name[25];
-	float wpn_struct_primary_attack_delay,
-			wpn_struct_secondary_attack_delay,
-			wpn_struct_reload_delay;
-	uint16_t wpn_struct_max_clip;
-	my_ammo_ids wpn_struct_ammo_id;
-	uint8_t wpn_struct_wpn_position;
-	uint16_t wpn_struct_max_bp_ammo;
-	char wpn_struct_ammo_name[20];
-    my_weapon_ids wpn_slot;
-	char wpn_struct_events_file[32];
-	
-}def_weapon_data_struct;
-	
-	
-const def_weapon_data_struct weapon_data_structs_array[CSW_LAST_WEAPON+1] = {
-	
-	{ "", "", 0.000000, 0.000000, 0.00, -1, AMMOID_NONE, 0, -1, "", (my_weapon_ids)-1, "" },
-
-	{ "SIG P228", "weapon_p228", 0.150000, 0.150000, 2.70, 13, AMMOID_357SIG, 3, 52, "357sig", MY_SLOT_SECONDARY, "events/p228.sc" },
-
-	{ "", "", 0.000000, 0.000000, 0.00, -1, AMMOID_NONE, 0, 0, "", (my_weapon_ids)-1, ""},
-
-	{ "Scout", "weapon_scout", 1.250000, 0.300000, 2.00, 10, AMMOID_762NATO, 9, 90, "762nato", MY_SLOT_PRIMARY, "events/scout.sc" },
-	
-	{ "HE Grenade", "weapon_hegrenade", 0.000000, 0.000000, 0.00, 1,  AMMOID_HEGRENADE, 1, 1, "", MY_SLOT_GRENADE, "" },
-
-	{ "XM1014 Auto Shotgun", "weapon_xm1014", 0.250000, 0.250000, 0.55, 7,  AMMOID_BUCKSHOT, 12, 32, "buckshot", MY_SLOT_PRIMARY, "events/xm1014.sc" },
-	
-	{ "C4", "weapon_c4", 0.000000, 0.000000, 0.00, 1,  AMMOID_C4, 3, 1, "", MY_SLOT_C4, "" },
-	
-	{ "MAC-10", "weapon_mac10", 0.070000, 0.070000, 3.15, 30, AMMOID_45ACP, 13, 100, "45acp", MY_SLOT_PRIMARY, "events/mac10.sc" },
-	
-	{ "AUG", "weapon_aug", 0.082500, 0.300000, 3.30, 30, AMMOID_556NATO, 14, 90, "556nato", MY_SLOT_PRIMARY, "events/aug.sc" },
-	
-	{ "Smokegrenade", "weapon_smokegrenade", 0.000000, 0.000000, 0.00, 1,  AMMOID_SMOKEGRENADE, 3, 1, "", MY_SLOT_GRENADE, "" },
-	
-	{ "Dual Elites", "weapon_elite", 0.122000, 0.122000, 4.50, 30, AMMOID_9MM, 5, 120, "9mm", MY_SLOT_SECONDARY, "" },
-	
-	{ "Five-Seven", "weapon_fiveseven", 0.150000, 0.150000, 2.70, 20, AMMOID_57, 6, 100, "57mm", MY_SLOT_SECONDARY, "events/fiveseven.sc" },
-	
-	{ "UMP-45", "weapon_ump45", 0.100000, 0.100000, 3.50, 25, AMMOID_45ACP, 15, 100, "45acp", MY_SLOT_PRIMARY,"events/ump45.sc" },
-
-	{ "SIG SG-550", "weapon_sg550", 0.250000, 0.300000, 3.35, 30, AMMOID_556NATO, 16, 90, "556nato", MY_SLOT_PRIMARY, "events/sg550.sc" },
-	
-	{ "Galil", "weapon_galil", 0.087499, 0.087499, 2.45, 35, AMMOID_556NATO, 17, 90, "556nato", MY_SLOT_PRIMARY, "events/galil.sc" },
-	
-	{ "Famas", "weapon_famas", 0.082500, 0.300000, 3.30, 25, AMMOID_556NATO, 18, 90, "556nato", MY_SLOT_PRIMARY, "events/famas.sc" },
-	
-	{ "HK USP", "weapon_usp", 0.149999, 3.130000, 2.70, 12, AMMOID_45ACP, 4, 100,"45acp", MY_SLOT_SECONDARY, "events/usp.sc" },
-	
-	{ "Glock-18", "weapon_glock18", 0.150000, 0.300000, 2.20, 20, AMMOID_9MM, 2, 120, "9mm", MY_SLOT_SECONDARY, "events/glock18.sc" },
-	
-	{ "AWP", "weapon_awp", 1.450000, 0.300000, 2.50, 10, AMMOID_338MAGNUM, 2, 30, "338magnum", MY_SLOT_PRIMARY, "events/awp.sc" },
-	
-	{ "HK MP5", "weapon_mp5navy", 0.075000, 0.075000, 2.63, 30, AMMOID_9MM, 7, 120, "9mm", MY_SLOT_PRIMARY, "events/mp5n.sc" },
-	
-	{ "M249", "weapon_m249", 0.100000, 0.100000, 4.70, 100, AMMOID_556NATOBOX, 4, 200, "556natobox", MY_SLOT_PRIMARY, "events/m249.sc" },
-	
-	{ "M3 Pump Action", "weapon_m3", 0.875000, 0.875000, 0.55, 8,  AMMOID_BUCKSHOT, 5, 32, "buckshot", MY_SLOT_PRIMARY, "events/m3.sc" },
-	
-	{ "M4A1", "weapon_m4a1", 0.087499, 2.000000, 3.05, 30, AMMOID_556NATO, 6, 90, "556nato", MY_SLOT_PRIMARY, "events/m4a1.sc" },
-	
-	{ "TMP", "weapon_tmp", 0.070000, 0.070000, 2.12, 30, AMMOID_9MM, 11, 120, "9mm", MY_SLOT_PRIMARY, "events/tmp.sc" },
-	
-	{ "G3-SG1", "weapon_g3sg1", 0.250000, 0.300000, 3.50, 20, AMMOID_762NATO, 3, 90, "762nato", MY_SLOT_PRIMARY, "events/g3sg1.sc" },
-	
-	{ "Flashbang", "weapon_flashbang", 0.000000, 0.000000, 0.00, 2,  AMMOID_FLASHBANG, 2, 2, "", MY_SLOT_GRENADE, "" },
-
-	{ "Desert Eagle", "weapon_deagle", 0.225000, 0.225000, 2.20, 7,  AMMOID_50AE, 1, 35, "50ae", MY_SLOT_SECONDARY, "events/deagle.sc"},
-	
-	{ "SIG SG-552", "weapon_sg552", 0.082500, 0.300000, 3.00, 30, AMMOID_556NATO, 10, 90, "556nato", MY_SLOT_PRIMARY, "events/sg552.sc" },
-	
-	{ "AK47", "weapon_ak47", 0.095499, 0.095499, 2.45, 30, AMMOID_762NATO, 1, 90, "762nato", MY_SLOT_PRIMARY, "events/ak47.sc" },
-
-	{ "Knife", "weapon_knife", 0.000000, 0.000000, 0.00, -1, AMMOID_KNIFE, 1, -1, "", MY_SLOT_KNIFE, "events/knife.sc" },
-
-	{ "P90", "weapon_p90", 0.065999, 0.065999, 3.40, 50, AMMOID_57, 8, 100, "57mm", MY_SLOT_PRIMARY, "events/p90.sc" }
+//Color definitions
+static const color_t standard_colors_to_use[NUM_COLORS] = {
+	{150, 150, 150},	//Custom
+	{255, 0, 0},		//Red
+	{0, 255, 0},		//Green
+	{0, 0, 255},		//Blue
+	{0, 255, 255},		//Light Blue
+	{255, 255, 0},		//Yellow
+	{255, 0, 255},		//Purple
+	{255, 128, 0},		//Orange
+	{255, 255, 255},	//White
+	{250, 92, 163},      //Pink
+	{111,255,111},      //Light Green
+	{10,10,10},      //invisible
+	{1,1,1},      //Black
+	{255,0,127},      //Magenta
+	{5, 30, 125}, //Frozen Blue
+	{111, 111, 255}, //Baby Blue
+	{139, 122, 158}, //Lavender
+	{50, 8, 8}, //grim reaper glow
+	{184, 105, 255}, //electroboom violet
+	{75, 75, 255 }, // chucky blue
+	{255, 255, 0}, // grandmaster yellow 
+	{219, 112, 147}, // blink pink
+	{0, 255, 255 }, // Breaker blue
+	{0, 240, 100 }, // dr strange green
+	{200, 187, 0 }, // exodus yellow
+	{248, 20, 25 }, // Phoenix red
+	{35, 40, 50 }, // Steel grey
+	{50, 50, 250 }, // iceman blue
+	{50, 50, 250 }, // static shock blue
+	{8, 8, 8 }, // invisible man grey
+	{175,0,255 }, // palpatine purple
+	{0, 0, 128 } // godmode blue
 
 };
+
+typedef enum sh_fx_color{
+
+	FX_NONE = 0,
+	FX_KILL,
+	FX_GLOW,
+	FX_POISON,
+	FX_STUN,
+	FX_RADIOACTIVE,
+	FX_MORPHINE,
+	FX_WEED,
+	FX_COCAINE,
+	FX_BLIND,
+	FX_METYLPHENIDATE,
+	FX_BATH,
+	NUM_FX_COLORS
+	
+}sh_fx_color;
+
+
+//Color definitions
+const color_t fx_colors_to_use[NUM_FX_COLORS] = {
+	{0,0,0}, //fx_none
+	{1, 255, 255}, //fx_cyanide
+	{255, 255, 255}, //fx_glow
+	{80, 240, 30},	//fx_poison
+	{100, 100, 100}, //fx_stun
+	{240, 80, 30}, //fx_radioactive
+	{80, 240, 1}, //fx_morphine
+	{80, 240, 90}, //fx_weed
+	{250, 10, 30},  //fx_cocaine
+	{255, 255, 255}, //fx_blind
+	{50, 50, 50},  //fx_metylphenidate
+	{179, 66, 5} //fx_bath
+
+};
+
 #endif
-
-
-/**
- * 
- * 
- * 
- * I feel like I may need this stuff one day
- * 
-enum sh_weapon_data_struct{
-
-	wpn_struct_weapon_name[25],
-	wpn_struct_ammo_name[20]
-
-
-}
-stock const weapon_data_structs_array[CSW_LAST_WEAPON+1][sh_weapon_data_struct] = {
-	
-	{ "", "" },
-
-	{ "weapon_p228",  "357sig" },
-
-	{ "",  ""},
-
-	{ "weapon_scout", "762nato" },
-	
-	{ "weapon_hegrenade", ""},
-
-	{ "weapon_xm1014","buckshot" },
-	
-	{ "weapon_c4","" },
-	
-	{ "weapon_mac10", "45acp" },
-	
-	{ "weapon_aug", "556nato" },
-	
-	{ "weapon_smokegrenade", "" },
-	
-	{ "weapon_elite", "9mm" },
-	
-	{ "weapon_fiveseven", "57mm" },
-	
-	{ "weapon_ump45", "45acp" },
-
-	{ "weapon_sg550", "556nato" },
-	
-	{ "weapon_galil", "556nato" },
-	
-	{ "weapon_famas", "556nato" },
-	
-	{ "weapon_usp", "45acp" },
-	
-	{ "weapon_glock18", "9mm" },
-	
-	{ "weapon_awp", "338magnum" },
-	
-	{ "weapon_mp5navy", "9mm" },
-	
-	{ "weapon_m249", "556natobox" },
-	
-	{ "weapon_m3", "buckshot" },
-	
-	{ "weapon_m4a1", "556nato" },
-	
-	{ "weapon_tmp", "9mm"},
-	
-	{ "weapon_g3sg1", "762nato"},
-	
-	{ "weapon_flashbang", ""},
-
-	{ "weapon_deagle", "50ae"},
-	
-	{ "weapon_sg552", "556nato"},
-	
-	{ "weapon_ak47", "762nato"},
-
-	{ "weapon_knife", ""},
-
-	{ "weapon_p90", "57mm"}
-
-}
-
-
-
-enum sh_weapon_strings_struct{
-
-	wpn_struct_weapon_name[20],
-	wpn_struct_ammo_name[11]
-
-
-}
-stock const weapon_data_strings_array[CSW_LAST_WEAPON+1][sh_weapon_strings_struct] = {
-	
-	{ "", "" },
-
-	{ "weapon_p228",  "357sig" },
-
-	{ "",  ""},
-
-	{ "weapon_scout", "762nato" },
-	
-	{ "weapon_hegrenade", ""},
-
-	{ "weapon_xm1014","buckshot" },
-	
-	{ "weapon_c4","" },
-	
-	{ "weapon_mac10", "45acp" },
-	
-	{ "weapon_aug", "556nato" },
-	
-	{ "weapon_smokegrenade", "" },
-	
-	{ "weapon_elite", "9mm" },
-	
-	{ "weapon_fiveseven", "57mm" },
-	
-	{ "weapon_ump45", "45acp" },
-
-	{ "weapon_sg550", "556nato" },
-	
-	{ "weapon_galil", "556nato" },
-	
-	{ "weapon_famas", "556nato" },
-	
-	{ "weapon_usp", "45acp" },
-	
-	{ "weapon_glock18", "9mm" },
-	
-	{ "weapon_awp", "338magnum" },
-	
-	{ "weapon_mp5navy", "9mm" },
-	
-	{ "weapon_m249", "556natobox" },
-	
-	{ "weapon_m3", "buckshot" },
-	
-	{ "weapon_m4a1", "556nato" },
-	
-	{ "weapon_tmp", "9mm"},
-	
-	{ "weapon_g3sg1", "762nato"},
-	
-	{ "weapon_flashbang", ""},
-
-	{ "weapon_deagle", "50ae"},
-	
-	{ "weapon_sg552", "556nato"},
-	
-	{ "weapon_ak47", "762nato"},
-
-	{ "weapon_knife", ""},
-
-	{ "weapon_p90", "57mm"}
-
-}
-
-
-enum sh_weapon_data_struct{
-
-	wpn_struct_weapon_name[25],
-	wpn_struct_ammo_name[20],
-	Float:wpn_struct_primary_attack_delay,
-	Float:wpn_struct_secondary_attack_delay,
-	Float:wpn_struct_reload_delay,
-	wpn_struct_max_clip,
-	wpn_struct_ammo_id,
-	wpn_struct_wpn_position,
-	wpn_struct_max_bp_ammo,
-    my_weapon_slots:wpn_slot
-
-
-}
-stock const weapon_data_structs_array[CSW_LAST_WEAPON+1][sh_weapon_data_struct] = {
-	
-	{ "", "", 0.000000, 0.000000, 0.00, -1, AMMOID_NONE, 0, -1, "", (my_weapon_ids)-1, "" },
-
-	{ "SIG P228", "weapon_p228", 0.150000, 0.150000, 2.70, 13, AMMOID_357SIG, 3, 52, "357sig", MY_SLOT_SECONDARY, "events/p228.sc" },
-
-	{ "", "", 0.000000, 0.000000, 0.00, -1, AMMOID_NONE, 0, 0, "", (my_weapon_ids)-1, ""},
-
-	{ "Scout", "weapon_scout", 1.250000, 0.300000, 2.00, 10, AMMOID_762NATO, 9, 90, "762nato", MY_SLOT_PRIMARY, "events/scout.sc" },
-	
-	{ "HE Grenade", "weapon_hegrenade", 0.000000, 0.000000, 0.00, 1,  AMMOID_HEGRENADE, 1, 1, "", MY_SLOT_GRENADE, "" },
-
-	{ "XM1014 Auto Shotgun", "weapon_xm1014", 0.250000, 0.250000, 0.55, 7,  AMMOID_BUCKSHOT, 12, 32, "buckshot", MY_SLOT_PRIMARY, "events/xm1014.sc" },
-	
-	{ "C4", "weapon_c4", 0.000000, 0.000000, 0.00, 1,  AMMOID_C4, 3, 1, "", MY_SLOT_C4, "" },
-	
-	{ "MAC-10", "weapon_mac10", 0.070000, 0.070000, 3.15, 30, AMMOID_45ACP, 13, 100, "45acp", MY_SLOT_PRIMARY, "events/mac10.sc" },
-	
-	{ "AUG", "weapon_aug", 0.082500, 0.300000, 3.30, 30, AMMOID_556NATO, 14, 90, "556nato", MY_SLOT_PRIMARY, "events/aug.sc" },
-	
-	{ "Smokegrenade", "weapon_smokegrenade", 0.000000, 0.000000, 0.00, 1,  AMMOID_SMOKEGRENADE, 3, 1, "", MY_SLOT_GRENADE, "" },
-	
-	{ "Dual Elites", "weapon_elite", 0.122000, 0.122000, 4.50, 30, AMMOID_9MM, 5, 120, "9mm", MY_SLOT_SECONDARY, "" },
-	
-	{ "Five-Seven", "weapon_fiveseven", 0.150000, 0.150000, 2.70, 20, AMMOID_57, 6, 100, "57mm", MY_SLOT_SECONDARY, "events/fiveseven.sc" },
-	
-	{ "UMP-45", "weapon_ump45", 0.100000, 0.100000, 3.50, 25, AMMOID_45ACP, 15, 100, "45acp", MY_SLOT_PRIMARY,"events/ump45.sc" },
-
-	{ "SIG SG-550", "weapon_sg550", 0.250000, 0.300000, 3.35, 30, AMMOID_556NATO, 16, 90, "556nato", MY_SLOT_PRIMARY, "events/sg550.sc" },
-	
-	{ "Galil", "weapon_galil", 0.087499, 0.087499, 2.45, 35, AMMOID_556NATO, 17, 90, "556nato", MY_SLOT_PRIMARY, "events/galil.sc" },
-	
-	{ "Famas", "weapon_famas", 0.082500, 0.300000, 3.30, 25, AMMOID_556NATO, 18, 90, "556nato", MY_SLOT_PRIMARY, "events/famas.sc" },
-	
-	{ "HK USP", "weapon_usp", 0.149999, 3.130000, 2.70, 12, AMMOID_45ACP, 4, 100,"45acp", MY_SLOT_SECONDARY, "events/usp.sc" },
-	
-	{ "Glock-18", "weapon_glock18", 0.150000, 0.300000, 2.20, 20, AMMOID_9MM, 2, 120, "9mm", MY_SLOT_SECONDARY, "events/glock18.sc" },
-	
-	{ "AWP", "weapon_awp", 1.450000, 0.300000, 2.50, 10, AMMOID_338MAGNUM, 2, 30, "338magnum", MY_SLOT_PRIMARY, "events/awp.sc" },
-	
-	{ "HK MP5", "weapon_mp5navy", 0.075000, 0.075000, 2.63, 30, AMMOID_9MM, 7, 120, "9mm", MY_SLOT_PRIMARY, "events/mp5n.sc" },
-	
-	{ "M249", "weapon_m249", 0.100000, 0.100000, 4.70, 100, AMMOID_556NATOBOX, 4, 200, "556natobox", MY_SLOT_PRIMARY, "events/m249.sc" },
-	
-	{ "M3 Pump Action", "weapon_m3", 0.875000, 0.875000, 0.55, 8,  AMMOID_BUCKSHOT, 5, 32, "buckshot", MY_SLOT_PRIMARY, "events/m3.sc" },
-	
-	{ "M4A1", "weapon_m4a1", 0.087499, 2.000000, 3.05, 30, AMMOID_556NATO, 6, 90, "556nato", MY_SLOT_PRIMARY, "events/m4a1.sc" },
-	
-	{ "TMP", "weapon_tmp", 0.070000, 0.070000, 2.12, 30, AMMOID_9MM, 11, 120, "9mm", MY_SLOT_PRIMARY, "events/tmp.sc" },
-	
-	{ "G3-SG1", "weapon_g3sg1", 0.250000, 0.300000, 3.50, 20, AMMOID_762NATO, 3, 90, "762nato", MY_SLOT_PRIMARY, "events/g3sg1.sc" },
-	
-	{ "Flashbang", "weapon_flashbang", 0.000000, 0.000000, 0.00, 2,  AMMOID_FLASHBANG, 2, 2, "", MY_SLOT_GRENADE, "" },
-
-	{ "Desert Eagle", "weapon_deagle", 0.225000, 0.225000, 2.20, 7,  AMMOID_50AE, 1, 35, "50ae", MY_SLOT_SECONDARY, "events/deagle.sc"},
-	
-	{ "SIG SG-552", "weapon_sg552", 0.082500, 0.300000, 3.00, 30, AMMOID_556NATO, 10, 90, "556nato", MY_SLOT_PRIMARY, "events/sg552.sc" },
-	
-	{ "AK47", "weapon_ak47", 0.095499, 0.095499, 2.45, 30, AMMOID_762NATO, 1, 90, "762nato", MY_SLOT_PRIMARY, "events/ak47.sc" },
-
-	{ "Knife", "weapon_knife", 0.000000, 0.000000, 0.00, -1, AMMOID_KNIFE, 1, -1, "", MY_SLOT_KNIFE, "events/knife.sc" },
-
-	{ "P90", "weapon_p90", 0.065999, 0.065999, 3.40, 50, AMMOID_57, 8, 100, "57mm", MY_SLOT_PRIMARY, "events/p90.sc" }
-
-}
-*/
-
-/*
-native wlt_get_def_clip(wpn_id);
-
-native wlt_get_def_bp_ammo(wpn_id);
-
-native wlt_get_def_ammo_id(wpn_id);
-
-native wlt_get_def_pos(wpn_id);
-
-native wlt_get_def_slot(wpn_id);
-
-native Float:wlt_get_def_prim_atk_delay(wpn_id);
-
-native Float:wlt_get_def_scnd_atk_delay(wpn_id);
-
-native Float:wlt_get_def_rld_delay(wpn_id);*/

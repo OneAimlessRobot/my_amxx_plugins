@@ -1,12 +1,21 @@
+
+#define I_WANT_BASIC_MACROS
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_PDATA_ALIASES
+#define I_WANT_RESOURCE_ALIASES
 #include "../my_include/superheromod.inc"
-#include <engine>
 #include "sh_aux_stuff/sh_aux_consts.inc"
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
-#include "sh_aux_stuff/sh_aux_quick_checks.inc"
 #include "sh_aux_stuff/sh_aux_math_funcs_pt1.inc"
 #include "../my_include/stripweapons.inc"
+
+
+new const Offset[8][3] = {{0,0,10},{0,0,30},{0,0,16},{0,0,10},{4,4,16},{-4,-4,16},{4,4,-12},{-4,-4,-12}}
+
+
+new mdl_gib_head,mdl_gib_meat,mdl_gib_flesh,spr_blood_spray,spr_blood_drop,mdl_gib_spine,mdl_gib_lung,mdl_gib_legbone
 
 
 #define PLUGIN "Superhero fx natives pt2"
@@ -52,8 +61,7 @@ public plugin_natives(){
 
 
 public _prepare_shero_aux_lib_pt2(iPlugins, iParams){
-	
-	server_print("%s innited!^n",LIBRARY_NAME)
+	server_print("%s innited!^n",PLUGIN)
 }
 	
 public _precache_native_fx_pt2(iPlugin,iParams){

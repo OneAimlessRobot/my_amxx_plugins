@@ -2,6 +2,10 @@
 #define I_WANT_MISC_FUNCS
 #define I_WANT_MATH_FUNCS
 #define I_WANT_CUSTOM_WEAPONS
+#define I_WANT_PDATA_ALIASES
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_ENTITY_VECTORS
 
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
@@ -167,7 +171,6 @@ RegisterHam(Ham_TakeDamage, "player", "Player_TakeDamage_Post", 1,true)
 register_event("Damage", "fx_damage", "b", "2!0")
 register_event("CurWeapon", "weaponChange", "be", "1=1")
 
-init_hud_syncs()
 }
 
 public plugin_cfg(){
@@ -371,7 +374,6 @@ public make_tracer(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, Dama
 	generic_weapon_tracer_logic(Attacker,((fx_num_of_owner==POISON)||(fx_num_of_owner==COCAINE)),
 				-1,
 				-1,
-				true,
 				(fx_num_of_owner==POISON)?
 				(sh_custom_color:{GREEN,GREEN,GREEN}):
 				(sh_custom_color:{PINK,PINK,PINK}))
@@ -660,8 +662,7 @@ public radioactive_task(array[3],id){
 public morphine_task(any:array[3],id){
 	id-=fx_task_parameters[array[0]][fx_task_apply_id]
 	if ( !sh_is_active() ||!is_user_alive(id)) return
-	generic_heal(heal_hp_hud_msg_sync,
-					id,
+	generic_heal(id,
 					float(MORPHINE_HP_ADD),
 					sh_get_max_hp(id),FX_COLOR_OFFSET(array[0]),_,_,_,0)
 	

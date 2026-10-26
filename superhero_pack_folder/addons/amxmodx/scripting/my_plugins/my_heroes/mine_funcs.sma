@@ -1,6 +1,9 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_PDATA_ALIASES
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -38,7 +41,6 @@ public plugin_init(){
 	MINE_CHARGE_TASKID=allocate_typed_task_id(player_task)
 	MINE_DISARM_TASKID=allocate_typed_task_id(player_task)
 
-	init_explosion_defaults()
 }
 
 public plugin_natives(){
@@ -173,7 +175,7 @@ public blow_mine_up(ent, id)
 		new Float:fOrigin[3];
 		entity_get_vector( ent, EV_VEC_origin, fOrigin);
 		
-		explosion(gHeroID,ent,EXPLODE_RADIUS,MINE_DAMAGE, default_explode_knock_force_magnitude)
+		explosion(gHeroID,ent,EXPLODE_RADIUS,MINE_DAMAGE)
 		
 		remove_entity(ent)
 }

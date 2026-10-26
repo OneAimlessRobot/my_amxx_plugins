@@ -12,8 +12,9 @@ angel_m4a1mult 1.3	//Damage multiplyer for his m4a1
 */
 
 #define I_WANT_CONSTANTS
-#define I_WANT_MISC_FUNCS
-#define I_WANT_QUICK_CHECKS
+#define I_WANT_BASIC_MACROS
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_CUSTOM_COLORS
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "darkangel_inc/darkangel_inc.inc"

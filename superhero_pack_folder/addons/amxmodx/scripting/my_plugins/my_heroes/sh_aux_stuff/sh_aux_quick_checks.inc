@@ -3,19 +3,6 @@
 #endif
 #define sh_aux_quick_checks
 
-stock bool:client_hittable(vic_userid,optional_bool=1){
-	if(vic_userid<=0){
-		
-		return false;
-	}
-	if(pev_valid(vic_userid)!=2){
-		
-		return false;
-	}
-	return bool:is_user_alive(vic_userid)&&optional_bool;
-
-}
-
 
 stock bool:sh_clients_are_same_team(id,attacker,&CsTeams:stored_id_team=CS_TEAM_UNASSIGNED,&CsTeams:stored_attacker_team=CS_TEAM_UNASSIGNED){
 

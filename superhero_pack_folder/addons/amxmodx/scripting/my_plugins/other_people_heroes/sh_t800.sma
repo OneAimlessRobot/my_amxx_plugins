@@ -208,7 +208,7 @@ switch(key)
 // RESPOND TO KEYDOWN
 public t800_kd(id)
 {
-	if ( !hasRoundStarted() ) return PLUGIN_HANDLED
+	if ( sh_is_freezetime() ) return PLUGIN_HANDLED
 	
 	if ( !is_user_alive(id) || !is_user_connected(id) ) return PLUGIN_HANDLED
 	
@@ -260,7 +260,7 @@ t800_endmode(id)
 	
 	// Switch back to previous weapon...
 	if ( gLastWeapon[id] != CSW_M249 ){
-		shSwitchWeaponID( id, gLastWeapon[id] )
+		sh_switch_weapon( id, gLastWeapon[id] )
 	}
 
 	if (sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) ) {

@@ -29,6 +29,7 @@ gambit_cooldown 120.0		//How many seconds until extra grenade damage can be used
 */
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_CONSTANTS
+#define I_WANT_BASIC_MACROS
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_include/my_author_header.inc"

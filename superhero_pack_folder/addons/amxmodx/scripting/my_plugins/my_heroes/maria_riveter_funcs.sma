@@ -2,6 +2,11 @@
 #define I_WANT_MISC_FUNCS
 #define I_WANT_MATH_FUNCS
 #define I_WANT_CUSTOM_WEAPONS
+#define I_WANT_PDATA_ALIASES
+#define I_WANT_ENTITY_VECTORS
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_BASIC_MACROS
 
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -9,7 +14,6 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "maria_riveter_inc/maria_general_funcs.inc"
 #include "maria_riveter_inc/maria_riveter_funcs.inc"
-#include "special_fx_inc/sh_yakui_get_set.inc"
 #include "../my_include/my_author_header.inc"
 
 #define PLUGIN_VER "1.0"
@@ -23,7 +27,7 @@ new trigger_was_down_mask = 0
 new semi_automatic_mode_mask = 0
 new mode_selector_is_down_mask = 0
 new mode_selector_was_down_mask = 0
-
+new wpn_name_for_future_lookup[50]
 new maria_riveter_wpn_id
 new dmg_source_name_short_riveter[SAFE_BUFFER_SIZE+1]="riveter"
 new dmg_source_name_log_riveter[SAFE_BUFFER_SIZE+1]="riveter"
@@ -38,15 +42,16 @@ public plugin_init(){
 	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
 	
 	
-	RegisterHam(Ham_Item_Deploy, weapon_data_structs_array[my_weapon_ids:MARIA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_ItemDeployPre",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[my_weapon_ids:MARIA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_WeaponPrimaryAttackPre",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[my_weapon_ids:MARIA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack_Post", 1,true)	
-	RegisterHam(Ham_Item_PostFrame, weapon_data_structs_array[my_weapon_ids:MARIA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)	
+	wlt_get_def_name(my_weapon_ids:MARIA_WEAPON_CLASSID,wpn_name_for_future_lookup,charsmax(wpn_name_for_future_lookup))
+	RegisterHam(Ham_Item_Deploy, wpn_name_for_future_lookup, "fw_ItemDeployPre",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, wpn_name_for_future_lookup, "fw_WeaponPrimaryAttackPre",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, wpn_name_for_future_lookup, "fw_Weapon_PrimaryAttack_Post", 1,true)	
+	RegisterHam(Ham_Item_PostFrame, wpn_name_for_future_lookup, "fw_Item_PostFrame",_,true)	
 	
 	
 	
-	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[my_weapon_ids:MARIA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_WeaponReloadPre",_,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[my_weapon_ids:MARIA_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_Weapon_Reload_Post", 1,true)
+	RegisterHam(Ham_Weapon_Reload, wpn_name_for_future_lookup, "fw_WeaponReloadPre",_,true)
+	RegisterHam(Ham_Weapon_Reload, wpn_name_for_future_lookup, "fw_Weapon_Reload_Post", 1,true)
 	
 	RegisterHam(Ham_TraceAttack, "player", "Ham_TraceAttackMariaRiveter",_,true)
 	
@@ -282,7 +287,7 @@ public fw_WeaponPrimaryAttackPre(entity)
 	if(pev_valid(entity)!=2)
 		return HAM_IGNORED
 		
-	if (!hasRoundStarted()) return HAM_IGNORED;
+	if (sh_is_freezetime()) return HAM_IGNORED;
 
 	static pPlayer; pPlayer = get_pdata_cbase(entity, m_pPlayer, XO_WEAPON)
 	

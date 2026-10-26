@@ -3,6 +3,11 @@
 #define I_WANT_MATH_FUNCS
 #define I_WANT_CUSTOM_WEAPONS
 #include "../my_include/superheromod.inc"
+#define I_WANT_PDATA_ALIASES
+#define I_WANT_ENTITY_VECTORS
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_BASIC_MACROS
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
@@ -10,13 +15,13 @@
 #include "track_fx_inc/track_fx.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
-#include "celene_inc/sh_celene_l96_include.inc"
-#include "celene_inc/sh_celene_general_include.inc"
+#include "salome_inc/sh_salome_l96_include.inc"
+#include "salome_inc/sh_salome_general_include.inc"
 #include "../my_include/my_author_header.inc"
 #include "../my_include/auxiliar_stuff.inc"
 
 #define PLUGIN_VER "1.0"
-#define PLUGIN_NAME "SUPERHERO Celene Vieira: L96 weapon_thingie"
+#define PLUGIN_NAME "SUPERHERO Salomé Freitas: L96 weapon_thingie"
 
 
 new trigger_is_down_mask = 0
@@ -26,8 +31,9 @@ new g_L96_clip[SH_MAXSLOTS+1]
 new pcvar_dmg_headshot_mult,
 	pcvar_xp_distance_mult;
 
-new dmg_source_name_short_l96[SAFE_BUFFER_SIZE+1]="L96A1"
-new dmg_source_name_log_l96[SAFE_BUFFER_SIZE+1]="Celene's L96"
+new wpn_name_for_future_lookup[50];
+new dmg_source_name_short_l96[SAFE_BUFFER_SIZE+1]="Salomé"
+new dmg_source_name_log_l96[SAFE_BUFFER_SIZE+1]="Salomé's L96"
 new custom_dmg_id_l96
 
 new weapon_secret_code = -1
@@ -37,32 +43,32 @@ public plugin_init(){
 	
 	register_plugin(PLUGIN_NAME, PLUGIN_VER, AUTHOR);
 
-	pcvar_dmg_headshot_mult = create_cvar("celene_dmg_headshot_mult","5")
-	pcvar_xp_distance_mult = create_cvar("celene_xp_distance_mult","4")
+	pcvar_dmg_headshot_mult = create_cvar("salome_dmg_headshot_mult","5")
+	pcvar_xp_distance_mult = create_cvar("salome_xp_distance_mult","4")
 
 	register_forward(FM_CmdStart, "CmdStart");
 	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
 	
-	RegisterHam(Ham_Item_Deploy, weapon_data_structs_array[my_weapon_ids:CELENE_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_ItemDeployPre",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[my_weapon_ids:CELENE_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_WeaponPrimaryAttackPre",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[my_weapon_ids:CELENE_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack_Post", 1,true)	
-	RegisterHam(Ham_Item_PostFrame, weapon_data_structs_array[my_weapon_ids:CELENE_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)	
+	wlt_get_def_name(my_weapon_ids:SALOME_WEAPON_CLASSID,wpn_name_for_future_lookup,charsmax(wpn_name_for_future_lookup))
+	RegisterHam(Ham_Item_Deploy, wpn_name_for_future_lookup, "fw_ItemDeployPre",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, wpn_name_for_future_lookup, "fw_WeaponPrimaryAttackPre",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, wpn_name_for_future_lookup, "fw_Weapon_PrimaryAttack_Post", 1,true)	
+	RegisterHam(Ham_Item_PostFrame, wpn_name_for_future_lookup, "fw_Item_PostFrame",_,true)	
 	
 	
 	
-	RegisterHam(Ham_Weapon_Reload,weapon_data_structs_array[my_weapon_ids:CELENE_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_WeaponReloadPre",_,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[my_weapon_ids:CELENE_WEAPON_CLASSID][wpn_struct_weapon_name], "fw_Weapon_Reload_Post", 1,true)
+	RegisterHam(Ham_Weapon_Reload,wpn_name_for_future_lookup, "fw_WeaponReloadPre",_,true)
+	RegisterHam(Ham_Weapon_Reload, wpn_name_for_future_lookup, "fw_Weapon_Reload_Post", 1,true)
 	
 	
-	RegisterHam(Ham_TraceAttack, "player", "Ham_TraceAttackCeleneL96",_,true)
+	RegisterHam(Ham_TraceAttack, "player", "Ham_TraceAttackSalomeL96",_,true)
 
 	
-	register_entity_as_wall_touchable(CELENE_PROJECTILE_CLASSNAME,"FwdTouchWorld")
-	register_custom_touchable(CELENE_PROJECTILE_CLASSNAME,"bulletina_touque_playor",player_vector,1)
+	register_entity_as_wall_touchable(SALOME_PROJECTILE_CLASSNAME,"FwdTouchWorld")
+	register_custom_touchable(SALOME_PROJECTILE_CLASSNAME,"bulletina_touque_playor",player_vector,1)
 
 
-	register_think(CELENE_PROJECTILE_CLASSNAME, "bulette_thinque")
-	init_explosion_defaults()
+	register_think(SALOME_PROJECTILE_CLASSNAME, "bulette_thinque")
 	init_gravity_pcvar()
 
 	weapon_secret_code = allocate_weapon_secret_code()
@@ -70,7 +76,7 @@ public plugin_init(){
 }
 public plugin_cfg(){
 
-	gHeroID = celene_get_hero_id()
+	gHeroID = salome_get_hero_id()
 	custom_dmg_id_l96=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_l96,dmg_source_name_log_l96,0)
 
 }
@@ -95,22 +101,22 @@ public bulette_thinque(ent){
 	if(!entity_get_int(ent,EV_INT_iuser1)){
 		
 		if(current_bullet_reverb_time>0.0){
-			entity_set_float(ent,EV_FL_fuser1,current_bullet_reverb_time-CELENE_PROJECTILE_PHYS_UPDATE_TIME)
+			entity_set_float(ent,EV_FL_fuser1,current_bullet_reverb_time-SALOME_PROJECTILE_PHYS_UPDATE_TIME)
 		}
 		else{
 			entity_set_int(ent,EV_INT_iuser1,1)
 			entity_set_float(ent,EV_FL_fuser1,0.0)
-			emit_sound(owner, CHAN_WEAPON, CELENE_L96_SHOTSOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+			emit_sound(owner, CHAN_WEAPON, SALOME_L96_SHOTSOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 
 		}
 	}
 	
 	orient_entity_with_move_vector(ent)
 
-	projectile_air_drag_update_speed(parm,CELENE_PROJECTILE_DRAG_CONST,CELENE_PROJECTILE_GRAVITY_MULT,CELENE_PROJECTILE_PHYS_UPDATE_TIME)
+	projectile_air_drag_update_speed(parm,SALOME_PROJECTILE_DRAG_CONST,SALOME_PROJECTILE_GRAVITY_MULT,SALOME_PROJECTILE_PHYS_UPDATE_TIME)
 	
 
-	entity_set_float( ent, EV_FL_nextthink, floatadd(get_gametime( ) ,CELENE_PROJECTILE_PHYS_UPDATE_TIME));
+	entity_set_float( ent, EV_FL_nextthink, floatadd(get_gametime( ) ,SALOME_PROJECTILE_PHYS_UPDATE_TIME));
 
 
 }
@@ -135,12 +141,12 @@ public CmdStart(id, uc_handle)
 
 
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
-	if((weapon==CELENE_WEAPON_CLASSID)){
+	if((weapon==SALOME_WEAPON_CLASSID)){
 		if(Get_BitVar(trigger_is_down_mask, id))
 		{
 
 			button &= ~IN_ATTACK;
-			if(Get_BitVar(trigger_was_down_mask, id)||(celene_l96_get_num_bullets(id)<=0)){
+			if(Get_BitVar(trigger_was_down_mask, id)||(salome_l96_get_num_bullets(id)<=0)){
 				set_uc(uc_handle, UC_Buttons, button);
 				return FMRES_SUPERCEDE
 			}
@@ -150,7 +156,7 @@ public CmdStart(id, uc_handle)
 	return FMRES_IGNORED;
 }
 
-public Ham_TraceAttackCeleneL96(id, idattacker, Float:damage, Float:direction[3], ptr, damagebits)
+public Ham_TraceAttackSalomeL96(id, idattacker, Float:damage, Float:direction[3], ptr, damagebits)
 {
 	if(damage<=0.0){
 		return HAM_IGNORED
@@ -159,7 +165,7 @@ public Ham_TraceAttackCeleneL96(id, idattacker, Float:damage, Float:direction[3]
 	if(!is_user_connected(idattacker)){
 		return HAM_IGNORED	
 	}
-	if(get_user_weapon(idattacker) != CELENE_WEAPON_CLASSID|| !sh_get_user_has_hero(idattacker,gHeroID)){
+	if(get_user_weapon(idattacker) != SALOME_WEAPON_CLASSID|| !sh_get_user_has_hero(idattacker,gHeroID)){
 		return HAM_IGNORED
 	}
 
@@ -180,7 +186,7 @@ public fw_Item_PostFrame(ent)
 		return HAM_IGNORED
 	}
 	static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_flNextAttack, XO_PLAYER)
-	static bpammo; bpammo = cs_get_user_bpammo(id, CELENE_WEAPON_CLASSID)
+	static bpammo; bpammo = cs_get_user_bpammo(id, SALOME_WEAPON_CLASSID)
 	
 	static iClip; iClip = get_pdata_int(ent, m_iClip, XO_WEAPON)
 	static fInReload; fInReload = get_pdata_int(ent, m_fInReload, XO_WEAPON)
@@ -188,10 +194,10 @@ public fw_Item_PostFrame(ent)
 	if(fInReload && flNextAttack <= 0.0)
 	{
 		static temp1
-		temp1 = min(CELENE_L96_CLIP_SIZE - iClip, bpammo)
+		temp1 = min(SALOME_L96_CLIP_SIZE - iClip, bpammo)
 
 		set_pdata_int(ent, m_iClip, iClip + temp1, XO_WEAPON)
-		cs_set_user_bpammo(id, CELENE_WEAPON_CLASSID, bpammo - temp1)		
+		cs_set_user_bpammo(id, SALOME_WEAPON_CLASSID, bpammo - temp1)		
 		
 		set_pdata_int(ent, m_fInReload, 0, XO_WEAPON)
 		
@@ -213,13 +219,13 @@ public fw_WeaponReloadPre(entity)
 		return HAM_IGNORED
 	}
 	g_L96_clip[pPlayer] = -1
-	static BPAmmo; BPAmmo = cs_get_user_bpammo(pPlayer, CELENE_WEAPON_CLASSID)
+	static BPAmmo; BPAmmo = cs_get_user_bpammo(pPlayer, SALOME_WEAPON_CLASSID)
 	static iClip; iClip = get_pdata_int(entity, m_iClip, XO_WEAPON)
 	
 	if(BPAmmo <= 0){
 		return HAM_SUPERCEDE
 	}
-	if(iClip >= CELENE_L96_CLIP_SIZE){
+	if(iClip >= SALOME_L96_CLIP_SIZE){
 		return HAM_SUPERCEDE		
 	}
 	g_L96_clip[pPlayer] = iClip		
@@ -260,9 +266,9 @@ public fw_ItemDeployPre(entity)
 		return HAM_IGNORED
 	}
 	ExecuteHam(Ham_Item_Deploy, entity)
-	set_pdata_float(pPlayer, m_flNextAttack, CELENE_PROJECTILE_DEPLOY_TIME ,XO_PLAYER)
-	set_pdata_float(entity, m_flTimeWeaponIdle, CELENE_PROJECTILE_DEPLOY_TIME ,XO_WEAPON)
-	set_pdata_int(entity, m_iClip ,min(CELENE_L96_CLIP_SIZE,get_pdata_int(entity, m_iClip, XO_WEAPON)), XO_WEAPON)
+	set_pdata_float(pPlayer, m_flNextAttack, SALOME_PROJECTILE_DEPLOY_TIME ,XO_PLAYER)
+	set_pdata_float(entity, m_flTimeWeaponIdle, SALOME_PROJECTILE_DEPLOY_TIME ,XO_WEAPON)
+	set_pdata_int(entity, m_iClip ,min(SALOME_L96_CLIP_SIZE,get_pdata_int(entity, m_iClip, XO_WEAPON)), XO_WEAPON)
 	set_weapon_secret_code(entity,weapon_secret_code)
 	return HAM_SUPERCEDE
 }
@@ -274,7 +280,7 @@ public fw_WeaponPrimaryAttackPre(entity)
 		return HAM_IGNORED
 		
 	static pPlayer; pPlayer = get_pdata_cbase(entity, m_pPlayer,XO_WEAPON)
-	if ( !is_user_alive(pPlayer)||!hasRoundStarted()) return HAM_IGNORED;
+	if ( !is_user_alive(pPlayer)||sh_is_freezetime()) return HAM_IGNORED;
 	if(!sh_get_user_has_hero(pPlayer,gHeroID)){
 
 		return HAM_IGNORED
@@ -294,8 +300,8 @@ public fw_WeaponPrimaryAttackPre(entity)
 	}
 	launch_bullet(pPlayer)
 	g_L96_clip[pPlayer]=get_pdata_int(entity, m_iClip, XO_WEAPON)
-	set_pdata_float(entity, m_flNextPrimaryAttack, CELENE_PROJECTILE_SHOOT_PERIOD ,XO_WEAPON)
-	set_pdata_float(entity, m_flTimeWeaponIdle, CELENE_PROJECTILE_SHOOT_PERIOD ,XO_WEAPON)
+	set_pdata_float(entity, m_flNextPrimaryAttack, SALOME_PROJECTILE_SHOOT_PERIOD ,XO_WEAPON)
+	set_pdata_float(entity, m_flTimeWeaponIdle, SALOME_PROJECTILE_SHOOT_PERIOD ,XO_WEAPON)
 	
 	entity_get_vector(pPlayer, EV_VEC_punchangle, g_Recoil[pPlayer])
 	native_playanim(pPlayer, SEQ_SHOOT1)
@@ -325,7 +331,7 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 	entity_get_vector(id, EV_VEC_punchangle, Push)
 	sub_3d_vectors(Push, g_Recoil[id], Push)
 	
-	multiply_3d_vector_by_scalar(Push, CELENE_L96_RECOIL, Push)
+	multiply_3d_vector_by_scalar(Push, SALOME_L96_RECOIL, Push)
 	add_3d_vectors(Push, g_Recoil[id], Push)
 	entity_set_vector(id, EV_VEC_punchangle, Push)
 }
@@ -348,7 +354,7 @@ Ent = create_entity("info_target")
 if (!Ent){
 	return
 }
-entity_set_string(Ent, EV_SZ_classname, CELENE_PROJECTILE_CLASSNAME)
+entity_set_string(Ent, EV_SZ_classname, SALOME_PROJECTILE_CLASSNAME)
 entity_set_model(Ent, "models/grenade.mdl")
 
 new Float:MinBox[3] = {-1.0, -1.0, -1.0}
@@ -362,14 +368,14 @@ entity_set_vector(Ent, EV_VEC_angles, vAngle)
 entity_set_int(Ent, EV_INT_effects, 2)
 entity_set_int(Ent, EV_INT_solid, SOLID_BBOX)
 entity_set_int(Ent, EV_INT_movetype, MOVETYPE_TOSS)
-entity_set_float(Ent,EV_FL_gravity, CELENE_PROJECTILE_GRAVITY_MULT*0.5)
+entity_set_float(Ent,EV_FL_gravity, SALOME_PROJECTILE_GRAVITY_MULT*0.5)
 entity_set_edict(Ent, EV_ENT_owner, id)
 
-velocity_by_aim(id, floatround(CELENE_PROJECTILE_SPEED) , Velocity)
+velocity_by_aim(id, floatround(SALOME_PROJECTILE_SPEED) , Velocity)
 new Float:coeff_to_multiply_with
 new resume_zoom=get_pdata_bool(id,m_bResumeZoom,XO_PLAYER*4)
 if(!(resume_zoom)){
-	coeff_to_multiply_with=CELENE_PROJECTILE_SHOOT_RANDOMNESS;
+	coeff_to_multiply_with=SALOME_PROJECTILE_SHOOT_RANDOMNESS;
 }
 else{
 	
@@ -378,30 +384,30 @@ else{
 	new Float:user_maxspeed=get_user_maxspeed(id);
 	new Float:user_current_speed=vector_length(user_movement_velocity)
 	new Float:coeff_to_multiply_with_extra=(user_current_speed/user_maxspeed)
-	coeff_to_multiply_with=coeff_to_multiply_with_extra*CELENE_PROJECTILE_SHOOT_RANDOMNESS
+	coeff_to_multiply_with=coeff_to_multiply_with_extra*SALOME_PROJECTILE_SHOOT_RANDOMNESS
 	
 }
 randomize_vector_with_coeff(coeff_to_multiply_with,Velocity)
 
 entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
 
-celene_l96_dec_num_bullets(id)
+salome_l96_dec_num_bullets(id)
 
 //bullet launch pos
 entity_set_vector(Ent,EV_VEC_vuser1,Origin)
 
-entity_set_float(Ent,EV_FL_fuser1,CELENE_REVERB_SHOT_DELAY)
+entity_set_float(Ent,EV_FL_fuser1,SALOME_REVERB_SHOT_DELAY)
 entity_set_int(Ent,EV_INT_iuser1,0)
 new parm2[1]
 
 parm2[0]= id
-emit_sound(id, CHAN_WEAPON, CELENE_L96_SHOTSOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+emit_sound(id, CHAN_WEAPON, SALOME_L96_SHOTSOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 create_fired_shot_disk(Origin,id,true)
 
 trail(Ent,ORANGE,6,4,200)
 
 
-entity_set_float( Ent, EV_FL_nextthink, floatadd(get_gametime( ) ,CELENE_PROJECTILE_PHYS_UPDATE_TIME));
+entity_set_float( Ent, EV_FL_nextthink, floatadd(get_gametime( ) ,SALOME_PROJECTILE_PHYS_UPDATE_TIME));
 
 }
 
@@ -411,7 +417,7 @@ public fm_UpdateClientDataPost(player, sendWeapons, cd)
 		
 		return FMRES_IGNORED
 	}
-	if((get_user_weapon(player) != CELENE_WEAPON_CLASSID)){
+	if((get_user_weapon(player) != SALOME_WEAPON_CLASSID)){
 		return FMRES_IGNORED
 	}
 	new pEntity = get_pdata_cbase(player, m_pActiveItem,XO_PLAYER)
@@ -428,7 +434,7 @@ public FwdTouchWorld( bull_et, World ) {
 	static Float:origin[3]
 	entity_get_vector(bull_et,EV_VEC_origin,origin);
 
-	emit_sound(bull_et, CHAN_WEAPON, CELENE_L96_WALLHIT_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	emit_sound(bull_et, CHAN_WEAPON, SALOME_L96_WALLHIT_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	
 	tank_impact_shot_fx(bull_et,origin,17)
 	
@@ -447,9 +453,9 @@ public FwdTouchWorld( bull_et, World ) {
 
 		new Float:damage = calculate_nuanced_projectile_damage(bull_et,
 							bullet_launch_pos,
-							CELENE_PROJECTILE_DAMAGE,
-							CELENE_PROJECTILE_DAMAGE_FALLOFF_DIST,
-							CELENE_PROJECTILE_SPEED)
+							SALOME_PROJECTILE_DAMAGE,
+							SALOME_PROJECTILE_DAMAGE_FALLOFF_DIST,
+							SALOME_PROJECTILE_SPEED)
 
 		new owner=entity_get_edict(bull_et,EV_ENT_owner)
 		ExecuteHam(Ham_TakeDamage, World, bull_et, owner, damage, 0);
@@ -488,9 +494,9 @@ public bulletina_touque_playor(pToucher, pTouched)
 
 	damage = calculate_nuanced_projectile_damage(pToucher,
 						bullet_launch_pos,
-						CELENE_PROJECTILE_DAMAGE,
-						CELENE_PROJECTILE_DAMAGE_FALLOFF_DIST,
-						CELENE_PROJECTILE_SPEED,
+						SALOME_PROJECTILE_DAMAGE,
+						SALOME_PROJECTILE_DAMAGE_FALLOFF_DIST,
+						SALOME_PROJECTILE_SPEED,
 						distance,
 						falloff_coeff)
 
@@ -500,7 +506,7 @@ public bulletina_touque_playor(pToucher, pTouched)
 	}
 	the_hitpoint= get_projectile_hit_hitpoint(pToucher,
 										velocity,
-										CELENE_PROJECTILE_HEADSHOT_THRESHOLD_DIST*3.0,
+										SALOME_PROJECTILE_HEADSHOT_THRESHOLD_DIST*3.0,
 										speed)
 	if(the_hitpoint==MY_HIT_HEAD){
 		
@@ -521,9 +527,9 @@ public bulletina_touque_playor(pToucher, pTouched)
 
 		sh_screen_shake(pTouched,14.5,the_time/3.0,20.0)
 
-		sh_set_stun(pTouched,the_time/3.0,default_stun_speed)
+		sh_set_stun(pTouched,the_time/3.0)
 		unfade_screen_user(pTouched)
-		set_velocity_from_origin(pTouched,origin,CELENE_PROJECTILE_KNOCKBACK-(35.0*falloff_coeff))
+		set_velocity_from_origin(pTouched,origin,SALOME_PROJECTILE_KNOCKBACK-(35.0*falloff_coeff))
 		if(gatling_get_fx_num(pTouched)!=RADIOACTIVE){
 				track_user(pTouched,owner,1,0.07,the_period,the_time,ORANGE,true)
 		}
@@ -531,10 +537,13 @@ public bulletina_touque_playor(pToucher, pTouched)
 		sh_set_user_xp(owner,floatround(distance)*(headshot?
 				cvar_val(num, pcvar_dmg_headshot_mult):1)*
 				cvar_val(num, pcvar_xp_distance_mult),true);
-		new random_number=generate_int(0,(sizeof celene_poems)-1)
+		new random_number=generate_int(0,_:poem_idx-1)
 		
 		if(!is_user_bot(pTouched)){
-			send_poem_function(pTouched, celene_poems[random_number]);
+			send_poem_function(pTouched, poem_idx:random_number);
+		}
+		if(!is_user_bot(owner)){
+			send_poem_function(owner, poem_idx:random_number);
 		}
 		
 		if(!is_user_alive(pTouched)){
@@ -583,8 +592,8 @@ public plugin_precache()
 {
 
 engfunc(EngFunc_PrecacheModel,"models/grenade.mdl")
-engfunc(EngFunc_PrecacheSound, CELENE_L96_SHOTSOUND)
-engfunc(EngFunc_PrecacheSound, CELENE_L96_WALLHIT_SOUND)
+engfunc(EngFunc_PrecacheSound, SALOME_L96_SHOTSOUND)
+engfunc(EngFunc_PrecacheSound, SALOME_L96_WALLHIT_SOUND)
 
 }
 public fm_PlaybackEventPre() return FMRES_SUPERCEDE

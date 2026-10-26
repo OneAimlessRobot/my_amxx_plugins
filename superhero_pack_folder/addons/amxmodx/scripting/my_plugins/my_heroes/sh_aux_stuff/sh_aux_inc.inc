@@ -40,6 +40,10 @@ DEFINES FOR COMPILE TIME OPTIMIZATION:
 #include "sh_aux_funcs_misc.inc"
 #endif
 
+#if defined I_WANT_MISC_FUNCS_2
+#include "sh_aux_funcs_misc_pt2.inc"
+#endif
+
 
 
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE

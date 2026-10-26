@@ -78,88 +78,6 @@ enum my_ammo_ids{
 	
 	
 }
-enum sh_weapon_data_struct{
-
-	wpn_struct_fruity_name[100],
-	wpn_struct_weapon_name[25],
-	Float:wpn_struct_primary_attack_delay,
-	Float:wpn_struct_secondary_attack_delay,
-	Float:wpn_struct_reload_delay,
-	wpn_struct_max_clip,
-	my_ammo_ids:wpn_struct_ammo_id,
-	wpn_struct_wpn_position,
-	wpn_struct_max_bp_ammo,
-	wpn_struct_ammo_name[20],
-    my_weapon_slots:wpn_struct_wpn_slot,
-	wpn_struct_events_file[32],
-
-
-}
-stock const weapon_data_structs_array[my_weapon_ids][sh_weapon_data_struct] = {
-	
-	{ "", "", 0.000000, 0.000000, 0.00, -1, AMMOID_NONE, 0, -1, "", enum_minus_one, "" },
-
-	{ "SIG P228", "weapon_p228", 0.150000, 0.150000, 2.70, 13, AMMOID_357SIG, 3, 52, "357sig", MY_SLOT_SECONDARY, "events/p228.sc" },
-
-	{ "", "", 0.000000, 0.000000, 0.00, -1, AMMOID_NONE, 0, 0, "", enum_minus_one, ""},
-
-	{ "Scout", "weapon_scout", 1.250000, 0.300000, 2.00, 10, AMMOID_762NATO, 9, 90, "762nato", MY_SLOT_PRIMARY, "events/scout.sc" },
-	
-	{ "HE Grenade", "weapon_hegrenade", 0.000000, 0.000000, 0.00, 1,  AMMOID_HEGRENADE, 1, 1, "", MY_SLOT_GRENADE, "" },
-
-	{ "XM1014 Auto Shotgun", "weapon_xm1014", 0.250000, 0.250000, 0.55, 7,  AMMOID_BUCKSHOT, 12, 32, "buckshot", MY_SLOT_PRIMARY, "events/xm1014.sc" },
-	
-	{ "C4", "weapon_c4", 0.000000, 0.000000, 0.00, 1,  AMMOID_C4, 3, 1, "", MY_SLOT_C4, "" },
-	
-	{ "MAC-10", "weapon_mac10", 0.070000, 0.070000, 3.15, 30, AMMOID_45ACP, 13, 100, "45acp", MY_SLOT_PRIMARY, "events/mac10.sc" },
-	
-	{ "AUG", "weapon_aug", 0.082500, 0.300000, 3.30, 30, AMMOID_556NATO, 14, 90, "556nato", MY_SLOT_PRIMARY, "events/aug.sc" },
-	
-	{ "Smokegrenade", "weapon_smokegrenade", 0.000000, 0.000000, 0.00, 1,  AMMOID_SMOKEGRENADE, 3, 1, "", MY_SLOT_GRENADE, "" },
-	
-	{ "Dual Elites", "weapon_elite", 0.122000, 0.122000, 4.50, 30, AMMOID_9MM, 5, 120, "9mm", MY_SLOT_SECONDARY, "" },
-	
-	{ "Five-Seven", "weapon_fiveseven", 0.150000, 0.150000, 2.70, 20, AMMOID_57, 6, 100, "57mm", MY_SLOT_SECONDARY, "events/fiveseven.sc" },
-	
-	{ "UMP-45", "weapon_ump45", 0.100000, 0.100000, 3.50, 25, AMMOID_45ACP, 15, 100, "45acp", MY_SLOT_PRIMARY,"events/ump45.sc" },
-
-	{ "SIG SG-550", "weapon_sg550", 0.250000, 0.300000, 3.35, 30, AMMOID_556NATO, 16, 90, "556nato", MY_SLOT_PRIMARY, "events/sg550.sc" },
-	
-	{ "Galil", "weapon_galil", 0.087499, 0.087499, 2.45, 35, AMMOID_556NATO, 17, 90, "556nato", MY_SLOT_PRIMARY, "events/galil.sc" },
-	
-	{ "Famas", "weapon_famas", 0.082500, 0.300000, 3.30, 25, AMMOID_556NATO, 18, 90, "556nato", MY_SLOT_PRIMARY, "events/famas.sc" },
-	
-	{ "HK USP", "weapon_usp", 0.149999, 3.130000, 2.70, 12, AMMOID_45ACP, 4, 100,"45acp", MY_SLOT_SECONDARY, "events/usp.sc" },
-	
-	{ "Glock-18", "weapon_glock18", 0.150000, 0.300000, 2.20, 20, AMMOID_9MM, 2, 120, "9mm", MY_SLOT_SECONDARY, "events/glock18.sc" },
-	
-	{ "AWP", "weapon_awp", 1.450000, 0.300000, 2.50, 10, AMMOID_338MAGNUM, 2, 30, "338magnum", MY_SLOT_PRIMARY, "events/awp.sc" },
-	
-	{ "HK MP5", "weapon_mp5navy", 0.075000, 0.075000, 2.63, 30, AMMOID_9MM, 7, 120, "9mm", MY_SLOT_PRIMARY, "events/mp5n.sc" },
-	
-	{ "M249", "weapon_m249", 0.100000, 0.100000, 4.70, 100, AMMOID_556NATOBOX, 4, 200, "556natobox", MY_SLOT_PRIMARY, "events/m249.sc" },
-	
-	{ "M3 Pump Action", "weapon_m3", 0.875000, 0.875000, 0.55, 8,  AMMOID_BUCKSHOT, 5, 32, "buckshot", MY_SLOT_PRIMARY, "events/m3.sc" },
-	
-	{ "M4A1", "weapon_m4a1", 0.087499, 2.000000, 3.05, 30, AMMOID_556NATO, 6, 90, "556nato", MY_SLOT_PRIMARY, "events/m4a1.sc" },
-	
-	{ "TMP", "weapon_tmp", 0.070000, 0.070000, 2.12, 30, AMMOID_9MM, 11, 120, "9mm", MY_SLOT_PRIMARY, "events/tmp.sc" },
-	
-	{ "G3-SG1", "weapon_g3sg1", 0.250000, 0.300000, 3.50, 20, AMMOID_762NATO, 3, 90, "762nato", MY_SLOT_PRIMARY, "events/g3sg1.sc" },
-	
-	{ "Flashbang", "weapon_flashbang", 0.000000, 0.000000, 0.00, 2,  AMMOID_FLASHBANG, 2, 2, "", MY_SLOT_GRENADE, "" },
-
-	{ "Desert Eagle", "weapon_deagle", 0.225000, 0.225000, 2.20, 7,  AMMOID_50AE, 1, 35, "50ae", MY_SLOT_SECONDARY, "events/deagle.sc"},
-	
-	{ "SIG SG-552", "weapon_sg552", 0.082500, 0.300000, 3.00, 30, AMMOID_556NATO, 10, 90, "556nato", MY_SLOT_PRIMARY, "events/sg552.sc" },
-	
-	{ "AK47", "weapon_ak47", 0.095499, 0.095499, 2.45, 30, AMMOID_762NATO, 1, 90, "762nato", MY_SLOT_PRIMARY, "events/ak47.sc" },
-
-	{ "Knife", "weapon_knife", 0.000000, 0.000000, 0.00, -1, AMMOID_KNIFE, 1, -1, "", MY_SLOT_KNIFE, "events/knife.sc" },
-
-	{ "P90", "weapon_p90", 0.065999, 0.065999, 3.40, 50, AMMOID_57, 8, 100, "57mm", MY_SLOT_PRIMARY, "events/p90.sc" }
-
-}
 #define NUM_OF_HANDS_IN_A_HUMAN 2
 
 stock const event_files_elite[NUM_OF_HANDS_IN_A_HUMAN][] = {
@@ -200,37 +118,46 @@ stock const event_files_elite[NUM_OF_HANDS_IN_A_HUMAN][] = {
 
 #define single_wpn_bs(%1) ((1 << %1))
 
-#define wlt_get_fruity_name(%1) (weapon_data_structs_array[%1][wpn_struct_fruity_name])
+	
+native wlt_get_def_name(my_weapon_ids:wpn_id, wpn_name[], len)
 
-#define wlt_get_def_name(%1) (weapon_data_structs_array[%1][wpn_struct_weapon_name])
+native wlt_get_fruity_name(my_weapon_ids:wpn_id, wpn_name[], len);
 
-#define wlt_get_def_clip(%1) (weapon_data_structs_array[%1][wpn_struct_max_clip])
+native wlt_get_ammo_name(my_weapon_ids:wpn_id, wpn_name[], len)
 
-#define wlt_get_def_bp_ammo(%1) (weapon_data_structs_array[%1][wpn_struct_max_bp_ammo])
+native wlt_get_events_file(my_weapon_ids:wpn_id, wpn_name[], len);
 
-#define wlt_get_def_ammo_id(%1) (weapon_data_structs_array[%1][wpn_struct_ammo_id])
+native wlt_get_def_clip(wpn_id);
 
-#define wlt_get_def_pos(%1) (weapon_data_structs_array[%1][wpn_struct_wpn_position])
+native wlt_get_def_bp_ammo(wpn_id);
 
-#define wlt_get_def_slot(%1) (weapon_data_structs_array[%1][wpn_struct_wpn_slot])
+native wlt_get_def_ammo_id(wpn_id);
 
-#define wlt_get_def_prim_atk_delay(%1) (weapon_data_structs_array[%1][wpn_struct_primary_attack_delay])
+native wlt_get_def_pos(wpn_id);
 
-#define wlt_get_def_scnd_atk_delay(%1) (weapon_data_structs_array[%1][wpn_struct_secondary_attack_delay])
+native wlt_get_def_slot(wpn_id);
 
-#define wlt_get_def_rld_delay(%1) (weapon_data_structs_array[%1][wpn_struct_reload_delay])
+native Float:wlt_get_def_prim_atk_delay(wpn_id);
+
+native Float:wlt_get_def_scnd_atk_delay(wpn_id);
+
+native Float:wlt_get_def_rld_delay(wpn_id);
 
 stock list_weapons_in_bitsum(weapon_bitsum,bool:exclude_mode=false){
 	
 	new count=0
 	new bit_sum_to_actually_do = exclude_mode ? (~(weapon_bitsum)): (weapon_bitsum)
+	
+	static array_for_fruity_name[50]
+
 	for ( new wpnId = CSW_P228; wpnId <= CSW_P90; wpnId++ )
 	{	
 		new bool:do_eht= bool:((bit_sum_to_actually_do & (1<<wpnId)))
 		if ( do_eht && is_weaponid_valid(_:wpnId))
 		{	
 			count++
-			server_print("The weapon number %d (with id %d) in this bitsum is called: %s",count,wpnId,wlt_get_fruity_name(my_weapon_ids:wpnId));	
+			wlt_get_fruity_name(my_weapon_ids:wpnId,array_for_fruity_name,charsmax(array_for_fruity_name))
+			server_print("The weapon number %d (with id %d) in this bitsum is called: %s",count,wpnId,array_for_fruity_name);	
 		}
 	}
 }

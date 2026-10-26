@@ -11,6 +11,7 @@ steel_maxaps 100		//Max Armor regenerated per second when suit is on (def 100)
 */
 
 #define I_WANT_CONSTANTS
+#define I_WANT_CUSTOM_COLORS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
@@ -76,7 +77,7 @@ public sh_client_spawn(id)
 //----------------------------------------------------------------------------------------------
 public steel_loop()
 {
-	if ( !sh_is_active() || !hasRoundStarted() ) return
+	if ( !sh_is_active() || sh_is_freezetime() ) return
 
 	for ( new id = 1; id < sh_maxplayers()+1; id++ ) {
 		if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
@@ -103,7 +104,7 @@ public steel_loop()
 //----------------------------------------------------------------------------------------------
 public steel_armorloop()
 {
-	if ( !sh_is_active() || !hasRoundStarted() ) return
+	if ( !sh_is_active() || sh_is_freezetime() ) return
 
 	for ( new id = 1; id < sh_maxplayers()+1; id++ ) {
 		if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) && g_hasSuit[id] ) {

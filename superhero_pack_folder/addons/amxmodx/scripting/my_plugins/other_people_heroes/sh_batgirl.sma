@@ -93,7 +93,7 @@ switch(key)
 //----------------------------------------------------------------------------------------------
 public batgirl_kd(id)
 {
-	if ( gHooked[id] || !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)|| !hasRoundStarted() ) return
+	if ( gHooked[id] || !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID)|| sh_is_freezetime() ) return
 
 	if ( pass_aim_test(id) )
 	{

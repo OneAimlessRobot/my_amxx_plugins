@@ -1,5 +1,4 @@
 #include "../my_include/superheromod.inc"
-#include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt4.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 
@@ -88,5 +87,5 @@ public _prepare_shero_aux_lib_pt4(iPlugins, iParams){
 								new_dmg_type_descriptions_arr[i][new_dmg_type_name],
 								new_dmg_type_descriptions_arr[i][dmg_type_is_melee])
 	}
-	server_print("%s innited!^n",LIBRARY_NAME)
+	server_print("%s innited!^n",PLUGIN)
 }

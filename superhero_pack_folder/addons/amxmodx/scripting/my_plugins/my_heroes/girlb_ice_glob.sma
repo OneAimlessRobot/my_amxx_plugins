@@ -2,6 +2,10 @@
 #define I_WANT_MISC_FUNCS
 #define I_WANT_MATH_FUNCS
 #define I_WANT_QUICK_CHECKS
+#define I_WANT_RESOURCE_ALIASES
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_ENTITY_VECTORS
+#define I_WANT_PDATA_ALIASES
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "freeze_fx/freeze_fx.inc"
@@ -95,7 +99,7 @@ public girlb_skating(id, uc_handle, seed)
 			emit_sound(id, CHAN_WEAPON,FROZEN_SFX,
 					VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		}
-		if(generate_int(0, FlameAndSoundRate) <3)
+		if(generate_int(0, 10) <3)
 		{
 			static Float:Velocity[3],Float:our_velocity[3]
 			

@@ -4,11 +4,11 @@
 #define __MODULECONFIG_H__
 
 // Module info
-#define MODULE_NAME "weapon_lookup_table"
+#define MODULE_NAME "colors_lookup_table"
 #define MODULE_VERSION "1.0.0"
 #define MODULE_AUTHOR "ThrashBrat"
 #define MODULE_URL "lenasattic.ddns.net:11020/webcrookedstuff"
-#define MODULE_LOGTAG "WPN_LU_T"
+#define MODULE_LOGTAG "COLORS_LU_T"
 // If you want the module not to be reloaded on mapchange, remove / comment out the next line
 #define MODULE_RELOAD_ON_MAPCHANGE
 

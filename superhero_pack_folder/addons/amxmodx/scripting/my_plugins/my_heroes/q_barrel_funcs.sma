@@ -1,8 +1,12 @@
 #define I_WANT_QUICK_CHECKS
-#define I_WANT_FAKEMETA_UTIL
+#include <float>
+#include <xs>
+
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_CUSTOM_WEAPONS
+#define I_WANT_PDATA_ALIASES
+#define I_WANT_ENTITY_VECTORS
 
 #include "../my_include/superheromod.inc"
 #include "q_barrel_inc/sh_q_barrel.inc"
@@ -15,7 +19,7 @@
 
 new g_Had_QB, g_OldWeapon[33], g_SpecialShot, Float:Recoil[33][3]
 new g_MsgCurWeapon, g_MsgAmmoX, g_Event_QB, g_SmokePuff_Id
-
+new wpn_name_for_future_lookup[50]
 new weapon_secret_code = QUAD_BARREL_WEAPON_SECRETCODE
 
 new cached_ammo_id = -1
@@ -65,13 +69,14 @@ public plugin_init()
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Post", 1,true)
 	RegisterHam(Ham_TraceAttack, "worldspawn", "fw_TraceAttack",_,true)		
 	
-	RegisterHam(Ham_Item_Deploy, weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Item_Deploy_Post", 1,true)
-	RegisterHam(Ham_Item_AddToPlayer, weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Item_AddToPlayer_Post", 1,true)
-	RegisterHam(Ham_Weapon_WeaponIdle, weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Weapon_WeaponIdle_Post", 1,true)
-	RegisterHam(Ham_Item_PostFrame, weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)
-	RegisterHam(Ham_Weapon_Reload, weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Weapon_Reload_Post", 1, true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack, weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack_Post", 1,true)
+	wlt_get_def_name(CSW_QUADBARREL,wpn_name_for_future_lookup,charsmax(wpn_name_for_future_lookup))
+	RegisterHam(Ham_Item_Deploy, wpn_name_for_future_lookup, "fw_Item_Deploy_Post", 1,true)
+	RegisterHam(Ham_Item_AddToPlayer, wpn_name_for_future_lookup, "fw_Item_AddToPlayer_Post", 1,true)
+	RegisterHam(Ham_Weapon_WeaponIdle, wpn_name_for_future_lookup, "fw_Weapon_WeaponIdle_Post", 1,true)
+	RegisterHam(Ham_Item_PostFrame, wpn_name_for_future_lookup, "fw_Item_PostFrame",_,true)
+	RegisterHam(Ham_Weapon_Reload, wpn_name_for_future_lookup, "fw_Weapon_Reload_Post", 1, true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, wpn_name_for_future_lookup, "fw_Weapon_PrimaryAttack",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack, wpn_name_for_future_lookup, "fw_Weapon_PrimaryAttack_Post", 1,true)
 	
 	weapon_secret_code = allocate_weapon_secret_code()
 	// Cache
@@ -113,10 +118,10 @@ public Get_QuadBarrel(id)
 	UnSet_BitVar(g_SpecialShot, id);
 	Set_BitVar(g_Had_QB, id);
 	
-	give_item(id, weapon_data_structs_array[CSW_QUADBARREL][wpn_struct_weapon_name])
+	give_item(id, wpn_name_for_future_lookup)
 	cs_set_user_bpammo(id, CSW_QUADBARREL, Q_BARREL_BPAMMO)
 	
-	static Ent; Ent = fm_get_user_weapon_entity(id, CSW_QUADBARREL)
+	static Ent; Ent = my_get_user_weapon_entity(id, CSW_QUADBARREL)
 	if(pev_valid(Ent)) cs_set_weapon_ammo(Ent, Q_BARREL_CLIP)
 	
 	engfunc(EngFunc_MessageBegin, MSG_ONE_UNRELIABLE, g_MsgCurWeapon, {0, 0, 0}, id)
@@ -138,7 +143,7 @@ public Event_CurWeapon(id)
 
 	if((CSWID == _:CSW_QUADBARREL && g_OldWeapon[id] == _:CSW_QUADBARREL) && Get_BitVar(g_Had_QB, id)) 
 	{
-		static Ent; Ent = fm_get_user_weapon_entity(id, _:CSW_QUADBARREL)
+		static Ent; Ent = my_get_user_weapon_entity(id, _:CSW_QUADBARREL)
 		if(pev_valid(Ent)==PDATA_SAFE)
 		{
 			set_pdata_float(Ent, m_flNextPrimaryAttack,
@@ -170,7 +175,7 @@ public fw_SetModel(entity, model[])
 	if(equal(model, OLD_W_MODEL_Q_BARREL))
 	{
 		static weapon
-		weapon = fm_get_user_weapon_entity(entity, CSW_QUADBARREL)
+		weapon = my_get_user_weapon_entity(entity, CSW_QUADBARREL)
 		
 		ent_check(weapon,FMRES_IGNORED)
 		
@@ -203,7 +208,7 @@ public fw_CmdStart(id, uc_handle, seed)
 		
 	static NewButton; NewButton = get_uc(uc_handle, UC_Buttons)
 	
-	static Ent; Ent = fm_get_user_weapon_entity(id, _:CSW_QUADBARREL)
+	static Ent; Ent = my_get_user_weapon_entity(id, _:CSW_QUADBARREL)
 	ent_check(Ent,FMRES_IGNORED)
 	
 	static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_flNextAttack, XO_PLAYER)

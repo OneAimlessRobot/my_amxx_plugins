@@ -2,6 +2,7 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_CUSTOM_WEAPONS
+#define I_WANT_PDATA_ALIASES
 #include <float>
 #include <xs>
 #include "../my_include/superheromod.inc"
@@ -21,7 +22,7 @@ new const Shard_Cannon_Sound[] = "weapons/shard_cannon-1.wav"
 new g_Had_SHARD_CANNON = 0, g_Old_Weapon[33], Float:g_ShootDelay[33], Float:g_Recoil[33]
 new g_Event_MS, g_SmokePuff_Id
 new g_MsgCurWeapon
-
+new wpn_name_for_future_lookup[50]
 
 new weapon_secret_code = SHARD_CANNON_SECRETCODE
 
@@ -40,12 +41,13 @@ public plugin_init()
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack",_,true)
 	RegisterHam(Ham_TraceAttack, "worldspawn", "fw_TraceAttack",_,true)	
 	
-	RegisterHam(Ham_Item_Deploy, weapon_data_structs_array[my_weapon_ids:CSW_SHARD_CANNON][wpn_struct_weapon_name], "fw_Item_Deploy_Post", 1,true)
-	RegisterHam(Ham_Item_AddToPlayer,  weapon_data_structs_array[my_weapon_ids:CSW_SHARD_CANNON][wpn_struct_weapon_name], "fw_Item_AddToPlayer_Post", 1,true)
-	RegisterHam(Ham_Weapon_Reload,  weapon_data_structs_array[my_weapon_ids:CSW_SHARD_CANNON][wpn_struct_weapon_name], "fw_Weapon_Reload",_,true)
-	RegisterHam(Ham_Item_PostFrame,  weapon_data_structs_array[my_weapon_ids:CSW_SHARD_CANNON][wpn_struct_weapon_name], "fw_Item_PostFrame",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack,  weapon_data_structs_array[my_weapon_ids:CSW_SHARD_CANNON][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack",_,true)
-	RegisterHam(Ham_Weapon_PrimaryAttack,  weapon_data_structs_array[my_weapon_ids:CSW_SHARD_CANNON][wpn_struct_weapon_name], "fw_Weapon_PrimaryAttack_Post", 1,true)
+	wlt_get_def_name(my_weapon_ids:CSW_SHARD_CANNON,wpn_name_for_future_lookup,charsmax(wpn_name_for_future_lookup))
+	RegisterHam(Ham_Item_Deploy, wpn_name_for_future_lookup, "fw_Item_Deploy_Post", 1,true)
+	RegisterHam(Ham_Item_AddToPlayer,  wpn_name_for_future_lookup, "fw_Item_AddToPlayer_Post", 1,true)
+	RegisterHam(Ham_Weapon_Reload,  wpn_name_for_future_lookup, "fw_Weapon_Reload",_,true)
+	RegisterHam(Ham_Item_PostFrame,  wpn_name_for_future_lookup, "fw_Item_PostFrame",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack,  wpn_name_for_future_lookup, "fw_Weapon_PrimaryAttack",_,true)
+	RegisterHam(Ham_Weapon_PrimaryAttack,  wpn_name_for_future_lookup, "fw_Weapon_PrimaryAttack_Post", 1,true)
 	
 	weapon_secret_code = allocate_weapon_secret_code()
 

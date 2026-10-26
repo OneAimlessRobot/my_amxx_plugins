@@ -94,7 +94,7 @@ public blueblood_damage(id)
 		lightning_effect(id, attacker, 20)
 
 		for (new x = 0; x < giveTotal; x++) {
-			shGiveWeapon(id, weapArray[x])
+			sh_give_item(id, weapArray[x])
 
 			gHasWeapons[id] = true
 		}

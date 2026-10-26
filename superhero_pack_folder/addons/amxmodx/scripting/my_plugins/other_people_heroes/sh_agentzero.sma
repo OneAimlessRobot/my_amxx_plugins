@@ -19,6 +19,7 @@ agentz_level 5
 *      Thanks to Arkshine for the NO_RECOIL_WEAPONS_BITSUM and The Art of War for the idea.
 */
 
+#define I_WANT_PDATA_ALIASES
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_consts.inc"
 
