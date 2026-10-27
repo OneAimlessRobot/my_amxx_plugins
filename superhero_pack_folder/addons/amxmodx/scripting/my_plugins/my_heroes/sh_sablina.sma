@@ -731,7 +731,7 @@ public sablina_spike_think(ent_id){
 					the_radius,
 					entlist,
 					charsmax(entlist));
-
+	new bool:hit_someone=false;
 	for( new i= 0;(i< numfound);i++){
 
 		new pid = entlist[i];
@@ -740,11 +740,14 @@ public sablina_spike_think(ent_id){
 			continue
 		
 		}
-		emit_sound(pid,CHAN_BODY,gRockCrashSounds[2],VOL_NORM,ATTN_NORM,0,PITCH_NORM)
+		hit_someone=true
 		directed_spark(ent_id,pid,10,1,200,20,WHITE,5,0)
 		sh_set_stun(pid,the_stun_duration,50.0)
 	}
-	
+	if(hit_someone){
+
+		emit_sound(ent_id,CHAN_BODY,gRockCrashSounds[2],VOL_NORM,ATTN_NORM,0,PITCH_NORM)
+	}
 	new Float:aim_orig[3]
 	entity_get_vector(ent_id, EV_VEC_vuser2,aim_orig)
 

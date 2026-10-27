@@ -398,11 +398,8 @@ weapons/ric4.wav
 weapons/ric5.wav
 weapons/ric_metal-1.wav
 weapons/ric_metal-2.wav
+weapons/ric_conc-1.wav
 weapons/ric_conc-2.wav
-debris/bustcrate1.wav
-debris/bustcrate2.wav
-debris/bustglass1.wav
-debris/bustglass2.wav
 squeek/sqk_blast1.wav
 squeek/sqk_die1.wav
 squeek/sqk_hunt1.wav

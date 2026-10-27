@@ -158,10 +158,13 @@ clear_client_state(server_slot_idx:id){
 	player_rendering_pctgs_array[id]=0
 	player_rendering_priorities_array[id]=rendering_priority_consts:0
 }
-public sh_client_spawn(id){
+public sh_client_spawn(id, bool:newRound){
 
 	clear_client_state(server_slot_idx:id)
+	if(!newRound){
 
+		set_user_rendering(id)
+	}
 }
 public client_disconnected(id){
 

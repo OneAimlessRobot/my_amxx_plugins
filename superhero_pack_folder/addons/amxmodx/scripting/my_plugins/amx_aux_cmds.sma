@@ -276,6 +276,8 @@ public amx_revive(id,level,cid){
     
     console_print(0, "%s just respawned player named %s!^n",name2,name)
     log_amx("%s just respawned player named %s!^n",name2,name)
+    client_print(player,print_chat,"[AMXX Revive]: %s has just revived you!",name2);
+    client_print(id,print_chat,"[AMXX Revive]: You just revived %s!",name);
     return PLUGIN_HANDLED
 }
 

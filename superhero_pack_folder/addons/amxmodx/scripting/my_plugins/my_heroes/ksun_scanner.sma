@@ -292,16 +292,11 @@ public scanner_think(scanner){
 			}
 			if(!g_player_tracks_player[id][pid]){
 
-				ammo_hud(id, obj_num_of_victims-g_player_num_victims[id],0)
-
 				g_player_tracks_player[id][pid]=true
 				num_deployed_spores[id]++
 				num_launched_spores[id]++
 				g_player_targets[id][num_launched_spores[id]]=pid;
 				g_player_num_victims[id]++
-
-
-				ammo_hud(id, obj_num_of_victims-g_player_num_victims[id],1)
 			}
 		
 	}

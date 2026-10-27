@@ -155,6 +155,7 @@ public sh_hero_init(id,heroID, sh_init_mode:mode){
 	for(new sh_thrash_brat_dmg_type:i=enum_zero;i<sh_thrash_brat_dmg_type;i++){
 
 		sh_player_hero_damage_flag_tracker[id][i][tmp_bias] = 0
+		sh_player_hero_damage_flag_tracker[id][i][tmp_mult_bias] = 0.0
 	}
 	for(new sh_thrash_brat_dmg_type:i=enum_zero;i<sh_thrash_brat_dmg_type;i++){
 
@@ -175,34 +176,30 @@ public sh_hero_init(id,heroID, sh_init_mode:mode){
 			sh_player_hero_damage_flag_tracker[id][i][curr_picked_count]+=sh_player_hero_damage_flag_tracker[id][i][tmp_bias]
 			sh_player_hero_damage_flag_tracker[id][i][curr_mult]+=sh_player_hero_damage_flag_tracker[id][i][tmp_mult_bias]
 
-			sh_player_hero_damage_flag_tracker[id][i][curr_mult] = clamp_macro(sh_player_hero_damage_flag_tracker[id][i][curr_mult],min_heal_mult,max_heal_mult);
-		
 		} 
 	}
 }
-public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart ,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,custom_weapon_id){
+public sh_extra_damage_fwd_post(victim, attacker, damage, my_hitpoint_enum:bodypart ,sh_damage_mode:dmgMode, sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],dmg_type,sh_thrash_brat_dmg_type:new_dmg_type,custom_weapon_id){
 	
 	if ( !sh_is_active() ||  !is_user_connected(victim)){
 	
-		return DMG_FWD_PASS
+		return
 	}
 	if((victim==attacker)||sh_clients_are_same_team(victim,attacker)){
 
 
-		return DMG_FWD_PASS
+		return
 	}
 	if(!is_valid_custom_dmg_source(_:new_dmg_type)){
 
-		return DMG_FWD_PASS
+		return
 
 	}
 	if(sh_get_player_has_damage_recovery_flag(attacker,new_dmg_type)){
-
-		new Float:the_mult_on_this_player=sh_player_hero_damage_flag_tracker[attacker][new_dmg_type][curr_mult]
+		
+		new Float:the_mult_on_this_player=clamp_macro(sh_player_hero_damage_flag_tracker[attacker][new_dmg_type][curr_mult],min_heal_mult,max_heal_mult);
 
 		generic_heal(attacker,the_mult_on_this_player*float(damage),_,GREEN,_,_,50)
 
 	}
-	
-	return DMG_FWD_PASS
 }

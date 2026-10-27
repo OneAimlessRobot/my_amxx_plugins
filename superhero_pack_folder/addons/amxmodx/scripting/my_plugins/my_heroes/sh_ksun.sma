@@ -94,7 +94,9 @@ public plugin_init()
 	sh_assign_hero_bit(gHeroID, SH_PARASITE_HERO_I_HATE_THEM, true)
 	
 
-	
+	sh_assign_hero_damage_bit(gHeroID,SH_NEW_DMG_DRAIN,true)
+	sh_assign_hero_damage_heal_mult(gHeroID,SH_NEW_DMG_DRAIN,0.4)
+
 	static hero_name_arr[STRLEN_FOR_NAMES];
 	arrayset(hero_name_arr,0,sizeof hero_name_arr)
 	add(hero_name_arr,charsmax(hero_name_arr),gHeroName,charsmax(gHeroName))
@@ -532,7 +534,6 @@ stock ksun_death_handler(id){
 			ksun_unultimate_user(id,1,0)
 
 			if(any:cvar_val(num, pcvar_ksun_when_reset_spores)&reset_on_death){
-				ammo_hud(id,gMaxSporesUsable[id],0)
 				
 				gMaxSporesUsable[id] = 0
 
@@ -551,7 +552,6 @@ public sh_client_death(id, killer){
 	ksun_death_handler(id)
 	if(is_user_alive(killer)&&is_user_connected(id)){
 		if(sh_get_user_has_hero(killer,gHeroID) &&!ksun_player_is_in_ultimate(killer)){
-			ammo_hud(killer,gMaxSporesUsable[killer],0)
 			if(cvar_val(num, pcvar_ksun_kill_type_broadness_level)<=1){
 				if(gWeaponPlayerKilledPlayerWith[killer][id]==KSUN_WEAPON_ID){
 
@@ -569,7 +569,6 @@ public sh_client_death(id, killer){
 			else{
 				ksun_multi_inc_num_available_spores_primitive(killer,cvar_val(num, pcvar_ksun_spores_per_kill))
 			}
-			ammo_hud(killer,gMaxSporesUsable[killer],1)
 		}
 		gWeaponPlayerKilledPlayerWith[killer][id]=0;
 	}
