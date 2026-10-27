@@ -19,6 +19,7 @@ ambience/particle_suck2.wav
 shmod/Teliko/chaff/chaff_blow.wav
 shmod/a_exm2.wav
 items/suitchargeno1.wav
+shmod/ration.wav
 shmod/Teliko/chaff/bounce.wav
 shmod/lara/spear/spear_throw.wav
 shmod/erica/molotov/molotov_crack.wav
@@ -32,7 +33,6 @@ shmod/erica/sleep/snore.wav
 ambience/burning1.wav
 scientist/c1a0_sci_catscream.wav
 shmod/erica/molotov/molotov_fire.wav
-shmod/ration.wav
 shmod/Teliko/counter.wav
 shmod/Teliko/MEGA_counter.wav
 shmod/Teliko/counter_plus_plus.wav

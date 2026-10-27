@@ -261,7 +261,7 @@ public on_Weapon_Change(id)
 }
 Float:get_sablina_health_ratio(Float:the_current, Float:the_cap){
 
-	return floatclamp(( the_current/ the_cap),0.1,0.99)
+	return clamp_macro(( the_current/ the_cap),0.1,0.99)
 
 }
 Float:calculate_sablina_charge_time(id){
@@ -518,7 +518,7 @@ public increase_dmg_task(id){
 		
 		set_user_maxspeed_controlled(id, 100.0,true, false)
 		
-		user_stone_spiker_time[id] += (floatmin(user_charge_time_curr_strike[id]-user_stone_spiker_time[id],SABLINA_STONE_SPIKE_TICK_LENGTH_SECS))
+		user_stone_spiker_time[id] += (min_macro(user_charge_time_curr_strike[id]-user_stone_spiker_time[id],SABLINA_STONE_SPIKE_TICK_LENGTH_SECS))
 		
 		client_print(id,print_center,"[SH] Sablina: Stone spike charge: %0.2f",user_stone_spiker_time[id]/user_charge_time_curr_strike[id])
 
@@ -689,9 +689,9 @@ public sablina_spike_think(ent_id){
 
 	curr_hp =  entity_get_float(owner_id,EV_FL_health);
 
-	hp_pct = get_sablina_health_ratio(curr_hp , floatmax(1.0, float(sh_get_max_hp(owner_id))))
+	hp_pct = get_sablina_health_ratio(curr_hp , max_macro(1.0, float(sh_get_max_hp(owner_id))))
 
-	the_drain = floatmin(charge_pct , cvar_val(float,pcvar_sablina_dmg_frac_hp_max_cut)) * curr_hp
+	the_drain = min_macro(charge_pct , cvar_val(float,pcvar_sablina_dmg_frac_hp_max_cut)) * curr_hp
 	
 	the_damage = (cvar_val(float, pcvar_sablina_spike_min_dmg)
 							

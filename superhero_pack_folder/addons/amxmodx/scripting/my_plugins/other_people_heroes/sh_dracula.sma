@@ -32,6 +32,11 @@ public plugin_init()
 	gHeroID = sh_create_hero(gHeroName, pcvarLevel)
 	sh_assign_hero_bit(gHeroID, SH_BLEED_POWERS, true);
 	sh_set_hero_info(gHeroID, "Vampiric Drain", "Gain HP by attacking players - More HPs per level")
+
+	sh_assign_hero_damage_bit(gHeroID,SH_NEW_DMG_SUPER_BULLET,true)
+	sh_assign_hero_damage_bit(gHeroID,SH_NEW_DMG_SUPER_MELEE,true)
+	sh_assign_hero_damage_heal_mult(gHeroID,SH_NEW_DMG_SUPER_BULLET,0.5)
+	sh_assign_hero_damage_heal_mult(gHeroID,SH_NEW_DMG_SUPER_MELEE,0.5)
 }
 //----------------------------------------------------------------------------------------------
 public client_damage(attacker, victim, damage, wpnindex)

@@ -386,9 +386,9 @@ public ion_beacon(id)
 	if ( iDelay < 0.1 ) {
 		iDelay = 0.1
 	}
-	new iCalculatedPitch = floatround(floatclamp((3*50.2)/(iDelay+15.2), 1.00000, 99999.0))
+	new iCalculatedPitch = floatround(clamp_macro(((3*50.2)/(iDelay+15.2)), 1.00000, 99999.0))
 	i_Pitch[id] += iCalculatedPitch			// default: 3
-	new Float:iCalculatedBeaconTime = floatclamp((0.03*50.2)/(iDelay+15.2), 0.00001, 99999.0)
+	new Float:iCalculatedBeaconTime = clamp_macro(((0.03*50.2)/(iDelay+15.2)), 0.00001, 99999.0)
 	i_BeaconTime[id] -= iCalculatedBeaconTime		// default: 0.03
 	if ( i_Pitch[id] > 255 ) {
 		i_Pitch[id] = 255

@@ -83,7 +83,7 @@ stock Float:angle_between_vectors_radians(Float:input_a[3], Float:input_b[3], ve
 	new Float:dot_product_between_vecs = dot_product(input_a, input_b, vec_size);
 	new Float:vector_len_product = VecLength(input_a) * VecLength(input_b);
 	new Float:before_last = (dot_product_between_vecs / (vector_len_product));
-	before_last = floatclamp(before_last, -1.0, 1.0);
+	before_last = clamp_macro(before_last, -1.0, 1.0);
 	new Float:angle_between_input_a_and_input_b = floatacos(before_last,anglemode:radian);
 	return angle_between_input_a_and_input_b;
 	
@@ -129,7 +129,7 @@ stock bool:check_in_fov(player_id, player_hit, Float:fov_to_check, Float:distanc
 	get_player_aim_vector_raw(player_id, vec_a);
 	get_entity_direction_vector_raw(player_id, player_hit, vec_b);
 	new Float:length_a = VecLength(vec_a);
-	new Float:new_length_a = floatmin(distance_to_check, VecLength(vec_a));
+	new Float:new_length_a = min_macro(distance_to_check, VecLength(vec_a));
 	new Float:length_b = VecLength(vec_b);
 	multiply_3d_vector_by_scalar(vec_a, new_length_a / length_a, vec_a);
 	multiply_3d_vector_by_scalar(vec_b, new_length_a / length_b, vec_b);

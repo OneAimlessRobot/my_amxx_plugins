@@ -141,8 +141,8 @@ public camera_controls(id, uc_handle)
 		button &= ~IN_ATTACK;
 		set_uc(uc_handle, UC_Buttons, button);
 
-		entity_set_float(id,EV_FL_fov,floatmin( MAX_ZOOM ,zoom+ZOOM_INC))
-		set_pdata_int(id, m_iFOV, floatround(floatmin(MAX_ZOOM,zoom+ZOOM_INC)));
+		entity_set_float(id,EV_FL_fov,min_macro( MAX_ZOOM ,zoom+ZOOM_INC))
+		set_pdata_int(id, m_iFOV, floatround(min_macro(MAX_ZOOM,zoom+ZOOM_INC)));
 		
 		
 	}
@@ -151,8 +151,8 @@ public camera_controls(id, uc_handle)
 		button &= ~IN_ATTACK2;
 		set_uc(uc_handle, UC_Buttons, button);
 		
-		entity_set_float(id,EV_FL_fov,floatmin(MIN_ZOOM,zoom-ZOOM_INC))
-		set_pdata_int(id, m_iFOV,floatround(floatmax(MIN_ZOOM,zoom-ZOOM_INC)));
+		entity_set_float(id,EV_FL_fov,min_macro(MIN_ZOOM,zoom-ZOOM_INC))
+		set_pdata_int(id, m_iFOV,floatround(min_macro(MIN_ZOOM,zoom-ZOOM_INC)));
 		
 	}
 	return FMRES_SUPERCEDE;

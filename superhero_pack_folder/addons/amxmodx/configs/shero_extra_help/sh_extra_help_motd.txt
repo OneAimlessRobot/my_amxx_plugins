@@ -30,4 +30,13 @@ say /skins - show menu for skins depending on heroes equipped. Both weapons and 
 (console) sh_check_map_restricted_heroes - shows a list of heroes along with maps that they cannot be picked on!
 
 
+(console) sh_check_existing_damage_types - shows a list of the damage types that exist!
+
+
+(console) sh_print_player_hero_damage_recoveries - shows a list of damage types that this player can currently recover hp from!
+
+
+(console) sh_print_hero_damage_recoveries - shows a list of damage types that a hero allows a user to recover from!
+
+
 </pre></body></html>

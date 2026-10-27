@@ -171,7 +171,7 @@ if (!is_user_connected(attacker)) return HAM_IGNORED
 
 if(sh_get_user_has_hero(id,gHeroID) && Get_BitVar(g_yowai_mode_mask,id)){
 	
-	new Float:tg_damage=floatmin(float(get_user_health(id)),float(dmg_threshold))
+	new Float:tg_damage=min_macro(float(get_user_health(id)),float(dmg_threshold))
 	if(g_hits[id]>=g_max_hits_player[id]){
 		
 		set_user_godmode(id,0)

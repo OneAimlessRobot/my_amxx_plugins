@@ -330,14 +330,13 @@ public OnCmdStart(id,uc_handle)
 		if((button & IN_JUMP)){
 			
 			button&=~IN_JUMP
-			set_user_fuel_ammount(id,floatmax(0.0,get_user_fuel_ammount(id)-(cvar_val(float, pcvar_fuel_spend)+((JETPLANE_THOTTLE_FUEL_SPEND_MULT* cvar_val(float, pcvar_fuel_spend))))))
+			set_user_fuel_ammount(id,max_macro(0.0,get_user_fuel_ammount(id)-(cvar_val(float, pcvar_fuel_spend)+((JETPLANE_THOTTLE_FUEL_SPEND_MULT* cvar_val(float, pcvar_fuel_spend))))))
 		}
 	
 	}
 	else
 	{
-		set_user_fuel_ammount(id,floatmin(cvar_val(float, pcvar_jetplane_fuel),get_user_fuel_ammount(id)+((entity_get_int(jet_get_user_jet(id), EV_INT_flags) & FL_ONGROUND)?
-						cvar_val(float, pcvar_fuel_spend)*JETPLANE_STANDSTILL_FUEL_REGEN_MULT:cvar_val(float, pcvar_fuel_spend))))
+		set_user_fuel_ammount(id,min_macro(cvar_val(float, pcvar_jetplane_fuel),get_user_fuel_ammount(id)+((entity_get_int(jet_get_user_jet(id), EV_INT_flags) & FL_ONGROUND)?cvar_val(float, pcvar_fuel_spend)*JETPLANE_STANDSTILL_FUEL_REGEN_MULT:cvar_val(float, pcvar_fuel_spend))))
 	}
 	return FMRES_SUPERCEDE
 	

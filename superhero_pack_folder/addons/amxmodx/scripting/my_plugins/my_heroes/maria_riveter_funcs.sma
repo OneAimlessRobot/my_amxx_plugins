@@ -443,7 +443,7 @@ public rrrrroovvetoooo_touque_playor(pToucher, pTouched)
 	new Float:rivet_launch_pos[3]
 	entity_get_vector(pToucher,EV_VEC_vuser1,rivet_launch_pos)
 	new Float:distance=vector_distance(origin,rivet_launch_pos);
-	new Float:falloff_coeff= (is_direct_hit?0.0:floatmin(1.0,distance/MARIA_PROJECTILE_DAMAGE_FALLOFF_DIST));
+	new Float:falloff_coeff= (is_direct_hit?0.0:min_macro(1.0,distance/MARIA_PROJECTILE_DAMAGE_FALLOFF_DIST));
 	
 	new Float:damage_bonus = is_direct_hit?(is_air_shot?(MARIA_PROJECTILE_DAMAGE_AIRSHOT_BONUS + MARIA_PROJECTILE_DAMAGE_DIRECT_BONUS):MARIA_PROJECTILE_DAMAGE_DIRECT_BONUS):0.0;
 	

@@ -411,7 +411,7 @@ public chorazy_II_toumpaeeeehm(pToucher, pTouched)
 
 			entity_get_vector(pToucher,EV_VEC_velocity,velocity)
 
-			speed=floatmax(1.0,vector_length(velocity))
+			speed=max_macro(1.0,vector_length(velocity))
 
 			damage = calculate_nuanced_projectile_damage(pToucher,
 								bullet_launch_pos,

@@ -228,9 +228,7 @@ public Ester_DamageReflect(id, idinflictor, attacker, Float:damage, damagebits)
 
 
 			directed_spark(id, attacker)
-			damage=1.0+damage- (damage*floatclamp(
-				cvar_val(float, pcvar_ester_damage_reflect_coeff)
-				,0.0,1.0))
+			damage=1.0+damage- (damage*clamp_macro(cvar_val(float, pcvar_ester_damage_reflect_coeff),0.0,1.0))
 			SetHamParamFloat(4, damage);
 	
 	}
@@ -355,9 +353,7 @@ public OnCmdStart(id, uc_handle)
 			
 			flight_speed_if_desperate = cvar_val(float,pcvar_ester_flyspeed)
 
-			flight_speed_if_not_desperate = floatmin(flight_speed_if_desperate,
-						floatmax(250.0,
-						flight_speed_if_desperate*curr_hp_ratio))
+			flight_speed_if_not_desperate = min_macro(flight_speed_if_desperate, max_macro(250.0, flight_speed_if_desperate*curr_hp_ratio))
 			
 			
 			flight_speed = (Get_BitVar(g_is_desperate_mask,id)? flight_speed_if_desperate:flight_speed_if_not_desperate)
@@ -441,9 +437,7 @@ public sh_client_death(id, killer){
 		new parm[2]
 		parm[0] = id
 		parm[1] = 0
-		set_task(floatmax(PRE_RESPAWN_MESSAGE_RELAY,
-				cvar_val(float,pcvar_ester_calculation_time_period)
-				-PRE_RESPAWN_MESSAGE_RELAY), "ester_reborn_loop_task", id+ESTER_REBORN_CALCULATION_LOOP_TASKID, parm, sizeof(parm))
+		set_task(max_macro(PRE_RESPAWN_MESSAGE_RELAY,cvar_val(float,pcvar_ester_calculation_time_period)-PRE_RESPAWN_MESSAGE_RELAY), "ester_reborn_loop_task", id+ESTER_REBORN_CALCULATION_LOOP_TASKID, parm, sizeof(parm))
 	}
 	else if (!is_user_alive(id)){
 		
@@ -471,8 +465,7 @@ public ester_reborn_loop_task(parm[2]){
 	else if(parm[1]<cvar_val(num,pcvar_ester_calculation_times)){
 
 		parm[1]++
-		set_task(floatmax(PRE_RESPAWN_MESSAGE_RELAY,
-			cvar_val(float,pcvar_ester_calculation_time_period)-PRE_RESPAWN_MESSAGE_RELAY), "ester_reborn_loop_task", id+ESTER_REBORN_CALCULATION_LOOP_TASKID, parm, sizeof(parm))
+		set_task(max_macro(PRE_RESPAWN_MESSAGE_RELAY,cvar_val(float,pcvar_ester_calculation_time_period)-PRE_RESPAWN_MESSAGE_RELAY), "ester_reborn_loop_task", id+ESTER_REBORN_CALCULATION_LOOP_TASKID, parm, sizeof(parm))
 	
 
 	}
@@ -650,7 +643,7 @@ public ester_break_shit(pToucher,pTouched){
 	pev(pToucher, pev_origin,killer_origin)
 	pev(pToucher, pev_velocity,killer_velocity)
 
-	killer_speed=floatmax(1.0,vector_length(killer_velocity))
+	killer_speed=max_macro(1.0,vector_length(killer_velocity))
 
 	explosion_custom_entity(pToucher,
 							150.0,(0.2*killer_speed),
@@ -709,7 +702,7 @@ static Float:killer_velocity[3],Float:killer_origin[3],Float:killer_speed
 pev(pToucher, pev_origin,killer_origin)
 pev(pToucher, pev_velocity,killer_velocity)
 
-killer_speed=floatmax(1.0,vector_length(killer_velocity))
+killer_speed=max_macro(1.0,vector_length(killer_velocity))
 
 explosion(gHeroID,pToucher,150.0,(0.2*killer_speed),
 		cvar_val(float, pcvar_ester_fly_knock_enemies_force),1)

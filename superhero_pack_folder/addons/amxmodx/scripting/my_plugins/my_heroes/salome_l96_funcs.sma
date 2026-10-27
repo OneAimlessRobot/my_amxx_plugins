@@ -483,7 +483,7 @@ public bulletina_touque_playor(pToucher, pTouched)
 
 	entity_get_vector(pToucher,EV_VEC_velocity,velocity)
 
-	speed=floatmax(1.0,vector_length(velocity))
+	speed=max_macro(1.0,vector_length(velocity))
 
 	damage = calculate_nuanced_projectile_damage(pToucher,
 						bullet_launch_pos,
@@ -534,9 +534,6 @@ public bulletina_touque_playor(pToucher, pTouched)
 		
 		if(!is_user_bot(pTouched)){
 			send_poem_function(pTouched, poem_idx:random_number);
-		}
-		if(!is_user_bot(owner)){
-			send_poem_function(owner, poem_idx:random_number);
 		}
 		
 		if(!is_user_alive(pTouched)){

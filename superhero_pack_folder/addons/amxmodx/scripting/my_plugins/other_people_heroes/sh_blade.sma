@@ -65,6 +65,10 @@ new dmg_source_name_short_gunburn[SAFE_BUFFER_SIZE+1]="gunburn"
 new dmg_source_name_log_gunburn[SAFE_BUFFER_SIZE+1]="gunburn"
 new custom_dmg_id_gunburn
 
+new dmg_source_name_short_knifeburn[SAFE_BUFFER_SIZE+1]="knifeburn"
+new dmg_source_name_log_knifeburn[SAFE_BUFFER_SIZE+1]="knifeburn"
+new custom_dmg_id_knifeburn
+
 
 new bool:InKnifeBurn[SH_MAXSLOTS+1]
 new bool:InGunBurn[SH_MAXSLOTS+1]
@@ -93,6 +97,11 @@ public plugin_init()
 	custom_dmg_id_gunburn=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_gunburn,
 				dmg_source_name_log_gunburn,
 				0)
+
+	custom_dmg_id_knifeburn=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_knifeburn,
+				dmg_source_name_log_knifeburn,
+				0)
+
 
 	RegisterHam(Ham_TraceAttack,"player","blade_damage",_,true)
 
@@ -310,7 +319,7 @@ public knifeburn(args[])
 			sh_extra_damage(id, attacker, knifeDmg,
 					_,_,_,_,_,
 					SH_NEW_DMG_FIRE,
-					custom_dmg_id_gunburn)
+					custom_dmg_id_knifeburn)
 		else
 			sh_set_hp(id, hpAfterDmg)
 	}

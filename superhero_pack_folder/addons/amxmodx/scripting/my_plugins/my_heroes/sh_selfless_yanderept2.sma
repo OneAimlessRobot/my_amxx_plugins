@@ -275,7 +275,7 @@ public yandere_sentence_loop(id){
 				if(degen_dmg_2_take>0){
 					new client_origin[3]
 					get_user_origin(i,client_origin)
-					new Float:floatalpha=25.0+floatmax(0.0,floatmin(120.0,255.0*(float(user_health)/float(cvar_val(num,pcvar_overheal_hp_max)))))
+					new Float:floatalpha=25.0+max_macro(0.0,min_macro(120.0,255.0*(float(user_health)/float(cvar_val(num,pcvar_overheal_hp_max)))))
 					sh_screen_fade(i, 0.5, 2.5, LineColors[RED][0], LineColors[RED][1], LineColors[RED][2], floatround(floatalpha))
 					
 					sh_extra_damage(i,i,degen_dmg_2_take,
@@ -371,16 +371,12 @@ update_stats(id){
 	if(Get_BitVar(gSuperAngryMask,id)){
 
 		gNormalDmgMult[id]=cvar_val(float,pcvar_angry_dmg_mult)
-		gNormalSpeed[id]=floatmax(cvar_val(float,pcvar_angry_speed),maxspeed);
+		gNormalSpeed[id]=max_macro(cvar_val(float,pcvar_angry_speed),maxspeed);
 		
 	}
 	else{
-		gNormalDmgMult[id]=floatmin(floatadd(cvar_val(float,pcvar_base_dmg_mult),
-					floatmul(cvar_val(float,pcvar_dmg_pct_per_inc),
-					float(g_mates_dead[id]))),cvar_val(float,pcvar_angry_dmg_mult));
-		gNormalSpeed[id]=floatmin(floatadd(gBaseSpeed[id],
-				floatmul(cvar_val(float,pcvar_speed_inc_per_inc),float(g_mates_dead[id]))),
-				cvar_val(float,pcvar_angry_speed));
+		gNormalDmgMult[id]=min_macro(floatadd(cvar_val(float,pcvar_base_dmg_mult), floatmul(cvar_val(float,pcvar_dmg_pct_per_inc), float(g_mates_dead[id]))),cvar_val(float,pcvar_angry_dmg_mult));
+		gNormalSpeed[id]=min_macro(floatadd(gBaseSpeed[id], floatmul(cvar_val(float,pcvar_speed_inc_per_inc),float(g_mates_dead[id]))), cvar_val(float,pcvar_angry_speed));
 	}
 }
 public yandere_timer_transform(id){
@@ -388,7 +384,7 @@ public yandere_timer_transform(id){
 	if(Get_BitVar(gSuperAngryMask,id)){
 
 		new Float:gravity=get_user_gravity(id)
-		set_user_gravity(id,floatmin(cvar_val(float,pcvar_angry_gravity),gravity))
+		set_user_gravity(id,min_macro(cvar_val(float,pcvar_angry_gravity),gravity))
 		if(g_mates_alive[id]>0){
 
 			UnSet_BitVar(gSuperAngryMask,id)

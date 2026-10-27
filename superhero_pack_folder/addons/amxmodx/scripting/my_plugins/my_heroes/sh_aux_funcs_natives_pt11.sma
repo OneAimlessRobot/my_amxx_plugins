@@ -13,88 +13,55 @@
 
 enum hero_property_struct{
 	name[64],
-	description[100]
+	description[100],
+	number_of_times_max
 
 }
 static const sh_hero_property_structs_array[hero_property_flags_id][hero_property_struct] =  {
-			{"Blood thirsty", "Heroes that manipulate blood!"},
+			{"Blood thirsty", "Heroes that manipulate blood!", 25},
 			
-			{"Explosive", "Heroes that create explosions"},
+			{"Explosive", "Heroes that create explosions", 4},
 
-			{"Sleep bender", "Heroes that can put players to sleep"},
+			{"Sleep bender", "Heroes that can put players to sleep", 25},
 			
-			{"Core hero", "Complex heroes with loads of features"},
+			{"Core hero", "Complex heroes with loads of features", 25},
 			
-			{"Invisibility", "Heroes that can become invisible"},
+			{"Invisibility", "Heroes that can become invisible", 25},
 			
-			{"Healing", "Heroes that heal players"},
+			{"Healing", "Heroes that heal players", 25},
 			
-			{"Small", "Heroes with tiny size"},
+			{"Small", "Heroes with tiny size", 25},
 			
-			{"Dream eater", "Heroes that feed on your dreams"},
+			{"Dream eater", "Heroes that feed on your dreams", 25},
 			
-			{"Annoying hero", "Heroes that are annoying"},
+			{"Annoying hero", "Heroes that are annoying", 25},
 			
-			{"Health cap hero", "Heroes that have a healthcap"},
+			{"Health cap hero", "Heroes that have a healthcap", 25},
 			
-			{"No bots hero", "Heroes unable to be picked by bots"},
+			{"No bots hero", "Heroes unable to be picked by bots", 25},
 			
-			{"Anti fall damage hero", "Heroes that do not take damage from falling"},
+			{"Anti fall damage hero", "Heroes that do not take damage from falling", 25},
 			
-			{"Anti grenades hero", "Heroes that do not take damage from vanilla HE grenades"},
+			{"Anti grenades hero", "Heroes that do not take damage from vanilla HE grenades", 25},
 			
-			{"Hitbox manipulating hero", "Heroes that can manipulate their own hitbox"},
+			{"Hitbox manipulating hero", "Heroes that can manipulate their own hitbox", 25},
 			
-			{"Respawning hero", "Heroes that respawn after dying"},
+			{"Respawning hero", "Heroes that respawn after dying", 25},
 			
-			{"M249 wielding hero", "Heroes that wield the M249"},
+			{"M249 wielding hero", "Heroes that wield the M249", 1},
 			
-			{"TR45H P0W3R5 hero", "Heroes that can recycle weapons"},
+			{"TR45H P0W3R5 hero", "Heroes that can recycle weapons", 25},
 			
-			{"Unhealable hero", "Heroes that may not recover health"},
+			{"Unhealable hero", "Heroes that may not recover health", 25},
 			
-			{"Parasite hero I hate them", "I hate these heroes"},
+			{"Parasite hero I hate them", "I hate these heroes", 25},
 			
-			{"Yandere hero", "Heroes with too much passion"},
+			{"Yandere hero", "Heroes with too much passion", 5},
 			
-			{"Fire retardant hero", "Heroes with fire resistance"},
+			{"Fire retardant hero", "Heroes with fire resistance", 25},
 			
-			{"Radio detector hero", "Heroes that can detect radioactivity"}
+			{"Radio detector hero", "Heroes that can detect radioactivity", 25}
 			
-			
-
-}
-
-
-
-
-
-
-
-
-static const sh_property_gating_array[hero_property_flags_id] =  {
-			25,
-			4,
-			25,
-			25,
-			25,
-			25,
-			25,
-			25,
-			25,
-			25,
-			25,
-			25,
-			25,
-			25,
-			25,
-			1,
-			25,
-			25,
-			25,
-			5,
-			25,
-			25
 			
 
 }
@@ -149,9 +116,7 @@ stock sh_hero_properties_descriptions_print_aux(id){
 	console_print(id,"The state of hero prop flags for this player is:^n^n")
 	for(new hero_property_flags_id:i=enum_zero;i<hero_property_flags_id;i++){
 		
-		console_print(id,"The property number %d (which is named %s) is described as:^n",
-																	i,
-																	sh_hero_property_structs_array[i][name])
+		console_print(id,"%s, which is described as:^n",sh_hero_property_structs_array[i][name])
 		
 		console_print(id,"^"Marked on ^"^"%s^"^n",sh_hero_property_structs_array[i][description])
 
@@ -175,12 +140,10 @@ stock sh_print_player_hero_flags_aux(id, player_target){
 	console_print(id,"The state of hero prop flags for this player is:^n^n")
 	for(new hero_property_flags_id:i=enum_zero;i<hero_property_flags_id;i++){
 		
-		console_print(id,"The property number %d (which is named %s)^nPlayer: %d^nHas been:^n - picked: %d times out of a maximum of %d^n",
-						i,
+		console_print(id,"%s^nHas been:^n - picked: %d times out of a maximum of %d^n",
 						sh_hero_property_structs_array[i][name],
-						player_target,
 						sh_player_hero_property_tracker[player_target][i][curr_picked_count],
-						sh_property_gating_array[i])
+						sh_hero_property_structs_array[i][number_of_times_max])
 
 
 		console_print(id,"is player this property? %s^n",
@@ -231,7 +194,7 @@ stock sh_print_hero_property_flags_aux(id, hero_name_partial[MAX_HERO_NAME_LENGT
 		console_print(id,"The property number %d (which is named %s)^nPlayers can only have %d heroes with this property!^n",
 																	i,
 																	sh_hero_property_structs_array[i][name],
-																	sh_property_gating_array[i])
+																	sh_hero_property_structs_array[i][number_of_times_max])
 
 
 	}
@@ -269,13 +232,13 @@ public init_fwd_ret_id:sh_hero_init_pre(id,heroID, sh_init_mode:mode){
 		if(sh_get_hero_bit(heroID,i)){
 			if(sh_player_hero_property_tracker[id][i][curr_picked_count]
 					>=
-				sh_property_gating_array[i]){
+				sh_hero_property_structs_array[i][number_of_times_max]){
 			
 
 				sh_chat_message(id,-1,"[SH hero property manager] You have picked heroes with ^"%s^" too many times! %d out of %d times...",
 							sh_hero_property_structs_array[i][name],
 							sh_player_hero_property_tracker[id][i][curr_picked_count],
-							sh_property_gating_array[i])
+							sh_hero_property_structs_array[i][number_of_times_max])
 
 				sh_chat_message(id,-1,"[SH hero property manager] type ^"%s <part of hero name>^" to check hero properties for a specific hero",
 							hero_properties_print)
@@ -313,7 +276,7 @@ public sh_hero_init(id,heroID, sh_init_mode:mode){
 
 					if(sh_player_hero_property_tracker[id][i][curr_picked_count]
 							<
-						sh_property_gating_array[i]){
+						sh_hero_property_structs_array[i][number_of_times_max]){
 						
 						sh_player_hero_property_tracker[id][i][tmp_bias]++
 					
@@ -338,6 +301,8 @@ public sh_hero_init(id,heroID, sh_init_mode:mode){
 	}
 	for(new hero_property_flags_id:i=enum_zero;i<hero_property_flags_id;i++){
 
-		sh_player_hero_property_tracker[id][i][curr_picked_count]+=sh_player_hero_property_tracker[id][i][tmp_bias]
+		if(sh_get_hero_bit(heroID,i)){
+			sh_player_hero_property_tracker[id][i][curr_picked_count]+=sh_player_hero_property_tracker[id][i][tmp_bias]
+		}
 	}
 }

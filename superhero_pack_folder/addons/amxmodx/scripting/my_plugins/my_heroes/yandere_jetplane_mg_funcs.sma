@@ -2,6 +2,9 @@
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_MATH_FUNCS
+#define I_WANT_ENTITY_VECTORS
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_RESOURCE_ALIASES
 #include "../my_include/superheromod.inc"
 #include "jetplane_inc/sh_jetplane_funcs.inc"
 #include "jetplane_inc/sh_jetplane_mg_funcs.inc"
@@ -41,8 +44,7 @@ public plugin_init(){
 
 
 	register_entity_as_wall_touchable(JETPLANE_SHELL_CLASSNAME,"shell_hit_wall")
-	static const jetplane_classid_vector[][]={JETPLANE_FUSELAGE_CLASSNAME}
-	register_custom_touchable(JETPLANE_SHELL_CLASSNAME,"shell_hit_jet",jetplane_classid_vector,1)
+	register_touch(JETPLANE_FUSELAGE_CLASSNAME,JETPLANE_SHELL_CLASSNAME,"shell_hit_jet")
 	register_custom_touchable(JETPLANE_SHELL_CLASSNAME,"shell_hit_player",player_vector,1)
 	
 }
@@ -350,7 +352,7 @@ public shell_hit_player(pToucher, pTouched){
 			
 		entity_get_vector(pToucher,EV_VEC_origin,origin);
 		entity_get_vector(pToucher,EV_VEC_velocity,velocity)
-		speed=floatmin(1.0,vector_length(velocity))
+		speed=min_macro(1.0,vector_length(velocity))
 		new oid = entity_get_edict(pToucher, EV_ENT_owner)
 		
 		new Float:damage=cvar_val(float, pcvar_jetplane_mg_dmg);

@@ -118,7 +118,7 @@ public bool:_sh_register_map_restricted_superhero(iPlugins,iParams){
 
 	curr_num_map_restrictions++
 
-	return true;
+	return (containi(the_current_map_name,hero_map_restriction_structs_array[curr_num_map_restrictions-1][map_restriction_substring])>=0);
 	
 }
 

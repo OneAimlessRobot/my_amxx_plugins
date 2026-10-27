@@ -109,7 +109,7 @@ public ball_touch_player(Ball, Player ) {
 						damage
 					
 				entity_get_vector(Ball,EV_VEC_velocity,velocity)
-				speed= floatmax(1.0,vector_length(velocity))
+				speed= max_macro(1.0,vector_length(velocity))
 				entity_set_int(Ball,EV_INT_iuser2,true)
 				entity_set_int(Ball,EV_INT_iuser3,true)
 				set_velocity_from_origin(Player,origin,BALL_KNOCKBACK)
@@ -282,8 +282,8 @@ public ball_think(ent)
 	// Stupid Check but lets make sure you don't devide by 0
 	if ( !length ) length = 1.0
 	
-	newVelocity[0]= velocityVec[0]*(floatmin(BALL_SPEED,length))/length
-	newVelocity[1] = velocityVec[1]*(floatmin(BALL_SPEED,length))/length
+	newVelocity[0]= velocityVec[0]*(min_macro(BALL_SPEED,length))/length
+	newVelocity[1] = velocityVec[1]*(min_macro(BALL_SPEED,length))/length
 	newVelocity[2]= velocityVec[2]
 	
 	

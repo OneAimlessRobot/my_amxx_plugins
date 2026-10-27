@@ -8,14 +8,15 @@
 #define PLUGIN "SH aux funcs 6: xtra help files"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
+#include "sh_aux_stuff/sh_aux_fx_natives_const_pt4.inc"
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt6.inc"
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt9.inc"
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt10.inc"
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt11.inc"
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt12.inc"
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt17.inc"
+#include "sh_aux_stuff/sh_aux_fx_natives_const_pt18.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt6.inc"
-
 
 stock const extra_help_cmd[]="extra_help"
 stock const general_help_cmd[]="general_help"
@@ -77,6 +78,15 @@ createHelpMotdFile(const helpMotdFile[]){
 	fputs(extraHelpFile, "(console) ")
 	fputs(extraHelpFile, check_map_restricted_heroes)
 	fputs(extraHelpFile, " - shows a list of heroes along with maps that they cannot be picked on!^n^n^n")
+	fputs(extraHelpFile, "(console) ")
+	fputs(extraHelpFile, check_what_damage_types_exist)
+	fputs(extraHelpFile, " - shows a list of the damage types that exist!^n^n^n")
+	fputs(extraHelpFile, "(console) ")
+	fputs(extraHelpFile, player_damage_recoveries_print)
+	fputs(extraHelpFile, " - shows a list of damage types that this player can currently recover hp from!^n^n^n")
+	fputs(extraHelpFile, "(console) ")
+	fputs(extraHelpFile, hero_damage_recoveries_print)
+	fputs(extraHelpFile, " - shows a list of damage types that a hero allows a user to recover from!^n^n^n")
 	
 	fputs(extraHelpFile, "</pre></body></html>")
 

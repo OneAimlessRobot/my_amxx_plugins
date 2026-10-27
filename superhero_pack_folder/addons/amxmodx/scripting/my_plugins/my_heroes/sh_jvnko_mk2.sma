@@ -112,7 +112,7 @@ public Jvnko_Damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, Dam
 			wpn_ent = get_weapon_ent_of_player(Attacker, wpn_id),
 			Float:the_dmg = deplete_trash_wpn_dmg_reserve(wpn_ent),
 			Float:pre_extraDamage = ( ( Damage * cvar_val(float,pcvar_dmg_mult))- Damage),
-			Float:extraDamage =  floatmax(0.0, floatmin(the_dmg,pre_extraDamage));
+			Float:extraDamage =  max_macro(0.0, min_macro(the_dmg,pre_extraDamage));
 		
 		if (extraDamage > 0.0){
 			deplete_trash_wpn_dmg_reserve(wpn_ent,extraDamage)

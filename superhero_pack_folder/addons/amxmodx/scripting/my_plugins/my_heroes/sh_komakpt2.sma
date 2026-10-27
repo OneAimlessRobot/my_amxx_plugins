@@ -129,8 +129,9 @@ public fw_Weapon_Reload_Post(iEnt)
 	if(g_komak_hits[id]<=0){
 		return HAM_IGNORED
 	}
-
-	do_fast_reload(id,iEnt,gCurrReloadRatio[id])
+	static my_weapon_ids:weapon_class_id; weapon_class_id = my_weapon_ids:get_pdata_int(iEnt, m_iId, XO_WEAPON)
+	
+	do_fast_reload(id,iEnt,weapon_class_id,gCurrReloadRatio[id])
 	
 	return HAM_HANDLED
 } 
@@ -165,7 +166,8 @@ public Komak_Fire_Weapon_Pre(entity)
 		return HAM_IGNORED
 	}
 
-	if(sh_get_player_has_hero_projectile_weapon(id,my_weapon_ids:get_pdata_int(entity, m_iId, XO_WEAPON))){
+	static my_weapon_ids:weapon_class_id; weapon_class_id = my_weapon_ids:get_pdata_int(entity, m_iId, XO_WEAPON)
+	if(sh_get_player_has_hero_projectile_weapon(id,weapon_class_id)){
 		
 		return HAM_IGNORED
 
@@ -173,7 +175,7 @@ public Komak_Fire_Weapon_Pre(entity)
 	}
 	entity_get_vector(id, EV_VEC_punchangle,komakeria_recoil_vector[id])
 	
-	return do_fast_shot(entity,gCurrFireRatio[id])
+	return do_fast_shot(entity,weapon_class_id, gCurrFireRatio[id])
 
 }
 
@@ -425,31 +427,21 @@ public reset_komak(id){
 Float:get_max_added_recoil_ratio(id){
 
 	
-	return floatmin(cvar_val(float, pcvar_max_recoil_ratio),
-				floatmul(floatmul(gear_ratios[max(0,g_komak_gear[id]-1)],
-						float(max_rpm)),
-						cvar_val(float, pcvar_recoil_ratio_per_hit)))
+	return min_macro(cvar_val(float, pcvar_max_recoil_ratio),floatmul(floatmul(gear_ratios[max(0,g_komak_gear[id]-1)],float(max_rpm)),cvar_val(float, pcvar_recoil_ratio_per_hit)))
 	
 
 }
 Float:get_max_added_reload_ratio(id){
 
 	
-	return floatmin(
-		cvar_val(float, pcvar_max_reload_ratio),
-		floatmul(floatmul(gear_ratios[max(0,g_komak_gear[id]-1)],
-		float(max_rpm)),
-		cvar_val(float, pcvar_reload_ratio_per_hit)))
+	return min_macro(cvar_val(float, pcvar_max_reload_ratio),floatmul(floatmul(gear_ratios[max(0,g_komak_gear[id]-1)],float(max_rpm)),cvar_val(float, pcvar_reload_ratio_per_hit)))
 	
 
 }
 Float:get_max_added_fire_ratio(id){
 
 	
-	return floatmin(cvar_val(float, pcvar_max_fire_ratio),
-				floatmul(floatmul(gear_ratios[max(0,g_komak_gear[id]-1)],
-						float(max_rpm)),
-						cvar_val(float, pcvar_fire_ratio_per_hit)))
+	return min_macro(cvar_val(float, pcvar_max_fire_ratio),floatmul(floatmul(gear_ratios[max(0,g_komak_gear[id]-1)],float(max_rpm)),cvar_val(float, pcvar_fire_ratio_per_hit)))
 	
 
 }
@@ -486,11 +478,11 @@ Float:get_added_fire_ratio(id){
 }
 stats_komak(id){
 	gCurrFireRatio[id]=floatadd(
-				cvar_val(float, pcvar_base_fire_ratio),floatmin(get_max_added_fire_ratio(id),get_added_fire_ratio(id)))
+				cvar_val(float, pcvar_base_fire_ratio),min_macro(get_max_added_fire_ratio(id),get_added_fire_ratio(id)))
 	gCurrReloadRatio[id]=floatadd(
-				cvar_val(float, pcvar_base_reload_ratio),floatmin(get_max_added_reload_ratio(id),get_added_reload_ratio(id)))
+				cvar_val(float, pcvar_base_reload_ratio),min_macro(get_max_added_reload_ratio(id),get_added_reload_ratio(id)))
 	gCurrRecoilRatio[id]=floatadd(
-				cvar_val(float, pcvar_base_recoil_ratio),floatmin(get_max_added_recoil_ratio(id),get_added_recoil_ratio(id)))
+				cvar_val(float, pcvar_base_recoil_ratio),min_macro(get_max_added_recoil_ratio(id),get_added_recoil_ratio(id)))
 }
 
 public komak_gear_change(id,is_up){

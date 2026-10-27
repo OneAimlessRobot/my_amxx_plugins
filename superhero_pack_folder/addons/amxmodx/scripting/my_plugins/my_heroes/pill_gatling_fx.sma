@@ -207,8 +207,10 @@ public fw_Weapon_Reload_Post(iEnt)
 	if (!sh_is_active()||(gatling_get_fx_num(id)!=COCAINE)){
 		return HAM_IGNORED
 	}
-
-	do_fast_reload(id,iEnt,COCAINE_RELOAD_RATE_MULT)
+	static my_weapon_ids:weapon_class_id; weapon_class_id = my_weapon_ids:get_pdata_int(iEnt, m_iId, XO_WEAPON)
+	
+	
+	do_fast_reload(id,iEnt,weapon_class_id,COCAINE_RELOAD_RATE_MULT)
 	
 	return HAM_HANDLED
 }
@@ -310,7 +312,9 @@ public Ham_Weapon_PrimaryAttack_Pre(weapon_ent)
 		return HAM_IGNORED
 	}
 
-	if(sh_get_player_has_hero_projectile_weapon(owner,my_weapon_ids:get_pdata_int(weapon_ent, m_iId, XO_WEAPON))){
+	static my_weapon_ids:weapon_class_id; weapon_class_id = my_weapon_ids:get_pdata_int(weapon_ent, m_iId, XO_WEAPON)
+	
+	if(sh_get_player_has_hero_projectile_weapon(owner, weapon_class_id)){
 		
 		return HAM_IGNORED
 
@@ -324,7 +328,7 @@ public Ham_Weapon_PrimaryAttack_Pre(weapon_ent)
 		}
 		case COCAINE:{
 			
-			return do_fast_shot(weapon_ent,COCAINE_FIRE_RATE_MULT)
+			return do_fast_shot(weapon_ent,weapon_class_id,COCAINE_FIRE_RATE_MULT)
 		}
 		
 		

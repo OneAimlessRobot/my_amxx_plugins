@@ -123,8 +123,7 @@ power_csm_execute_extract(id){
 											SH_NEW_DMG_BLEED,
 											power_csm_drain_wpn_id)
 	
-	g_power_points[id] = floatmin(cvar_val(float,pcvar_max_points),
-								g_power_points[id]+dmg_to_deal)
+	g_power_points[id] = min_macro(cvar_val(float,pcvar_max_points),g_power_points[id]+dmg_to_deal)
 	
 	sh_bleed_user(id,id,BLEED_ULTRA,gHeroID,0)
 
@@ -194,8 +193,7 @@ public Power_Damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, Dam
 			
 			sh_bleed_user(Victim,Attacker,BLEED_NORMAL,gHeroID,_,the_hitpoint)
 
-			g_power_points[Attacker] = floatmax(0.0,
-								g_power_points[Attacker]-extraDamage)
+			g_power_points[Attacker] = max_macro(0.0,g_power_points[Attacker]-extraDamage)
 		}
 	}
 	
@@ -237,8 +235,7 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_
     }
     if((new_dmg_type==SH_NEW_DMG_BLEED)){
         if((attacker!=victim) && sh_get_user_has_hero(victim,gHeroID) ){
-			g_power_points[victim] = floatmin(cvar_val(float,pcvar_max_points),
-								g_power_points[victim]+(float(damage)*0.5))
+			g_power_points[victim] = min_macro(cvar_val(float,pcvar_max_points),g_power_points[victim]+(float(damage)*0.5))
 			
 			damage = floatround(float(damage)*0.5)
         }

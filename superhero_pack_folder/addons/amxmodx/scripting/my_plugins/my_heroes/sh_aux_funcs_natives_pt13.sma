@@ -21,7 +21,7 @@ public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
 
-	RegisterHam(Ham_TakeDamage,"player","ham_Superhero_Falldamage",_, true)
+	RegisterHam(Ham_TakeDamage,"player","ham_sh_damage_gating",_, true)
 
 }
 
@@ -33,7 +33,7 @@ public plugin_cfg(){
 }
 
 //----------------------------------------------------------------------------------------------
-public ham_Superhero_Falldamage(this, inflictor, attacker, Float:damage, damagebits)
+public ham_sh_damage_gating(this, inflictor, attacker, Float:damage, damagebits)
 {
 	if(!sh_is_active()||sh_is_freezetime() ||!is_user_alive(this)) return HAM_IGNORED
 

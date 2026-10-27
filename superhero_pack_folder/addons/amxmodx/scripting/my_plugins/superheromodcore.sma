@@ -188,7 +188,7 @@ public plugin_init()
 		set_fail_state("You can only load the ^"SuperHero Core^" once, please check your plugins-shero.ini")
 	}
 
-	sh_init_hero_array_lib(SH_MAXHEROS)
+	sh_init_hero_array_lib(SH_MAXHEROS,_,_,_:sh_thrash_brat_dmg_type)
 
 	server_print("We currently support: %d client states in total!^n",sh_max_client_states())
 
@@ -1407,7 +1407,7 @@ Float:getMaxSpeed(id, weapon)
 
 					//if 0 or current weapon check max
 					if ( heroWeapon == 0 || heroWeapon == weapon ) {
-						returnSpeed = floatmax(returnSpeed, heroSpeed)
+						returnSpeed = max_macro(returnSpeed, heroSpeed)
 						break
 					}
 				}
@@ -1441,7 +1441,7 @@ getMaxHealth(id)
 	// Other plugins might use this, even maps
 	if(sh_get_player_has_hero_prop(id,SH_HEALTH_CAP_HERO)){
 
-		returnHealth = floatround( (floatmin(sh_get_player_healthcap(id),float(returnHealth))) )
+		returnHealth = floatround( (min_macro(sh_get_player_healthcap(id),float(returnHealth))) )
 	}
 
 	set_pev(id, pev_max_health, returnHealth)
@@ -1493,7 +1493,7 @@ Float:getMinGravity(id)
 			if ( !heroGravityPointer ) continue
 			heroMinGravity = get_pcvar_float(heroGravityPointer)
 			if ( heroMinGravity > 0.0 ) {
-				returnGravity = floatmin(returnGravity, heroMinGravity)
+				returnGravity = min_macro(returnGravity, heroMinGravity)
 			}
 		}
 	}
@@ -2557,7 +2557,7 @@ Float:getMaxDamageMult(id, weaponID)
 				if ( !heroDmgMultPointer ) continue
 			}
 
-			returnDmgMult = floatmax(returnDmgMult, get_pcvar_float(heroDmgMultPointer))
+			returnDmgMult = max_macro(returnDmgMult, get_pcvar_float(heroDmgMultPointer))
 		}
 	}
 

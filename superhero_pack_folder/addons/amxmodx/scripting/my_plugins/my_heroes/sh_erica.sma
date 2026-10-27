@@ -248,11 +248,10 @@ public weaponChange(id)
 update_stats(id){
 	if(sh_get_user_has_hero(id,gHeroID) &&is_user_alive(id)){
 		new Float:maxspeed=get_user_maxspeed(id)
-		g_normal_er_speed[id]=floatmax(floatmin(floatadd(g_base_er_speed[id],floatmul(cvar_val(float, pcvar_speed_speed_er_points_pct),
-						float(g_erica_points[id]))),cvar_val(float, pcvar_max_er_speed)),maxspeed),
+		g_normal_er_speed[id]=max_macro(min_macro(floatadd(g_base_er_speed[id],floatmul(cvar_val(float, pcvar_speed_speed_er_points_pct),float(g_erica_points[id]))),cvar_val(float, pcvar_max_er_speed)),maxspeed),
 		
 		set_user_maxspeed_controlled(id,g_normal_er_speed[id],false,true)
-		g_normal_er_radius[id]=floatmin(floatadd(g_base_er_radius[id],floatmul(float(g_erica_points[id]),cvar_val(float, pcvar_speed_points_er_radius_pct))),cvar_val(float, pcvar_max_er_radius));
+		g_normal_er_radius[id]=min_macro(floatadd(g_base_er_radius[id],floatmul(float(g_erica_points[id]),cvar_val(float, pcvar_speed_points_er_radius_pct))),cvar_val(float, pcvar_max_er_radius));
 			
 	}
 

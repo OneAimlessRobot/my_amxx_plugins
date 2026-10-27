@@ -439,6 +439,8 @@ public ksun_kd(id)
 	if ( !is_user_alive(id) ) return PLUGIN_HANDLED
 	
 	if(!sh_get_user_has_hero(id,gHeroID) ) return PLUGIN_HANDLED
+	
+	if(sh_is_freezetime() ) return PLUGIN_HANDLED
 
 	// Let them know they already used their ultimate if they have
 	if ( sh_get_cooldown_flag(id)) {

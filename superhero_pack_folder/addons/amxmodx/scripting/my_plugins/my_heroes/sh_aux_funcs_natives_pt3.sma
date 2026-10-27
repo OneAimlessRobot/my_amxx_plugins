@@ -384,7 +384,7 @@ damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,Float:op
 	entity_get_vector(pid,EV_VEC_origin,vic_origin);
 	entity_get_vector(ent_id,EV_VEC_origin,mine_origin);
 	new Float:distance=vector_distance(vic_origin,mine_origin);
-	new Float:falloff_coeff= floatmin(1.0,distance/radius);
+	new Float:falloff_coeff= min_macro(1.0,distance/radius);
 	new Float:force,Float:damage,idamage
 	damage=peak_power-(peak_power/2.0)*falloff_coeff
 	idamage=floatround(damage)
@@ -444,7 +444,7 @@ damage_entity(ent_id,owner_id,tg_id,Float:radius,Float:peak_power,ignore_owner=1
 	entity_get_vector(tg_id,EV_VEC_origin,vic_origin);
 	entity_get_vector(ent_id,EV_VEC_origin,mine_origin);
 	new Float:distance=vector_distance(vic_origin,mine_origin);
-	new Float:falloff_coeff= floatmin(1.0,distance/radius);
+	new Float:falloff_coeff= min_macro(1.0,distance/radius);
 	new Float:force,Float:damage
 	damage=peak_power-(peak_power/2.0)*falloff_coeff
 	if(optional_force!=0.0){

@@ -506,8 +506,8 @@ public jet_think(ent)
 		new Float:rolly_thingie=0.0;
 		set_pev(owner,pev_velocity,NULL_VECTOR)
 		entity_get_vector(ent, EV_VEC_origin, vOrigin)
-		new Float:curr_speed_stab_coeff=floatclamp(get_entity_velocity(ent)/(max_jet_speed*JETPLANE_MAX_TURN_SPEED_THRESHOLD),JETPLANE_MIN_TURN_CONST,1.0)
-		new Float:curr_speed_dampening_coeff=floatclamp(((max_jet_speed*JETPLANE_MAX_TURN_SPEED_THRESHOLD)*get_entity_velocity(ent))/(max_jet_speed*JETPLANE_MAX_TURN_SPEED_THRESHOLD),JETPLANE_MIN_TURN_CONST,1.0)
+		new Float:curr_speed_stab_coeff=clamp_macro((get_entity_velocity(ent)/(max_jet_speed*JETPLANE_MAX_TURN_SPEED_THRESHOLD)),JETPLANE_MIN_TURN_CONST,1.0)
+		new Float:curr_speed_dampening_coeff=clamp_macro(((max_jet_speed*JETPLANE_MAX_TURN_SPEED_THRESHOLD)*get_entity_velocity(ent))/(max_jet_speed*JETPLANE_MAX_TURN_SPEED_THRESHOLD),JETPLANE_MIN_TURN_CONST,1.0)
 		sh_set_rendering(owner,0,0,0,0,kRenderFxNone,kRenderTransColor);
 		entity_set_origin(owner, vOrigin)
 		
@@ -531,7 +531,7 @@ public jet_think(ent)
 			updown_thingie-=((1.0/cvar_val(float,pcvar_stabilizer_mushyness))*1.0*g_jetplane_turn_data[owner][0])
 		}
 
-		g_jetplane_turn_data[owner][0]=curr_speed_dampening_coeff*floatclamp(g_jetplane_turn_data[owner][0]+updown_thingie,-cvar_val(float,pcvar_max_turn_const)*0.5,cvar_val(float,pcvar_max_turn_const)*0.5);
+		g_jetplane_turn_data[owner][0]=curr_speed_dampening_coeff*clamp_macro(g_jetplane_turn_data[owner][0]+updown_thingie,-cvar_val(float,pcvar_max_turn_const)*0.5,cvar_val(float,pcvar_max_turn_const)*0.5);
 		
 		if(get_jet_left_rollflapon(owner)||get_jet_right_rollflapon(owner)){
 			if(get_jet_left_rollflapon(owner)){
@@ -552,7 +552,7 @@ public jet_think(ent)
 	
 			rolly_thingie-=((1.0/cvar_val(float,pcvar_stabilizer_mushyness))*1.0*g_jetplane_turn_data[owner][2]);
 		}
-		g_jetplane_turn_data[owner][2]=curr_speed_dampening_coeff*floatclamp(g_jetplane_turn_data[owner][2]+rolly_thingie,-cvar_val(float,pcvar_max_turn_const)*0.5,cvar_val(float,pcvar_max_turn_const)*0.5);
+		g_jetplane_turn_data[owner][2]=curr_speed_dampening_coeff*clamp_macro(g_jetplane_turn_data[owner][2]+rolly_thingie,-cvar_val(float,pcvar_max_turn_const)*0.5,cvar_val(float,pcvar_max_turn_const)*0.5);
 		
 		if(get_jet_leftflapon(owner)||get_jet_rightflapon(owner)){
 			if(get_jet_leftflapon(owner)){
@@ -572,7 +572,7 @@ public jet_think(ent)
 		else{
 			turn_thingie-=((1.0/cvar_val(float,pcvar_stabilizer_mushyness))*1.0*g_jetplane_turn_data[owner][1])
 		}
-		g_jetplane_turn_data[owner][1]=(curr_speed_dampening_coeff*floatclamp(g_jetplane_turn_data[owner][1]+turn_thingie,-cvar_val(float,pcvar_max_turn_const)*0.5,cvar_val(float,pcvar_max_turn_const)*0.5))+g_jetplane_turn_data[owner][2];
+		g_jetplane_turn_data[owner][1]=(curr_speed_dampening_coeff*clamp_macro(g_jetplane_turn_data[owner][1]+turn_thingie,-cvar_val(float,pcvar_max_turn_const)*0.5,cvar_val(float,pcvar_max_turn_const)*0.5))+g_jetplane_turn_data[owner][2];
 		
 		new Float:angles[3]
 		entity_get_vector(ent, EV_VEC_angles, angles)
@@ -580,16 +580,16 @@ public jet_think(ent)
 		v_angle[1]+=g_jetplane_turn_data[owner][1]
 		angles[1]+=g_jetplane_turn_data[owner][1]
 
-		v_angle[0]=floatclamp(v_angle[0]+g_jetplane_turn_data[owner][0],-75.0,75.0)
+		v_angle[0]=clamp_macro(v_angle[0]+g_jetplane_turn_data[owner][0],-75.0,75.0)
 		v_angle[0]-=(curr_speed_stab_coeff*((1.0/cvar_val(float,pcvar_stabilizer_mushyness)))*v_angle[0]*JET_THINK_PERIOD);
 
-		angles[0]=floatclamp(angles[0]-g_jetplane_turn_data[owner][0],-75.0,75.0)
+		angles[0]=clamp_macro(angles[0]-g_jetplane_turn_data[owner][0],-75.0,75.0)
 		angles[0]-=(curr_speed_stab_coeff*((1.0/cvar_val(float,pcvar_stabilizer_mushyness)))*angles[0]*JET_THINK_PERIOD);
 		
-		v_angle[2]=floatclamp(v_angle[2]-g_jetplane_turn_data[owner][2],-90.0,90.0)
+		v_angle[2]=clamp_macro(v_angle[2]-g_jetplane_turn_data[owner][2],-90.0,90.0)
 		v_angle[2]-=(curr_speed_stab_coeff*v_angle[2]*JET_THINK_PERIOD);
 
-		angles[2]=floatclamp(angles[2]-g_jetplane_turn_data[owner][2],-90.0,90.0)
+		angles[2]=clamp_macro(angles[2]-g_jetplane_turn_data[owner][2],-90.0,90.0)
 		angles[2]-=(curr_speed_stab_coeff*angles[2]*JET_THINK_PERIOD);
 		entity_set_vector(owner, EV_VEC_v_angle, v_angle)
 		entity_set_vector(owner, EV_VEC_angles, angles)
@@ -621,7 +621,7 @@ public jet_think(ent)
 		if(get_jet_airbrakes(owner)){
 
 
-			brake_thingie+=floatclamp(get_entity_velocity(ent)/(max_jet_speed*JETPLANE_MAX_BRAKE_SPEED_THRESHOLD),JETPLANE_MIN_BRAKE_CONST,1.0)*1.0
+			brake_thingie+=clamp_macro((get_entity_velocity(ent)/(max_jet_speed*JETPLANE_MAX_BRAKE_SPEED_THRESHOLD)),JETPLANE_MIN_BRAKE_CONST,1.0)*1.0
 			
 		}
 		
@@ -720,8 +720,7 @@ public charge_task(id){
 	entity_get_vector(id, EV_VEC_velocity, velocity)
 	entity_set_vector(g_jetplane[id], EV_VEC_velocity,  velocity)
 	
-	set_pev(g_jetplane[id],pev_health,floatmin(
-				cvar_val(float, pcvar_jetplane_hp),floatadd(float(pev(g_jetplane[id],pev_health)),floatmul(JET_CHARGE_PERIOD,JET_CHARGE_RATE))))
+	set_pev(g_jetplane[id],pev_health,min_macro(cvar_val(float, pcvar_jetplane_hp),floatadd(float(pev(g_jetplane[id],pev_health)),floatmul(JET_CHARGE_PERIOD,JET_CHARGE_RATE))))
 	if(!is_user_bot(id)){
 		static hud_msg[128];
 		formatex(hud_msg,127,"[SH]: Curr build pct: %0.2f^n",float(pev(g_jetplane[id],pev_health)));

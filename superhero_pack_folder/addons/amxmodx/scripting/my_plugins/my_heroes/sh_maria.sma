@@ -373,7 +373,7 @@ public maria_loop(id){
 update_stats(id){
 	
 	if(sh_get_user_has_hero(id,gHeroID) ){
-		g_normal_radius[id]=floatmin(floatadd(g_base_radius[id],floatmul(float(g_maria_points[id]),cvar_val(float, pcvar_points_radius_pct))),cvar_val(float, pcvar_max_radius));
+		g_normal_radius[id]=min_macro(floatadd(g_base_radius[id],floatmul(float(g_maria_points[id]),cvar_val(float, pcvar_points_radius_pct))),cvar_val(float, pcvar_max_radius));
 		if(!Get_BitVar(gHealthDrainValveMask, id)&&
 				(get_user_health(id)>=cvar_val(num, pcvar_health_drain_begin_threshold))&&
 				(gHealthDrainValveTimer[id]<=0.0)){

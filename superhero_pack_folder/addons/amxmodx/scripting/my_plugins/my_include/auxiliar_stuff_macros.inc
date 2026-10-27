@@ -173,6 +173,12 @@ enum server_slot_idx
 
 #define my_entity_set_origin(%1,%2) engfunc(EngFunc_SetOrigin, %1,%2)
 
+#define clamp_macro(%1,%2,%3) ((%2 < %3)?( ( %1 <= %2) ? %2 : ( ( %1 >= %3 )? %3 : %1) ) : ( ( %1 <= %3) ? %3 : ( ( %1 >= %2 )? %2 : %1) ) )
+
+#define max_macro(%1,%2) ((%1>%2)?%1:%2)
+
+#define min_macro(%1,%2) ((%1<%2)?%1:%2)
+
 /**
 
 -> entity_set_"..."(ent, ..., ...)

@@ -172,7 +172,7 @@ stock Float:calculate_nuanced_projectile_damage(bull_et,
 	speed_coeff=(speed/peak_projectile_speed)
 	speed=vector_length(velocity);
 	distance=vector_distance(hitter_origin,bullet_launch_pos);
-	falloff_coeff= floatmin(1.0,distance/falloff_distance);
+	falloff_coeff= min_macro(1.0,distance/falloff_distance);
 	normal_damage=base_damage-(35.0*falloff_coeff);
 	damage=normal_damage*speed_coeff;
 
@@ -252,9 +252,9 @@ stock set_user_maxspeed_controlled(id, Float:the_speed_to_set, bool:penetrate_fl
 	new Float:curr_maxspeed= get_user_maxspeed(id);
 
 	new Float:the_true_speed_to_set= (want_max_or_min?
-								floatmax(curr_maxspeed,the_speed_to_set)
+								max_macro(curr_maxspeed,the_speed_to_set)
 												:
-								floatmin(curr_maxspeed,the_speed_to_set)
+								min_macro(curr_maxspeed,the_speed_to_set)
 								)
 	
 	set_user_maxspeed(id,the_true_speed_to_set);
@@ -324,7 +324,7 @@ stock bool:my_is_ent_visible(index, entity, ignoremonsters = 0) {
 
 	return false;
 }
-stock do_fast_shot(Ent,Float:speed=1.0){
+stock do_fast_shot(Ent, my_weapon_ids:weapon_id,Float:speed=1.0){
 	
 	static secret_code = -1;
 	secret_code= get_weapon_secret_code(Ent)
@@ -333,8 +333,8 @@ stock do_fast_shot(Ent,Float:speed=1.0){
 		ExecuteHam(Ham_Weapon_PrimaryAttack,Ent)
 	}
 	static Float:Delay,Float:M_Delay
-	Delay =floatdiv(wlt_get_def_prim_atk_delay(my_weapon_ids:get_pdata_int(Ent, m_iId, XO_WEAPON)) ,speed)
-	M_Delay =floatdiv(wlt_get_def_scnd_atk_delay(my_weapon_ids:get_pdata_int(Ent, m_iId, XO_WEAPON))  ,speed)
+	Delay =floatdiv(wlt_get_def_prim_atk_delay(weapon_id) ,speed)
+	M_Delay =floatdiv(wlt_get_def_scnd_atk_delay(weapon_id)  ,speed)
 
 	if (Delay > 0.0)
 	{
@@ -349,20 +349,20 @@ stock do_fast_shot(Ent,Float:speed=1.0){
 }
 
 #if !defined _reapi_included 
-stock do_fast_reload(id,iEnt,Float:speed=1.0){
+stock do_fast_reload(id,iEnt,my_weapon_ids:weapon_class_id,Float:speed=1.0){
 
 	if( get_pdata_int(iEnt, m_fInReload, XO_WEAPON) )
 	{
-		new Float:fDelay = floatdiv(wlt_get_def_rld_delay(my_weapon_ids:get_pdata_int(iEnt, m_iId, XO_WEAPON)), speed)
+		new Float:fDelay = floatdiv(wlt_get_def_rld_delay(weapon_class_id), speed)
 		set_pdata_float(id, m_flNextAttack, fDelay, XO_PLAYER)
 	}
 }
 #else
-stock do_fast_reload(id,iEnt,Float:speed=1.0){
+stock do_fast_reload(id,iEnt,my_weapon_ids:weapon_class_id,Float:speed=1.0){
 
 	if( get_pdata_int(iEnt, m_fInReload) )
 	{
-		new Float:fDelay = floatdiv(wlt_get_def_rld_delay(my_weapon_ids:get_pdata_int(iEnt, m_iId, XO_WEAPON)), speed)
+		new Float:fDelay = floatdiv(wlt_get_def_rld_delay(weapon_class_id), speed)
 		set_member(id, m_flNextAttack, fDelay)
 	}
 

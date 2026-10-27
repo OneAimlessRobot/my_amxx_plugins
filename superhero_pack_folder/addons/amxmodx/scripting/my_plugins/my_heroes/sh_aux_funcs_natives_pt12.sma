@@ -157,26 +157,29 @@ public bool:_generic_heal(iPlugins, iParms){
 		return false
 	
 	}
-	if(make_sound){
-
-		static sound_sample_string[128]
-
-		get_string(11,sound_sample_string,127)
-		emit_sound(id, CHAN_STATIC, sound_sample_string, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	}
-	new Float: true_hp_to_add = floatmax(0.0, floatmin(added_hp, float(max_hp_to_clamp) - mate_health))
+	new Float: true_hp_to_add = max_macro(0.0, min_macro(added_hp, float(max_hp_to_clamp) - mate_health))
 	new Float: new_health=floatadd(mate_health,true_hp_to_add)
 	
 	entity_set_float(id,EV_FL_health,new_health)
+	if((true_hp_to_add>0.0)){
 
-	if((user_will_glow>0)&&(true_hp_to_add>0.0)){
-		set_render_with_color_const(id,color_const,user_will_glow,_,hud_alpha,hud_will_glow,_,glow_remove_timer,0,_,kRenderNormal,PRIO_RENDER_INFORMATIVE)
-	}
-	if(heal_hp_hud_msg_sync>0){
+		if((user_will_glow>0)){
+			set_render_with_color_const(id,color_const,user_will_glow,_,hud_alpha,hud_will_glow,_,glow_remove_timer,0,_,kRenderNormal,PRIO_RENDER_INFORMATIVE)
+		}
 		
-		set_hudmessage(LineColors[color_const][0], LineColors[color_const][1], LineColors[color_const][2], -1.0, 0.48, 2, 0.1, 2.0, 0.02, 0.02, -1)
-		ShowSyncHudMsg(id, heal_hp_hud_msg_sync, "%0.2f", true_hp_to_add)
-	
+		if(heal_hp_hud_msg_sync>0){
+			
+			set_hudmessage(LineColors[color_const][0], LineColors[color_const][1], LineColors[color_const][2], -1.0, 0.48, 2, 0.1, 2.0, 0.02, 0.02, -1)
+			ShowSyncHudMsg(id, heal_hp_hud_msg_sync, "%0.2f", true_hp_to_add)
+		
+		}
+		if(make_sound){
+
+			static sound_sample_string[128]
+
+			get_string(10,sound_sample_string,127)
+			emit_sound(id, CHAN_STATIC, sound_sample_string, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+		}
 	}
 	return true
 
@@ -230,8 +233,8 @@ recalculate_hp_cap_for_player(id){
 		if(sh_get_user_has_hero(id,sh_hero_healthcaps[i][hero_id_to_use])){
 
 			tmp_value = (lib_mode?
-						floatmax(tmp_value,sh_hero_healthcaps[i][hp_in_the_struct]):
-						floatmin(tmp_value,sh_hero_healthcaps[i][hp_in_the_struct]))
+						max_macro(tmp_value,sh_hero_healthcaps[i][hp_in_the_struct]):
+						min_macro(tmp_value,sh_hero_healthcaps[i][hp_in_the_struct]))
 
 
 		}
@@ -240,7 +243,10 @@ recalculate_hp_cap_for_player(id){
 	sh_player_healthcap_table[id]= tmp_value
 
 }
+public plugin_precache(){
 
+	engfunc(EngFunc_PrecacheSound, SPORE_HEAL_SFX)
+}
 public sh_hero_init(id,heroID, sh_init_mode:mode){
 	
 	if(!client_is_within_range(id)){

@@ -219,7 +219,7 @@ public fm_Touch_Player(ptr, ptd)
 			my_hitpoint_enum:the_hitpoint
 		
 	entity_get_vector(ptr,EV_VEC_velocity,velocity)
-	speed= floatmax(1.0,vector_length(velocity))
+	speed= max_macro(1.0,vector_length(velocity))
 
 	the_hitpoint= get_projectile_hit_hitpoint(ptr,
 							velocity,

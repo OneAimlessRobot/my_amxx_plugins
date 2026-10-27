@@ -955,7 +955,7 @@ stock sh_get_velocity(const Float:initial[3], const Float:final[3], Float:speed,
 	new Float:maxSpeed = get_pcvar_float(sv_maxvelocity);
 
 	// Time = Distance / Speed
-	new Float:fTime = vector_distance(initial, final) / floatclamp(speed, -maxSpeed, maxSpeed);
+	new Float:fTime = vector_distance(initial, final) / clamp_macro(speed, -maxSpeed, maxSpeed);
 
 	// Velocity = Distance / Time
 	velocity[0] += (final[0] - initial[0]) / fTime;

@@ -254,11 +254,7 @@ Float:get_player_alpha(id){
 		if(sh_get_user_has_hero(id,gHeroID)){
 			player_lvl=sh_get_user_lvl(id)
 			lvl_diff=player_lvl-gHeroLevel
-			alphaMult=floatmax(
-				cvar_val(float, pcvar_flora_invis_alpha_min),
-				cvar_val(float, pcvar_flora_invis_alpha_max)-
-				(float(lvl_diff)*
-				cvar_val(float, pcvar_flora_invis_alpha_dec_per_lvl)))
+			alphaMult=max_macro(cvar_val(float, pcvar_flora_invis_alpha_min),cvar_val(float, pcvar_flora_invis_alpha_max)-(float(lvl_diff)*cvar_val(float, pcvar_flora_invis_alpha_dec_per_lvl)))
 		}
 	}
 	return alphaMult
@@ -440,8 +436,7 @@ find_next_nearest_flora_field(player_id,field_to_exclude=-1,Float:distance){
 	
 	}
 	new Float:distance_to_contain=
-				floatmin(cvar_val(float,pcvar_flora_teleport_reach_max_distance),
-				floatmax(distance,cvar_val(float,pcvar_field_radius)*2.0))
+				min_macro(cvar_val(float,pcvar_flora_teleport_reach_max_distance),max_macro(distance,cvar_val(float,pcvar_field_radius)*2.0))
 	
 	
 	new Float:best_distance=9999999.0
@@ -545,9 +540,7 @@ public flora_checks(task_id){
 						the_distance= max_distance
 						
 					}
-					new Float:distance_ratio = floatclamp(the_distance/
-								max_distance,0.01,
-								cvar_val(float, pcvar_bad_resurface_dmg_penalty_max_hp_ratio))
+					new Float:distance_ratio = clamp_macro((the_distance/max_distance),0.01,cvar_val(float, pcvar_bad_resurface_dmg_penalty_max_hp_ratio))
 
 					flora_damage_code_reduction(id,distance_ratio)
 					continue
@@ -921,9 +914,9 @@ public field_think(ent)
 				continue
 			}
 			if(g_flora_sheltered_value[owner]>OUTSIDE){
-				new Float:fdamage=floatmin(float(get_user_health(owner)) , floatmul(float(get_user_health(pid)),floatmin(floatmax(0.0,cvar_val(float,pcvar_flora_dmg_coeff)*g_flora_curr_dmg_mult[owner]),0.99)))
+				new Float:fdamage=min_macro(float(get_user_health(owner)) , floatmul(float(get_user_health(pid)),min_macro(max_macro(0.0,cvar_val(float,pcvar_flora_dmg_coeff)*g_flora_curr_dmg_mult[owner]),0.99)))
 				new Float: needs_health=float(sh_get_max_hp(owner)-get_user_health(owner))
-				new actual_damage=floatround(floatmax(0.0+(g_flora_sheltered_value[owner]>SHELTERED?1.0:0.0),floatmin(needs_health-1.0,fdamage)))
+				new actual_damage=floatround(max_macro(0.0+(g_flora_sheltered_value[owner]>SHELTERED?1.0:0.0),min_macro(needs_health-1.0,fdamage)))
 								
 				sh_extra_damage(pid,owner,actual_damage,
 								_,_,_,_,_,

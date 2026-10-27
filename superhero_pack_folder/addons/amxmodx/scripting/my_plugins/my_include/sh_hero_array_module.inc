@@ -69,6 +69,30 @@ enum player_state_flags_id {
 	SH_IS_CHARGING_HEAVY_ATTACK
 };
 
+
+enum sh_thrash_brat_dmg_type{
+	SH_NEW_DMG_NONE=0,
+	SH_NEW_DMG_ENERGY_BLAST,
+	SH_NEW_DMG_DRAIN,
+	SH_NEW_DMG_SUPER_BULLET,
+	SH_NEW_DMG_BLEED,
+	SH_NEW_DMG_DRUG_POISON,
+	SH_NEW_DMG_SQUASHED,
+	SH_NEW_DMG_SHOCK,
+	SH_NEW_DMG_FRAG_BLAST,
+	SH_NEW_DMG_IVE_STUDIED_THE_BLADE,
+	SH_NEW_DMG_DARK_ARTS,
+	SH_NEW_DMG_FIRE,
+	SH_NEW_DMG_RADIATION_POISON,
+	SH_NEW_DMG_BLUNT_TRAUMA,
+	SH_NEW_DMG_FREEZE,
+	SH_NEW_DMG_SUPER_MELEE,
+	SH_NEW_DMG_SUFFOCATION,
+	SH_NEW_DMG_CLEANSE,
+	SH_NEW_DMG_TR45H_GUN
+
+};
+
 //hero properties
 
 
@@ -128,6 +152,89 @@ enum hero_property_flags_id {
  */
 native sh_get_hero_bit(heroID, hero_property_flags_id:the_flag_id)
 
+
+//superhero damages
+
+
+/**
+
+//The third parameter decides the polarity to set
+
+enum sh_thrash_brat_dmg_type{
+	SH_NEW_DMG_NONE=0,
+	SH_NEW_DMG_ENERGY_BLAST,
+	SH_NEW_DMG_DRAIN,
+	SH_NEW_DMG_SUPER_BULLET,
+	SH_NEW_DMG_BLEED,
+	SH_NEW_DMG_DRUG_POISON,
+	SH_NEW_DMG_SQUASHED,
+	SH_NEW_DMG_SHOCK,
+	SH_NEW_DMG_FRAG_BLAST,
+	SH_NEW_DMG_IVE_STUDIED_THE_BLADE,
+	SH_NEW_DMG_DARK_ARTS,
+	SH_NEW_DMG_FIRE,
+	SH_NEW_DMG_RADIATION_POISON,
+	SH_NEW_DMG_BLUNT_TRAUMA,
+	SH_NEW_DMG_FREEZE,
+	SH_NEW_DMG_SUPER_MELEE,
+	SH_NEW_DMG_SUFFOCATION,
+	SH_NEW_DMG_CLEANSE,
+	SH_NEW_DMG_TR45H_GUN
+
+}
+
+*/
+
+native sh_assign_hero_damage_bit(heroID, sh_thrash_brat_dmg_type:the_damage_id, bool:the_polarity)
+
+/**
+
+//retrieve the bit of a hero bitsum
+
+
+enum sh_thrash_brat_dmg_type{
+	SH_NEW_DMG_NONE=0,
+	SH_NEW_DMG_ENERGY_BLAST,
+	SH_NEW_DMG_DRAIN,
+	SH_NEW_DMG_SUPER_BULLET,
+	SH_NEW_DMG_BLEED,
+	SH_NEW_DMG_DRUG_POISON,
+	SH_NEW_DMG_SQUASHED,
+	SH_NEW_DMG_SHOCK,
+	SH_NEW_DMG_FRAG_BLAST,
+	SH_NEW_DMG_IVE_STUDIED_THE_BLADE,
+	SH_NEW_DMG_DARK_ARTS,
+	SH_NEW_DMG_FIRE,
+	SH_NEW_DMG_RADIATION_POISON,
+	SH_NEW_DMG_BLUNT_TRAUMA,
+	SH_NEW_DMG_FREEZE,
+	SH_NEW_DMG_SUPER_MELEE,
+	SH_NEW_DMG_SUFFOCATION,
+	SH_NEW_DMG_CLEANSE,
+	SH_NEW_DMG_TR45H_GUN
+
+}
+
+ */
+native sh_get_hero_damage_bit(heroID, sh_thrash_brat_dmg_type:the_damage_id)
+
+
+/*
+
+	get the damage heal mult associated with this hero and damage type id
+
+*/
+native Float:sh_get_hero_damage_heal_mult(heroID, sh_thrash_brat_dmg_type:the_damage_id)
+
+/*
+
+	assign the damage heal mult associated with this hero and damage type id
+	(The default value for any arbitrary hero is 1.0 The default value that this callback sets is also 1.0)
+	(1.0 means that all damage done will be received.
+	It can also be more that 1.0!)
+
+*/
+native sh_assign_hero_damage_heal_mult(heroID, sh_thrash_brat_dmg_type:the_damage_id, Float:the_mult_to_set = 1.0)
 
 //Hero ownership
 /*
@@ -251,10 +358,13 @@ native sh_assign_hero_projectile_weapon_bit(the_hero_id, my_weapon_ids:the_weapo
 
 //Init the lib
 //leaving a parameter at zero automatically initializes it at the maximum value within the library
-native sh_init_hero_array_lib(max_heros=0, max_hero_props=0, max_client_states=0);
+native sh_init_hero_array_lib(max_heros=0, max_hero_props=0, max_client_states=0, max_hero_damages=0);
 
 //returns the number of client states that are currently mappable by this instance of the library
 native sh_max_client_states()
+
+//returns the number of superhero damages that are currently mappable by this instance of the library
+native sh_max_hero_damages()
 
 
 //returns the number of hero properties that are currently mappable by this instance of the library

@@ -425,7 +425,7 @@ public spore_think(spore){
 	}
 	else{
 
-		entity_set_float(spore, EV_FL_fuser1, floatmax(0.0,floatsub(current_track_time,SPORE_THINK_PERIOD)));
+		entity_set_float(spore, EV_FL_fuser1, max_macro(0.0,floatsub(current_track_time,SPORE_THINK_PERIOD)));
 			
 	}
 	new bool:had_trail=bool:entity_get_int(spore,EV_INT_iuser2),
@@ -465,7 +465,7 @@ entity_get_vector(spore,EV_VEC_velocity,velocity)
 entity_get_vector(spore,EV_VEC_origin,origin)
 
 multiply_3d_vector_by_scalar(velocity,
-				-1.0*(WALL_BUMP_LENGTH/floatmax(0.001,vector_length(velocity))),
+				-1.0*(WALL_BUMP_LENGTH/max_macro(0.001,vector_length(velocity))),
 				bump_reverse)
 
 add_3d_vectors(origin,bump_reverse,new_origin)
@@ -606,7 +606,6 @@ if ( (get_user_team(victim) != get_user_team(killer)) || ffOn )
 	}
 
 	sh_bleed_user(victim,killer,BLEED_NORMAL,gHeroID)
-	ksun_heal(killer,float(damage_to_do))
 	ksun_inc_player_supply_points(killer,damage_to_do)
 	emit_sound(victim, CHAN_STATIC, PIERCE_WOUND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	set_scanner_player_tracks_player(killer,victim,0)

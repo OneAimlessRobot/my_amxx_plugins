@@ -45,8 +45,7 @@ public plugin_init()
 
 
 	register_entity_as_wall_touchable(JETPLANE_ROCKET_CLASSNAME,"rocket_hit")
-	static const jetplane_classid_vector[][]={JETPLANE_FUSELAGE_CLASSNAME}
-	register_custom_touchable(JETPLANE_ROCKET_CLASSNAME,"rocket_hit",jetplane_classid_vector,1)
+	register_touch(JETPLANE_FUSELAGE_CLASSNAME,JETPLANE_ROCKET_CLASSNAME,"rocket_hit")
 	register_custom_touchable(JETPLANE_ROCKET_CLASSNAME,"rocket_hit",player_vector,1)
 	
 

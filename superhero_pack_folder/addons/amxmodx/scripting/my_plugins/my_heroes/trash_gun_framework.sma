@@ -98,7 +98,7 @@ Float:deplete_trash_wpn_dmg_reserve_helper(wpn_ent, Float:damage_to_deplete = 0.
 	prev_dmg_reserve = entity_get_float(wpn_ent,trash_weapon_damage_field)
 	
 	if(damage_to_deplete > 0.0){
-		curr_dmg_reserve = floatmax(0.0, prev_dmg_reserve-damage_to_deplete)
+		curr_dmg_reserve = max_macro(0.0, prev_dmg_reserve-damage_to_deplete)
 
 		entity_set_float(wpn_ent,trash_weapon_damage_field,curr_dmg_reserve)
 	}

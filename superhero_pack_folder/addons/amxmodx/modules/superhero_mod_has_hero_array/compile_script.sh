@@ -2,4 +2,4 @@
 
 g++ -fPIC -g -ggdb -std=gnu++98  -c hero_array_module.cpp amxxmodule.cpp -m32 -Wall -Wextra -Wsign-conversion -Wshadow -Wpedantic -Wconversion
 g++ -shared -o hero_array_module_amxx_i386.so hero_array_module.o amxxmodule.o -m32
-#g++ -o hero_array_module_amxx_i386.so hero_array_module.cpp amxxmodule.cpp
+cp hero_array_module_amxx_i386.so ..

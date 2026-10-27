@@ -55,10 +55,7 @@ stock print_player_hero_projectile_weapon_flags(id){
 		if(Get_BitVar(sh_player_hero_projectile_weapon_tracker[id], _:i)){
 			wlt_get_def_name(i,weapon_name_buff,charsmax(weapon_name_buff))
 																	
-			server_print("The weapon number %d (which is named %s)^nPlayer: %d^nHas been:^n - picked!",
-																	i,
-																	weapon_name_buff,
-																	id)
+			server_print("%s^nHas been:^n - picked!",weapon_name_buff)
 		}
 
 	}

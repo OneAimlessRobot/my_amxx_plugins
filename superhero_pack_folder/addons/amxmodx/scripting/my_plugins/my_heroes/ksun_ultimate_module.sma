@@ -114,7 +114,7 @@ public fw_Weapon_Reload_Post(ent)
 	}
 
 
-	do_fast_reload(id,ent,cvar_val(float,pcvar_ksun_ultimate_reload_rate_mult))
+	do_fast_reload(id,ent,my_weapon_ids:KSUN_WEAPON_ID,cvar_val(float,pcvar_ksun_ultimate_reload_rate_mult))
 	
 	return HAM_HANDLED
 }
@@ -345,10 +345,8 @@ public ksun_rifle_fast_shot(entity)
 	if(sh_get_player_has_hero_projectile_weapon(id,my_weapon_ids:KSUN_WEAPON_ID)){
 		
 		return HAM_IGNORED
-
-
 	}
-	return do_fast_shot(entity,cvar_val(float, pcvar_ksun_ultimate_fire_rate_mult))
+	return do_fast_shot(entity,my_weapon_ids:KSUN_WEAPON_ID,cvar_val(float, pcvar_ksun_ultimate_fire_rate_mult))
 
 }
 

@@ -158,6 +158,7 @@ new bool:aimtargetfound[SH_MAXSLOTS+1] = false
 new bool:doingrasengan[SH_MAXSLOTS+1] = false
 new bool:rasenganover[SH_MAXSLOTS+1] = false
 new bool:bot_summonwait[SH_MAXSLOTS+1] = false
+new bool:is_cache = false, bool:is_tuscan = false
 new bool:roundfreeze
 new player_chakra[SH_MAXSLOTS+1] = 0
 new bot_cooldownwait[SH_MAXSLOTS+1] = 0
@@ -190,10 +191,18 @@ public plugin_init()
 	// FIRE THE EVENTS TO CREATE THIS SUPERHERO!
 	gHeroID = sh_create_hero(gHeroName, pcvarLevel)
 	sh_set_hero_info(gHeroID, "Shadow Clone Jutsu", "Summon a shadow clone which follows you and shoots down any nearby enemies with his gun, press keydown again to use the rasengan")
+	
+
+	is_cache=sh_register_map_restricted_superhero(gHeroID,"cache","This hero precaches too many things. Creating clones on this map crashes the server") //it precaches too many things because of shadow clone. dont let them use this here
+	
+	is_tuscan=sh_register_map_restricted_superhero(gHeroID,"tuscan","This hero precaches too many things. Creating clones on this map crashes the server") //it precaches too many things because of shadow clone. dont let them use this here
+	if(is_cache||is_tuscan){
+
+		return
+	}
+	
 	sh_set_hero_bind(gHeroID)
 
-	sh_register_map_restricted_superhero(gHeroID,"cache","This hero precaches too many things. Creating clones on this map crashes the server") //it precaches too many things because of shadow clone. dont let them use this here
-	
 	precache_extra_models();
 	// LOOP
 	set_task(1.0, "naruto_loop", _, _, _, "b")

@@ -279,10 +279,10 @@ update_stats(id){
 	
 	if(sh_get_user_has_hero(id,gHeroID) ){
 		new Float:maxspeed=get_user_maxspeed(id)
-		g_normal_speed[id]=floatmax(floatmin(floatadd(g_base_speed[id],floatmul(speed_speed_points_pct,float(g_adriano_points[id]))),max_speed),maxspeed),
+		g_normal_speed[id]=max_macro(min_macro(floatadd(g_base_speed[id],floatmul(speed_speed_points_pct,float(g_adriano_points[id]))),max_speed),maxspeed),
 		
 		set_user_maxspeed_controlled(id,g_normal_speed[id],false,true)
-		g_normal_radius[id]=floatmin(floatadd(g_base_radius[id],floatmul(float(g_adriano_points[id]),speed_points_radius_pct)),max_radius);
+		g_normal_radius[id]=min_macro(floatadd(g_base_radius[id],floatmul(float(g_adriano_points[id]),speed_points_radius_pct)),max_radius);
 		
 	}
 	
