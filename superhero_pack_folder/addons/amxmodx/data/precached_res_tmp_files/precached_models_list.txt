@@ -80,6 +80,7 @@ models/shmod/yandere/knife/p_knife.mdl
 models/shmod/yandere/knife/v_psycho_knife.mdl
 models/shmod/yandere/knife/p_psycho_knife.mdl
 models/shmod/sablina/rockgibs/rockgibs.mdl
+models/shmod/jaqueo/shield/shield.mdl
 models/shmod/ion_v_radio.mdl
 models/w_battery.mdl
 sprites/shmod/ion/ionbeam.spr
@@ -120,7 +121,6 @@ models/shmod/adriano/ethereal/p_ethereal.mdl
 models/shmod/adriano/ethereal/w_ethereal.mdl
 sprites/640hud7_2.spr
 sprites/640hud74_2.spr
-models/shmod/jaqueo/shield/shield.mdl
 models/shmod/teliko/v_knife.mdl
 models/shmod/sapper/mine/mine.mdl
 models/shmod/camman/camera/camera.mdl
@@ -266,6 +266,8 @@ sprites/rifle_smoke2.spr
 sprites/rifle_smoke3.spr
 models/hgibs.mdl
 models/agibs.mdl
+sprites/flare1.spr
+models/metalplategibs.mdl
 models/w_squeak.mdl
 models/shmod/ksun/ksun_rifle/v_r5rifle.mdl
 models/shmod/ksun/ksun_rifle/p_r5rifle.mdl

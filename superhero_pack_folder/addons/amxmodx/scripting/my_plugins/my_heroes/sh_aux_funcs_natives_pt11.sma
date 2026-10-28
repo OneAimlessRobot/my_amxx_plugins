@@ -60,7 +60,11 @@ static const sh_hero_property_structs_array[hero_property_flags_id][hero_propert
 			
 			{"Fire retardant hero", "Heroes with fire resistance", 25},
 			
-			{"Radio detector hero", "Heroes that can detect radioactivity", 25}
+			{"Radio detector hero", "Heroes that can detect radioactivity", 25},
+			
+			{"Ethereal hero", "Heroes that cannot be damaged by objects that make contact", 25},
+			
+			{"Elemental probe hero", "A peculiar but unmixable set of heroes.^nThey all have ^"Ethereal hero^" in common", 1}
 			
 			
 

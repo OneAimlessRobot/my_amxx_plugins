@@ -20,10 +20,6 @@
 #include "sablina_inc/sablina.inc"
 #include "../my_include/my_author_header.inc"
 // GLOBAL VARIABLES
-
-#define THE_BITSUM_TO_EXCLUDE ( single_wpn_bs( CSW_KNIFE ) | single_wpn_bs (CSW_C4 ) )
-#define SABLINA_CAN_USE_WPN(%1) (wpn_id_in_bs( (%1) , THE_BITSUM_TO_EXCLUDE ))
-
 #define SABLINA_TASK_PERIOD 1.0
 
 
@@ -191,11 +187,6 @@ public plugin_init()
 	set_pcvar_bounds(pcvar_sablina_rendering_max_alpha,CvarBound_Upper,true, 100.0)
 	set_pcvar_bounds(pcvar_sablina_rendering_max_alpha,CvarBound_Lower,true, 10.0)
 
-	
-	RegisterHam(Ham_TraceAttack,"player","sablina_ethereal_body",_,true)
-
-	RegisterHam( Ham_Touch, "armoury_entity", "fw_HamPlayerTouchPre", _,true);
-	RegisterHam( Ham_Touch, "weaponbox", "fw_HamPlayerTouchPre" ,_,true);
 
 	gHeroID=shCreateHero(gHeroName, "Stone probe!", "Summon stone spikes to damage your enemies! Become ethereal, too", true, "sablina_level" )
 	
@@ -221,20 +212,18 @@ public plugin_init()
 								sablina_stone_spike_recoil_log_name,
 								0)
 
-	register_forward(FM_CmdStart,"fw_Sablina_unnarmed")
-	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
 
 	register_event("CurWeapon", "on_Weapon_Change", "be", "1=1")
 
 	sh_register_hero_healthcap(gHeroID, 130.0)
 
-	sh_assign_hero_bit(gHeroID, SH_HITBOX_MANIP_HERO, true)
-
 	sh_assign_hero_bit(gHeroID, SH_ANTI_GRENADES_HERO, true)
 
-	sh_assign_hero_bit(gHeroID, SH_ANTI_FALL_DAMAGE_HERO, true)
-
 	sh_assign_hero_bit(gHeroID, SH_UNHEALABLE_HERO, true)
+
+	sh_assign_hero_bit(gHeroID, SH_ETHEREAL_HERO, true)
+
+	sh_assign_hero_bit(gHeroID, SH_ELEMENTAL_PROBE_HERO, true)
 
 	register_think(SABLINA_SPIKER_CLASSNAME,"sablina_spike_think")
 
@@ -336,79 +325,7 @@ public sablina_loop(taskid)
 	}
 }
 
-public fw_HamPlayerTouchPre( iEntity, iPlayer ) {
-	if( !is_user_alive( iPlayer ) ){
-		return HAM_IGNORED;
-	}
-	
-	
-	static szModel[ 23 ];
-	entity_get_string( iEntity, EV_SZ_model, szModel, charsmax( szModel ) );
-	
-	if(containi( szModel, "w_backpack" ) != -1 || !sh_get_user_has_hero(iPlayer,gHeroID)){
-		return HAM_IGNORED;
-	}
-	
-	return HAM_SUPERCEDE;
-}
 
-public fm_UpdateClientDataPost(player, sendWeapons, cd)
-{
-	
-	if(!is_user_alive(player)){
-		return FMRES_IGNORED
-	}
-
-	if(!sh_get_user_has_hero(player,gHeroID)){
-
-		return FMRES_IGNORED
-	}
-	new weapon = get_user_weapon(player);
-	if(SABLINA_CAN_USE_WPN(weapon)){
-		return FMRES_IGNORED
-	}
-	
-	new pEntity = get_pdata_cbase(player, m_pActiveItem, XO_PLAYER)
-	if(pev_valid(pEntity)==PDATA_SAFE){
-
-		new is_silenced=cs_get_weapon_silen(pEntity)
-		if(!is_silenced){
-			set_cd(cd, CD_flNextAttack, get_gametime()+1.0)
-			return FMRES_HANDLED
-		}
-	}	
-	return FMRES_IGNORED
-}
-
-
-public fw_Sablina_unnarmed(id, uc_handle)
-{
-	if(!sh_is_active()||sh_is_freezetime()){
-		return FMRES_IGNORED
-	}
-	if (!is_user_alive(id)){
-		return FMRES_IGNORED
-	}
-	
-	if(!sh_get_user_has_hero(id,gHeroID)){
-
-		return FMRES_IGNORED
-	}
-	new bool:removed_attack = false;
-	new button = get_uc(uc_handle, UC_Buttons);
-	if(button & IN_ATTACK)
-	{
-		new weapon_id = get_user_weapon(id)
-		if(!SABLINA_CAN_USE_WPN(weapon_id)){
-			
-			button &= ~IN_ATTACK;
-			set_uc(uc_handle, UC_Buttons, button);
-			removed_attack = true
-		}
-		
-	}
-	return (removed_attack?FMRES_SUPERCEDE:FMRES_IGNORED)
-}
 
 
 public plugin_natives(){
@@ -474,31 +391,6 @@ cancel_sablina_strike(id){
 	Assign_BitVar(stone_spike_active_mask,id,false_for_macro)
 
 
-}
-
-public sablina_ethereal_body(id, attacker, Float:damage, Float:direction[3], tracehandle, damagebits){
-
-	if(damage<=0.0){
-		return HAM_IGNORED
-	}
-	if(!is_user_alive(id)){
-
-		return HAM_IGNORED;
-
-	}
-	if(!sh_get_user_has_hero(id,gHeroID) ){
-
-		return HAM_IGNORED;
-
-	}
-	if(sh_clients_are_same_team(id,attacker)){
-
-		return HAM_IGNORED
-	}
-
-	damage=0.0
-	SetHamParamFloat(3,damage)
-	return HAM_SUPERCEDE
 }
 public increase_dmg_task(id){
 
@@ -872,11 +764,7 @@ public sh_round_new(){
 public sh_round_start(){
 	static the_players[SH_MAXSLOTS],
 			pnum,
-			id,
-			the_weapons[32],
-			wpn_num,
-			wpn_item_id,
-			bool:dropped_this_person_weapons
+			id
 	
 	get_players(the_players, pnum, "a")
 	for (new i = 0; i < pnum; i++) {
@@ -893,25 +781,6 @@ public sh_round_start(){
 		
 		sh_chat_message(id,gHeroID,"Start of rounds. Power will be idle for %0.2f seconds", the_cooldown)
 		
-		dropped_this_person_weapons = false;
-
-		get_user_weapons(id,the_weapons,wpn_num);
-
-
-		for (new j = 0; j < wpn_num; j++) {
-			
-			wpn_item_id = the_weapons[j]
-			
-			if(!SABLINA_CAN_USE_WPN(wpn_item_id)){
-
-				sh_drop_weapon(id,wpn_item_id,true)
-				dropped_this_person_weapons = true;
-			}
-
-		}
-		if(dropped_this_person_weapons){
-			sh_chat_message(id,gHeroID,"The round has ended. %s cannot use any firearms. They got destroyed", gHeroName)
-		}
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -938,46 +807,4 @@ public sh_client_death(id)
 		}
 	}
 	
-}
-
-public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
-	if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
-	
-		return DMG_FWD_PASS
-	}
-	if(sh_clients_are_same_team(victim,attacker)){
-		return DMG_FWD_PASS
-	}
-	if(!sh_get_user_has_hero(victim,gHeroID)){
-		return DMG_FWD_PASS
-	}
-	new dmg_fwd_ret_id:the_return_value=DMG_FWD_PASS
-	switch(new_dmg_type){
-
-
-		case SH_NEW_DMG_BLEED,
-					SH_NEW_DMG_DRAIN:{
-
-				the_return_value = ((victim==attacker) ? DMG_FWD_PASS:  DMG_FWD_BLOCK)
-
-
-		}
-		case SH_NEW_DMG_SUPER_BULLET,
-					SH_NEW_DMG_TR45H_GUN,
-					SH_NEW_DMG_SUFFOCATION,
-					SH_NEW_DMG_CLEANSE:{
-
-
-				the_return_value = DMG_FWD_BLOCK
-		}
-		default:{
-
-			the_return_value=DMG_FWD_PASS
-		}
-
-
-
-	}
-	
-	return the_return_value
 }

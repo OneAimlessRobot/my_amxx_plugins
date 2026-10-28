@@ -9,7 +9,7 @@ sprites/scope_arc.tga
 sprites/scope_arc_nw.tga
 sprites/scope_arc_ne.tga
 sprites/scope_arc_sw.tga
-maps/starwars.txt
+maps/de_train.txt
 models/player/yakui/yakui.mdl
 models/player/ksun/ksun.mdl
 models/player/ester/ester.mdl
