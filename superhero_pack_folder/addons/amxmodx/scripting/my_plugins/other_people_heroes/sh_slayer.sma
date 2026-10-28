@@ -13,19 +13,41 @@ slayer_chance 0.05 - chance of assassination
 new gHeroName[]="Slayer"
 
 
+
+new assassination_wpn_short_name[SAFE_BUFFER_SIZE+1]="assassination"
+new assassination_wpn_log_name[SAFE_BUFFER_SIZE+1]="assassination"
+new assassination_wpn_id = -1
+
+new godmode_stripper_wpn_short_name[SAFE_BUFFER_SIZE+1]="godmode_stripper"
+new godmode_stripper_wpn_log_name[SAFE_BUFFER_SIZE+1]="godmode_stripper"
+new godmode_stripper_wpn_id = -1
+
+
 public plugin_init()
 {
-  my_authored_register_func("SUPERHERO Slayer","1.0","Mydas",true,AUTHOR)
-  create_cvar("slayer_level", "6" )
-  gHeroID=shCreateHero(gHeroName, "God Removal/Assassinate", "Godmode removal; small chance of assassinating enemies with 1 bullet", false, "slayer_level" )
-  
+	my_authored_register_func("SUPERHERO Slayer","1.0","Mydas",true,AUTHOR)
+	create_cvar("slayer_level", "6" )
+	gHeroID=shCreateHero(gHeroName, "God Removal/Assassinate", "Godmode removal; small chance of assassinating enemies with 1 bullet", false, "slayer_level" )
 
-  set_task(0.1,"slayer_loop",0,"",0,"b")
 
-  register_event("Damage", "slayer_damage", "b", "2!0")
-  
-  create_cvar("slayer_cooldown", "40.0" )
-  create_cvar("slayer_chance", "0.05" )
+	assassination_wpn_id=sh_log_custom_damage_source(
+						gHeroID,
+						assassination_wpn_short_name,
+						assassination_wpn_log_name,
+						0)
+
+	godmode_stripper_wpn_id=sh_log_custom_damage_source(
+						gHeroID,
+						godmode_stripper_wpn_short_name,
+						godmode_stripper_wpn_log_name,
+						0)
+
+	set_task(0.1,"slayer_loop",0,"",0,"b")
+
+	register_event("Damage", "slayer_damage", "b", "2!0")
+
+	create_cvar("slayer_cooldown", "40.0" )
+	create_cvar("slayer_chance", "0.05" )
 }
 
 //----------------------------------------------------------------------------------------------
@@ -44,7 +66,7 @@ public slayer_loop()
 				get_user_name(id,slayer_name,127)
 				sh_chat_message(id, gHeroID,"You removed %s's godmode!",name)
 				sh_chat_message(aid, gHeroID,"%s removed your godmode!",slayer_name)
-				sh_extra_damage(id, id, get_user_health(id)/2 )
+				sh_extra_damage(id, id, get_user_health(id)/2,_,_,_,_,_,SH_NEW_DMG_DARK_ARTS,godmode_stripper_wpn_id)
 				sh_set_cooldown(id, get_cvar_float("slayer_cooldown"))
 				sh_set_cooldown_flag(id)
 			}
@@ -63,8 +85,8 @@ public slayer_damage(id)
     if ( sh_get_user_has_hero(attacker,gHeroID)&& (weapon != CSW_HEGRENADE) && is_user_alive(attacker) && is_user_alive(id) && (id!=attacker) ) {
       new randNum = generate_int(0, 100)
       if (get_cvar_float("slayer_chance") * 100 >= randNum) {
-		sh_extra_damage(attacker, attacker, get_user_health(attacker)/2)
-		sh_extra_damage(id, attacker, get_user_health(id), my_hitpoint_enum:bodypart )		
+		sh_extra_damage(attacker, attacker, get_user_health(attacker)/2,_,_,_,_,_,SH_NEW_DMG_DARK_ARTS,godmode_stripper_wpn_id)
+		sh_extra_damage(id, attacker, get_user_health(id), my_hitpoint_enum:bodypart ,_,_,_,_,SH_NEW_DMG_DARK_ARTS,assassination_wpn_id)		
       }
     }
     return PLUGIN_CONTINUE
