@@ -473,53 +473,6 @@ add_3d_vectors(origin,bump_reverse,new_origin)
 entity_set_origin(spore,new_origin)
 
 }
-//https://huggingface.co/datasets/RichieBurundi/Amxxprogramer/blob/main/EngFunc_TraceLine%20Explanation.txt
-stock is_wall_between_points(Float:start[3], Float:end[3], Float:hit_end[3], &Float:stored_frac,ignore_ent)
-{
-	// Create the trace handle! It is best to create it!
-	new ptr = create_tr2()
-
-	// --- 1. Trace HULL (volume check) ---
-	engfunc(EngFunc_TraceHull,
-		start,
-		end,
-		IGNORE_GLASS | IGNORE_MONSTERS | IGNORE_MISSILE,
-		HULL_HUMAN,
-		ignore_ent,
-		ptr
-	)
-
-	get_tr2(ptr, TR_flFraction, stored_frac)
-	get_tr2(ptr,TR_EndPos,hit_end)
-	// If hull hit → definitely blocked
-	if (stored_frac < 0.90)
-	{
-		free_tr2(ptr)
-		return true
-	}
-
-	// --- 2. Trace LINE (thin geometry / edges / corners) ---
-	engfunc(EngFunc_TraceLine,
-		start,
-		end,
-		IGNORE_GLASS | IGNORE_MONSTERS | IGNORE_MISSILE,
-		ignore_ent,
-		ptr
-	)
-
-
-	get_tr2(ptr, TR_flFraction, stored_frac)
-	get_tr2(ptr,TR_EndPos,hit_end)
-
-	free_tr2(ptr)
-
-	if (stored_frac < 0.90)
-	{
-		return true
-	}
-
-	return false
-}
 //----------------------------------------------------------------------------------------------
 stock entity_set_follow(entity, target,spore_owner)
 {

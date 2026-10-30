@@ -160,13 +160,13 @@ public CTrooper_damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, 
 
 	if ( !sh_is_active() || !is_user_alive(Victim) ) return HAM_IGNORED
 
+	if ((Attacker==Victim)||!is_user_alive(Attacker)) return HAM_IGNORED
 
 	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
 
 	new weapon = get_user_weapon(Attacker)
 	new bool:has_hero= bool:sh_get_user_has_hero(Attacker,gHeroID) 
 
-	if ((Attacker==Victim)||!is_user_connected(Attacker)) return HAM_IGNORED
 
 	if ( has_hero&& weapon == CTROOPER_LASERGUN_CLASSID ) {
 		// do extra damage

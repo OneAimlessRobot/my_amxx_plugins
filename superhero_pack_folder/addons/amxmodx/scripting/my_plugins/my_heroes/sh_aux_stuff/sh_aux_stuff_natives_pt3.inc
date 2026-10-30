@@ -87,6 +87,45 @@ native explosion(hero_id,ent_id,Float:explosion_radius,
 					const custom_sound_sample[128]=crush_stunned,
 					custom_weapon_id=-1);
 
+native explosion_custom_entity(ent_id,Float:explosion_radius,
+					Float:peak_power,
+					ent_classname[]="player",
+					Float:optional_force=-1.0,
+					explosion_sfx_flags:sfx_mask=(explosion_sfx_show_shockwave|
+							explosion_sfx_show_fireball|
+							explosion_sfx_show_smoke|
+							explosion_sfx_show_burn_decal),
+
+					sh_custom_color:color_const=WHITE,
+					const custom_sound_sample[128]=crush_stunned);
+
+
+
+
+native explosion_with_origin(hero_id,explosion_author_id, Float:origin[3],Float:explosion_radius,
+					Float:peak_power,
+					Float:optional_force=-1.0,
+					ignore_owner=1,
+					set_stun=0,
+					Float:damage_frac_ignore_owner=-1.0,
+					explosion_sfx_flags:sfx_mask=(explosion_sfx_show_shockwave|
+											explosion_sfx_show_fireball|
+											explosion_sfx_show_smoke|
+											explosion_sfx_show_burn_decal),
+					sh_custom_color:color_const=WHITE,
+					custom_weapon_id=-1);
+
+
+native explosion_custom_entity_with_origin(explosion_owner_id,Float:origin[3],Float:explosion_radius,
+					Float:peak_power,
+					ent_classname[]="player",
+					Float:optional_force=-1.0,
+					explosion_sfx_flags:sfx_mask=(explosion_sfx_show_shockwave|
+							explosion_sfx_show_fireball|
+							explosion_sfx_show_smoke|
+							explosion_sfx_show_burn_decal),
+
+					sh_custom_color:color_const=WHITE);
 /*
 
 Explosion sfx masks!
@@ -121,15 +160,3 @@ enum explosion_sfx_flags (<<= 1){
 */
 native tank_impact_shot_fx(ent_id, Float:origin[3],radius=18, brightness=200, Float:rel_height= 0.0, bool:show_burndecal = true, bool:show_custom_sound=false, const custom_sound_sample[128] = EXPLOSION_TANK_SHOT_SOUND)
 
-
-native explosion_custom_entity(ent_id,Float:explosion_radius,
-					Float:peak_power,
-					ent_classname[]="player",
-					Float:optional_force=-1.0,
-					explosion_sfx_flags:sfx_mask=(explosion_sfx_show_shockwave|
-							explosion_sfx_show_fireball|
-							explosion_sfx_show_smoke|
-							explosion_sfx_show_burn_decal),
-
-					sh_custom_color:color_const=WHITE,
-					const custom_sound_sample[128]=crush_stunned);

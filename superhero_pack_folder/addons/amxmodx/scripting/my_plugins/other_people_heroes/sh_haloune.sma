@@ -143,6 +143,7 @@ public Haloune_damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, D
 
 	if ( !sh_is_active() || !is_user_alive(Victim) ) return HAM_IGNORED
 
+	if ((Attacker==Victim)||!is_user_alive(Attacker)) return HAM_IGNORED
 
 	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
 

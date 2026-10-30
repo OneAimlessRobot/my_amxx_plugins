@@ -66,6 +66,10 @@ public plugin_natives(){
 
 	register_native("explosion","_explosion");
 	register_native("explosion_custom_entity","_explosion_custom_entity");
+	register_native("explosion_custom_entity_with_origin","_explosion_custom_entity_with_origin");
+	register_native("explosion_with_origin","_explosion_with_origin")
+
+	
 	register_native("tank_impact_shot_fx","_tank_impact_shot_fx");
 }
 prepare_shero_aux_lib_pt3(){
@@ -219,6 +223,71 @@ explode_fx( vec1[3] ,radius, sh_custom_color:fx_color=WHITE,alpha=255,
 		message_end()
 	}
 }
+public _explosion_with_origin(iPlugins,iParams){
+
+
+	new hero_id=get_param(1),
+		explosion_author_id=get_param(2),
+		Float:explosion_radius=get_param_f(4),
+		Float:peak_power=get_param_f(5),
+		Float:optional_force=get_param_f(6),
+		ignore_owner=get_param(7),
+		set_stun=get_param(8),
+		Float:damage_frac_ignore_owner=get_param_f(9),
+		explosion_sfx_flags:sfx_mask=explosion_sfx_flags:get_param(10),
+		sh_custom_color:fx_color=sh_custom_color:get_param(11)
+
+	if(optional_force < 0.0){
+
+		optional_force = get_pcvar_float(sh_default_explode_knock_force_magnitude_cvar);
+	}
+	if(damage_frac_ignore_owner < 0.0){
+
+		damage_frac_ignore_owner = get_pcvar_float(sh_default_explode_owner_ignore_frac_cvar)
+	}
+
+	new custom_weapon_id = get_param(12)
+
+	if((!is_user_alive(explosion_author_id))){
+
+		return 
+
+	}
+	new Float:fOrigin[3];
+	get_array_f(3,fOrigin,3)
+
+	new iOrigin[3];
+	for(new i=0;i<3;i++)
+		iOrigin[i] = floatround(fOrigin[i]);
+
+	if(sfx_mask>explosion_sfx_show_nothing){
+		explode_fx(iOrigin,floatround(explosion_radius),fx_color,_,sfx_mask)
+	}
+	new entlist[33];
+	new numfound = find_sphere_class(0,"player", explosion_radius ,entlist, 32,fOrigin);
+
+	new CsTeams:idTeam = cs_get_user_team(explosion_author_id)
+	
+	for (new i=0; i < numfound; i++)
+	{		
+		new pid = entlist[i];
+		if(!is_user_alive(pid)){
+			continue
+		
+		}
+		if(pid!=explosion_author_id){
+			if(cs_get_user_team(pid)==idTeam){
+				continue
+			}
+			sh_screen_shake(pid,10.0,3.0,10.0)
+		}
+		else if(ignore_owner){
+			continue
+		}
+		damage_player_origin(hero_id,fOrigin,explosion_author_id,pid,explosion_radius,peak_power,optional_force,set_stun,damage_frac_ignore_owner,custom_weapon_id)
+
+	}
+}
 public _explosion(iPlugins,iParams){
 
 
@@ -294,6 +363,7 @@ public _explosion(iPlugins,iParams){
 
 	}
 }
+
 public _explosion_custom_entity(iPlugins,iParams){
 
 	new ent_classname[128]
@@ -348,6 +418,56 @@ public _explosion_custom_entity(iPlugins,iParams){
 		
 		}
 		damage_entity(ent_id,owner_id,eid,explosion_radius,peak_power,_,optional_force)
+	}
+}
+
+public _explosion_custom_entity_with_origin(iPlugins,iParams){
+
+	new ent_classname[128]
+
+	get_string(5,ent_classname,128)
+
+	new explosion_owner_id = get_param(1),
+		Float:explosion_radius=get_param_f(3),
+		Float:peak_power=get_param_f(4),
+		Float:optional_force=get_param_f(6),
+		explosion_sfx_flags:sfx_mask= explosion_sfx_flags:get_param(7),
+		sh_custom_color:fx_color=sh_custom_color:get_param(8)
+
+	if(!is_user_connected(explosion_owner_id)){
+	
+		return 
+	
+	}
+	new Float:fOrigin[3];
+
+	get_array_f(2,fOrigin,3)
+
+
+	new iOrigin[3];
+	for(new i=0;i<3;i++)
+		iOrigin[i] = floatround(fOrigin[i]);
+
+	if(sfx_mask>explosion_sfx_show_nothing){
+		explode_fx(iOrigin,floatround(explosion_radius),fx_color,_,sfx_mask)
+	}
+
+	new entlist[33];
+	new numfound = find_sphere_class(0,ent_classname, explosion_radius ,entlist, 32,fOrigin);
+
+	for (new i=0; i < numfound; i++)
+	{		
+		new eid = entlist[i];
+		
+		if(!is_valid_ent(eid)){
+			
+			continue;
+		}
+		if(pev_valid(eid)!=2){
+			continue
+		
+		}
+		damage_entity_origin(fOrigin,explosion_owner_id,eid,explosion_radius,peak_power,_,optional_force)
 	}
 }
 damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,Float:optional_force=0.0,set_stun=0,Float:damage_frac_ignore_owner=SH_DEFAULT_DAMAGE_FRAC_EXPLOSION_IGNORE_OWNER,custom_weapon_id=-1){
@@ -456,6 +576,122 @@ damage_entity(ent_id,owner_id,tg_id,Float:radius,Float:peak_power,ignore_owner=1
 	if(is_user_alive(owner_id)||(is_user_alive(ent_id))){
 
 		ExecuteHam(Ham_TakeDamage, tg_id, ent_id, owner_id, damage, 0);
+	}
+	if(entity_get_float(tg_id,EV_FL_health)<=0.0){
+		return
+	}
+	if(!is_valid_ent(tg_id)){
+		
+		return;
+	}
+	if(pev_valid(tg_id)!=2){
+		
+		return
+	
+	}
+	set_velocity_from_origin(tg_id,mine_origin,force)
+	
+}
+
+
+damage_player_origin(hero_id,Float:mine_origin[3],owner_id,pid,Float:radius,Float:peak_power,Float:optional_force=0.0,set_stun=0,Float:damage_frac_ignore_owner=SH_DEFAULT_DAMAGE_FRAC_EXPLOSION_IGNORE_OWNER,custom_weapon_id=-1){
+	
+	if(!is_user_connected(owner_id)){
+	
+		return 
+	
+	}
+	if(!is_user_connected(pid)){
+	
+		return 
+	
+	}
+	if(is_user_connected(pid)&&(pid==owner_id)){
+		
+
+		peak_power=peak_power*damage_frac_ignore_owner
+		
+		
+	
+	}
+	static client_name[128];
+	static attacker_name[128];
+	get_user_name(pid,client_name,127);
+	get_user_name(owner_id,attacker_name,127);
+	new Float:vic_origin[3]
+	entity_get_vector(pid,EV_VEC_origin,vic_origin);
+	new Float:distance=vector_distance(vic_origin,mine_origin);
+	new Float:falloff_coeff= min_macro(1.0,distance/radius);
+	new Float:force,Float:damage,idamage
+	damage=peak_power-(peak_power/2.0)*falloff_coeff
+	idamage=floatround(damage)
+	if(optional_force!=(0.0*float(hero_id))){ 
+		//im a perfectionist.
+		//Im not using this variable.
+		//and warnings annoy me. 
+		//So it gets converted into a float
+		//and multiplied by zero
+		force=optional_force-(optional_force/2.0)*falloff_coeff
+	}
+	else{
+		force=damage
+	}
+
+	if(!is_valid_custom_dmg_source(custom_weapon_id)){
+	
+		custom_weapon_id=generic_frag_blast_wpn_id
+	
+	}
+	
+	sh_extra_damage(pid,owner_id,idamage,
+			_,_,_,_,_,
+			SH_NEW_DMG_FRAG_BLAST,
+			custom_weapon_id)
+	
+	set_velocity_from_origin(pid,mine_origin,force)
+
+	if(set_stun){
+		sh_set_stun(pid,3.0)
+		sh_screen_shake(pid,10.0,3.0,10.0)
+	}
+	
+	unfade_screen_user(pid)
+}
+damage_entity_origin(Float:mine_origin[3],owner_id,tg_id,Float:radius,Float:peak_power,ignore_owner=1,Float:optional_force=0.0){
+
+
+	if((pev_valid(tg_id)!=2)){
+	
+		return 
+	
+	}
+	
+	if(is_user_connected(tg_id)&&(tg_id==owner_id)){
+		
+		if(ignore_owner){
+			
+			return
+			
+		}
+		
+		
+	
+	}
+	new Float:vic_origin[3]
+	entity_get_vector(tg_id,EV_VEC_origin,vic_origin);
+	new Float:distance=vector_distance(vic_origin,mine_origin);
+	new Float:falloff_coeff= min_macro(1.0,distance/radius);
+	new Float:force,Float:damage
+	damage=peak_power-(peak_power/2.0)*falloff_coeff
+	if(optional_force!=0.0){
+		force=optional_force-(optional_force/2.0)*falloff_coeff
+	}
+	else{
+		force=damage
+	}
+	if(is_user_alive(owner_id)){
+
+		ExecuteHam(Ham_TakeDamage, tg_id, owner_id, owner_id, damage, 0);
 	}
 	if(entity_get_float(tg_id,EV_FL_health)<=0.0){
 		return

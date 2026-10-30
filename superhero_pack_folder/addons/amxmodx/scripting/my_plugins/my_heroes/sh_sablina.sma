@@ -412,7 +412,7 @@ public increase_dmg_task(id){
 		
 		user_stone_spiker_time[id] += (min_macro(user_charge_time_curr_strike[id]-user_stone_spiker_time[id],SABLINA_STONE_SPIKE_TICK_LENGTH_SECS))
 		
-		client_print(id,print_center,"[SH] Sablina: Stone spike charge: %0.2f",user_stone_spiker_time[id]/user_charge_time_curr_strike[id])
+		client_print(id,print_center,"[SH] Sablina: Stone spike charge: %0.2f",(user_stone_spiker_time[id]/user_charge_time_curr_strike[id])*100.0)
 
 		set_task(SABLINA_STONE_SPIKE_TICK_LENGTH_SECS,"increase_dmg_task",id+SH_SABLINA_SPIKE_CHARGE_TASKID)
 		return

@@ -222,6 +222,8 @@ public trace_komakery_hit_on_right_arm(this, idattacker, Float:damage, Float:dir
 		return HAM_IGNORED
 	}
 
+	if ((this==idattacker)||!is_user_alive(idattacker)) return HAM_IGNORED
+
 	weapon_gating_macro_code_snippet(idattacker,get_user_weapon(idattacker),return,HAM_IGNORED)
 
 	new return_result=HAM_IGNORED;

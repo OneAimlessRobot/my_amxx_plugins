@@ -287,6 +287,117 @@ stock print_entity_info(id, ent){
 
 }
 
+//https://huggingface.co/datasets/RichieBurundi/Amxxprogramer/blob/main/EngFunc_TraceLine%20Explanation.txt
+stock is_wall_between_points(Float:start[3], Float:end[3], Float:hit_end[3], &Float:stored_frac,ignore_ent)
+{
+	// Create the trace handle! It is best to create it!
+	new ptr = create_tr2()
+
+	// --- 1. Trace HULL (volume check) ---
+	engfunc(EngFunc_TraceHull,
+		start,
+		end,
+		IGNORE_GLASS | IGNORE_MONSTERS | IGNORE_MISSILE,
+		HULL_HUMAN,
+		ignore_ent,
+		ptr
+	)
+
+	get_tr2(ptr, TR_flFraction, stored_frac)
+	get_tr2(ptr,TR_EndPos,hit_end)
+	// If hull hit → definitely blocked
+	if (stored_frac < 0.90)
+	{
+		free_tr2(ptr)
+		return true
+	}
+
+	// --- 2. Trace LINE (thin geometry / edges / corners) ---
+	engfunc(EngFunc_TraceLine,
+		start,
+		end,
+		IGNORE_GLASS | IGNORE_MONSTERS | IGNORE_MISSILE,
+		ignore_ent,
+		ptr
+	)
+
+
+	get_tr2(ptr, TR_flFraction, stored_frac)
+	get_tr2(ptr,TR_EndPos,hit_end)
+
+	free_tr2(ptr)
+
+	if (stored_frac < 0.90)
+	{
+		return true
+	}
+
+	return false
+}
+
+// Original author: NST
+stock bool: can_see_fm( iEntity1, iEntity2 ) {
+	if( !iEntity1 || !iEntity2 )
+		return false;
+
+	if ( is_valid_ent( iEntity1 ) && is_valid_ent( iEntity1 ) ) {
+		new iFlags = entity_get_int( iEntity1, EV_INT_flags );
+		
+		if( iFlags & EF_NODRAW || iFlags & FL_NOTARGET )
+			return false;
+
+		new Float: fLookerOrigin[ 3 ];
+		new Float: fTargetBaseOrigin[ 3 ];
+		new Float: fTargetOrigin[ 3 ];
+		new Float: fTemporary[ 3 ];
+
+		pev( iEntity1, pev_origin, fLookerOrigin );
+		pev( iEntity1, pev_view_ofs, fTemporary );
+		
+		fLookerOrigin[ 0 ] += fTemporary[ 0 ];
+		fLookerOrigin[ 1 ] += fTemporary[ 1 ];
+		fLookerOrigin[ 2 ] += fTemporary[ 2 ];
+
+		pev( iEntity2, pev_origin, fTargetBaseOrigin );
+		pev( iEntity2, pev_view_ofs, fTemporary );
+		fTargetOrigin[ 0 ] = fTargetBaseOrigin[ 0 ] + fTemporary[ 0 ];
+		fTargetOrigin[ 1 ] = fTargetBaseOrigin[ 1 ] + fTemporary[ 1 ];
+		fTargetOrigin[ 2 ] = fTargetBaseOrigin[ 2 ] + fTemporary[ 2 ];
+
+		engfunc( EngFunc_TraceLine, fLookerOrigin, fTargetOrigin, 0, iEntity1, 0 );
+		if( get_tr2( 0, TraceResult:TR_InOpen ) && get_tr2( 0, TraceResult:TR_InWater ) )
+			return false;
+		else {
+			new Float: fFraction;
+			get_tr2( 0, TraceResult: TR_flFraction, fFraction );
+			if( fFraction == 1.0 || ( get_tr2( 0, TraceResult: TR_pHit ) == iEntity2 ) )
+				return true;
+			else {
+				fTargetOrigin[ 0 ] = fTargetBaseOrigin[ 0 ];
+				fTargetOrigin[ 1 ] = fTargetBaseOrigin[ 1 ];
+				fTargetOrigin[ 2 ] = fTargetBaseOrigin[ 2 ];
+				
+				engfunc( EngFunc_TraceLine, fLookerOrigin, fTargetOrigin, 0, iEntity1, 0 );
+				get_tr2( 0, TraceResult: TR_flFraction, fFraction );
+				if( fFraction == 1.0 || ( get_tr2( 0, TraceResult:TR_pHit ) == iEntity2 ) )
+					return true;
+				else {
+					fTargetOrigin[ 0 ] = fTargetBaseOrigin[ 0 ];
+					fTargetOrigin[ 1 ] = fTargetBaseOrigin[ 1 ];
+					fTargetOrigin[ 2 ] = fTargetBaseOrigin[ 2 ] - 17.0;
+					
+					engfunc( EngFunc_TraceLine, fLookerOrigin, fTargetOrigin, 0, iEntity1, 0 );
+					get_tr2( 0, TraceResult: TR_flFraction, fFraction );
+					if( fFraction == 1.0 || ( get_tr2( 0, TraceResult: TR_pHit ) == iEntity2 ) )
+						return true;
+				}
+			}
+		}
+	}
+	
+	return false;
+}
+
 
 stock my_get_aim_origin(index, Float:origin[3]) {
 	new Float:start[3], Float:view_ofs[3];
