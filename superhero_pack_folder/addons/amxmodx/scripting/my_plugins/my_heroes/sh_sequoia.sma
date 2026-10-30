@@ -56,6 +56,8 @@ new dmg_source_name_log_ANNIHILATION[SAFE_BUFFER_SIZE+1]="ANNIHILATION"
 
 stock const gHeroName[] = "Sequoia"
 
+static const DEBUG = 0
+
 new user_is_keydown_mask = 0,
     user_is_inattack = 0,
     user_attack_ready = 0,
@@ -317,8 +319,9 @@ Float:get_user_sweep_radius(owner){
 
 
 }
-regulate_user_float(id , bool:remove_please = false){
-    if(Get_BitVar(user_floating_mode_on,id)&&!remove_please){
+regulate_user_float(id){
+
+    if(Get_BitVar(user_floating_mode_on,id)){
 
         entity_set_vector( id, EV_VEC_velocity, NULL_VECTOR )
 
@@ -327,12 +330,16 @@ regulate_user_float(id , bool:remove_please = false){
         set_user_gravity(id,0.01)
 
         set_user_maxspeed_controlled(id, 0.0,true, false)
+        return
     }
-    else if(is_user_alive(id)){
+}
+remove_user_float(id){
+
+    if(is_user_alive(id)&&Get_BitVar(user_floating_mode_on,id)){
 
         sh_reset_min_gravity(id)
         sh_reset_max_speed(id)
-    
+        Assign_BitVar(user_floating_mode_on,id, false_for_macro)
     }
 }
 //----------------------------------------------------------------------------------------------
@@ -352,13 +359,13 @@ public sequoia_active_loop(taskid)
 
         }
 
+        regulate_user_float(id)
 
         static Float:max_charge; max_charge=  cvar_val(float, pcvar_max_damage_battery)
 
 
         static Float:stamina_inc_to_use; stamina_inc_to_use= min_macro(get_user_stamina_inc(id),cvar_val(float, pcvar_max_stamina)-g_sequoia_damage_stamina[id])
 
-        regulate_user_float(id)
 
         if((g_sequoia_attack_phase[id]<COAGULATION)){
                 
@@ -455,6 +462,17 @@ public sequoia_passive_loop(taskid)
 
         }
 
+
+        static alive = 0, dead = 0;
+        
+        sh_get_player_counts(id,2, alive, dead)
+
+        if((alive<=0)&&Get_BitVar(user_is_keydown_mask,id)){
+            
+            sh_chat_message(id,gHeroID,"No enemies were detected. Your powers have been taken away")
+            reset_sequoia(id)
+
+        }
 
         static Float:max_stamina; max_stamina=  cvar_val(float, pcvar_max_stamina)
 
@@ -685,6 +703,11 @@ public sequoia_no_instant_kill(this, inflictor, attacker, Float:damage, damagebi
     if(!is_valid_ent(inflictor)){
 
         return HAM_IGNORED
+    }
+
+    if(!sh_get_user_has_hero(this,gHeroID)){
+
+        return FMRES_IGNORED
     }
 
     //alright FINE. lets check...
@@ -974,11 +997,11 @@ public sequoia_kd(id){
         Assign_BitVar(user_floating_mode_on, id, true_for_macro);
 
 
-        if(Get_BitVar(user_floating_mode_on, id)){
-            g_sequoia_last_gravity[id]=get_user_gravity(id)
-            g_sequoia_last_max_speed[id]=get_user_maxspeed(id)
-            entity_get_vector(id, EV_VEC_origin,g_sequoia_charging_origin[id])
-        }
+
+        g_sequoia_last_gravity[id]=get_user_gravity(id)
+        g_sequoia_last_max_speed[id]=get_user_maxspeed(id)
+        entity_get_vector(id, EV_VEC_origin,g_sequoia_charging_origin[id])
+        
         Assign_BitVar(user_is_keydown_mask,id, true_for_macro);
 
         Assign_BitVar(user_is_inattack,id,false_for_macro)
@@ -1050,11 +1073,17 @@ reset_sequoia(id,bool:reset_stamina=false, bool:reset_floating_mode=true){
     if(!client_is_within_range(id)){
         return
     }
+    if(DEBUG){
+
+        sh_chat_message(id,gHeroID,"Reset function called on you with parameters:")
+        sh_chat_message(id,gHeroID,"Reset stamina? %s",reset_stamina?"Yes!":"No...")
+        sh_chat_message(id,gHeroID,"Reset floating mode? %s",reset_floating_mode?"Yes!":"No...")
+    }
     Assign_BitVar(user_is_inattack,id,false_for_macro);
     Assign_BitVar(user_attack_ready,id, false_for_macro);
     Assign_BitVar(user_is_keydown_mask,id, false_for_macro);
     if(reset_floating_mode){
-        Assign_BitVar(user_floating_mode_on,id, false_for_macro);
+        remove_user_float(id)
     }
     g_sequoia_current_aimed_at_player[id] = -1
     g_sequoia_attack_phase[id] = none
@@ -1062,8 +1091,6 @@ reset_sequoia(id,bool:reset_stamina=false, bool:reset_floating_mode=true){
     if(reset_stamina){
         g_sequoia_damage_stamina[id] = 0.0
     }
-
-    regulate_user_float(id,true)
 
     sequoia_delete_charging_sound(id)
 }

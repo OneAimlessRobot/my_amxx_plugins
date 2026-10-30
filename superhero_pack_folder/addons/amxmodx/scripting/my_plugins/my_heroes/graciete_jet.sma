@@ -8,6 +8,7 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "q_barrel_inc/sh_graciete_get_set.inc"
 #include "q_barrel_inc/sh_q_barrel.inc"
 #include "q_barrel_inc/sh_graciete_rocket.inc"
@@ -115,7 +116,7 @@ public plugin_end(){
 }
 charge_user(id){
 	if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)) return
-	
+
 	g_graciete_base_gravity[id]=get_user_gravity(id)
 
 	
@@ -194,6 +195,14 @@ public CmdStart(id, uc_handle)
 	if(Get_BitVar(g_graciete_leaped_mask, id)){
 	
 		if((weapon==CSW_KNIFE)&&(button & IN_ATTACK2)&&(button & IN_DUCK)){
+
+
+			if(sh_get_player_has_hero_prop(id,SH_ANTI_FALL_DAMAGE_HERO)||
+							sh_get_player_has_hero_prop(id,SH_ETHEREAL_HERO)){
+								
+				return FMRES_IGNORED
+			
+			}
 			if(!Get_BitVar(g_graciete_power_landing_mask, id)){
 				Set_BitVar(g_graciete_power_landing_mask, id);
 				charge_user(id)
