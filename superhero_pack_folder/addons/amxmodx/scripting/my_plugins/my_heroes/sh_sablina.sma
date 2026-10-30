@@ -17,6 +17,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt12.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt13.inc"
 #include "sablina_inc/sablina.inc"
 #include "../my_include/my_author_header.inc"
 // GLOBAL VARIABLES
@@ -198,7 +199,9 @@ public plugin_init()
 								"Please give up, sir! Your efforts are irrelevant, okay?",
 								"Oh well... Do as you wish")
 
-	sh_set_hero_grav(gHeroID, pcvar_sablina_gravity)
+
+	sh_register_elemental_probe_hero(gHeroID, 130.0, pcvar_sablina_gravity)
+
 
 	stone_spike_wpn_id=sh_log_custom_damage_source(
 								gHeroID,
@@ -215,15 +218,7 @@ public plugin_init()
 
 	register_event("CurWeapon", "on_Weapon_Change", "be", "1=1")
 
-	sh_register_hero_healthcap(gHeroID, 130.0)
-
 	sh_assign_hero_bit(gHeroID, SH_ANTI_GRENADES_HERO, true)
-
-	sh_assign_hero_bit(gHeroID, SH_UNHEALABLE_HERO, true)
-
-	sh_assign_hero_bit(gHeroID, SH_ETHEREAL_HERO, true)
-
-	sh_assign_hero_bit(gHeroID, SH_ELEMENTAL_PROBE_HERO, true)
 
 	register_think(SABLINA_SPIKER_CLASSNAME,"sablina_spike_think")
 

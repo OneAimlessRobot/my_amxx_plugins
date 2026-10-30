@@ -4,6 +4,7 @@
 #include <amxmisc>
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 
 
 #define PLUGIN "SH_AuxFun13: DMG gating"
@@ -12,6 +13,7 @@
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt13.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt12.inc"
 #include "../my_include/auxiliar_stuff.inc"
 
 
@@ -19,10 +21,17 @@
 #define ETHEREALS_CAN_USE_WPN(%1) (wpn_id_in_bs( (%1) , THE_BITSUM_TO_EXCLUDE ))
 
 
+#define DEFAULT_ETHEREAL_GRAVITY_CVAR_NAME "sh_ethereal_heroes_gravity"
+
+
+stock REMOVE_WEAPONS_TASKID = -1
+static default_elemental_probe_cvar_ptr = -1
 public plugin_init(){
 
 
 	register_plugin(PLUGIN, VERSION, AUTHOR);
+
+	default_elemental_probe_cvar_ptr = create_cvar(DEFAULT_ETHEREAL_GRAVITY_CVAR_NAME, "0.1", _,"Default gravity for registered ethereal heroes",true, 0.1,true, 0.5)
 
 
 	RegisterHam(Ham_TakeDamage,"player","ham_sh_damage_gating",_, true)
@@ -32,6 +41,7 @@ public plugin_init(){
 	register_forward(FM_CmdStart,"fw_Ethereal_unnarmed")
 	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
 
+	REMOVE_WEAPONS_TASKID = allocate_typed_task_id(player_task)
 }
 
 public plugin_cfg(){
@@ -39,6 +49,44 @@ public plugin_cfg(){
 
 	server_print("%s innited!^n",PLUGIN)
 	
+}
+public plugin_natives(){
+
+
+
+	register_native("sh_register_elemental_probe_hero","_sh_register_elemental_probe_hero")
+
+}
+
+public bool:_sh_register_elemental_probe_hero(iPlugins, iParams){
+
+	new heroID = get_param(1)
+
+
+	if(( heroID < 0 )||(heroID >= SH_MAXHEROS)){
+		return false
+	}
+
+	new Float:health_cap = get_param_f(2)
+
+	new gravity_pcvar_given_here = get_param(3)
+
+	if(health_cap >= 1.0){
+
+		sh_register_hero_healthcap(heroID, health_cap)
+
+	}
+
+	sh_set_hero_grav(heroID, (gravity_pcvar_given_here <= 0) ? default_elemental_probe_cvar_ptr : gravity_pcvar_given_here)
+
+	sh_assign_hero_bit(heroID, SH_UNHEALABLE_HERO, true)
+
+	sh_assign_hero_bit(heroID, SH_ETHEREAL_HERO, true)
+
+	sh_assign_hero_bit(heroID, SH_ELEMENTAL_PROBE_HERO, true)
+
+	return true
+
 }
 
 public fm_UpdateClientDataPost(player, sendWeapons, cd)
@@ -167,49 +215,82 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_h
 	
 	return the_return_value
 }
+public strip_all_player_weapons(taskid){
 
-public sh_round_start(){
-	static the_players[SH_MAXSLOTS],
-			pnum,
-			id,
-			the_weapons[32],
+	new id =  taskid - REMOVE_WEAPONS_TASKID
+	
+	static the_weapons[32],
 			wpn_num,
 			wpn_item_id,
 			bool:dropped_this_person_weapons
+
+	
+	dropped_this_person_weapons = false;
+
+	get_user_weapons(id,the_weapons,wpn_num);
+
+
+	for (new j = 0; j < wpn_num; j++) {
+		
+		wpn_item_id = the_weapons[j]
+		
+		if(!ETHEREALS_CAN_USE_WPN(wpn_item_id)){
+
+			sh_drop_weapon(id,wpn_item_id,true)
+			dropped_this_person_weapons = true;
+		}
+
+	}
+	if(dropped_this_person_weapons){
+		sh_chat_message(id,-1,"The round has ended. ethereal heroes cannot use any firearms. They get destroyed")
+	}
+	
+}
+public sh_round_start(){
+	static the_players[SH_MAXSLOTS],
+			pnum,
+			id
 	
 	get_players(the_players, pnum, "a")
 	for (new i = 0; i < pnum; i++) {
 		
 		id = the_players[i]
-
+		if(!is_user_alive(id)){
+			continue
+		}	
 		//ethereal heroes do NOT get weapons
 		if(!sh_get_player_has_hero_prop(id,SH_ETHEREAL_HERO)){
 
 			continue;
 		}
-		dropped_this_person_weapons = false;
 
-		get_user_weapons(id,the_weapons,wpn_num);
-
-
-		for (new j = 0; j < wpn_num; j++) {
-			
-			wpn_item_id = the_weapons[j]
-			
-			if(!ETHEREALS_CAN_USE_WPN(wpn_item_id)){
-
-				sh_drop_weapon(id,wpn_item_id,true)
-				dropped_this_person_weapons = true;
-			}
-
+		if(task_exists(id + REMOVE_WEAPONS_TASKID)){
+			remove_task(id + REMOVE_WEAPONS_TASKID)
 		}
-		if(dropped_this_person_weapons){
-			sh_chat_message(id,-1,"The round has ended. ethereal heroes cannot use any firearms. They get destroyed")
-		}
+		strip_all_player_weapons(id + REMOVE_WEAPONS_TASKID)
 	}
 }
 
+public sh_client_spawn(id,bool:newRound){
 
+	if(newRound){
+
+		return
+	}
+	if(!is_user_alive(id)){
+		return
+	}
+	//ethereal heroes do NOT get weapons
+	if(!sh_get_player_has_hero_prop(id,SH_ETHEREAL_HERO)){
+
+		return;
+	}
+	if(task_exists(id + REMOVE_WEAPONS_TASKID)){
+		remove_task(id + REMOVE_WEAPONS_TASKID)
+	}
+	set_task(5.0, "strip_all_player_weapons",id + REMOVE_WEAPONS_TASKID)
+
+}
 public fw_Ethereal_unnarmed(id, uc_handle)
 {
 	if(!sh_is_active()||sh_is_freezetime()){
