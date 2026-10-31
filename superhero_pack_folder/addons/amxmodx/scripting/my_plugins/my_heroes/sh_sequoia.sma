@@ -1141,6 +1141,7 @@ public sh_client_spawn(id)
     if(sh_is_active()){
         if ( sh_get_user_has_hero(id,gHeroID) ) {
             
+            g_sequoia_display_cooldown[id] = 0.0
             reset_sequoia(id,true)
         }
 	}
@@ -1152,7 +1153,6 @@ public sh_client_death(id)
     if(sh_is_active()){
         if ( sh_get_user_has_hero(id,gHeroID) ) {
             
-
             reset_sequoia(id,true)
         }
     }

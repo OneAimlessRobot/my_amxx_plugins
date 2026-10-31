@@ -34,6 +34,8 @@ models/shmod/deagle.mdl
 sprites/zerogxplode.spr
 sprites/xssmke1.spr
 sprites/mushroom.spr
+models/shmod/sablina/rockgibs/rockgibs.mdl
+models/shmod/jaqueo/shield/shield.mdl
 models/shmod/v_scythe.mdl
 sprites/zbeam4.spr
 models/shmod/lara/spear/v_nospear.mdl
@@ -79,8 +81,6 @@ models/shmod/yandere/knife/v_knife.mdl
 models/shmod/yandere/knife/p_knife.mdl
 models/shmod/yandere/knife/v_psycho_knife.mdl
 models/shmod/yandere/knife/p_psycho_knife.mdl
-models/shmod/sablina/rockgibs/rockgibs.mdl
-models/shmod/jaqueo/shield/shield.mdl
 models/shmod/ion_v_radio.mdl
 models/w_battery.mdl
 sprites/shmod/ion/ionbeam.spr
@@ -266,7 +266,9 @@ sprites/rifle_smoke2.spr
 sprites/rifle_smoke3.spr
 models/hgibs.mdl
 models/agibs.mdl
-models/mil_crategibs.mdl
+models/metalplategibs_green.mdl
+models/woodgibs.mdl
+models/glassgibs.mdl
 models/w_squeak.mdl
 models/shmod/ksun/ksun_rifle/v_r5rifle.mdl
 models/shmod/ksun/ksun_rifle/p_r5rifle.mdl
@@ -320,6 +322,7 @@ models/player/graciete/graciete.mdl
 models/player/L96/L96.mdl
 models/player/swat/swat.mdl
 models/player/sh_darkpredator/sh_darkpredator.mdl
+models/player/sablina/sablina.mdl
 models/player/yowai/yowai.mdl
 models/player/sapper/sapper.mdl
 models/player/arcpred/arcpred.mdl
@@ -330,5 +333,4 @@ models/player/masterchief/masterchief.mdl
 models/player/yanderu/yanderu.mdl
 models/player/superyanderu/superyanderu.mdl
 models/player/yanderu_psycho/yanderu_psycho.mdl
-models/player/sablina/sablina.mdl
 models/player/Flora/Flora.mdl

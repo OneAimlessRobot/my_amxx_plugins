@@ -28,6 +28,7 @@
 #define I_WANT_RESOURCE_ALIASES
 #define I_WANT_CUSTOM_COLORS
 #define I_WANT_BASIC_MACROS
+#define I_WANT_MATH_FUNCS
 #include "sh_aux_stuff/sh_aux_inc.inc"
 
 #include "track_fx_inc/track_fx.inc"
@@ -85,8 +86,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					"",
 					MY_CSW_HEGRENADE,
 					PINK,
-					500.0,
-					3000.0,
+					250.0,
+					1200.0,
 					1.0,
 					5.0,
 					1.5,
@@ -97,8 +98,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					"",
 					MY_CSW_SMOKEGRENADE,
 					WHITE,
-					500.0,
-					3000.0,
+					250.0,
+					1200.0,
 					1.0,
 					5.0,
 					1.5,
@@ -109,8 +110,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					"",
 					MY_CSW_SMOKEGRENADE,
 					BLUE,
-					500.0,
-					3000.0,
+					250.0,
+					1200.0,
 					1.0,
 					5.0,
 					1.5,
@@ -122,8 +123,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					"",
 					MY_CSW_SMOKEGRENADE,
 					LTGREEN,
-					500.0,
-					3000.0,
+					250.0,
+					1200.0,
 					1.0,
 					5.0,
 					1.5,
@@ -135,8 +136,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					"",
 					MY_CSW_FLASHBANG,
 					LTBLUE,
-					500.0,
-					3000.0,
+					250.0,
+					1200.0,
 					1.0,
 					5.0,
 					1.5,
@@ -148,8 +149,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					"",
 					MY_CSW_SMOKEGRENADE,
 					FROZEN_BLUE,
-					500.0,
-					3000.0,
+					250.0,
+					1200.0,
 					1.0,
 					5.0,
 					1.5,
@@ -161,8 +162,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					"",
 					MY_CSW_FLASHBANG,
 					YELLOW,
-					500.0,
-					3000.0,
+					250.0,
+					1200.0,
 					1.0,
 					5.0,
 					1.5,
@@ -174,8 +175,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					"",
 					MY_CSW_HEGRENADE,
 					RED,
-					500.0,
-					3000.0,
+					250.0,
+					1200.0,
 					1.0,
 					5.0,
 					1.5,
@@ -187,8 +188,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					"",
 					MY_CSW_HEGRENADE,
 					ORANGE,
-					500.0,
-					3000.0,
+					250.0,
+					1200.0,
 					1.0,
 					5.0,
 					1.5,
@@ -200,8 +201,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					"",
 					MY_CSW_HEGRENADE,
 					BLACK,
-					500.0,
-					3000.0,
+					250.0,
+					1200.0,
 					1.0,
 					5.0,
 					1.5,
@@ -213,8 +214,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					"",
 					MY_CSW_FLASHBANG,
 					BABY_BLUE,
-					500.0,
-					3000.0,
+					250.0,
+					1200.0,
 					1.0,
 					5.0,
 					1.5,
@@ -503,7 +504,7 @@ public CmdStart(id, uc_handle)
 	return FMRES_IGNORED;
 }
 
-public sh_round_end(){
+public sh_round_new(){
 
 	remove_entity_name(SH_CUSTOM_GRENADE_CLASSNAME)
 
@@ -586,11 +587,11 @@ launch_custom_grenade(id,sh_grenade_type:the_type)
 
 switch_grenade_animation_on_player(id,cs_grenade_throw)
 
-new Float: Origin[3], Float: Velocity[3], Float: vAngle[3], Ent
+static Float:Origin[3], Float:Velocity[3], Float:user_vel[3], Float:vAngle[3], Ent
 
 pev(id,  pev_origin , Origin)
 pev(id,  pev_v_angle, vAngle)
-
+pev(id, pev_velocity, user_vel)
 
 Ent = create_entity("info_target")
 
@@ -602,8 +603,8 @@ my_entity_set_model(Ent, sh_grenade_structs_arr[the_type][sh_grenade_modelname])
 
 
 
-new Float:MinBox[3] = {-1.0, -1.0, -1.0}
-new Float:MaxBox[3] = {1.0, 1.0, 1.0}
+static Float:MinBox[3] = {-1.0, -1.0, -1.0}
+static Float:MaxBox[3] = {1.0, 1.0, 1.0}
 set_pev(Ent, pev_mins, MinBox)
 set_pev(Ent, pev_maxs, MaxBox)
 
@@ -631,6 +632,8 @@ velocity_by_aim(id, floatround(
 				sh_grenade_structs_arr[the_type][sh_grenade_throw_speed]*
 				(curr_charge[id]/sh_grenade_structs_arr[the_type][max_charge_time])),
 				Velocity)
+
+add_3d_vectors(Velocity,user_vel,Velocity)
 
 set_pev(Ent, pev_velocity ,Velocity)
 
