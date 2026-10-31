@@ -266,9 +266,14 @@ sprites/rifle_smoke2.spr
 sprites/rifle_smoke3.spr
 models/hgibs.mdl
 models/agibs.mdl
-models/metalplategibs_green.mdl
-models/woodgibs.mdl
-models/glassgibs.mdl
+models/rockgibs.mdl
+sprites/glow02.spr
+models/pred_plant.mdl
+sprites/ikgrass1.spr
+sprites/ikgrass3.spr
+models/skeleton.mdl
+models/abone_template1.mdl
+sprites/ikgrass2.spr
 models/w_squeak.mdl
 models/shmod/ksun/ksun_rifle/v_r5rifle.mdl
 models/shmod/ksun/ksun_rifle/p_r5rifle.mdl
@@ -283,6 +288,7 @@ models/shmod/jaqueo/weapons/scout/v_cool_scout.mdl
 models/shmod/jaqueo/weapons/scout/p_cool_scout.mdl
 models/shmod/v_halounem4a1.mdl
 models/shmod/p_halounem4a1.mdl
+models/shmod/deagle.mdl
 models/shmod/swatm4/v_m4a1.mdl
 models/shmod/swatm4/p_m4a1.mdl
 models/shmod/swat_v_knife.mdl

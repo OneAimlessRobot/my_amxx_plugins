@@ -342,13 +342,6 @@ public plugin_precache(){
 public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
-	if(mode==SH_HERO_ADD){
-
-		sh_chat_message(id,gHeroID,"Warning: Any firearms you carry will get destroyed in the start of the next round")
-
-
-	}
-
 	cancel_sablina_strike(id)
 
 

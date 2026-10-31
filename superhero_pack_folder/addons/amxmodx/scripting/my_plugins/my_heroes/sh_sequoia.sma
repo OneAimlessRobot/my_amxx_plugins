@@ -28,19 +28,8 @@
 #include "../my_include/my_author_header.inc"
 
 #define PLUGIN_NAME "Superhero Sequoia"
-#define PLUGIN_VERSION "0.99prerelease"
+#define PLUGIN_VERSION "1.0release"
 
-#define SEQUOIA_START_ANGLE ((45.0))
-#define SEQUOIA_BEAM_THINK_PERIOD 0.1
-#define SEQUOIA_ACTIVE_TASK_TIME_PERIOD 0.1
-#define SEQUOIA_PASSIVE_TASK_TIME_PERIOD 1.0
-#define SEQUOIA_SWEEP_TIME 5.0
-
-#define SEQUOIA_ANGLE_LINEAR_INC ((SEQUOIA_START_ANGLE/SEQUOIA_SWEEP_TIME)*SEQUOIA_BEAM_THINK_PERIOD)
-
-#define SEQUOIA_BEAM_TERMINAL_ENT_CLASS "sequoia_terminal"
-
-#define HYDROCVTTR_CHARGING_SOUND "shmod/flora/fields/field_charging.wav"
 
 new HYDROCVTTR_wpn_id
 new dmg_source_name_short_HYDROCVTTR[SAFE_BUFFER_SIZE+1]="HYDROCVTTR"
@@ -50,10 +39,6 @@ new ANNIHILATION_wpn_id
 new dmg_source_name_short_ANNIHILATION[SAFE_BUFFER_SIZE+1]="ANNIHILATION"
 new dmg_source_name_log_ANNIHILATION[SAFE_BUFFER_SIZE+1]="ANNIHILATION"
 
-
-#define SEQUOIA_HEALTHCAP 30.0
-#define SEQUOIA_HEALTHCAP_INT_VERSION 30
-
 stock const gHeroName[] = "Sequoia"
 
 static const DEBUG = 0
@@ -61,17 +46,10 @@ static const DEBUG = 0
 new user_is_keydown_mask = 0,
     user_is_inattack = 0,
     user_attack_ready = 0,
-    user_floating_mode_on = 0
+    user_floating_mode_on = 0,
+    user_is_mouse_one = 0,
+    user_is_mouse_two = 0
 
-enum attack_phase{
-
-    none,
-    select,
-    aim,
-    COAGULATION,
-    ANNIHILATION
-
-}
 
 new const attack_phase_names[attack_phase][128]={
     "N/A",
@@ -82,7 +60,8 @@ new const attack_phase_names[attack_phase][128]={
 
 }
 new Float:g_sequoia_look_direction[SH_MAXSLOTS+1][3],
-        g_sequoia_current_aimed_at_player[SH_MAXSLOTS+1]
+        g_sequoia_current_aimed_at_player[SH_MAXSLOTS+1],
+        g_sequoia_spamming_left[SH_MAXSLOTS+1]
 
 new attack_phase:g_sequoia_attack_phase[SH_MAXSLOTS+1]
 new Float:g_sequoia_damage_battery[SH_MAXSLOTS+1]
@@ -110,14 +89,17 @@ new pcvar_sequoia_gravity,
     pcvar_max_charge_rate,
     pcvar_sweep_min_radius,
     pcvar_sweep_max_radius,
-    pcvar_sequoia_endeavour_hp
+    pcvar_sequoia_endeavour_hp,
+    pcvar_post_attack_stun_time,
+    pcvar_post_attack_stun_movespeed
 
     
 
 new Sequoia_hudsync
 
-new SABLINA_PASSIVE_TASKID = -1,
-    SABLINA_ACTIVE_TASKID = -1
+new SEQUOIA_PASSIVE_TASKID = -1,
+    SEQUOIA_ACTIVE_TASKID = -1,
+    SEQUOIA_SPAM_TASKID = -1
 
 public plugin_init(){
 
@@ -156,6 +138,10 @@ public plugin_init(){
     pcvar_sweep_min_radius = create_cvar("sequoia_sweep_mix_radius", "250.0")
 
     pcvar_sweep_max_radius = create_cvar("sequoia_sweep_max_radius", "700.0")
+
+    pcvar_post_attack_stun_time = create_cvar("sequoia_post_attack_stun_time", "10.0")
+
+    pcvar_post_attack_stun_movespeed = create_cvar("sequoia_post_attack_stun_movespeed", "100.0")
 
     gHeroID=shCreateHero(gHeroName, "Water probe!", "Summon HYDROCVTTR! A devastating water attack. Become ethereal as well...", true, "sequoia_level" )
 
@@ -197,12 +183,14 @@ public plugin_init(){
                                 0)
 
 
-    SABLINA_PASSIVE_TASKID = allocate_typed_task_id(generic_task)
+    SEQUOIA_PASSIVE_TASKID = allocate_typed_task_id(generic_task)
 
-    SABLINA_ACTIVE_TASKID = allocate_typed_task_id(generic_task)
+    SEQUOIA_ACTIVE_TASKID = allocate_typed_task_id(generic_task)
 
-    set_task( SEQUOIA_PASSIVE_TASK_TIME_PERIOD, "sequoia_passive_loop", SABLINA_PASSIVE_TASKID, _, _, "b")
-    set_task( SEQUOIA_ACTIVE_TASK_TIME_PERIOD, "sequoia_active_loop", SABLINA_ACTIVE_TASKID, _, _, "b")
+    SEQUOIA_SPAM_TASKID = allocate_typed_task_id(player_task)
+
+    set_task( SEQUOIA_PASSIVE_TASK_TIME_PERIOD, "sequoia_passive_loop", SEQUOIA_PASSIVE_TASKID, _, _, "b")
+    set_task( SEQUOIA_ACTIVE_TASK_TIME_PERIOD, "sequoia_active_loop", SEQUOIA_ACTIVE_TASKID, _, _, "b")
 
 
 
@@ -216,7 +204,7 @@ bool:sequoia_user_target_is_valid(id,the_player_to_evaluate){
 
     if(is_user_alive(the_player_to_evaluate)){
         
-        if(!sh_clients_are_same_team(the_player_to_evaluate,id)&&can_see_fm(id, the_player_to_evaluate)){
+        if(!sh_clients_are_same_team(the_player_to_evaluate,id)&&can_see_fm(id, the_player_to_evaluate)&&(the_player_to_evaluate!=id)){
 
             return true
         }
@@ -329,7 +317,7 @@ regulate_user_float(id){
 
         set_user_gravity(id,0.01)
 
-        set_user_maxspeed_controlled(id, 0.0,true, false)
+        set_user_maxspeed_controlled(id, 0.3,true, false)
         return
     }
 }
@@ -338,8 +326,28 @@ remove_user_float(id){
     if(is_user_alive(id)&&Get_BitVar(user_floating_mode_on,id)){
 
         sh_reset_min_gravity(id)
-        sh_reset_max_speed(id)
+        if(!sh_get_stun(id)){
+            sh_reset_max_speed(id)
+        }
         Assign_BitVar(user_floating_mode_on,id, false_for_macro)
+    }
+}
+set_user_spam(id){
+
+    g_sequoia_spamming_left[id]=floatround(SPAM_NUM_TIMES)
+    sequoia_spam_task(id+SEQUOIA_SPAM_TASKID)
+}
+
+stop_user_spam(id){
+
+    if(client_is_within_range(id)){
+        
+        if(task_exists(id+SEQUOIA_SPAM_TASKID)){
+            
+            g_sequoia_spamming_left[id] = 0
+            remove_task(id+SEQUOIA_SPAM_TASKID)
+        }
+
     }
 }
 //----------------------------------------------------------------------------------------------
@@ -368,17 +376,19 @@ public sequoia_active_loop(taskid)
 
 
         if((g_sequoia_attack_phase[id]<COAGULATION)){
-                
-            if(floatround(stamina_inc_to_use)>0){
+            
+            if(!sh_get_stun(id)&&!Get_BitVar(user_is_inattack,id)){
+                if(floatround(stamina_inc_to_use)>0){
 
-                g_sequoia_damage_stamina[id] += stamina_inc_to_use
-            
-            }
-            else{
+                    g_sequoia_damage_stamina[id] += stamina_inc_to_use
                 
-            
-                Assign_BitVar(user_attack_ready,id, true_for_macro)
-            
+                }
+                else{
+                    
+                
+                    Assign_BitVar(user_attack_ready,id, true_for_macro)
+                
+                }
             }
 
             if(g_sequoia_attack_phase[id]<=none){
@@ -386,9 +396,14 @@ public sequoia_active_loop(taskid)
             }
             
             if(!sequoia_user_target_is_valid(id,g_sequoia_current_aimed_at_player[id])){
+                new bool:result = do_player_iteration(id);
                 
-                g_sequoia_attack_phase[id] = none
-                continue
+                if(!result){
+                    
+                    g_sequoia_attack_phase[id] = none
+                    continue
+
+                }
             
             }
             point_player_towards_other_player(id,g_sequoia_current_aimed_at_player[id])
@@ -440,6 +455,36 @@ public sequoia_active_loop(taskid)
 
 
     }
+}
+
+public sequoia_spam_task(taskid){
+
+    new id = taskid - SEQUOIA_SPAM_TASKID
+
+    if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)){
+
+        return
+    }
+
+    if(g_sequoia_spamming_left[id]<=0){
+
+        return
+    }
+    static spam_buff[512]
+
+    formatex(spam_buff,charsmax(spam_buff),"%s",attack_phase_names[ANNIHILATION])
+
+    for(new i = 0; i< SPAM_SUBLOOP_TIMES; i++){
+        
+        set_dhudmessage(LineColors[RED][0],LineColors[RED][1],LineColors[RED][2],generate_float(-0.99,0.99),generate_float(-0.99,0.99),
+                        1,SPAM_LINGER,SPAM_LINGER,0.1,SPAM_LINGER)
+        //ShowSyncHudMsg(id, Sequoia_hudsync_for_spam,"%s",spam_buff)
+        show_dhudmessage(id, "%s",spam_buff)
+
+    }
+    g_sequoia_spamming_left[id]--
+    set_task(SPAM_PERIOD,"sequoia_spam_task",taskid)
+
 }
 //----------------------------------------------------------------------------------------------
 public sequoia_passive_loop(taskid)
@@ -506,8 +551,8 @@ public sequoia_passive_loop(taskid)
                 g_sequoia_display_cooldown[id] -= min_macro(SEQUOIA_PASSIVE_TASK_TIME_PERIOD,g_sequoia_display_cooldown[id])
             }
 
-
-            formatex(print_buff,charsmax(print_buff),"[SH] %s info hud:^nAttack phase: %s^nCurrent cooldown: %0.2f^nCurrent charge: %0.2f^nCurrent stamina: %0.2f^nAttack ready? %s^nIn attack? %s^nFloating mode: %s^n",
+            (DEBUG?
+                    (formatex(print_buff,charsmax(print_buff),"[SH] %s info hud:^nAttack phase: %s^nCurrent cooldown: %0.2f^nCurrent charge: %0.2f^nCurrent stamina: %0.2f^nAttack ready? %s^nIn attack? %s^nFloating mode: %s^n",
                                             gHeroName,
                                             attack_phase_names[g_sequoia_attack_phase[id]],
                                             g_sequoia_display_cooldown[id],
@@ -515,8 +560,15 @@ public sequoia_passive_loop(taskid)
                                             g_sequoia_damage_stamina[id],
                                             Get_BitVar(user_attack_ready,id)?"Yes!":"No...",
                                             Get_BitVar(user_is_inattack,id)?"Yes!":"No...",
-                                            Get_BitVar(user_floating_mode_on, id)?"Yes!":"No...")
+                                            Get_BitVar(user_floating_mode_on, id)?"Yes!":"No..."))
 
+                                        :
+
+                    (formatex(print_buff,charsmax(print_buff),"[SH] %s info hud:^nAttack phase: %s^nCurrent cooldown: %0.2f^nAttack ready? %s^n",
+                                            gHeroName,
+                                            attack_phase_names[g_sequoia_attack_phase[id]],
+                                            g_sequoia_display_cooldown[id],
+                                            Get_BitVar(user_attack_ready,id)?"Yes!":"No...")))
 
 
             set_hudmessage(LineColors[CHUCKY_BLUE][0],LineColors[CHUCKY_BLUE][1],LineColors[CHUCKY_BLUE][2],0.0,0.35,0,0.0,SEQUOIA_PASSIVE_TASK_TIME_PERIOD,0.0,0.0,-1,255)
@@ -525,6 +577,10 @@ public sequoia_passive_loop(taskid)
 
         }
 
+        if(g_sequoia_attack_phase[id]==COAGULATION){
+
+            make_shockwave(g_sequoia_charging_origin[id],250.0,LineColors[CHUCKY_BLUE],60,10,6,255)
+        }
 
 
 
@@ -559,7 +615,7 @@ public fw_Sequoia_aim_button(id, uc_handle)
     }
 
     static button; button = get_uc(uc_handle, UC_Buttons);
-    static bool:remove_buttons_from_mask = false
+    static bool:remove_buttons_from_mask; remove_buttons_from_mask = false
 
     if(!Get_BitVar(user_is_keydown_mask,id)){
 
@@ -579,48 +635,74 @@ public fw_Sequoia_aim_button(id, uc_handle)
     }
 
     static prev_button; prev_button = entity_get_int(id, EV_INT_oldbuttons)
-
+    static mask_to_take_off = 0 ; mask_to_take_off = 0
     if((button & IN_ATTACK) && (!(prev_button & IN_ATTACK)) && (g_sequoia_attack_phase[id]==select))
-    {
-        do_player_iteration(id)
+    {   
+        mask_to_take_off |= (IN_ATTACK)
         remove_buttons_from_mask = true
-        
+        if(!Get_BitVar(user_is_mouse_one,id)){
+            Assign_BitVar(user_is_mouse_one,id,true_for_macro)
+            do_player_iteration(id)
+        }
+    }
+    else{
+
+
+        Assign_BitVar(user_is_mouse_one, id, false_for_macro)
     }
     if((button & IN_ATTACK2) && (!(prev_button & IN_ATTACK2)))
     {
 
-        switch(g_sequoia_attack_phase[id]){
-            case(select):{
-                if(sequoia_user_target_is_valid(id,g_sequoia_current_aimed_at_player[id])){
-                    g_sequoia_attack_phase[id]=aim
+        mask_to_take_off |= (IN_ATTACK2)
+        remove_buttons_from_mask = true
+
+        if(!Get_BitVar(user_is_mouse_two,id)){
+
+            Assign_BitVar(user_is_mouse_two,id, true_for_macro)
+
+            switch(g_sequoia_attack_phase[id]){
+                case(select):{
+                    if(sequoia_user_target_is_valid(id,g_sequoia_current_aimed_at_player[id])){
+                        g_sequoia_attack_phase[id]=aim
+                    }
                 }
-            }
-            case(aim):{
-                
-                emit_sound(id, CHAN_ITEM, HYDROCVTTR_CHARGING_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+                case(aim):{
 
 
-                g_sequoia_attack_phase[id]=COAGULATION
+                    emit_sound(id, CHAN_AUTO,HYDROCVTTR_WINDUP_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+
+                    emit_sound(id, CHAN_ITEM, HYDROCVTTR_CHARGING_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 
 
-            }
-            default:{
-                
-                if(g_sequoia_damage_battery[id] >= cvar_val(float, pcvar_min_damage_battery)){
-                
-                
-                    g_sequoia_attack_phase[id]=ANNIHILATION
-                
+                    g_sequoia_attack_phase[id]=COAGULATION
+
+
                 }
+                default:{
+                    
+                    if(g_sequoia_damage_battery[id] >= cvar_val(float, pcvar_min_damage_battery)){
+                    
+                        
+                        sequoia_delete_charging_sound(id)
+                        g_sequoia_attack_phase[id]=ANNIHILATION
+                    
+                    }
 
+                }
             }
         }
-
-        remove_buttons_from_mask = true
         
     }
-    if(remove_buttons_from_mask){
+    else{
 
+
+        Assign_BitVar(user_is_mouse_two, id, false_for_macro)
+    }
+    if(remove_buttons_from_mask){
+        
+        button &= (~(mask_to_take_off))
+
+        set_uc(uc_handle,UC_Buttons,button)
         return FMRES_SUPERCEDE
     }
     return FMRES_IGNORED
@@ -647,14 +729,7 @@ player_iterator_next(owner_id,curr_iter_player=-1){
 bool:do_player_iteration(id){
 
 
-    do{
-            
-
-        g_sequoia_current_aimed_at_player[id] = player_iterator_next(id,g_sequoia_current_aimed_at_player[id])
-    
-
-    }
-    while((g_sequoia_current_aimed_at_player[id]==id));
+    g_sequoia_current_aimed_at_player[id] = player_iterator_next(id,g_sequoia_current_aimed_at_player[id])
     
     return is_user_alive(g_sequoia_current_aimed_at_player[id])?true:false;
 }
@@ -737,12 +812,6 @@ public sequoia_no_instant_kill(this, inflictor, attacker, Float:damage, damagebi
 public sh_hero_init(id, heroID, sh_init_mode:mode){
     if(heroID!=gHeroID) return
 
-    if(mode==SH_HERO_ADD){
-
-        sh_chat_message(id,gHeroID,"Warning: Any firearms you carry will get destroyed in the start of the next round")
-
-
-    }
     reset_sequoia(id)
 
 }
@@ -764,7 +833,7 @@ sequoia_delete_charging_sound(id){
 
 	if(is_user_connected(id)){
 		emit_sound(id, CHAN_ITEM, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-		emit_sound(id, CHAN_ITEM, HYDROCVTTR_CHARGING_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
+		emit_sound(id, CHAN_ITEM, HYDROCVTTR_WINDUP_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 	}
 }
 
@@ -772,7 +841,12 @@ public plugin_precache(){
 
     engfunc(EngFunc_PrecacheModel, SPHERE_MODEL)
 
-    engfunc(EngFunc_PrecacheSound,HYDROCVTTR_CHARGING_SOUND)
+    engfunc(EngFunc_PrecacheSound, HYDROCVTTR_CHARGING_SOUND)
+
+    engfunc(EngFunc_PrecacheSound, HYDROCVTTR_TORRENT_PULSE_SOUND)
+
+    engfunc(EngFunc_PrecacheSound, HYDROCVTTR_WINDUP_SOUND)
+
 
 }
 sequoia_summon_beam(id){
@@ -816,7 +890,8 @@ sequoia_summon_beam(id){
     entity_set_vector( id, EV_VEC_v_angle, g_sequoia_look_direction[id] )
     entity_set_int( id, EV_INT_fixangle, 1 )
 
-
+     
+    set_user_spam(id)
     entity_set_float(ent_id,EV_FL_nextthink,get_gametime()+SEQUOIA_BEAM_THINK_PERIOD)
 
 }
@@ -871,7 +946,7 @@ public sequoia_beam_terminal_think(ent_id){
     curr_charging_inc = get_user_charge_dec(owner)*(SEQUOIA_BEAM_THINK_PERIOD)
 
     
-    static Float:the_damage,Float:stored_damage, Float:the_radius
+    static Float:the_damage,Float:dumped_battery, Float:the_radius
 
     the_damage = min_macro(get_user_sweep_damage(owner), g_sequoia_damage_battery[owner] )*(SEQUOIA_BEAM_THINK_PERIOD)
 
@@ -881,14 +956,25 @@ public sequoia_beam_terminal_think(ent_id){
 
         return PLUGIN_CONTINUE
     }
-    explosion(gHeroID,ent_id,the_radius,the_damage,10.0,1,1,_,
-                        (explosion_sfx_show_shockwave|explosion_sfx_show_burn_decal|explosion_sfx_show_shockwave|explosion_sfx_show_fireball),
-                        CHUCKY_BLUE,_,HYDROCVTTR_wpn_id)
 
-    
+    if(is_held){
+        explosion(gHeroID,ent_id,the_radius,the_damage,10.0,1,1,_,
+                        /*(explosion_sfx_show_shockwave|explosion_sfx_show_burn_decal|explosion_sfx_show_shockwave|explosion_sfx_show_fireball),*/
+                        (explosion_sfx_show_shockwave|explosion_sfx_show_custom_sound),
+                        CHUCKY_BLUE,HYDROCVTTR_TORRENT_PULSE_SOUND,HYDROCVTTR_wpn_id)
+        explosion_custom_entity(ent_id,the_radius,the_damage,"func_breakable",10.0,enum_zero)
+
+    }
+    else{
+        explosion_with_origin(gHeroID,owner,aim_dest_coords,the_radius,the_damage,10.0,1,1,_,
+                        /*(explosion_sfx_show_shockwave|explosion_sfx_show_burn_decal|explosion_sfx_show_shockwave|explosion_sfx_show_fireball),*/
+                        (explosion_sfx_show_shockwave|explosion_sfx_show_burn_decal|explosion_sfx_show_fireball),
+                        CHUCKY_BLUE,HYDROCVTTR_wpn_id)
+        explosion_custom_entity_with_origin(owner,aim_dest_coords,the_radius,the_damage,"func_breakable",10.0,enum_zero)
+    }
+    emit_sound(owner,CHAN_VOICE,HYDROCVTTR_TORRENT_PULSE_SOUND,VOL_NORM,ATTN_STATIC,0,PITCH_HIGH)
 
 
-    explosion_custom_entity(ent_id,the_radius,the_damage,"func_breakable",10.0,enum_zero)
     
     if(!is_valid_ent(ent_id)){
 
@@ -914,6 +1000,9 @@ public sequoia_beam_terminal_think(ent_id){
 
         return PLUGIN_CONTINUE
     }
+
+    dumped_battery = entity_get_float(ent_id,EV_FL_fuser1)
+
     if(is_held){
 
         g_sequoia_look_direction[owner][0] -=  SEQUOIA_ANGLE_LINEAR_INC
@@ -921,8 +1010,7 @@ public sequoia_beam_terminal_think(ent_id){
         g_sequoia_damage_battery[owner] -= (curr_charging_inc)
 
         //lets store the damage we output before the beam ends
-        stored_damage = entity_get_float(ent_id,EV_FL_fuser1)
-        entity_set_float(ent_id,EV_FL_fuser1,stored_damage + the_damage)
+        entity_set_float(ent_id,EV_FL_fuser1, dumped_battery + (curr_charging_inc))
 
         client_print(owner,print_center,"[SH] %s: %s charge: %0.2f",gHeroName,dmg_source_name_short_HYDROCVTTR,(g_sequoia_damage_battery[owner]/max_charge)*100.0)
 
@@ -932,20 +1020,21 @@ public sequoia_beam_terminal_think(ent_id){
     }
     else{
 
-        stored_damage = entity_get_float(ent_id,EV_FL_fuser1)
-
-        new Float:the_percentage = max_macro(0.1,(stored_damage/cvar_val(float, pcvar_max_damage_battery)))
+        new Float:the_percentage = max_macro(0.1,(dumped_battery/cvar_val(float, pcvar_max_damage_battery)))
 
         new the_health_to_take_away = max_macro(1, floatround(entity_get_float(owner,EV_FL_health) * clamp_macro(the_percentage, 0.2, 0.78)))
 
+        if(DEBUG){
 
+            sh_chat_message(owner,gHeroID,"Dumped battery: %0.2f", dumped_battery)
+        }
         sh_extra_damage(owner,owner,the_health_to_take_away,
                         _,_,_,_,_,
                         SH_NEW_DMG_DRAIN,
                         ANNIHILATION_wpn_id)
 
         remove_entity(ent_id)
-        reset_sequoia(owner)
+        reset_sequoia(owner,true,_,true)
     }
     return PLUGIN_CONTINUE;
 
@@ -1021,6 +1110,7 @@ clean_sequoia_slate(){
     arrayset(g_sequoia_attack_phase,none,sizeof(g_sequoia_attack_phase))
     arrayset(g_sequoia_current_aimed_at_player,-1,sizeof(g_sequoia_current_aimed_at_player))
     arrayset(g_sequoia_damage_battery,0.0,sizeof(g_sequoia_damage_battery))
+    arrayset(g_sequoia_spamming_left,0,sizeof(g_sequoia_spamming_left))
 
     user_is_keydown_mask = 0
 
@@ -1069,7 +1159,7 @@ public sh_client_death(id)
 	
 }
 
-reset_sequoia(id,bool:reset_stamina=false, bool:reset_floating_mode=true){
+reset_sequoia(id,bool:reset_stamina=false, bool:reset_floating_mode=true, bool:stun_user=false){
     if(!client_is_within_range(id)){
         return
     }
@@ -1086,12 +1176,28 @@ reset_sequoia(id,bool:reset_stamina=false, bool:reset_floating_mode=true){
         remove_user_float(id)
     }
     g_sequoia_current_aimed_at_player[id] = -1
+
+    g_sequoia_spamming_left[id] = 0
     g_sequoia_attack_phase[id] = none
     g_sequoia_damage_battery[id] = 0.0
     if(reset_stamina){
         g_sequoia_damage_stamina[id] = 0.0
     }
+    if(stun_user && !sh_get_stun(id)){
 
+        new Float:stun_time = cvar_val(float, pcvar_post_attack_stun_time),
+                Float:stun_movespeed = cvar_val(float, pcvar_post_attack_stun_movespeed)
+        
+        set_damage_icon(id,1,
+            DMG_ICON_DROWN,
+            LineColors[FX_STUN],
+            stun_time)
+        
+        sh_set_stun(id,stun_time,stun_movespeed)
+
+
+    }
+    stop_user_spam(id)
     sequoia_delete_charging_sound(id)
 }
 

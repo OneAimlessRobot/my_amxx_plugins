@@ -118,6 +118,8 @@ shmod/sablina/sablina_light_attack.wav
 shmod/sablina/sablina_heavy_attack.wav
 shmod/sablina/sablina_attack_hit.wav
 shmod/flora/fields/field_charging.wav
+shmod/sequoia/beam/beam_water_torrent_sound_micro_pulse.wav
+shmod/sequoia/beam/beam_water_torrent_sound_windup.wav
 shmod/ion/radio_draw.wav
 shmod/ion/radio_use.wav
 shmod/ion/beacon_set.wav
@@ -385,6 +387,7 @@ debris/glass2.wav
 debris/glass3.wav
 items/flashlight1.wav
 common/bodysplat.wav
+player/pl_pain2.wav
 player/pl_pain4.wav
 player/pl_pain5.wav
 player/pl_pain6.wav
@@ -399,10 +402,13 @@ weapons/ric5.wav
 weapons/ric_metal-1.wav
 weapons/ric_metal-2.wav
 weapons/ric_conc-2.wav
-debris/bustcrate1.wav
-debris/bustcrate2.wav
-debris/bustglass1.wav
-debris/bustglass2.wav
+debris/bustconcrete1.wav
+debris/bustconcrete2.wav
+debris/concrete1.wav
+debris/concrete2.wav
+debris/concrete3.wav
+ambience/thunder_clap.wav
+ambience/rain.wav
 squeek/sqk_blast1.wav
 squeek/sqk_die1.wav
 squeek/sqk_hunt1.wav

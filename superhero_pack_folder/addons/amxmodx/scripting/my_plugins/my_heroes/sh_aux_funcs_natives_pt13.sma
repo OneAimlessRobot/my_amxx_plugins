@@ -215,9 +215,11 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_h
 	
 	return the_return_value
 }
-public strip_all_player_weapons(taskid){
+public strip_all_player_weapons(array[1],taskid){
 
 	new id =  taskid - REMOVE_WEAPONS_TASKID
+	
+	new bool:round_ended_or_spawn = bool:array[0]
 	
 	static the_weapons[32],
 			wpn_num,
@@ -242,7 +244,7 @@ public strip_all_player_weapons(taskid){
 
 	}
 	if(dropped_this_person_weapons){
-		sh_chat_message(id,-1,"The round has ended. ethereal heroes cannot use any firearms. They get destroyed")
+		sh_chat_message(id,-1,"[SH Ethereal heroes] %s. ethereal heroes cannot use any firearms. They get destroyed", round_ended_or_spawn?"The round has ended":"You have just spawned")
 	}
 	
 }
@@ -267,7 +269,9 @@ public sh_round_start(){
 		if(task_exists(id + REMOVE_WEAPONS_TASKID)){
 			remove_task(id + REMOVE_WEAPONS_TASKID)
 		}
-		strip_all_player_weapons(id + REMOVE_WEAPONS_TASKID)
+		new array[1];
+		array[0] = true
+		strip_all_player_weapons(array,id + REMOVE_WEAPONS_TASKID)
 	}
 }
 
@@ -288,7 +292,9 @@ public sh_client_spawn(id,bool:newRound){
 	if(task_exists(id + REMOVE_WEAPONS_TASKID)){
 		remove_task(id + REMOVE_WEAPONS_TASKID)
 	}
-	set_task(5.0, "strip_all_player_weapons",id + REMOVE_WEAPONS_TASKID)
+	new array[1];
+	array[0] = false
+	set_task(5.0, "strip_all_player_weapons",id + REMOVE_WEAPONS_TASKID,array,1)
 
 }
 public fw_Ethereal_unnarmed(id, uc_handle)

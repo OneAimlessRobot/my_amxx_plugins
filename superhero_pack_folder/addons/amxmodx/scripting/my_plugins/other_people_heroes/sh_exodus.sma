@@ -225,7 +225,7 @@ public set_grabbed(id, targetid)
 
 	lightning_effect(id, targetid)
 	
-	set_render_with_color_const(targetid,EXODUS_YELLOW,1,16,_,0,1,0.1,_,_,_,PRIO_RENDER_EFFECT_ACTIVE)
+	set_render_with_color_const(targetid,EXODUS_YELLOW,1,16,_,0,1,0.1,_,_,kRenderNormal,PRIO_RENDER_EFFECT_ACTIVE)
 
 	get_user_name(targetid, vicName, 31)
 	get_user_name(id, idName, 31)
@@ -262,7 +262,7 @@ public release(id)
 		}
 		if ( is_user_connected(g_grabbedID[id]) ) {
 			sh_reset_min_gravity(g_grabbedID[id])
-			remove_glow_user(g_grabbedID[id],PRIO_RENDER_EFFECT_ACTIVE)
+			remove_glow_user(g_grabbedID[id],PRIO_RENDER_EFFECT_ACTIVE,16,kRenderNormal)
 		}
 		g_grabbedID[id] = 0
 		g_grabTimer[id] = -1
