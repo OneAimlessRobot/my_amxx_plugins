@@ -920,10 +920,10 @@ stock bool:sh_hull_vacant(id, const Float:origin[3], hullType = HULL_HEAD, &hite
 	engfunc(EngFunc_TraceHull, origin, origin, 0, hullType, id, 0);
 
 	// byref index of what was hit, multiple things may be in hull so may not return what you expect
-	hitent = get_tr2(0, TraceResult:TR_pHit);
+	hitent = get_tr2(0, TR_pHit);
 
 	// Is the origin's hull empty for the hull type
-	if ( !get_tr2(0, TraceResult:TR_StartSolid) && !get_tr2(0, TraceResult:TR_AllSolid) && get_tr2(0, TraceResult:TR_InOpen) )
+	if ( !get_tr2(0, TR_StartSolid) && !get_tr2(0, TR_AllSolid) && get_tr2(0, TR_InOpen) )
 		return true;
 
 	return false;

@@ -12,6 +12,7 @@ blink_delaystuck 0			//Is the user stuck in place during the delay?
 #define I_WANT_CONSTANTS
 #define I_WANT_CUSTOM_COLORS
 #define I_WANT_BASIC_MACROS
+#define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"

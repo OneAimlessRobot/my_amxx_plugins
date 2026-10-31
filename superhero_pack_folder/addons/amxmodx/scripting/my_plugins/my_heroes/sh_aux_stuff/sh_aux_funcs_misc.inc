@@ -221,6 +221,24 @@ stock orient_entity_with_move_vector(ent){
 
 }
 
+stock my_set_user_origin(index, const Float:origin[3]){
+	new Float:mins[3], Float:maxs[3];
+	pev(index, pev_mins, mins);
+	pev(index, pev_maxs, maxs);
+	engfunc(EngFunc_SetSize, index, mins, maxs)
+
+	return engfunc(EngFunc_SetOrigin, index, origin)
+}
+
+stock my_cs_user_spawn(index) {
+	set_pev(index, pev_deadflag, DEAD_RESPAWNABLE);
+	dllfunc(DLLFunc_Spawn, index);
+	set_pev(index, pev_iuser1, 0);
+
+	return 1;
+}
+
+
 /*
 
 	the first parameter is the affected user.
@@ -236,6 +254,7 @@ stock orient_entity_with_move_vector(ent){
 	(def. true)
 
 */
+
 
 stock set_user_maxspeed_controlled(id, Float:the_speed_to_set, bool:penetrate_flags=false, bool:want_max_or_min=true){
 
@@ -286,7 +305,17 @@ stock print_entity_info(id, ent){
 
 
 }
+stock my_user_kill(index, flag = 0) {
+	if (flag) {
+		new Float:frags;
+		pev(index, pev_frags, frags);
+		set_pev(index, pev_frags, ++frags);
+	}
 
+	dllfunc(DLLFunc_ClientKill, index);
+
+	return 1;
+}
 //https://huggingface.co/datasets/RichieBurundi/Amxxprogramer/blob/main/EngFunc_TraceLine%20Explanation.txt
 stock is_wall_between_points(Float:start[3], Float:end[3], Float:hit_end[3], &Float:stored_frac,ignore_ent)
 {

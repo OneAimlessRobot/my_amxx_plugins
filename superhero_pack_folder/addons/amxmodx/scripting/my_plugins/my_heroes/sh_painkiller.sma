@@ -7,8 +7,10 @@ painkiller_level 0
 painkiller_life 4.0	//The amount of seconds Painkiller will live once his hp reaches 0
 
 */
+#define I_WANT_MISC_FUNCS
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "painkiller_inc/painkiller_inc.inc"
 
@@ -150,7 +152,7 @@ public Painkiller_Death(id)
 		AttackerInfo[id] = 0
 	} else 
 	{
-		user_kill(id)
+		my_user_kill(id)
 		AttackerInfo[id] = 0
 	}
 }

@@ -20,6 +20,7 @@ new dmg_source_name_log_victim_drain_aura[SAFE_BUFFER_SIZE+1]="victim_drain_aura
 
 new g_heroName[]="Victim 15/21"
 
+new already_respawn_died = 0
 new bool:g_vic15PowerUsed[SH_MAXSLOTS+1]
 new CsTeams:g_userTeam[SH_MAXSLOTS+1]
 new Float:g_savedOrigin[SH_MAXSLOTS+1][3]
@@ -91,7 +92,9 @@ public vic15_respawn(parm[])
 	if ( !is_user_connected(id) || is_user_alive(id) ) return
 	if ( g_vic15PowerUsed[id] || !sh_is_inround()) return
 	if ( g_userTeam[id] != cs_get_user_team(id) ) return //prevents respawning spectators
-
+	if(Get_BitVar(already_respawn_died,id)){
+		return
+	}
 	// Double spawn prevents the no HUD glitch
 	//user_spawn(id)
 	//user_spawn(id)
@@ -106,6 +109,7 @@ public sh_round_end()
 {
 	if ( !sh_is_active() ) return
 
+	already_respawn_died = 0
 	// Reset the cooldown on round end, to start fresh for a new round
 	for (new id = 1; id < sh_maxplayers()+1; id++) {
 		if ( sh_get_user_has_hero(id,gHeroID)) {
@@ -143,6 +147,7 @@ public positionChangeTimer(id)
 {
 	if(!sh_hull_vacant(id,g_savedOrigin[id],HULL_HUMAN)){
 		user_kill(id, 1)
+		Assign_BitVar(already_respawn_died,id,true_for_macro)
 		client_print(id, print_chat, "[SH](Victim 15/21) You respawned in a wall")
 	}
 }
@@ -211,6 +216,11 @@ public vic15_ringloop()
 public revival(id)
 {
 	if(is_user_connected(id)){
+
+		if(Get_BitVar(already_respawn_died,id)){
+			sh_chat_message(id,gHeroID,"You already died by respawning in a wall once! You won't be spawned again")
+			return
+		}
 		ExecuteHamB(Ham_Spawn, id) 
 		setScreenFlash(id, 0, 0, 0, 10, 255 )  //Black flash indicating revival
 	}

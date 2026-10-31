@@ -26,6 +26,8 @@ phoenix_maxdamage 90	//Maximum damage dealt spread over radius (Default 90)
 #define I_WANT_CUSTOM_COLORS
 #define I_WANT_RESOURCE_ALIASES
 #define I_WANT_BASIC_MACROS
+
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
@@ -39,6 +41,10 @@ new gPhoenixHudSync
 new bool:g_phoenixPowerUsed[SH_MAXSLOTS+1]
 new CsTeams:g_userTeam[SH_MAXSLOTS+1]
 new Float:g_savedOrigin[SH_MAXSLOTS+1][3]
+
+new PHOENIX_RESPAWN_TASKID = - 1,
+	PHOENIX_COOLDOWN_TASKID = - 1;
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -57,6 +63,9 @@ public plugin_init()
 	sh_assign_hero_bit(gHeroID,SH_RESPAWN_HERO, true)
 
 	gPhoenixHudSync = CreateHudSyncObj()
+
+	PHOENIX_RESPAWN_TASKID = allocate_typed_task_id(player_task)
+	PHOENIX_COOLDOWN_TASKID = allocate_typed_task_id(player_task)
 }
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
@@ -85,38 +94,25 @@ public sh_client_death(id)
 		// Respawn it faster then Zues, let this power be used before Zues's
 		// never set higher then 1.9 or lower then 0.5
 		//set_task(0.6, "phoenix_respawn", 0, parm, 1)
-		set_task(0.6, "phoenix_respawn", id, parm, 1)
+		set_task(0.6, "phoenix_respawn", id+PHOENIX_RESPAWN_TASKID, parm, 1)
 	}
 }
 //----------------------------------------------------------------------------------------------
-public phoenix_respawn(parm[])
+public phoenix_respawn(parm[],id)
 {
-	new id = parm[0]
+	id -= PHOENIX_RESPAWN_TASKID
 
 	if ( !is_user_connected(id) || is_user_alive(id) ) return
 	if ( g_phoenixPowerUsed[id] || !sh_is_inround() ) return
 	if ( g_userTeam[id] != cs_get_user_team(id) ) return //prevents respawning spectators
-
-	emit_sound(id, CHAN_STATIC, "ambience/port_suckin1.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
-
-	client_print(id, print_chat, "[SH](Phoenix) You used the Phoenix power to Rise Again from the Ashes!")
 	
-	// Double spawn prevents the no HUD glitch
-	ExecuteHamB(Ham_Spawn, id) 
-	ExecuteHamB(Ham_Spawn, id) 
-
 	// Respawned by Phoenix, it's ok to set cooldown now.
 	new Float:phoenixCooldown = get_cvar_float("phoenix_cooldown")
 	if ( phoenixCooldown > 0.0 ) {
-		set_task(phoenixCooldown, "enable_phoenix", id)
+		set_task(phoenixCooldown, "enable_phoenix", id+PHOENIX_COOLDOWN_TASKID)
 		g_phoenixPowerUsed[id] = true
 	}
 
-	emit_sound(id, CHAN_STATIC, "ambience/3dmeagle.wav", 0.6, ATTN_NORM, 0, PITCH_NORM)
-
-	set_render_with_color_const(id,PHOENIX_RED,1,16,_,0,1,3.0,_,_, kRenderNormal,PRIO_RENDER_POWERUP)
-	
-	sh_set_hp(id, 75)
 	phoenix_teleport(id)
 }
 //----------------------------------------------------------------------------------------------
@@ -134,14 +130,41 @@ public sh_round_end()
 }
 //----------------------------------------------------------------------------------------------
 public enable_phoenix(id)
-{
+{	
+	id -= PHOENIX_COOLDOWN_TASKID
+
 	g_phoenixPowerUsed[id] = false
 }
 //----------------------------------------------------------------------------------------------
 public phoenix_teleport(id)
 {
+
+	positionChangeTimer(id)
+}
+//----------------------------------------------------------------------------------------------
+public positionChangeTimer(id)
+{
+
+
+
+	if(!sh_hull_vacant(id,g_savedOrigin[id],HULL_HUMAN)){
+		user_kill(id, 1)
+		client_print(id, print_chat, "[SH](Phoenix) You weren't spawned for possibly being stuck in a wall")
+		return
+	}
+
+
+	// Double spawn prevents the no HUD glitch
+	ExecuteHamB(Ham_Spawn, id) 
+	ExecuteHamB(Ham_Spawn, id)
+
 	// Teleport the player
 	set_pev(id, pev_origin, g_savedOrigin[id])
+
+	emit_sound(id, CHAN_STATIC, "ambience/port_suckin1.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
+
+	client_print(id, print_chat, "[SH](Phoenix) You used the Phoenix power to Rise Again from the Ashes!")
+
 
 	// Teleport Effects
 	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
@@ -151,17 +174,14 @@ public phoenix_teleport(id)
 	write_coord_f(g_savedOrigin[id][2])
 	message_end()
 
-	positionChangeTimer(id)
+
+	emit_sound(id, CHAN_STATIC, "ambience/3dmeagle.wav", 0.6, ATTN_NORM, 0, PITCH_NORM)
+
+	set_render_with_color_const(id,PHOENIX_RED,1,16,_,0,1,3.0,_,_, kRenderNormal,PRIO_RENDER_POWERUP)
+	
+	sh_set_hp(id, 75)
 
 	BlowUp(id)
-}
-//----------------------------------------------------------------------------------------------
-public positionChangeTimer(id)
-{
-	if(!sh_hull_vacant(id,g_savedOrigin[id],HULL_HUMAN)){
-		user_kill(id, 1)
-		client_print(id, print_chat, "[SH](Phoenix) You were killed for being stuck in a wall")
-	}
 }
 //----------------------------------------------------------------------------------------------
 public BlowUp(id)
