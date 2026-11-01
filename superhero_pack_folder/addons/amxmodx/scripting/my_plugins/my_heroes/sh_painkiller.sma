@@ -146,7 +146,7 @@ public Painkiller_Death(id)
 		set_user_godmode(id,0)
 		sh_extra_damage(id, killer, get_user_health(id)+4,
 						MY_HIT_HEAD,
-						_,_,_,_,_,
+						SH_DMG_KILL,_,_,_,_,
 						custom_dmg_id_painkiller_death)
 
 		AttackerInfo[id] = 0

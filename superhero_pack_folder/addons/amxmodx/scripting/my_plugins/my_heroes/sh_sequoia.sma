@@ -1219,7 +1219,7 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_h
 
     new user_hp = get_user_health(victim);
 
-    if((user_hp >= SEQUOIA_HEALTHCAP_INT_VERSION) && ( damage > SEQUOIA_HEALTHCAP_INT_VERSION) ){
+    if((user_hp >= SEQUOIA_HEALTHCAP_INT_VERSION) && ( damage > SEQUOIA_HEALTHCAP_INT_VERSION) && (dmgMode!= SH_DMG_KILL)){
             
             sequoia_haramball_shield_react_primitive(victim, attacker,float(damage))
 

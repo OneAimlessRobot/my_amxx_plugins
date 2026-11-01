@@ -312,16 +312,12 @@ public knifeburn(args[])
 		burn_effect(id)
 
 		new knifeDmg = get_pcvar_num(CvarKnifeDmg)
-		new hpAfterDmg = get_user_health(id) - knifeDmg
 
-		// Prevents the sh_extra_damage from saying you attacked a teammate for every cycle of the loop
-		if ( hpAfterDmg <= 0 )
-			sh_extra_damage(id, attacker, knifeDmg,
-					_,_,_,_,_,
-					SH_NEW_DMG_FIRE,
-					custom_dmg_id_knifeburn)
-		else
-			sh_set_hp(id, hpAfterDmg)
+
+		sh_extra_damage(id, attacker, knifeDmg,
+				_,_,_,_,_,
+				SH_NEW_DMG_FIRE,
+				custom_dmg_id_knifeburn)
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -368,16 +364,10 @@ public gunburn(args[])
 		burn_effect(id)
 
 		new gunDmg = get_pcvar_num(CvarGunDmg)
-		new hpAfterDmg = get_user_health(id) - gunDmg
-
-		// Prevents the sh_extra_damage from saying you attacked a teammate for every cycle of the loop
-		if ( hpAfterDmg <= 0 )
-			sh_extra_damage(id, attacker, gunDmg,
-					_,_,_,_,_,
-					SH_NEW_DMG_FIRE,
-					custom_dmg_id_gunburn)
-		else
-			sh_set_hp(id, hpAfterDmg)
+		sh_extra_damage(id, attacker, gunDmg,
+				_,_,_,_,_,
+				SH_NEW_DMG_FIRE,
+				custom_dmg_id_gunburn)
 	}
 }
 //----------------------------------------------------------------------------------------------

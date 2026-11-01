@@ -128,7 +128,7 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					1.0,
 					5.0,
 					1.5,
-					3.5},
+					0.9},
 
 	{"shock_grenade",
 					"models/shmod/custom_nades_hackaround/w_flashbang.mdl",
@@ -180,7 +180,7 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					1.0,
 					5.0,
 					1.5,
-					2.6},
+					0.5},
 
 	{"marker_grenade",
 					"models/shmod/custom_nades_hackaround/w_hegrenade.mdl",
@@ -193,7 +193,7 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					1.0,
 					5.0,
 					1.5,
-					4.0},
+					0.5},
 
 	{"conc_grenade",
 					"models/shmod/custom_nades_hackaround/w_hegrenade.mdl",
@@ -219,7 +219,7 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					1.0,
 					5.0,
 					1.5,
-					0.1}
+					0.5}
 
 }
 
