@@ -2490,12 +2490,12 @@ localAddXP(id, xp)
 		if(is_user_bot(id)){
 			if(gPlayerLevel[id]>gBotsMaxLevel){
 			
-				gPlayerLevel[id]=sh_set_user_lvl(id,gBotsMaxLevel)
+				sh_set_user_lvl(id,gBotsMaxLevel)
 				return;
 			}
 			else if(gPlayerLevel[id]<gBotsMinLevel){
 			
-				gPlayerLevel[id]=sh_set_user_lvl(id,gBotsMinLevel)
+				sh_set_user_lvl(id,gBotsMinLevel)
 				return;
 			}
 	
@@ -4838,17 +4838,20 @@ getPlayerLevel(id)
 			break
 		}
 	}
-
-	// Now make sure this level is between the ranges
-	new minLevel = clamp(get_pcvar_num(sh_minlevel), 0, gNumLevels)
-
+	static bool:user_is_bot; user_is_bot = bool:is_user_bot(id)
+	new minLevel = clamp(get_pcvar_num((!user_is_bot)?sh_minlevel:sh_botsminlevel), 0, (!user_is_bot)?gNumLevels:min_macro(gBotsMaxLevel,gNumLevels))
+	
 	if ( newLevel < minLevel && !Get_BitVar(gReadXPNextRoundMask, id) ) {
 		newLevel = minLevel
 		gPlayerXP[id] = gXPLevel[newLevel]
 	}
+	if ( newLevel > gNumLevels ){
+		newLevel = gNumLevels
+	}
 
-	if ( newLevel > gNumLevels ) newLevel = gNumLevels
-
+	if(user_is_bot){
+		localAddXP(id,0)
+	}
 	return newLevel
 }
 //----------------------------------------------------------------------------------------------
