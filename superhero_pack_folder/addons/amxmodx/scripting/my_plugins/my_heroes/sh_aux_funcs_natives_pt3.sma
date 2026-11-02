@@ -56,7 +56,7 @@ public plugin_precache(){
 	precached_explosion_sprite1 = engfunc(EngFunc_PrecacheModel,"sprites/explode1.spr")
 	precached_explosion_sprite2 = engfunc(EngFunc_PrecacheModel,"sprites/shmod/zerogxplode2.spr")
 	
-	engfunc(EngFunc_PrecacheSound, crush_stunned)
+	engfunc(EngFunc_PrecacheSound, GENERIC_EXPLOSION_SFX)
 	engfunc(EngFunc_PrecacheSound, EXPLOSION_TANK_SHOT_SOUND)
 }
 

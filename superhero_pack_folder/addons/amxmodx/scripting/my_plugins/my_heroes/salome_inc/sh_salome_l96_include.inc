@@ -7,7 +7,8 @@
 #define SALOME_PROJECTILE_CLASSNAME "salome_projectile"
 
 
-#define SALOME_L96_SHOTSOUND "weapons/salome_rifle/shoot-1.wav"
+#define SALOME_L96_SHOTSOUND "weapons/salome_rifle/salome_rifle.wav"
+#define SALOME_L96_SHOTSOUN_REVERB "weapons/salome_rifle/shoot-1.wav"
 #define SALOME_L96_WALLHIT_SOUND "weapons/xbow_hit1.wav"
 
 #define SALOME_PROJECTILE_KNOCKBACK 300.0

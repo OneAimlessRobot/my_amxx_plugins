@@ -102,7 +102,7 @@ public bulette_thinque(ent){
 		else{
 			entity_set_int(ent,EV_INT_iuser1,1)
 			entity_set_float(ent,EV_FL_fuser1,0.0)
-			emit_sound(owner, CHAN_WEAPON, SALOME_L96_SHOTSOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+			emit_sound(owner, CHAN_WEAPON, SALOME_L96_SHOTSOUN_REVERB, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 
 		}
 	}
@@ -583,6 +583,7 @@ public plugin_precache()
 
 engfunc(EngFunc_PrecacheModel,"models/grenade.mdl")
 engfunc(EngFunc_PrecacheSound, SALOME_L96_SHOTSOUND)
+engfunc(EngFunc_PrecacheSound, SALOME_L96_SHOTSOUN_REVERB)
 engfunc(EngFunc_PrecacheSound, SALOME_L96_WALLHIT_SOUND)
 
 }

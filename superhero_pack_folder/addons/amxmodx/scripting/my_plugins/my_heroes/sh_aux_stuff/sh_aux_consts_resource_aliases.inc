@@ -5,7 +5,6 @@
 
 
 #define THROWABLE_LAUNCH_SFX "shmod/lara/spear/spear_throw.wav"
-#define CUSTOM_GRENADE_BOUNCE_SOUND "shmod/Teliko/chaff/bounce.wav"
 #define SMOKE_EXPLODE_SOUND "shmod/yakui/rocket.wav"
 #define GLASS_VIAL_BREAK "shmod/erica/molotov/molotov_crack.wav"
 #define GLASS_BREAK_SFX "shmod/Teliko/counter.wav"
@@ -14,6 +13,11 @@
 #define crush_stunned "shmod/Teliko/chaff/chaff_blow.wav"
 #define SUCK_IN_SOUND_FILE_NAME "ambience/particle_suck2.wav"
 #define NULL_SOUND "common/null.wav"
+#define GENERIC_POWER_SHOT_SOUND "shmod/generic_shero_sfx/power_shot_sound.wav"
+#define GENERIC_EXPLOSION_SFX "shmod/generic_shero_sfx/generic_sh_explosion.wav"
+#define GENERIC_MENU_ITERATE_SFX "shmod/generic_shero_sfx/mga_menu_iterate.wav"
+#define GENERIC_MENU_PROMPT_SFX "shmod/generic_shero_sfx/mga_menu_prompt.wav"
+#define GENERIC_MENU_DISMISS_SFX "shmod/generic_shero_sfx/mga_menu_dismiss.wav"
 #define EXPLOSION_TANK_SHOT_SOUND "shmod/a_exm2.wav"
 
 

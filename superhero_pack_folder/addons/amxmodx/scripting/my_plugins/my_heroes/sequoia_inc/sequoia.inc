@@ -27,14 +27,5 @@
 #define SEQUOIA_HEALTHCAP 30.0
 #define SEQUOIA_HEALTHCAP_INT_VERSION 30
 
-enum attack_phase{
-
-    none,
-    select,
-    aim,
-    COAGULATION,
-    ANNIHILATION
-
-}
 
 native sequoia_get_hero_id()

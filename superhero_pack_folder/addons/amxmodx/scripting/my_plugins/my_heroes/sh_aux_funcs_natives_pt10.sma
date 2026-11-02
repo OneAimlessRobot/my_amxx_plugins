@@ -14,6 +14,7 @@
 #include "chikoi_inc/chikoi_inc.inc"
 #include "vegetto_inc/vegetto_inc.inc"
 #include "ksun_inc/ksun_global.inc"
+#include "zatana_inc/zatana.inc"
 #include "sliphantom_inc/sliphantom_inc.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
 #include "shinobu_knife/shinobu_general.inc"
@@ -32,7 +33,8 @@ new gHeroID_Maria = -1,
 	gHeroID_ksun = -1,
 	gHeroID_Chikoi = -1,
 	gHeroID_Sablina = -1,
-	gHeroID_Sequoia = -1
+	gHeroID_Sequoia = -1,
+	gHeroID_Zatana = -1
 
 #define COMPLAIN_SENTENCE_SIZE 128
 
@@ -86,6 +88,8 @@ public plugin_cfg(){
 
 	gHeroID_Sequoia = sequoia_get_hero_id()
 
+	gHeroID_Zatana = zatana_get_hero_id()
+
 	//these two really dont get along
 	
 	push_incompatibility_pair(gHeroID_Goku,gHeroID_Shinobu, "Goku: ^"I dont fw parasites^"")
@@ -119,6 +123,8 @@ public plugin_cfg(){
 	push_incompatibility_pair(gHeroID_Sablina, gHeroID_Maria, "Maria: ^"She is waaaay too lax. I dont trust her...^"")
 
 	push_incompatibility_pair(gHeroID_Sequoia, gHeroID_Maria, "Maria: ^"She looks sad...^"")
+
+	push_incompatibility_pair(gHeroID_Zatana, gHeroID_Maria, "Maria: ^"Stop smirking! No one said anything funny, yet...^"")
 
 	
 

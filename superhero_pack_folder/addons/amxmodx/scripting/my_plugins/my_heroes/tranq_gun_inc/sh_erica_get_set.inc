@@ -7,7 +7,7 @@
 #define NAVALHA_P_MODEL  "models/shmod/erica/knife/p_combat_knife.mdl"
 #define TRANQS_P_MODEL  "models/shmod/erica/pistols/p_elite.mdl"
 #define TRANQS_V_MODEL  "models/shmod/erica/pistols/v_elite.mdl"
-#define SILENT_TRANQS_SFX  "shmod/erica/silent_tranq/silent.wav"
+#define SILENT_TRANQS_SFX  "shmod/erica/silent_tranq/mga_soccom_pistol_sound.wav"
 
 
 

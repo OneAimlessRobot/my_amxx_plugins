@@ -6,6 +6,8 @@
 
 #define PIERCE_WOUND_SFX "hornet/ag_hornethit1.wav"
 
+#define WOUND_SFX "shmod/generic_shero_sfx/nasty_blood_sound.wav"
+
 enum fx_bleed_type{
 	BLEED_NONE=0,
   BLEED_MINI,

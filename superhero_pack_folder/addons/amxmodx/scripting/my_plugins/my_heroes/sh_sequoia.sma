@@ -31,6 +31,16 @@
 #define PLUGIN_VERSION "1.0release"
 
 
+enum attack_phase{
+
+    none,
+    select,
+    aim,
+    COAGULATION,
+    ANNIHILATION
+
+}
+
 new HYDROCVTTR_wpn_id
 new dmg_source_name_short_HYDROCVTTR[SAFE_BUFFER_SIZE+1]="HYDROCVTTR"
 new dmg_source_name_log_HYDROCVTTR[SAFE_BUFFER_SIZE+1]="HYDROCVTTR"
@@ -59,6 +69,9 @@ new const attack_phase_names[attack_phase][128]={
     "ANNIHILATION"
 
 }
+
+#define SEQUOIA_SOUND "shmod/sacana/ghostly_acknowledgement.wav"
+
 new Float:g_sequoia_look_direction[SH_MAXSLOTS+1][3],
         g_sequoia_current_aimed_at_player[SH_MAXSLOTS+1],
         g_sequoia_spamming_left[SH_MAXSLOTS+1]
@@ -89,7 +102,7 @@ new pcvar_sequoia_gravity,
     pcvar_max_charge_rate,
     pcvar_sweep_min_radius,
     pcvar_sweep_max_radius,
-    pcvar_sequoia_endeavour_hp,
+    pcvar_endeavour_hp,
     pcvar_post_attack_stun_time,
     pcvar_post_attack_stun_movespeed
 
@@ -109,7 +122,7 @@ public plugin_init(){
 
     pcvar_sequoia_gravity = create_cvar("sequoia_gravity", "0.25")
 
-    pcvar_sequoia_endeavour_hp = create_cvar("sequoia_sequoia_endeavour_hp", "0.25")
+    pcvar_endeavour_hp = create_cvar("sequoia_endeavour_hp", "3.00")
 
     pcvar_sequoia_base_cooldown = create_cvar("sequoia_base_cooldown", "10.0")
 
@@ -664,6 +677,8 @@ public fw_Sequoia_aim_button(id, uc_handle)
                 case(select):{
                     if(sequoia_user_target_is_valid(id,g_sequoia_current_aimed_at_player[id])){
                         g_sequoia_attack_phase[id]=aim
+
+                        emit_sound(id, CHAN_ITEM, SEQUOIA_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
                     }
                 }
                 case(aim):{
@@ -731,7 +746,11 @@ bool:do_player_iteration(id){
 
     g_sequoia_current_aimed_at_player[id] = player_iterator_next(id,g_sequoia_current_aimed_at_player[id])
     
-    return is_user_alive(g_sequoia_current_aimed_at_player[id])?true:false;
+    new bool:result = sequoia_user_target_is_valid(id,g_sequoia_current_aimed_at_player[id])
+    if(result){
+        emit_sound(id, CHAN_ITEM, GENERIC_MENU_PROMPT_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+    }
+    return result
 }
 point_player_towards_other_player(handled_player, target_player){
     static Float:the_raw_carthesian_vector_to_store[3]
@@ -752,7 +771,7 @@ point_player_towards_other_player(handled_player, target_player){
 sequoia_haramball_shield_react_primitive(id,attacker, Float:damage){
 
             
-    set_user_health(id,floatround(cvar_val(float, pcvar_sequoia_endeavour_hp)))
+    set_user_health(id,floatround(cvar_val(float, pcvar_endeavour_hp)))
 
     sh_chat_message(id,gHeroID,"We blocked an instant kill! The damage received would have been: %0.2f",damage)
     
@@ -841,11 +860,17 @@ public plugin_precache(){
 
     engfunc(EngFunc_PrecacheModel, SPHERE_MODEL)
 
+    engfunc(EngFunc_PrecacheSound, SEQUOIA_SOUND)
+
     engfunc(EngFunc_PrecacheSound, HYDROCVTTR_CHARGING_SOUND)
 
     engfunc(EngFunc_PrecacheSound, HYDROCVTTR_TORRENT_PULSE_SOUND)
 
     engfunc(EngFunc_PrecacheSound, HYDROCVTTR_WINDUP_SOUND)
+
+    engfunc(EngFunc_PrecacheSound, GENERIC_MENU_PROMPT_SFX)
+
+    engfunc(EngFunc_PrecacheSound, GENERIC_MENU_DISMISS_SFX)
 
 
 }
@@ -1102,6 +1127,7 @@ public sequoia_kd(id){
     }
     else{
 
+        emit_sound(id, CHAN_ITEM, GENERIC_MENU_DISMISS_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
         reset_sequoia(id,false,true)
     }
 }

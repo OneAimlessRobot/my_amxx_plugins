@@ -94,7 +94,7 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					0.5},
 
 	{"chaff_grenade","models/shmod/custom_nades_hackaround/w_smokegrenade.mdl",
-					crush_stunned,
+					"shmod/custom_grenades/chaff_grenade.wav",
 					"",
 					MY_CSW_SMOKEGRENADE,
 					WHITE,
@@ -171,7 +171,7 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 
 	{"shrapnel_grenade",
 					"models/shmod/custom_nades_hackaround/w_hegrenade.mdl",
-					PIERCE_WOUND_SFX,
+					WOUND_SFX,
 					"",
 					MY_CSW_HEGRENADE,
 					RED,
@@ -197,7 +197,7 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 
 	{"conc_grenade",
 					"models/shmod/custom_nades_hackaround/w_hegrenade.mdl",
-					"",
+					crush_stunned,
 					"",
 					MY_CSW_HEGRENADE,
 					BLACK,

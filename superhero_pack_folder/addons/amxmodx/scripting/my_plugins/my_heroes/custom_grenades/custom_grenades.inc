@@ -5,7 +5,7 @@
 
 
 
-#define CUSTOM_GRENADE_BOUNCE_SOUND "shmod/Teliko/chaff/bounce.wav"
+#define CUSTOM_GRENADE_BOUNCE_SOUND "shmod/custom_grenades/grenade_bounce_sound.wav"
 
 #define SH_CUSTOM_GRENADE_CHARGE_PERIOD 0.1
 

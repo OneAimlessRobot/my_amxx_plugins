@@ -3,6 +3,15 @@
 #endif
 #define sh_aux_natives_pt3
 
+#define DEFAULT_EXPLOSION_SFX_MASK explosion_sfx_show_shockwave| \
+											explosion_sfx_show_fireball| \
+											explosion_sfx_show_smoke| \
+											explosion_sfx_show_burn_decal 
+
+#define DEFAULT_EXPLOSION_SFX_WITH_CUSTOM_GENERIC_SOUND explosion_sfx_show_shockwave| \
+											explosion_sfx_show_fireball| \
+											explosion_sfx_show_smoke| \
+											explosion_sfx_show_burn_decal 
 
 /////////////////////
 //Thantik's he-conc functions
@@ -79,25 +88,19 @@ native explosion(hero_id,ent_id,Float:explosion_radius,
 					ignore_owner=1,
 					set_stun=0,
 					Float:damage_frac_ignore_owner=-1.0,
-					explosion_sfx_flags:sfx_mask=(explosion_sfx_show_shockwave|
-											explosion_sfx_show_fireball|
-											explosion_sfx_show_smoke|
-											explosion_sfx_show_burn_decal),
+					explosion_sfx_flags:sfx_mask=(DEFAULT_EXPLOSION_SFX_MASK),
 					sh_custom_color:color_const=WHITE,
-					const custom_sound_sample[128]=crush_stunned,
+					const custom_sound_sample[128]=GENERIC_EXPLOSION_SFX,
 					custom_weapon_id=-1);
 
 native explosion_custom_entity(ent_id,Float:explosion_radius,
 					Float:peak_power,
 					ent_classname[]="player",
 					Float:optional_force=-1.0,
-					explosion_sfx_flags:sfx_mask=(explosion_sfx_show_shockwave|
-							explosion_sfx_show_fireball|
-							explosion_sfx_show_smoke|
-							explosion_sfx_show_burn_decal),
+					explosion_sfx_flags:sfx_mask=(DEFAULT_EXPLOSION_SFX_MASK),
 
 					sh_custom_color:color_const=WHITE,
-					const custom_sound_sample[128]=crush_stunned);
+					const custom_sound_sample[128]=GENERIC_EXPLOSION_SFX);
 
 
 
@@ -108,10 +111,7 @@ native explosion_with_origin(hero_id,explosion_author_id, Float:origin[3],Float:
 					ignore_owner=1,
 					set_stun=0,
 					Float:damage_frac_ignore_owner=-1.0,
-					explosion_sfx_flags:sfx_mask=(explosion_sfx_show_shockwave|
-											explosion_sfx_show_fireball|
-											explosion_sfx_show_smoke|
-											explosion_sfx_show_burn_decal),
+					explosion_sfx_flags:sfx_mask=(DEFAULT_EXPLOSION_SFX_MASK),
 					sh_custom_color:color_const=WHITE,
 					custom_weapon_id=-1);
 
@@ -120,10 +120,7 @@ native explosion_custom_entity_with_origin(explosion_owner_id,Float:origin[3],Fl
 					Float:peak_power,
 					ent_classname[]="player",
 					Float:optional_force=-1.0,
-					explosion_sfx_flags:sfx_mask=(explosion_sfx_show_shockwave|
-							explosion_sfx_show_fireball|
-							explosion_sfx_show_smoke|
-							explosion_sfx_show_burn_decal),
+					explosion_sfx_flags:sfx_mask=(DEFAULT_EXPLOSION_SFX_MASK),
 
 					sh_custom_color:color_const=WHITE);
 /*

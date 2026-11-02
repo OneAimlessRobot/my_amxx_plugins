@@ -2,6 +2,7 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_RESOURCE_ALIASES
 #define I_WANT_CUSTOM_COLORS
+#define I_WANT_QUICK_CHECKS
 #define I_WANT_BASIC_MACROS
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
@@ -30,11 +31,12 @@ new dmg_source_name_log_fire_vuln[SAFE_BUFFER_SIZE+1]="fire_vuln"
 new custom_dmg_id_fire_vuln
 new generic_dmg_source_fire = -1
 
+
 public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-	
+
 	register_event("Damage", "molotov_damage_vulnerability", "b", "2!0")
 	MOLLY_TASKID=allocate_typed_task_id(player_task)
 	BURN_TASKID_MAIN=allocate_typed_task_id(player_task)
@@ -68,7 +70,7 @@ public plugin_natives(){
 	register_native("sh_molly_user","_sh_molly_user");
 	register_native("sh_unmolly_user","_sh_unmolly_user");
 }
-public burn_task(array[2],id)
+public burn_task(array[3],id)
 {
 	id-=BURN_TASKID_MAIN
 
@@ -80,7 +82,7 @@ public burn_task(array[2],id)
 		unburn_user(id)
 		return
 	}
-	set_render_with_color_const(id,PINK,1,50,50,1,1,BURN_PERIOD,_,_,_,PRIO_RENDER_EFFECT_ACTIVE)
+	set_render_with_color_const(id,PINK,1,50,50,1,1,BURN_PERIOD,_,_,kRenderNormal,PRIO_RENDER_EFFECT_ACTIVE)
 		
 	make_fire(id,30.0)
 
@@ -95,7 +97,9 @@ public burn_task(array[2],id)
 
 			if( !is_user_alive(pid) || sh_get_id_bit(pid, SH_IS_BURNING)) continue
 			
-			sh_molly_user_fast(pid,array[0])
+			if(sh_clients_are_same_team(pid,array[0])&&(!sh_friendlyfire_on())) continue
+
+			sh_molly_user_fast(pid,array[0],array[1])
 			
 		}
 	}
@@ -103,14 +107,14 @@ public burn_task(array[2],id)
 		unburn_user(id)
 		return
 	}
-	sh_extra_damage(id,array[0],BURN_DAMAGE,
+	sh_extra_damage(id,array[1],BURN_DAMAGE,
 			_,_,_,_,_,
 			SH_NEW_DMG_FIRE,
 			generic_dmg_source_fire)
 
-	if(sh_get_id_bit(id, SH_IS_BURNING)&&(array[1]<BURN_TIMES)){
+	if(sh_get_id_bit(id, SH_IS_BURNING)&&(array[2]<BURN_TIMES)){
 		set_damage_icon(id,2,DMG_ICON_HEAT,LineColors[RED],BURN_PERIOD)
-		array[1]++
+		array[2]++
 		emit_sound(id, CHAN_AUTO, MOLLY_FIRE_SFX , VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 		set_task(BURN_PERIOD,"burn_task",id+BURN_TASKID_MAIN,array, sizeof(array))
 
@@ -161,20 +165,20 @@ public _sh_molly_user(iPlugin,iParams){
 	new user=get_param(1)
 	new attacker=get_param(2)
 	
-	sh_molly_user_fast(user,attacker)
+	sh_molly_user_fast(user,attacker,attacker)
 	
 	
 }
-sh_molly_user_fast(user,attacker){
+sh_molly_user_fast(user,attacker,og_burner){
 
 	if(!sh_get_id_bit(user, SH_IS_CO2)&&!sh_get_id_bit(user, SH_IS_BURNING)){
 		if((user==attacker)){
 			if(CAN_SELF_MOLLY&&user){
-					burn_user(user,attacker)
+					burn_user(user,attacker,og_burner)
 			}
 		}
-		else{
-			burn_user(user,attacker)
+		else {
+			burn_user(user,attacker,og_burner)
 		}
 	}
 }
@@ -191,15 +195,16 @@ public _sh_unmolly_user(iPlugin,iParams){
 	
 }
 
-burn_user(id,attacker){
+burn_user(id,attacker,og_burner){
 
 	if(sh_get_id_bit(id, SH_IS_BURNING)) return
 
 	new bool:is_tomie_user = sh_get_player_has_hero_prop(id, SH_FIRE_RETARDANT_HERO)
 	new times_if_tomie_user=floatround(float(BURN_TIMES)/2.0,floatround_floor)
-	new array[2]
+	new array[3]
 	array[0] = attacker
-	array[1] = is_tomie_user?times_if_tomie_user:0
+	array[1] = og_burner
+	array[2] = is_tomie_user?times_if_tomie_user:0
 	
 	if(sh_get_id_bit(id, SH_IS_FROZEN)){
 		sh_unfreeze_user(id)
