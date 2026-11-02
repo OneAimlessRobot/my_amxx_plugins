@@ -358,10 +358,10 @@ public jet_deploy_task(parm[],id){
 	Set_BitVar(g_jetplane_armed_mask, id)
 	sh_chat_message(attacker,gHeroID,"jet armed!");
 	camera[id] = create_entity("info_target")
-	new Float:origin[3]
-	new Float:init_speed[3]
-	new Float:angles[3]
-	new Float:v_angle[3]
+	static Float:origin[3],
+			Float:init_speed[3],
+			Float:angles[3],
+			Float:v_angle[3]
 		
 	velocity_by_aim(id,floatround(cvar_val(float, pcvar_jet_init_speed)),init_speed)
 	pev(jetplane_id,pev_origin,origin)
@@ -496,14 +496,14 @@ public jet_think(ent)
 			sh_switch_weapon(owner,CSW_KNIFE)
 		}
 		
-		new Float:vOrigin[3]
-		new Float:v_angle[3]
-		new Float:velocity[3]
-		new Float:accel_thingie=0.0;
-		new Float:brake_thingie=0.0;
-		new Float:turn_thingie=0.0;
-		new Float:updown_thingie=0.0;
-		new Float:rolly_thingie=0.0;
+		static Float:vOrigin[3],
+				Float:v_angle[3],
+				Float:velocity[3],
+				Float:accel_thingie=0.0,
+				Float:brake_thingie=0.0,
+				Float:turn_thingie=0.0,
+				Float:updown_thingie=0.0,
+				Float:rolly_thingie=0.0;
 		set_pev(owner,pev_velocity,NULL_VECTOR)
 		entity_get_vector(ent, EV_VEC_origin, vOrigin)
 		new Float:curr_speed_stab_coeff=clamp_macro((get_entity_velocity(ent)/(max_jet_speed*JETPLANE_MAX_TURN_SPEED_THRESHOLD)),JETPLANE_MIN_TURN_CONST,1.0)
@@ -574,7 +574,7 @@ public jet_think(ent)
 		}
 		g_jetplane_turn_data[owner][1]=(curr_speed_dampening_coeff*clamp_macro(g_jetplane_turn_data[owner][1]+turn_thingie,-cvar_val(float,pcvar_max_turn_const)*0.5,cvar_val(float,pcvar_max_turn_const)*0.5))+g_jetplane_turn_data[owner][2];
 		
-		new Float:angles[3]
+		static Float:angles[3]
 		entity_get_vector(ent, EV_VEC_angles, angles)
 		entity_get_vector(ent, EV_VEC_v_angle, v_angle)
 		v_angle[1]+=g_jetplane_turn_data[owner][1]
@@ -625,12 +625,12 @@ public jet_think(ent)
 			
 		}
 		
-		new Float:raw_velocity[3];
-		new Float:other_velocity[3]
-		new Float:airbrake_tmp_velocity[3]
-		new Float:throttle_tmp_velocity[3]
-		new Float:drag_tmp_velocity[3]
-		new Float:velocity_copy[3]
+		static Float:raw_velocity[3],
+				Float:other_velocity[3],
+				Float:airbrake_tmp_velocity[3],
+				Float:throttle_tmp_velocity[3],
+				Float:drag_tmp_velocity[3],
+				Float:velocity_copy[3]
 
 		arrayset(raw_velocity,0,sizeof raw_velocity);
 		new Float:accel_result=accel_thingie*cvar_val(float, pcvar_accelerate_const)*JET_THINK_PERIOD;
@@ -643,18 +643,18 @@ public jet_think(ent)
 		multiply_3d_vector_by_scalar(other_velocity,1.0,drag_tmp_velocity);
 		multiply_3d_vector_by_scalar(other_velocity,1.0,raw_velocity);
 
-		new Float:thrust_vector[3];
+		new Float:thrust_vector[3],
+			Float:airbrake_vector[3],
+			Float:drag_vector[3];
 		arrayset(thrust_vector,0,sizeof thrust_vector);
 		if(get_jet_flying(owner)){
 			velocity_by_aim(ent, floatround(accel_result), thrust_vector)
 		}
-		new Float:airbrake_vector[3];
 		arrayset(airbrake_vector,0,sizeof airbrake_vector);
 		if(get_jet_flying(owner)){
 			vector_norm(airbrake_tmp_velocity,airbrake_tmp_velocity)
 			multiply_3d_vector_by_scalar(airbrake_tmp_velocity,-1.0*brake_result,airbrake_vector);
 		}
-		new Float:drag_vector[3];
 		if(cvar_val(bool, pcvar_jetplane_enable_air_drag)){
 			arrayset(drag_vector,0,sizeof drag_vector);
 			new Float:norm= vector_length(velocity_copy);

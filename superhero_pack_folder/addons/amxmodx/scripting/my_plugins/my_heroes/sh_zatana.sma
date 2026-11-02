@@ -33,6 +33,10 @@
 
 #define ZATANA_SOUND "shmod/zatana/ghostly_acknowledgement.wav"
 
+
+#define ZATANA_CHASE_CAMERA_CLASSNAME "zatana_camera"
+
+
 enum attack_phase{
 
     none,
@@ -76,6 +80,7 @@ new Float:g_zatana_last_max_speed[SH_MAXSLOTS+1]
 new Float:g_zatana_charging_origin[SH_MAXSLOTS+1][3]
 
 new g_zatana_damage_times_left[SH_MAXSLOTS+1]
+new camera[SH_MAXSLOTS+1]
 
 //floats
 new pcvar_zatana_gravity,
@@ -86,11 +91,12 @@ new pcvar_zatana_gravity,
     pcvar_post_attack_stun_time,
     pcvar_post_attack_stun_movespeed,
     pcvar_strikes_damage,
-    pcvar_strikes_final_damage_additional
+    pcvar_strikes_final_damage_additional,
+    pcvar_pester_strike_on_strike_stun_speed,
+    pcvar_pester_strike_on_strike_stun_time
 
 //ints
-new pcvar_num_normal_strikes,
-    pcvar_pester_strike_knockback
+new pcvar_num_normal_strikes
     
 
 new Zatana_hudsync
@@ -125,7 +131,9 @@ public plugin_init(){
 
     pcvar_post_attack_stun_movespeed = create_cvar("zatana_post_attack_stun_movespeed", "100.0")
 
-    pcvar_pester_strike_knockback = create_cvar("zatana_pester_strike_knockback", "1")
+    pcvar_pester_strike_on_strike_stun_speed = create_cvar("zatana_pester_strike_on_strike_stun_speed", "1.0")
+
+    pcvar_pester_strike_on_strike_stun_time = create_cvar("zatana_pester_strike_on_strike_stun_time", "1.0")
     
 
 
@@ -139,6 +147,7 @@ public plugin_init(){
 
     RegisterHam(Ham_TakeDamage,"player","zatana_no_instant_kill",_, true)
 
+    register_think(ZATANA_CHASE_CAMERA_CLASSNAME, "zatana_camera_think")
 
     sh_register_superheromod_model(gHeroID,
                                 "models/player/sablina/sablina.mdl",
@@ -174,6 +183,153 @@ public plugin_init(){
     init_gravity_pcvar()
 
     Zatana_hudsync = CreateHudSyncObj()
+}
+
+public zatana_camera_think(camera_ent_id){
+
+    if(!is_valid_ent(camera_ent_id)){
+
+        return PLUGIN_CONTINUE;
+
+    }
+
+    static owner; owner= entity_get_edict(camera_ent_id, EV_ENT_owner)
+    
+    if(!is_user_alive(owner)){
+        
+        attach_view(owner,owner)
+        remove_entity(camera_ent_id)
+        return PLUGIN_CONTINUE
+    }
+    if(!sh_is_inround()){
+        
+        attach_view(owner,owner)
+        remove_entity(camera_ent_id)
+        return PLUGIN_CONTINUE
+    }
+    if(!sh_get_user_has_hero(owner, gHeroID)){
+
+        attach_view(owner,owner)
+        remove_entity(camera_ent_id)
+        return PLUGIN_CONTINUE
+    }
+
+    if(!zatana_user_target_is_valid(owner, g_zatana_current_aimed_at_player[owner])){
+        
+        attach_view(owner,owner)
+        remove_entity(camera_ent_id)
+        return PLUGIN_CONTINUE
+    }
+
+    static Float:online_time_left = 0.0;
+    online_time_left = entity_get_float(camera[owner], EV_FL_fuser1)
+
+    if(online_time_left <= 0.0){
+
+        attach_view(owner,owner)
+        remove_entity(camera_ent_id)
+        return PLUGIN_CONTINUE
+
+    }
+    static the_tg_id_to_check; the_tg_id_to_check= g_zatana_current_aimed_at_player[owner]
+
+    static Float:tg_origin[3],
+            Float:tg_velocity[3],
+            Float:tg_velocity2[3]
+
+
+    entity_get_vector(the_tg_id_to_check, EV_VEC_origin, tg_origin)
+
+    velocity_by_aim(the_tg_id_to_check,floatround(ZATANA_CAMERA_DISTANCE),tg_velocity)
+
+
+    new Float:length=vector_length(tg_velocity)
+
+    
+    
+    tg_origin[1]+=tg_velocity[1]*(ZATANA_CAMERA_DISTANCE/length)
+    tg_origin[2]+=tg_velocity[2]*(ZATANA_CAMERA_DISTANCE/length)
+    tg_origin[2]+=40.0
+    tg_origin[0]+=tg_velocity[0]*(ZATANA_CAMERA_DISTANCE/length)
+    multiply_3d_vector_by_scalar(tg_velocity,-1.0,tg_velocity2)
+    vector_to_angle(tg_velocity2,tg_velocity2)
+    entity_set_vector(camera[owner], EV_VEC_angles, tg_velocity2)
+    entity_set_origin(camera[owner],  tg_origin)
+
+    entity_set_float(camera[owner], EV_FL_fuser1, online_time_left - ZATANA_CAMERA_THINK_PERIOD)
+    entity_set_float(camera[owner], EV_FL_nextthink, get_gametime()+ ZATANA_CAMERA_THINK_PERIOD)
+    return PLUGIN_CONTINUE
+
+}
+zatana_spawn_enemy_camera(owner){
+    
+    
+    if(!is_user_alive(owner)){
+
+        return
+    }
+
+    if(!sh_get_user_has_hero(owner, gHeroID)){
+
+        return
+    }
+
+    if(!zatana_user_target_is_valid(owner, g_zatana_current_aimed_at_player[owner])){
+
+        return
+    }
+    static the_tg_id_to_check; the_tg_id_to_check= g_zatana_current_aimed_at_player[owner]
+
+    if(!is_user_alive(the_tg_id_to_check)){
+
+        return
+    }
+    camera[owner] = create_entity("info_target")
+
+
+
+    if(camera[owner] > 0)
+    {
+
+        entity_set_string(camera[owner], EV_SZ_classname, ZATANA_CHASE_CAMERA_CLASSNAME)
+        entity_set_int(camera[owner], EV_INT_solid, SOLID_NOT)
+        entity_set_int(camera[owner], EV_INT_movetype, MOVETYPE_NOCLIP)
+        entity_set_size(camera[owner], Float:{-1.0,-1.0,-1.0}, Float:{1.0,1.0,1.0})
+        entity_set_model(camera[owner], ZATANA_CAMERA_MODEL)
+        set_rendering(camera[owner], kRenderFxGlowShell, 0, 0, 0, kRenderTransColor, 0)
+
+        entity_set_edict(camera[owner], EV_ENT_owner, owner)
+
+        static Float:tg_origin[3],
+                Float:tg_velocity[3],
+                Float:tg_velocity2[3]
+
+
+        entity_get_vector(the_tg_id_to_check, EV_VEC_origin, tg_origin)
+
+        velocity_by_aim(the_tg_id_to_check,floatround(ZATANA_CAMERA_DISTANCE),tg_velocity)
+
+
+        new Float:length=vector_length(tg_velocity)
+
+        
+        
+        tg_origin[1]+=tg_velocity[1]*(ZATANA_CAMERA_DISTANCE/length)
+        tg_origin[2]+=tg_velocity[2]*(ZATANA_CAMERA_DISTANCE/length)
+        tg_origin[2]+=40.0
+        tg_origin[0]+=tg_velocity[0]*(ZATANA_CAMERA_DISTANCE/length)
+        multiply_3d_vector_by_scalar(tg_velocity,-1.0,tg_velocity2)
+        vector_to_angle(tg_velocity2,tg_velocity2)
+        entity_set_vector(camera[owner], EV_VEC_angles, tg_velocity2)
+        entity_set_origin(camera[owner],  tg_origin)
+        
+        
+        attach_view(owner, camera[owner])
+
+
+        entity_set_float(camera[owner], EV_FL_fuser1, ZATANA_CAMERA_ONLINE_TIME)
+        entity_set_float(camera[owner], EV_FL_nextthink, get_gametime()+ ZATANA_CAMERA_THINK_PERIOD)
+    }
 }
 bool:zatana_user_target_is_valid(id,the_player_to_evaluate){
 
@@ -617,9 +773,13 @@ public plugin_precache(){
 
     engfunc(EngFunc_PrecacheSound, ZATANA_SOUND)
 
+    engfunc(EngFunc_PrecacheSound, WOUND_SFX)
+
     engfunc(EngFunc_PrecacheSound, GENERIC_MENU_PROMPT_SFX)
 
     engfunc(EngFunc_PrecacheSound, GENERIC_MENU_DISMISS_SFX)
+
+    engfunc(EngFunc_PrecacheModel, ZATANA_CAMERA_MODEL)
 
 
 }
@@ -637,17 +797,26 @@ zatana_summon_strike(id){
 
     
     g_zatana_damage_times_left[id] = cvar_val(num, pcvar_num_normal_strikes) + 1
-    new array[1];
+    new array[2];
     array[0] = g_zatana_current_aimed_at_player[id]
-    zatana_hurt_task(array, id + ZATANA_HURT_TASKID)
+    array[1] = true
+    set_task(ZATANA_HURT_TASK_BEGIN_DELAY, "zatana_hurt_task", id + ZATANA_HURT_TASKID, array, sizeof(array))
 
 
 }
-public zatana_hurt_task(array[1],task_id){
+public zatana_hurt_task(array[2],task_id){
 
     new id = task_id - ZATANA_HURT_TASKID
 
-    new tg_id = array[0]
+    new tg_id = array[0],
+        bool:just_begun = bool:array[1]
+
+    if(just_begun){
+        zatana_spawn_enemy_camera(id)
+        array[1] = false
+        set_task(ZATANA_CAMERA_THINK_PERIOD, "zatana_hurt_task", id + ZATANA_HURT_TASKID, array, 1)
+        return
+    }
 
     if(!is_user_alive(id)){
         return
@@ -687,15 +856,27 @@ public zatana_hurt_task(array[1],task_id){
         fx_blood_small(origin,2)
         blood_spray(forigin,2)
     }
-    
-    user_slap(tg_id, cvar_val(num, pcvar_pester_strike_knockback    ), random_num(0,9))
 
+
+
+
+    static Float:the_micro_stun_time; the_micro_stun_time = cvar_val(float, pcvar_pester_strike_on_strike_stun_time)
+
+    set_damage_icon(tg_id,1,
+    DMG_ICON_DROWN,
+    LineColors[FX_STUN],
+    the_micro_stun_time)
+
+    sh_set_stun(tg_id, the_micro_stun_time, cvar_val(float, pcvar_pester_strike_on_strike_stun_speed))
+
+    emit_sound(tg_id, CHAN_STATIC, WOUND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+    emit_sound(tg_id, CHAN_STATIC, PIERCE_WOUND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 
     sh_extra_damage(tg_id,id,floatround(the_damage_to_do, floatround_ceil),
-                                        _,_,_,_,_,
-                                        SH_NEW_DMG_IVE_STUDIED_THE_BLADE,
-                                        fury_swipes_wpn_id)
-    
+                                    _,_,_,_,_,
+                                    SH_NEW_DMG_DARK_ARTS,
+                                    fury_swipes_wpn_id)
+
 
 
     if(!is_user_alive(tg_id)){

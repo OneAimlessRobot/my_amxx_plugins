@@ -36,6 +36,7 @@ sprites/xssmke1.spr
 sprites/mushroom.spr
 models/shmod/sablina/rockgibs/rockgibs.mdl
 models/shmod/jaqueo/shield/shield.mdl
+models/shmod/camman/camera/camera.mdl
 models/shmod/v_scythe.mdl
 sprites/zbeam4.spr
 models/shmod/lara/spear/v_nospear.mdl
@@ -123,7 +124,6 @@ sprites/640hud7_2.spr
 sprites/640hud74_2.spr
 models/shmod/teliko/v_knife.mdl
 models/shmod/sapper/mine/mine.mdl
-models/shmod/camman/camera/camera.mdl
 models/shmod/yandere/jetplane/projectiles/GradRocket.mdl
 models/shmod/yandere/jetplane/gunz/law/w_law.mdl
 models/shmod/yandere/jetplane/projectiles/rshell.mdl
@@ -266,6 +266,9 @@ sprites/rifle_smoke2.spr
 sprites/rifle_smoke3.spr
 models/hgibs.mdl
 models/agibs.mdl
+models/metalplategibs.mdl
+models/woodgibs.mdl
+sprites/flare1.spr
 models/w_squeak.mdl
 models/shmod/ksun/ksun_rifle/v_r5rifle.mdl
 models/shmod/ksun/ksun_rifle/p_r5rifle.mdl
