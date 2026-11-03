@@ -500,6 +500,39 @@ public sh_hero_init(id,heroID, sh_init_mode:mode){
 			}
 		}
 	}
+	else if(is_user_bot(id) && (mode == SH_HERO_ADD)){
+
+		if((curr_num_models_logged>0)&&(gPlayersCurrHeroModelID[id]<0)){
+
+			for(new i = 0; i< curr_num_models_logged; i++){
+
+				if(sh_array_of_player_model_structs[i][player_model_hero_id] == heroID){
+
+					sh_player_morph_task(id,i)
+					break;
+				}
+
+			}
+
+		}
+
+		for(new wpnid=1;wpnid<= CSW_LAST_WEAPON;wpnid++){
+
+			if( ( gPlayersCurrHeroWpnModelID[id][wpnid] < 0 ) && ( curr_num_models_logged_on_wpn[wpnid] > 0 ) ){
+				
+				for(new i = 0; i< curr_num_models_logged_on_wpn[wpnid]; i++){
+
+					if(sh_array_of_wpn_model_structs[wpnid][i][wpn_model_hero_id] == heroID){
+
+						weapon_model_pick_wrapper(id, wpnid, i)
+						break;
+					}
+
+				}
+				
+			}
+		}
+	}
 }
 public plugin_natives(){
 
