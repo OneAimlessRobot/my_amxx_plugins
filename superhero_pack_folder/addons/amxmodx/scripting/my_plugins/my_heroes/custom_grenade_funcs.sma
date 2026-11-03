@@ -60,7 +60,8 @@ enum sh_grenade_struct{
 	Float:min_charge_time,
 	Float:max_charge_time,
 	Float:throw_period,
-	Float:after_touch_fuse
+	Float:after_touch_fuse,
+	bool:bot_allowed
 
 
 }
@@ -77,7 +78,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					0.0,
 					0.0,
 					9999999.0,
-					12211.0},
+					12211.0,
+					false},
 	
 	
 	{"molotov_cocktail",
@@ -91,7 +93,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					1.0,
 					5.0,
 					1.5,
-					0.5},
+					0.5,
+					true},
 
 	{"chaff_grenade","models/shmod/custom_nades_hackaround/w_smokegrenade.mdl",
 					"shmod/custom_grenades/chaff_grenade.wav",
@@ -103,7 +106,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					1.0,
 					5.0,
 					1.5,
-					0.5},
+					0.5,
+					true},
 
 	{"sleep_grenade","models/shmod/custom_nades_hackaround/w_smokegrenade.mdl",
 					SMOKE_EXPLODE_SOUND,
@@ -115,7 +119,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					1.0,
 					5.0,
 					1.5,
-					1.0},
+					1.0,
+					false},
 
 	{"CO2_grenade",
 					"models/shmod/custom_nades_hackaround/w_smokegrenade.mdl",
@@ -128,7 +133,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					1.0,
 					5.0,
 					1.5,
-					0.9},
+					0.9,
+					true},
 
 	{"shock_grenade",
 					"models/shmod/custom_nades_hackaround/w_flashbang.mdl",
@@ -141,7 +147,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					1.0,
 					5.0,
 					1.5,
-					0.5},
+					0.5,
+					false},
 
 	{"freeze_grenade",
 					"models/shmod/custom_nades_hackaround/w_smokegrenade.mdl",
@@ -154,7 +161,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					1.0,
 					5.0,
 					1.5,
-					0.66},
+					0.66,
+					true},
 
 	{"disrupt_grenade",
 					"models/shmod/custom_nades_hackaround/w_flashbang.mdl",
@@ -167,7 +175,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					1.0,
 					5.0,
 					1.5,
-					0.5},
+					0.5,
+					false},
 
 	{"shrapnel_grenade",
 					"models/shmod/custom_nades_hackaround/w_hegrenade.mdl",
@@ -180,7 +189,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					1.0,
 					5.0,
 					1.5,
-					0.5},
+					0.5,
+					true},
 
 	{"marker_grenade",
 					"models/shmod/custom_nades_hackaround/w_hegrenade.mdl",
@@ -193,7 +203,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					1.0,
 					5.0,
 					1.5,
-					0.5},
+					0.5,
+					true},
 
 	{"conc_grenade",
 					"models/shmod/custom_nades_hackaround/w_hegrenade.mdl",
@@ -206,7 +217,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					1.0,
 					5.0,
 					1.5,
-					0.25},
+					0.25,
+					true},
 
 	{"wet_grenade",
 					"models/shmod/custom_nades_hackaround/w_flashbang.mdl",
@@ -219,7 +231,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					1.0,
 					5.0,
 					1.5,
-					0.5}
+					0.5,
+					true}
 
 }
 
@@ -227,6 +240,7 @@ new sh_grenade_type:curr_user_grenade[SH_MAXSLOTS+1] = {sh_grenade_type:0, ...},
 	sh_grenade_type:prev_user_grenade[SH_MAXSLOTS+1] = {sh_grenade_type:0, ...}
 
 new grenade_change_button_pressed_mask = 0
+new bot_grenade_change_button_pressed_mask = 0
 
 new sh_grenade_armed_mask = 0
 
@@ -319,7 +333,8 @@ grenade_switch_notification(id){
 }
 
 uncharge_user_primitive(id){
-	if(is_user_connected(id)){
+	if(is_user_connected(id)&&!is_user_bot(id)){
+
 		progressBar(id,0)
 	}
 
@@ -440,6 +455,57 @@ public CmdStart(id, uc_handle)
 
 	static button;
 	button = get_uc(uc_handle, UC_Buttons);
+
+	if(is_user_bot(id)){
+
+		static prev_button; prev_button = entity_get_int(id, EV_INT_oldbuttons)
+
+		if((button & IN_ATTACK)&&(!(prev_button & IN_ATTACK))){
+
+			button &= ~IN_ATTACK
+			set_uc(uc_handle, UC_Buttons, button)
+			if(!Get_BitVar(bot_grenade_change_button_pressed_mask,id)){
+
+				Assign_BitVar(bot_grenade_change_button_pressed_mask,id,true_for_macro)
+				
+				static sh_grenade_type:curr;
+						
+				curr=((curr_user_grenade[id]+sh_grenade_type:1)%sh_grenade_type)
+
+				for(new sh_grenade_type:it=enum_zero; it<sh_grenade_type; it++){
+					
+					
+					if(wpn_id!=sh_grenade_structs_arr[curr][sh_grenade_weapon_classid]||
+								(curr_grenade_ammo[id][curr]<=0) || !sh_grenade_structs_arr[curr][bot_allowed]){
+						
+						curr= ((curr+sh_grenade_type:1)%sh_grenade_type)
+						continue
+					}
+					prev_user_grenade[id]=curr_user_grenade[id]
+					curr_user_grenade[id]=curr
+					curr_charge[id] = (sh_grenade_structs_arr[gren_type][min_charge_time] +
+									
+									(generate_float(0.1,0.99) *
+								
+								(sh_grenade_structs_arr[gren_type][max_charge_time]
+									
+									- 
+								
+								sh_grenade_structs_arr[gren_type][min_charge_time]))
+					)
+
+					launch_custom_grenade(id,curr)
+					return FMRES_SUPERCEDE
+				}
+			}
+		}
+		else{
+
+			UnSet_BitVar(bot_grenade_change_button_pressed_mask,id)
+		}
+		return FMRES_IGNORED
+
+	}
 	
 	static bool:changed_custom_grenade,bool:attk2_pressed,bool:is_same_grenade;
 	changed_custom_grenade=handle_grenade_change_button(id,wpn_id,uc_handle,button)
@@ -591,7 +657,6 @@ static Float:Origin[3], Float:Velocity[3], Float:user_vel[3], Float:vAngle[3], E
 
 pev(id,  pev_origin , Origin)
 pev(id,  pev_v_angle, vAngle)
-pev(id, pev_velocity, user_vel)
 
 Ent = create_entity("info_target")
 
@@ -633,10 +698,11 @@ velocity_by_aim(id, floatround(
 				(curr_charge[id]/sh_grenade_structs_arr[the_type][max_charge_time])),
 				Velocity)
 
+pev(id, pev_velocity, user_vel)
+
 add_3d_vectors(Velocity,user_vel,Velocity)
 
 set_pev(Ent, pev_velocity ,Velocity)
-
 
 uncharge_user_primitive(id)
 
