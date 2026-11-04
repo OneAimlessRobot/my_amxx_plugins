@@ -159,7 +159,7 @@ if(optional_bool&&!(sh_clients_are_same_team(id,attacker))&&(attacker!=id)){
 		sh_extra_damage(id,attacker,damage,
 								the_hitpoint,
 								_,_,_,_,
-								SH_NEW_DMG_BLEED,
+								SH_NEW_DMG_SUPER_MELEE,
 								is_valid_dmg_src?custom_wpn_id:custom_dmg_id_shanking)
 		
 		emit_sound(id, CHAN_STATIC, PIERCE_WOUND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)

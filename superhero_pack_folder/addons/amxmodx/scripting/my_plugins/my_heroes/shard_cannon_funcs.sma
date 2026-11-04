@@ -1,4 +1,3 @@
-#define AUX_STUFF_GIVE_WEAPONS
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_CUSTOM_WEAPONS
@@ -8,6 +7,7 @@
 #include "../my_include/superheromod.inc"
 #include "colt_inc/sh_shard_cannon.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt15.inc"
 
 
 
@@ -38,8 +38,9 @@ public plugin_init()
 	register_forward(FM_PlaybackEvent, "fw_PlaybackEvent")	
 	
 	
-	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack",_,true)
-	RegisterHam(Ham_TraceAttack, "worldspawn", "fw_TraceAttack",_,true)	
+	RegisterHam(Ham_TraceAttack, "worldspawn", "fw_TraceAttack_World",_,true)
+	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Player",_,true)
+	
 	
 	wlt_get_def_name(my_weapon_ids:CSW_SHARD_CANNON,wpn_name_for_future_lookup,charsmax(wpn_name_for_future_lookup))
 	RegisterHam(Ham_Item_Deploy, wpn_name_for_future_lookup, "fw_Item_Deploy_Post", 1,true)
@@ -212,14 +213,11 @@ public fw_CmdStart(id, uc_handle, seed)
 		{
 			cs_set_weapon_ammo(iEnt, cs_get_weapon_ammo(iEnt) + 6)
 			
-			for(new i = 0; i < 7; i++)
+			for(new i = 0; i < 7; i++){
 				ExecuteHamB(Ham_Weapon_PrimaryAttack, iEnt)
-				
-			/*
-			static Float:Push[3]
-			Push[0] = random_float(-0.5, -2.0)
-			set_pev(id, pev_punchangle, Push)*/
-			
+			}
+
+
 			g_ShootDelay[id] = get_gametime()
 		}
 	}
@@ -279,33 +277,48 @@ public fw_PlaybackEvent(flags, invoker, eventid, Float:delay, Float:origin[3], F
 	return FMRES_HANDLED
 }
 
-public fw_TraceAttack(Ent, Attacker, Float:Damage, Float:Dir[3], ptr, DamageType)
-{	
 
-	if(pev_valid(Ent) != 2){
+public fw_TraceAttack_World(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
+{
+	if(!is_user_connected(Attacker))
+		return HAM_IGNORED	
+	if(get_user_weapon(Attacker) != _:CSW_SHARD_CANNON || !Get_BitVar(g_Had_SHARD_CANNON, Attacker)){
 		return HAM_IGNORED
 	}
 
+	weapon_gating_macro_code_snippet(Attacker,CSW_SHARD_CANNON,return,HAM_IGNORED)
+	
+	static Float:flEnd[3], Float:vecPlane[3]
+		
+	get_tr2(Ptr, TR_vecEndPos, flEnd)
+	get_tr2(Ptr, TR_vecPlaneNormal, vecPlane)		
+	
+	make_bullet(Attacker, flEnd)
+	fake_smoke(Attacker, Ptr, g_SmokePuff_Id)
+
+		
+	SetHamParamFloat(3, float(SHARD_CANNON_DAMAGE))
+	
+	return HAM_HANDLED
+}
+
+public fw_TraceAttack_Player(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
+{	
 	if(Damage<=0.0){
 		return HAM_IGNORED
 	}
 
 	if(!is_user_connected(Attacker))
 		return HAM_IGNORED	
-	if(get_user_weapon(Attacker) != CSW_SHARD_CANNON || !Get_BitVar(g_Had_SHARD_CANNON, Attacker))
+	if(get_user_weapon(Attacker) != _:CSW_SHARD_CANNON || !Get_BitVar(g_Had_SHARD_CANNON, Attacker))
 		return HAM_IGNORED
-		
-	static Float:flEnd[3], Float:vecPlane[3]
-		
-	get_tr2(ptr, TR_vecEndPos, flEnd)
-	get_tr2(ptr, TR_vecPlaneNormal, vecPlane)		
-			
-	make_bullet(Attacker, flEnd)
-	fake_smoke(Attacker, ptr, g_SmokePuff_Id)
+	
+	weapon_gating_macro_code_snippet(Attacker,CSW_SHARD_CANNON,return,HAM_IGNORED)
+	
 		
 	SetHamParamFloat(3, float(SHARD_CANNON_DAMAGE))
-		
-	return HAM_HANDLED	
+	
+	return HAM_HANDLED
 }
 
 public fw_Item_Deploy_Post(Ent)
@@ -363,7 +376,9 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 	pev(Id, pev_punchangle, Push)
 	xs_vec_sub(Push, g_Recoil[Id], Push)
 	
-	Push[1] = random_float(-2.0, 2.0)
+	Push[0] *= random_float(-0.5, -2.0)
+	Push[1] *= random_float(-2.0, 2.0)
+	Push[2] *= random_float(-0.5, 2.0)
 	
 	xs_vec_mul_scalar(Push, 0.25, Push)
 	xs_vec_add(Push, g_Recoil[Id], Push)

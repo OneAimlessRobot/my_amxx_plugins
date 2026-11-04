@@ -368,7 +368,7 @@ public sequoia_active_loop(taskid)
 {	
     if ( !sh_is_active() || sh_is_freezetime() || !sh_is_inround() ) return
 
-    new the_players[SH_MAXSLOTS], pnum, id		
+    static the_players[SH_MAXSLOTS], pnum, id		
     get_players(the_players, pnum, "a")
     for (new i = 0; i < pnum; i++) {
         
@@ -502,12 +502,12 @@ public sequoia_spam_task(taskid){
 //----------------------------------------------------------------------------------------------
 public sequoia_passive_loop(taskid)
 {	
-	if ( !sh_is_active() || sh_is_freezetime() ) return
+    if ( !sh_is_active() || sh_is_freezetime() ) return
 
-	new the_players[SH_MAXSLOTS], pnum, id		
-	get_players(the_players, pnum, "a")
-	for (new i = 0; i < pnum; i++) {
-		
+    static the_players[SH_MAXSLOTS], pnum, id
+    get_players(the_players, pnum, "a")
+    for (new i = 0; i < pnum; i++) {
+        
         id = the_players[i]
 
 

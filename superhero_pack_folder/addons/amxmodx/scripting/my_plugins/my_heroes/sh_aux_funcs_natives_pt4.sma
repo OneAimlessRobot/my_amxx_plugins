@@ -10,8 +10,8 @@
 
 enum extra_dmg_description_struct{
 
-	new_dmg_type_name[32],
-	new_dmg_type_description[100],
+	new_dmg_type_name[SAFE_BUFFER_SIZE+1],
+	new_dmg_type_description[128],
 	
 	bool:dmg_type_is_melee
 
@@ -32,7 +32,7 @@ stock const new_dmg_type_descriptions_arr[sh_thrash_brat_dmg_type][extra_dmg_des
 	{"SH_Shock", "Electrical shock. May come with getting sh stunned", false},
 	{"SH_Frag_Blast", "Comventional explosions, big or small", false},
 
-	{"xXx_SH_DarkShadowBlade_xXx", "Heroes that watch too much anime use this", true},
+	{"xXx_SH_BLADE_xXx", "Heroes that watch too much anime use this", true},
 	{"SH_Dark_Arts", "Dirty tactics, employed by heroes that should not be trusted", false},
 	{"SH_Fire", "Self explanatory. Some heroes may have a resistance", false},
 

@@ -161,6 +161,8 @@ enum server_slot_idx
 
 #define client_is_within_range(%1) ((%1>0 && %1<=(SH_MAXSLOTS)))
 
+#define client_is_within_custom_range(%1,%2) ((%1>0 && %1<=(%2)))
+
 #define ent_check(%1,%2) if(pev_valid(%1)!=PDATA_SAFE) return %2
 
 #define create_entity(%1) engfunc(EngFunc_CreateNamedEntity, engfunc(EngFunc_AllocString, %1))
@@ -178,6 +180,10 @@ enum server_slot_idx
 #define max_macro(%1,%2) ((%1>%2)?%1:%2)
 
 #define min_macro(%1,%2) ((%1<%2)?%1:%2)
+
+#define bzero(%1) (arrayset(%1,any:0,sizeof(%1)))
+
+#define bzero_float(%1) (arrayset(%1,0.0,sizeof(%1)))
 
 /**
 

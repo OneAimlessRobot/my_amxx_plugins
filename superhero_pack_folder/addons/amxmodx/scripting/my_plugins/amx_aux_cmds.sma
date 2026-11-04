@@ -1,3 +1,4 @@
+
 #include "../include/amxmodx.inc"
 #include "../include/amxmisc.inc"
 #include "../include/amxconst.inc"
@@ -77,10 +78,8 @@ public admin_heal(id,level,cid){
 */
 enum CMD_IDS{
 
-    AUX_CMD_REVIVE_USER=0,
-    AUX_CMD_STAGE_MURDER,
+    AUX_CMD_STAGE_MURDER=0,
     AUX_CMD_STAGE_ASSAULT,
-    AUX_CMD_MINIMAP_TRACK,
     AUX_CMD_STAGE_HIT,
     AUX_CMD_ENTITY_DETECT_TOGGLE,
     MAX_CUSTOM_CMD_IDS
@@ -98,11 +97,10 @@ enum CMD_WRAPPER_STRUCT{
     command_id
 };
 
+
 new array_of_commands[_:MAX_CUSTOM_CMD_IDS][CMD_WRAPPER_STRUCT]={
-    {"amx_revive","amx_revive","Revive a player.",1,ADMIN_LEVEL_A,CMDTARGET_ALLOW_SELF,false,0},
     {"amx_stage_murder","amx_stage_murder","Stage a murder between two players!",2,ADMIN_LEVEL_A,0,false,0},
     {"amx_stage_assault","amx_stage_assault","Make one player damage another!",3,ADMIN_LEVEL_A,0,false,0},
-    {"amx_minimap_track","amx_minimap_track","see where a player is on your radar!",1,ADMIN_LEVEL_A,CMDTARGET_ONLY_ALIVE,true,0},
     {"amx_stage_hit","amx_stage_hit","Stage a hit in a specific hitzone between two players!",1,ADMIN_LEVEL_A,CMDTARGET_ONLY_ALIVE,true,0},
     {"amx_entity_detector_mode","amx_entity_detector_mode","get entity names by looking at them! No parameters except player to toggle",1,ADMIN_LEVEL_A,CMDTARGET_ONLY_ALIVE,true,0}
 
@@ -161,6 +159,9 @@ public plugin_init()
         }
     }
     register_forward(FM_TraceLine, "entity_target_tracing")
+
+
+
 }
 
 public entity_target_tracing(Float:v1[3],Float:v2[3],noMonsters,id,trace)
@@ -190,44 +191,6 @@ public entity_target_tracing(Float:v1[3],Float:v2[3],noMonsters,id,trace)
     }
     return FMRES_IGNORED;
 }
-detect_user(id,enemy,Float:origin[3]){
-
-	if(!is_valid_ent(id)||!is_valid_ent(enemy)) return 
-
-	message_begin(MSG_ONE_UNRELIABLE, get_user_msgid("HostagePos"), {0,0,0}, id)
-	write_byte(1)
-	write_byte(enemy)
-	write_coord_f(origin[0])
-	write_coord_f(origin[1])
-	write_coord_f(origin[2])
-	message_end()
-
-	message_begin(MSG_ONE_UNRELIABLE, get_user_msgid("HostageK"), {0,0,0}, id)
-	write_byte(enemy)
-	message_end()
-    
-
-}
-public amx_minimap_track(id,level,cid){
-
-    if (!cmd_access(id,level,cid,2))
-        return PLUGIN_HANDLED
-    if (!is_user_alive(id)){
-
-        console_print(id,"You need to be alive to use this!^nRejected.")
-        return PLUGIN_HANDLED
-    }
-    new arg[32]
-    read_argv(1,arg,31)
-    new player = cmd_target(id,arg,2)
-    if (!player) return PLUGIN_HANDLED
-    new Float:origin[3]
-    entity_get_vector(player,EV_VEC_origin,origin)
-    detect_user(id,player,origin)
-    return PLUGIN_HANDLED
-
-
-}
 public amx_entity_detector_mode(id,level,cid){
 
     if (!cmd_access(id,level,cid,2))
@@ -251,33 +214,6 @@ public amx_entity_detector_mode(id,level,cid){
     Assign_BitVar(is_entity_scanner_mode, player , !we_are_on);
     console_print(0, "%s just toggled entity scanner mode on player named %s!^nIt is now %s",name2,player_name, !we_are_on?"On":"Off")
     log_amx("%s just toggled entity scanner mode on player named %s!^nIt is now %s",name2,player_name, !we_are_on?"On":"Off")
-    return PLUGIN_HANDLED
-}
-public amx_revive(id,level,cid){
-
-    if (!cmd_access(id,level,cid,2))
-        return PLUGIN_HANDLED
-
-    new arg[32], name2[32]
-    read_argv(1,arg,31)
-    get_user_name(id,name2,31)
-
-    new player = cmd_target(id,arg,2)
-    if (!player) return PLUGIN_HANDLED
-    if(is_user_alive(player)){
-        
-        console_print(id,"That player is still alive! Rejecting^n")
-        return PLUGIN_HANDLED    
-            
-    }
-    cs_user_spawn(player)
-    new name[32]
-    get_user_name(player,name,31)
-    
-    console_print(0, "%s just respawned player named %s!^n",name2,name)
-    log_amx("%s just respawned player named %s!^n",name2,name)
-    client_print(player,print_chat,"[AMXX Revive]: %s has just revived you!",name2);
-    client_print(id,print_chat,"[AMXX Revive]: You just revived %s!",name);
     return PLUGIN_HANDLED
 }
 

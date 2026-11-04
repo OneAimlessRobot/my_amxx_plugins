@@ -77,7 +77,6 @@ public remInvisibility(id)
 
 	if ( gIsInvisible[id] > 0 ) {
 		sh_set_rendering(id)
-		client_print(id, print_center, "[SH]%s: You are no longer cloaked", gHeroName)
 	}
 
 	gIsInvisible[id] = 0
@@ -141,7 +140,6 @@ public checkButtons()
 			new alpha = get_pcvar_num(gPcvarAlpha)
 
 			if ( sysTime - delay >= gStillTime[id] ) {
-				if ( gIsInvisible[id] != 100 ) client_print(id, print_center, "[SH]%s : 100%s cloaked", gHeroName, "%")
 				gIsInvisible[id] = 100
 				setInvisibility(id, alpha)
 			}
@@ -149,7 +147,6 @@ public checkButtons()
 				new Float:prcnt = (sysTime - gStillTime[id]) / delay
 				new rPercent = floatround(prcnt * 100)
 				alpha = floatround( 255 - ((255 - alpha) * prcnt) )
-				client_print(id, print_center, "[SH]%s : %d%s cloaked", gHeroName, rPercent, "%")
 				gIsInvisible[id] = rPercent
 				setInvisibility(id, alpha)
 			}

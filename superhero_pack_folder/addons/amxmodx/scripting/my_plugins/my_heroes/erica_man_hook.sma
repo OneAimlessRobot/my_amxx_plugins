@@ -45,6 +45,9 @@ new dmg_source_name_short_gutting[SAFE_BUFFER_SIZE+1]="gutting"
 new dmg_source_name_log_gutting[SAFE_BUFFER_SIZE+1]="gutting"
 new custom_dmg_id_gutting
 
+
+new hook_button_pressed_mask = 0
+
 //stock HOOK_TASKID
 spawn_erica_hook(id,target){
 
@@ -145,9 +148,10 @@ stop_dragging(id,target=-1,bool:deduct=false){
 		if(client_is_here){
 			entity_set_int( target, EV_INT_fixangle, 0 );
 		}
-		if(client_is_here&&attacker_is_here){
+		if(attacker_is_here){
 
-			set_user_maxspeed(id,g_prev_max_speed[id])
+			set_user_maxspeed_controlled(id,g_prev_max_speed[id],false,true)
+			g_prev_max_speed[id] = 0.0
 		}
 		if(deduct&&attacker_is_here){
 			
@@ -259,7 +263,7 @@ public CmdStart(attacker, uc_handle)
 		
 		return FMRES_IGNORED;
 	}
-	if(!is_user_alive(attacker)||!sh_is_inround()){
+	if(!is_user_alive(attacker)){
 
 		
 		stop_dragging(attacker)
@@ -269,100 +273,112 @@ public CmdStart(attacker, uc_handle)
 	if ( !sh_get_user_has_hero(attacker,gHeroID)||!Get_BitVar(hook_on_mask, attacker)||(g_hook_kills[attacker]<=0)) return FMRES_IGNORED;
 
 	
-	new button;
+	static button, prev_button = 0
+
 	button= get_uc(uc_handle, UC_Buttons);
+	prev_button = entity_get_int(attacker, EV_INT_oldbuttons)
+
 	new weapon = get_user_weapon(attacker);
 	
 	if((weapon==CSW_KNIFE)){
 		if((button & IN_DUCK)){
-			button &= ~IN_DUCK;
 			set_pev(attacker, pev_flTimeStepSound, 999)
-		
+			
 		}
-		if((button & IN_RELOAD))
+		if((button & IN_RELOAD)&&!(prev_button & IN_RELOAD))
 		{
-			if((!is_valid_ent(g_player_hook[attacker]))){
-				button &= ~IN_RELOAD;
-				set_uc(uc_handle, UC_Buttons, button);
+			if(!Get_BitVar(hook_button_pressed_mask,attacker)){
 				
-				
-				new Float:vec2LOS[2],
-						Float:vecForward[3],
-						Float:vecForward2D[2],
-						Float:vOrigin[3],
-						Float:vEnd[3],
-						Float:vTrace[3]
-				
-				new id, tr
+				Assign_BitVar(hook_button_pressed_mask,attacker, true_for_macro)
+				if((!is_valid_ent(g_player_hook[attacker]))){
+					
+					
+					new Float:vec2LOS[2],
+							Float:vecForward[3],
+							Float:vecForward_tg[3],
+							Float:vecForward2D[2],
+							Float:vOrigin[3],
+							Float:vEnd[3],
+							Float:vTrace[3]
+					
+					static id, tr;
+					
 
-				velocity_by_aim( attacker, floatround(cvar_val(float,hook_distance_pcvar)), vecForward );
-				
-				xs_vec_make2d( vecForward, vec2LOS );
-				xs_vec_normalize( vec2LOS, vec2LOS );
-				
-				
-				
-				pev(attacker, pev_origin, vOrigin)
-				vEnd[0]=vOrigin[0]+vecForward[0]
-				vEnd[1]=vOrigin[1]+vecForward[1]
-				vEnd[2]=vOrigin[2]+vecForward[2]
-				tr = create_tr2()
-				if(tr<=0){
-					return FMRES_IGNORED
-				}
-				engfunc(EngFunc_TraceLine, vOrigin, vEnd, 0, attacker, tr)
-				get_tr2(tr, TR_vecEndPos, vTrace)
-				id = get_tr2(tr, TR_pHit)
-				
-				if (!is_user_alive(id) ){
-					free_tr2(tr)
-					return FMRES_IGNORED
-				
-				}
-				if(sh_clients_are_same_team(id,attacker)){
-					free_tr2(tr)
-					return FMRES_IGNORED
-				}
-				velocity_by_aim(id, 1, vecForward ); 
-				
-				xs_vec_make2d( vecForward, vecForward2D );
-				xs_vec_normalize( vecForward2D, vecForward2D );
-				static att_name[128],vic_name[128];
-				
-				if( (xs_vec_dot( vec2LOS, vecForward2D ) > 0.5) )
-				{
-					if(g_hook_kills[attacker]<=0){
-
-						if(!is_user_bot(attacker)){
-							sh_chat_message(attacker,gHeroID,"Already hit %d hooks this life!",cvar_val(num,max_hook_kills_per_life_pcvar));
-						}
+					velocity_by_aim( attacker, floatround(cvar_val(float,hook_distance_pcvar)), vecForward );
+					
+					
+					
+					
+					pev(attacker, pev_origin, vOrigin)
+					vEnd[0]=vOrigin[0]+vecForward[0]
+					vEnd[1]=vOrigin[1]+vecForward[1]
+					vEnd[2]=vOrigin[2]+vecForward[2]
+					tr = create_tr2()
+					if(tr<=0){
+						return FMRES_IGNORED
+					}
+					engfunc(EngFunc_TraceLine, vOrigin, vEnd, 0, attacker, tr)
+					laser_line(attacker,vOrigin,vEnd,false, sh_custom_color:{RED,RED,RED},true,false)
+					get_tr2(tr, TR_vecEndPos, vTrace)
+					id = get_tr2(tr, TR_pHit)
+					
+					if (!is_user_alive(id) ){
+						free_tr2(tr)
+						return FMRES_IGNORED
+					
+					}
+					if(sh_clients_are_same_team(id,attacker)){
 						free_tr2(tr)
 						return FMRES_IGNORED
 					}
-					sh_bleed_user(id,attacker,BLEED_MINI,gHeroID)
 
-					entity_set_vector(attacker, EV_VEC_velocity, Float:{0.01,0.01,0.01})
-					g_prev_max_speed[attacker]=get_user_maxspeed(attacker)
-					set_user_maxspeed(attacker,0.1)
-					spawn_erica_hook(attacker,id)
-					get_user_name(attacker,att_name,127)
-					get_user_name(id,vic_name,127)
-					if(!is_user_bot(attacker)){
-						sh_chat_message(attacker,gHeroID,"HOOKED TO %s!",vic_name);
+					xs_vec_make2d( vecForward, vec2LOS );
+					xs_vec_normalize( vec2LOS, vec2LOS );
+
+					velocity_by_aim(id, 1, vecForward_tg ); 
+					
+					xs_vec_make2d( vecForward_tg, vecForward2D );
+					xs_vec_normalize( vecForward2D, vecForward2D );
+					static att_name[128],vic_name[128];
+					
+					if( (xs_vec_dot( vec2LOS, vecForward2D ) > 0.5) )
+					{
+						if(g_hook_kills[attacker]<=0){
+
+							if(!is_user_bot(attacker)){
+								sh_chat_message(attacker,gHeroID,"Already hit %d hooks this life!",cvar_val(num,max_hook_kills_per_life_pcvar));
+							}
+							free_tr2(tr)
+							return FMRES_IGNORED
+						}
+						sh_bleed_user(id,attacker,BLEED_MINI,gHeroID)
+
+						entity_set_vector(attacker, EV_VEC_velocity, Float:{0.01,0.01,0.01})
+						g_prev_max_speed[attacker]=get_user_maxspeed(attacker)
+						set_user_maxspeed(attacker,0.1)
+						spawn_erica_hook(attacker,id)
+						get_user_name(attacker,att_name,127)
+						get_user_name(id,vic_name,127)
+						if(!is_user_bot(attacker)){
+							sh_chat_message(attacker,gHeroID,"HOOKED TO %s!",vic_name);
+						}
+						if(!is_user_bot(id)){
+							sh_chat_message(id,gHeroID,"%s HOOKED TO YOU! SHAKE EM OFF!",att_name);
+						}
 					}
-					if(!is_user_bot(id)){
-						sh_chat_message(id,gHeroID,"%s HOOKED TO YOU! SHAKE EM OFF!",att_name);
+					free_tr2(tr)
+				}
+				else {
+					new target=pev(g_player_hook[attacker],pev_euser1)
+					if(is_user_alive(target)){
+						stop_dragging(attacker,target)
 					}
 				}
-				free_tr2(tr)
 			}
 		}
-		else if(pev_valid(g_player_hook[attacker])){
-			new target=pev(g_player_hook[attacker],pev_euser1)
-			if(is_user_alive(target)){
-				stop_dragging(attacker,target)
-			}
-		
+		else{
+			Assign_BitVar(hook_button_pressed_mask,attacker, false_for_macro)
+				
 		}
 		
 	}
@@ -417,10 +433,10 @@ if(sh_get_user_has_hero(attacker,gHeroID)&&!(cs_get_user_team(id)==att_team)&&is
 					get_user_name(attacker,att_name,127)
 					get_user_name(id,vic_name,127)
 						
-					sh_extra_damage(target,attacker,floatround(damage*cvar_val(float,gutting_dmg_mult_pcvar)),
+					sh_extra_damage(target,attacker,floatround(1.0+damage*cvar_val(float,gutting_dmg_mult_pcvar)),
 								MY_HIT_HEAD
 								,_,_,_,_,
-								SH_NEW_DMG_BLEED,
+								SH_NEW_DMG_SUPER_MELEE,
 								custom_dmg_id_gutting)
 					
 					new random_number=generate_int(0,NUM_SENTENCES-1);
@@ -432,7 +448,17 @@ if(sh_get_user_has_hero(attacker,gHeroID)&&!(cs_get_user_team(id)==att_team)&&is
 						sh_chat_message(attacker,gHeroID,"%s",erica_sentences[random_number]);
 					}
 					sh_bleed_user(target,attacker,BLEED_ULTRA,gHeroID)
+					static Float:tg_origin[3],
+							tg_i_origin[3]
+
+					pev(target,pev_origin,tg_origin)
+
+					blood_spray(tg_origin,4)
 					
+					FVecIVec(tg_origin,tg_i_origin)
+
+					fx_blood_large(tg_i_origin,2)
+
 					if(!is_user_alive(target)){
 						process_manhook_manslaughter( attacker, target)
 					}

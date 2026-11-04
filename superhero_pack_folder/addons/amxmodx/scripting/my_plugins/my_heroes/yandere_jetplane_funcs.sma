@@ -504,6 +504,13 @@ public jet_think(ent)
 				Float:turn_thingie=0.0,
 				Float:updown_thingie=0.0,
 				Float:rolly_thingie=0.0;
+
+		accel_thingie=0.0;
+		brake_thingie=0.0;
+		turn_thingie=0.0;
+		updown_thingie=0.0;
+		rolly_thingie=0.0;
+		
 		set_pev(owner,pev_velocity,NULL_VECTOR)
 		entity_get_vector(ent, EV_VEC_origin, vOrigin)
 		new Float:curr_speed_stab_coeff=clamp_macro((get_entity_velocity(ent)/(max_jet_speed*JETPLANE_MAX_TURN_SPEED_THRESHOLD)),JETPLANE_MIN_TURN_CONST,1.0)
@@ -643,7 +650,7 @@ public jet_think(ent)
 		multiply_3d_vector_by_scalar(other_velocity,1.0,drag_tmp_velocity);
 		multiply_3d_vector_by_scalar(other_velocity,1.0,raw_velocity);
 
-		new Float:thrust_vector[3],
+		static Float:thrust_vector[3],
 			Float:airbrake_vector[3],
 			Float:drag_vector[3];
 		arrayset(thrust_vector,0,sizeof thrust_vector);

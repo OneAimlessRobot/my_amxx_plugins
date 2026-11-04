@@ -395,6 +395,7 @@ debris/glass2.wav
 debris/glass3.wav
 items/flashlight1.wav
 common/bodysplat.wav
+player/pl_pain2.wav
 player/pl_pain4.wav
 player/pl_pain5.wav
 player/pl_pain6.wav
@@ -422,3 +423,4 @@ squeek/sqk_hunt1.wav
 squeek/sqk_hunt2.wav
 squeek/sqk_hunt3.wav
 squeek/sqk_deploy1.wav
+shmod/frostnova.wav
