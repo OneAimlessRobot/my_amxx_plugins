@@ -43,6 +43,8 @@ bind i +power2
 
 /skins -> print skins menu depending on heroes equipped
 			both weapons and body
+			
+
 </pre>
 </body>
 </html>

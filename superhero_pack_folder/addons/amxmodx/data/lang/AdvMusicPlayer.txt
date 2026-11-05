@@ -1,0 +1,279 @@
+[en]
+ADV_MOTD1_MUSIC_HELP = - Music Help -
+ADV_MOTD1_PLAYER_COMMANDS = Player Commands:
+ADV_MOTD1_MUSIC_COMMAND = Opens the list of all the songs added in the server.
+ADV_MOTD1_SEARCH_COMMAND = Searches for a specific song. [ Without Quotes ]
+ADV_MOTD1_REPLAY_COMMAND = Replays the last played song by you.
+ADV_MOTD1_COPY_COMMAND = Copies the last song played by the last player.
+ADV_MOTD1_STOP_COMMAND = Stops the music.
+ADV_MOTD1_ADMIN_COMMAND = Admin Command:
+ADV_MOTD1_ADDSONG_COMMAND = Usage: amx_addsong "Song name" "Url/Link" | Attention: Put them with quotes.
+
+ADV_MOTD2_MUSIC_STOPPED = Music Stopped.
+ADV_MOTD2_BROUGHT_TO_YOU = This has been brought you by %s.
+ADV_MOTD2_POWERFUL_PLAYER = %s is the most powerful music player plugin ever!
+ADV_MOTD2_HOPE_FUN_LISTENING = Hope you had fun listening to the nice music!
+
+ADV_MENU1_SETTINGS_TITLE = Choose your settings:
+ADV_MENU1_PLAY_SONG = Play Song
+ADV_MENU1_STOP_SONG = Stop Song
+ADV_MENU1_MUSIC_COMMANDS = Music Commands
+ADV_MENU1_SEARCH_SONGS = Search Songs
+ADV_MENU1_REPEAT = Repeat Song \w[\r%L
+ADV_MENU1_REPEAT_ON = On\w]
+ADV_MENU1_REPEAT_OFF = Off\w]
+ADV_MENU1_VOLUME = Volume \r%d
+ADV_MENU1_VOLUME_UP = Volume Up
+ADV_MENU1_VOLUME_DOWN = Volume Down
+ADV_MENU1_SETTINGS = Save Settings \w[\r%L
+ADV_MENU1_SETTINGS_SAVED = Saved\w]
+ADV_MENU1_SETTINGS_NOT_SAVED = Not Saved\w]
+
+ADV_MENU2_SONG_LIST_TITLE = Choose a song to play:
+
+ADV_MENU3_CMD_SEARCH_TITLE = Search Results:
+
+ADV_CONNECT_MSG = Welcome !t%s!n. Type !g/music !nif you feel like listening to music.
+ADV_NO_SONG_PLAYED = You have not played any !gsong !nyet.
+ADV_NO_SONG_TO_COPY = There's no !gsong !nto copy.
+ADV_SEARCHED_FOR = Results for '!g%s!n': !tSuccessful Search!n.
+ADV_NOT_FOUND = Results for '!g%s!n': !tNothing was found!n.
+ADV_SONG_COPIED = !t%s !nhas copied !g%s !nsong from !t%s!n.
+ADV_LISTENING_TO = !t%s !nis now listening to !g%s!n. Type !g/copy !nto copy his song.
+ADV_TYPE_SONG_NAME = Now just type the song or the artist name and press enter!
+
+ADV_SONG_ADDED = * Added "%s" song to songlist.ini file! *
+ADV_FILE_ADDED = * File has been added to: %s *
+
+[de]
+ADV_MOTD1_MUSIC_HELP = - Musik Hilfe -
+ADV_MOTD1_PLAYER_COMMANDS = Spieler Befehle:
+ADV_MOTD1_MUSIC_COMMAND = Zeigt eine Liste aller auf dem Server gespeichernten Lieder.
+ADV_MOTD1_SEARCH_COMMAND = Sucht nach einem bestimmten Lied. [ Ohne Anführungszeichen ]
+ADV_MOTD1_REPLAY_COMMAND = Wiederholt das von dir zuletzt gespielte Lied.
+ADV_MOTD1_COPY_COMMAND = Kopiert das zuletzt vom letzten Spieler gespielte Lied.
+ADV_MOTD1_STOP_COMMAND = Stoppt die Musik.
+ADV_MOTD1_ADMIN_COMMAND = Admin Befehl:
+ADV_MOTD1_ADDSONG_COMMAND = Nutzung: amx_addsong "Lied Name" "Url/Link" | Achtung: Setzt es in Anführungszeichen.
+
+ADV_MOTD2_MUSIC_STOPPED = Musik gestoppt.
+ADV_MOTD2_BROUGHT_TO_YOU = Dies wurde dir zur präsentiert von %s.
+ADV_MOTD2_POWERFUL_PLAYER = %s ist das stärkste Musik-Plugin aller Zeiten!
+ADV_MOTD2_HOPE_FUN_LISTENING = Hoffentlich hat dir die Musik gefallen!
+
+ADV_MENU1_SETTINGS_TITLE = Wähle deine Einstellungen:
+ADV_MENU1_PLAY_SONG = Spiele Lied
+ADV_MENU1_MUSIC_COMMANDS = Musik Befehle
+ADV_MENU1_SEARCH_SONGS = Suche Lieder
+ADV_MENU1_REPEAT = Lied wiederholen \w[\r%L
+ADV_MENU1_REPEAT_ON = Ein\w]
+ADV_MENU1_REPEAT_OFF = Aus\w]
+ADV_MENU1_VOLUME = Lautstärke \r%d
+ADV_MENU1_VOLUME_UP = Lauter
+ADV_MENU1_VOLUME_DOWN = Leiser
+ADV_MENU1_SETTINGS = Speicher Einstellungen \w[\r%L
+ADV_MENU1_SETTINGS_SAVED = Gespeichert\w]
+ADV_MENU1_SETTINGS_NOT_SAVED = Nicht gespeichert\w]
+
+ADV_MENU2_SONG_LIST_TITLE = Wähle ein Lied zum Spielen:
+
+ADV_MENU3_CMD_SEARCH_TITLE = Suchergebnisse:
+
+ADV_CONNECT_MSG = Willkommen !t%s!n. Schreibe !g/music !nwenn Sie wie Musik hören.
+ADV_NO_SONG_PLAYED = Du hast bis jetzt keine !gLieder !ngespielt.
+ADV_NO_SONG_TO_COPY = Es gibt keinen !gSong !nzu kopieren.
+ADV_SEARCHED_FOR = Ergebnis für '!g%s!n': !tErfolgreiche Suche!n.
+ADV_NOT_FOUND = Ergebnis für '!g%s!n': !tNichts gefunden!n.
+ADV_SONG_COPIED = !t%s !nhat kopiert !g%s !nSong aus !t%s!n.
+ADV_LISTENING_TO = !t%s !nhört jetzt !g%s!n. Schreibe !g/copy !num das Lied zu kopieren.
+ADV_TYPE_SONG_NAME = Schreibe nun den Titel oder Künstlernamen und drücke Enter!
+
+ADV_SONG_ADDED = * Füge "%s" Lied zu songlist.ini file! *
+ADV_FILE_ADDED = * Datei wurde hinzugefügt zu: %s *
+
+[ro]
+ADV_MOTD1_MUSIC_HELP = - Ajutor Muzica -
+ADV_MOTD1_PLAYER_COMMANDS = Comenzi Jucator:
+ADV_MOTD1_MUSIC_COMMAND = Deschideti lista cu toate melodiile adaugate in server.
+ADV_MOTD1_SEARCH_COMMAND = Cautati o melodie specifica. [ Fara ghilimele ]
+ADV_MOTD1_REPLAY_COMMAND = Reaprindeti ultima melodie ascultata de dumneavoastra.
+ADV_MOTD1_COPY_COMMAND = Copiaza ultima melodie asculta de ultimul jucator.
+ADV_MOTD1_STOP_COMMAND = Opreste muzica.
+ADV_MOTD1_ADMIN_COMMAND = Comenzi admin:
+ADV_MOTD1_ADDSONG_COMMAND = Folosire: amx_addsong "Nume melodie" "URL/Link" | Atentie: Puneti si ghilimele
+
+ADV_MOTD2_MUSIC_STOPPED = Muzica s-a oprit.
+ADV_MOTD2_BROUGHT_TO_YOU = Aceasta a fost adusa pentru tine de %s.
+ADV_MOTD2_POWERFUL_PLAYER = %s este cel mai puternic music player plugin din lume !
+ADV_MOTD2_HOPE_FUN_LISTENING = Speram ca te distrezi ascultand melodii frumoase !
+
+ADV_MENU1_SETTINGS_TITLE = Alegeti setarile:
+ADV_MENU1_PLAY_SONG = Aprinde melodia
+ADV_MENU1_MUSIC_COMMANDS = Comenzi Melodie
+ADV_MENU1_SEARCH_SONGS = Cauta melodii
+ADV_MENU1_REPEAT = Repeta Melodii \w[\r%L
+ADV_MENU1_REPEAT_ON = Aprins\w]
+ADV_MENU1_REPEAT_OFF = Stins\w]
+ADV_MENU1_VOLUME = Volum \r%d
+ADV_MENU1_VOLUME_UP = Volum Mai Mare
+ADV_MENU1_VOLUME_DOWN = Volume Mai Mic
+ADV_MENU1_SETTINGS = Salveaza setarile \w[\r%L
+ADV_MENU1_SETTINGS_SAVED = Salvate\w]
+ADV_MENU1_SETTINGS_NOT_SAVED = Nus Salvate\w]
+
+ADV_MENU2_SONG_LIST_TITLE = Alege o melodie pentru a o asculta:
+
+ADV_MENU3_CMD_SEARCH_TITLE = Rezultate cautare:
+
+ADV_CONNECT_MSG = Bine ai venit!t%s!n. Scrie !g/music !ndaca simti ca asculta muzica.
+ADV_NO_SONG_PLAYED = Nu ai ascultat nicio !gmelodie !ninca.
+ADV_NO_SONG_TO_COPY = Nu există nici o !gmelodie !nde a copia.
+ADV_SEARCHED_FOR = Rezultatele pentru '!g%s!n': !tCautare reusita !n.
+ADV_NOT_FOUND = Results for '!g%s!n': !tNothing was found!n.
+ADV_SONG_COPIED = !t%s !na copiat !g%s !nmelodie de la !t%s!n.
+ADV_LISTENING_TO = !t%s !nasculta acum !g%s!n. Scrie !g/copy !npentru ai copia melodia.
+ADV_TYPE_SONG_NAME = Acum scrie numele melodiei sau numele autorului pentru a asculta si apasa enter!
+
+ADV_SONG_ADDED = * Adaugat "%s" melodie in fisierul songlist.ini ! *
+ADV_FILE_ADDED = * Fisierul a fost adaugat in: %s *
+
+[bg]
+ADV_MOTD1_MUSIC_HELP = - Pomosht za Muzikata -
+ADV_MOTD1_PLAYER_COMMANDS = Komandi za igrachite:
+ADV_MOTD1_MUSIC_COMMAND = Otvarq spisuk sus dobavenite v servera pesni
+ADV_MOTD1_SEARCH_COMMAND = Tursene za specialna pesen. [ Bez kavichki ]
+ADV_MOTD1_REPLAY_COMMAND = Puska poslednata slushana ot vas pesen
+ADV_MOTD1_COPY_COMMAND = Puska poslednata pusnata ot nqkoi pesen.
+ADV_MOTD1_STOP_COMMAND = Spira muzikata.
+ADV_MOTD1_ADMIN_COMMAND = Komanda za adminite:
+ADV_MOTD1_ADDSONG_COMMAND = Upotreba: amx_addsong "Ime na pesenta" "Url/Link" | Vnimanie: postavete gi v kavichki.
+
+ADV_MOTD2_MUSIC_STOPPED = Muzikata beshe sprqna.
+ADV_MOTD2_BROUGHT_TO_YOU = Dostigna do vas blagodarenie na %s.
+ADV_MOTD2_POWERFUL_PLAYER = %s e nai - qkiq player za muzika!
+ADV_MOTD2_HOPE_FUN_LISTENING = Nadqvame se che se zabavlqvahte!
+
+ADV_MENU1_SETTINGS_TITLE = Izberete nastroiki:
+ADV_MENU1_PLAY_SONG = Pusni pesen
+ADV_MENU1_STOP_SONG = Spri pesen
+ADV_MENU1_MUSIC_COMMANDS = Komandi za muzikata
+ADV_MENU1_SEARCH_SONGS = Tursi pesni
+ADV_MENU1_REPEAT = Povtori pesen \w[\r%L
+ADV_MENU1_REPEAT_ON = Vklucheno\w]
+ADV_MENU1_REPEAT_OFF = Izklucheno\w]
+ADV_MENU1_VOLUME = Sila na zvuka \r%d
+ADV_MENU1_VOLUME_UP = Uvelichi zvuka
+ADV_MENU1_VOLUME_DOWN = Namali zvuka
+ADV_MENU1_SETTINGS = Zapazi nastroikite \w[\r%L
+ADV_MENU1_SETTINGS_SAVED = Zapazeni\w]
+ADV_MENU1_SETTINGS_NOT_SAVED = Ne sa zapazeni\w]
+
+ADV_MENU2_SONG_LIST_TITLE = Izberete pesen za puskane:
+
+ADV_MENU3_CMD_SEARCH_TITLE = Rezultati ot turseneto:
+
+ADV_CONNECT_MSG = Dobre doshli !t%s!n. Napishete !g/music !nako vi se slusha muzika.
+ADV_NO_SONG_PLAYED = Ne ste puskali !gpesen !noshte.
+ADV_NO_SONG_TO_COPY = Nqma !gpesen !nza kopirane.
+ADV_SEARCHED_FOR = Rezultati za '!g%s!n': !tUspeshno tursene!n.
+ADV_NOT_FOUND = Rezultati za '!g%s!n': !tNqma rezultati!n.
+ADV_SONG_COPIED = !t%s !nkopira pesenta !g%s !n ot !t%s!n.
+ADV_LISTENING_TO = !t%s !nsega slusha !g%s!n. Napishete !g/copy !nza da kopirate negovata pesen.
+ADV_TYPE_SONG_NAME = Sega prosto napishete imeto na pesenta ili izpulnitelq i natisnete 'enter'!
+
+ADV_SONG_ADDED = * Dobavihte pesenta "%s" vuv songlist.ini! *
+ADV_FILE_ADDED = * Failut e dobaven vuv: %s *
+
+[sr]
+ADV_MOTD1_MUSIC_HELP = - Uputstva za muziku -
+ADV_MOTD1_PLAYER_COMMANDS = Komande za igrace:
+ADV_MOTD1_MUSIC_COMMAND = Otvori listu svih pesama na serveru.
+ADV_MOTD1_SEARCH_COMMAND = Pronadji pesmu koju zelis. [ Bez navodnika ]
+ADV_MOTD1_REPLAY_COMMAND = Ponovi poslednju pesmu koju si slusao.
+ADV_MOTD1_COPY_COMMAND = Slusaj pesmu koju je poslednji igrac slusao.
+ADV_MOTD1_STOP_COMMAND = Zaustavi muziku.
+ADV_MOTD1_ADMIN_COMMAND = Admin komande:
+ADV_MOTD1_ADDSONG_COMMAND = Kako koristiti: amx_addsong "<Ime Pesme>" "Url/Link" | Upozorenje: Bez navodnika.
+
+ADV_MOTD2_MUSIC_STOPPED = Muzika zaustavljena.
+ADV_MOTD2_BROUGHT_TO_YOU = Ovo ti je pustio %s.
+ADV_MOTD2_POWERFUL_PLAYER = %s je najmocniji muzicki plugin ikad!
+ADV_MOTD2_HOPE_FUN_LISTENING = Nadamo se da cete uzivati u muzici!
+
+ADV_MENU1_SETTINGS_TITLE = Izaberi opcije:
+ADV_MENU1_PLAY_SONG = Pusti pesmu
+ADV_MENU1_STOP_SONG = Pauziraj pesmu
+ADV_MENU1_MUSIC_COMMANDS = Muzicke komande:
+ADV_MENU1_SEARCH_SONGS = Trazi pesmu
+ADV_MENU1_REPEAT = Ponovi pesmu \w[\r%L
+ADV_MENU1_REPEAT_ON = Ukljuci\w]
+ADV_MENU1_REPEAT_OFF = Iskljuci\w]
+ADV_MENU1_VOLUME = Zvuk \r%d
+ADV_MENU1_VOLUME_UP = Pojacaj zvuk
+ADV_MENU1_VOLUME_DOWN = Smanji zvuk
+ADV_MENU1_SETTINGS = Sacuvaj podesavanja \w[\r%L
+ADV_MENU1_SETTINGS_SAVED = Sacuvano\w]
+ADV_MENU1_SETTINGS_NOT_SAVED = Nije sacuvano\w]
+
+ADV_MENU2_SONG_LIST_TITLE = Izaberi pesmu koju zelis da pustis:
+
+ADV_MENU3_CMD_SEARCH_TITLE = Rezultati pretrage:
+
+ADV_CONNECT_MSG = Dobrodosao !t%s!n. Kucaj !g/music !nako volis da slusas muziku.
+ADV_NO_SONG_PLAYED = Nikada do sada nisi slusao !gni jednu !npesmu.
+ADV_NO_SONG_TO_COPY = Nema pesama !gza !nkopiranje.
+ADV_SEARCHED_FOR = Rezultati za '!g%s!n': !tUspesno trazenje!n.
+ADV_NOT_FOUND = Rezultati za '!g%s!n': !tNista nije pronadjeno!n.
+ADV_SONG_COPIED = !t%s !nje kopirao !g%s !npesmu od !t%s!n.
+ADV_LISTENING_TO = !t%s !nsada slusa !g%s!n. Kucaj !g/copy !nda i ti slusas tu pesmu.
+ADV_TYPE_SONG_NAME = Sada otkucas ime pesme ili autora i pretisni enter!
+
+ADV_SONG_ADDED = * Pesma "%s" je dodata u songlist.ini fajl! *
+ADV_FILE_ADDED = * Fajl je dodan u: %s *
+
+[sv]
+ADV_MOTD1_MUSIC_HELP = - Musikhjälp -
+ADV_MOTD1_PLAYER_COMMANDS = Spelarkommandon:
+ADV_MOTD1_MUSIC_COMMAND = Öppnar en lista över alla låtar på denna server.
+ADV_MOTD1_SEARCH_COMMAND = Söker efter en specifik låt. [ Utan citattecken ]
+ADV_MOTD1_REPLAY_COMMAND = Spelar om den senaste låten du spelat.
+ADV_MOTD1_COPY_COMMAND = Kopierar den senaste låten som spelats.
+ADV_MOTD1_STOP_COMMAND = Stoppar musiken.
+ADV_MOTD1_ADMIN_COMMAND = Administratörkommando:
+ADV_MOTD1_ADDSONG_COMMAND = Användande: amx_addsong "Låtnamn" "Url/Länk" | OBS: Använd citationstecken.
+
+ADV_MOTD2_MUSIC_STOPPED = Musiken har stoppats.
+ADV_MOTD2_BROUGHT_TO_YOU = Detta har framförts till dig av %s.
+ADV_MOTD2_POWERFUL_PLAYER = %s är den mest kraftfulla musikspelare någonsin!
+ADV_MOTD2_HOPE_FUN_LISTENING = Hoppas du hade roligt när du lyssnade på den trevliga musiken!
+
+ADV_MENU1_SETTINGS_TITLE = Välj dina inställningar:
+ADV_MENU1_PLAY_SONG = Spela låt
+ADV_MENU1_STOP_SONG = Stoppa låt
+ADV_MENU1_MUSIC_COMMANDS = Musikkommandon
+ADV_MENU1_SEARCH_SONGS = Sök låtar
+ADV_MENU1_REPEAT = Repetera låt \w[\r%L
+ADV_MENU1_REPEAT_ON = På\w]
+ADV_MENU1_REPEAT_OFF = Av\w]
+ADV_MENU1_VOLUME = Volym \r%d
+ADV_MENU1_VOLUME_UP = Öka volym
+ADV_MENU1_VOLUME_DOWN = Sänk volym
+ADV_MENU1_SETTINGS = Spara inställningar \w[\r%L
+ADV_MENU1_SETTINGS_SAVED = Sparade\w]
+ADV_MENU1_SETTINGS_NOT_SAVED = Ej sparade\w]
+
+ADV_MENU2_SONG_LIST_TITLE = Välj en låt att spela:
+
+ADV_MENU3_CMD_SEARCH_TITLE = Sökresultat:
+
+ADV_CONNECT_MSG = Välkommen !t%s!n. Skriv !g/music !nom du känner för att lyssna på musik.
+ADV_NO_SONG_PLAYED = Du har inte spelat någon !glåt !nännu.
+ADV_NO_SONG_TO_COPY = Det finns ingen !glåt !natt kopiera.
+ADV_SEARCHED_FOR = Resultat för '!g%s!n': !tLyckad sökning!n.
+ADV_NOT_FOUND = Resultat för '!g%s!n': !tIngenting hittades!n.
+ADV_SONG_COPIED = !t%s !nhar kopierat !g%s !n från !t%s!n.
+ADV_LISTENING_TO = !t%s !nlyssnar på !g%s!n. Skriv !g/copy !nför att kopiera hens låt.
+ADV_TYPE_SONG_NAME = Skriv nu låtnamn eller artist och tryck på retur!
+
+ADV_SONG_ADDED = * Lade till "%s" till songlist.ini! *
+ADV_FILE_ADDED = * Filen %s har skapats *

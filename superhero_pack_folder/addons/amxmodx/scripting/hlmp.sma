@@ -218,8 +218,8 @@ public client_authorized( id )
 public client_putinserver(id)
 {
 	g_iMenuOption[id] = mGroups
-	g_PlayerGroup[id][GroupName][0] = 0;
-	g_PlayerGroup[id][GroupArrayOffset] = Invalid_Array
+	g_PlayerGroup[id][GroupName][0] = 0
+	g_PlayerGroup[id][GroupArrayOffset] = any:0
 
 	if( g_szAuthid[id][0] == 'C' )
 	{
