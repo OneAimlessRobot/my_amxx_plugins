@@ -82,6 +82,7 @@ enum CMD_IDS{
     AUX_CMD_STAGE_ASSAULT,
     AUX_CMD_STAGE_HIT,
     AUX_CMD_ENTITY_DETECT_TOGGLE,
+    AMX_PRINT_LOGS,
     MAX_CUSTOM_CMD_IDS
 }
 
@@ -102,7 +103,8 @@ new array_of_commands[_:MAX_CUSTOM_CMD_IDS][CMD_WRAPPER_STRUCT]={
     {"amx_stage_murder","amx_stage_murder","Stage a murder between two players!",2,ADMIN_LEVEL_A,0,false,0},
     {"amx_stage_assault","amx_stage_assault","Make one player damage another!",3,ADMIN_LEVEL_A,0,false,0},
     {"amx_stage_hit","amx_stage_hit","Stage a hit in a specific hitzone between two players!",1,ADMIN_LEVEL_A,CMDTARGET_ONLY_ALIVE,true,0},
-    {"amx_entity_detector_mode","amx_entity_detector_mode","get entity names by looking at them! No parameters except player to toggle",1,ADMIN_LEVEL_A,CMDTARGET_ONLY_ALIVE,true,0}
+    {"amx_entity_detector_mode","amx_entity_detector_mode","get entity names by looking at them! No parameters except player to toggle",1,ADMIN_LEVEL_A,CMDTARGET_ONLY_ALIVE,true,0},
+    {"amx_print_logs","amx_print_logs","Print file names in logs dir! And the files themselves if given pattern matches",1,ADMIN_LEVEL_A,0,false,0}
 
 
 
@@ -159,6 +161,154 @@ public plugin_init()
         }
     }
     register_forward(FM_TraceLine, "entity_target_tracing")
+
+
+
+}
+public amx_print_logs(id,level,cid){
+
+    if (!cmd_access(id,level,cid,0)){
+        return PLUGIN_HANDLED
+    }
+
+    new num_of_args = read_argc()
+
+    new bool:will_use_arg = false
+    new pattern_buff[128]
+
+    if(num_of_args >= 1){
+
+        will_use_arg = (read_argv(1,pattern_buff, charsmax(pattern_buff))>0)
+        if(will_use_arg){
+            console_print(id, "pattern given! ^"%s^"^n", pattern_buff)
+        }
+    }
+
+    check_files_in_logs_directory(id, will_use_arg ? pattern_buff:"")
+
+
+    return PLUGIN_HANDLED
+
+
+    
+
+
+
+
+}
+
+check_files_in_logs_directory(id, the_pattern_to_match_in_file_name[128]=""){
+
+    new basedir[128],
+            logsdir[128],
+            first_file_name[128],
+            file_name_during_iteration[128],
+            file_path_during_iteration[128],
+            any:line_buffer_for_sub_iteration[128],
+            FileType:the_file_type = enum_zero,
+            FileType:the_file_type_during_iteration = enum_zero,
+            dirhandle = -1,
+            files_counted = 0,
+            files_printed = 0,
+            file_handle_during_pattern_iteration = 0,
+            bool:has_next_file=false
+
+    dirhandle = -1
+
+    has_next_file = true
+
+    the_file_type_during_iteration = enum_zero
+
+    the_file_type = enum_zero
+
+    file_handle_during_pattern_iteration = -1
+
+    files_counted = 0
+
+    files_printed = 0
+
+
+    new strlen_for_pattern_to_match = strlen(the_pattern_to_match_in_file_name)
+    get_basedir(basedir,charsmax(basedir))
+
+    formatex(logsdir, charsmax(logsdir),"%s/logs/",basedir)
+
+    if(!dir_exists(logsdir)){
+
+        console_print(id,"Unable to open logsdir! Inexistent directory. the logsdir attempted was: %s^n", logsdir)
+        return
+
+    }    
+    dirhandle= open_dir(logsdir,first_file_name,charsmax(first_file_name),the_file_type)
+
+    if(dirhandle<=0){
+
+        console_print(id,"Unable to open logsdir for some other reason! the logsdir attempted was: %s^n", logsdir)
+        return
+
+    }
+    console_print(id,"We just opened the dir %s^n", logsdir)
+    while(has_next_file){
+
+        has_next_file = bool:next_file(dirhandle,file_name_during_iteration,charsmax(file_name_during_iteration),the_file_type_during_iteration)
+
+        if(has_next_file){
+            
+            formatex(file_path_during_iteration, charsmax(file_path_during_iteration), "%s%s", logsdir,file_name_during_iteration)
+
+
+
+            if((the_file_type_during_iteration == FileType_File)
+                                &&!(equali(file_name_during_iteration,".."))
+                                &&!(equali(file_name_during_iteration,"."))){
+
+                
+
+                files_counted++
+
+                console_print(id, "We have retrieved a file name! And we currently have %d files in total^n", files_counted)
+
+                console_print(id, "The read path is: %s^n",file_path_during_iteration)
+
+                if((strlen_for_pattern_to_match>0)){
+                    
+                    console_print(id, "We were given a pattern to match! So we will try to print out every single file that matches.^n")
+                    
+                    if((containi(file_name_during_iteration,the_pattern_to_match_in_file_name)>=0)){
+                        
+                        if(files_printed<=0){
+                            console_print(id, "Starting with %s!^n",file_name_during_iteration)
+                        }
+                        
+                        file_handle_during_pattern_iteration = fopen(file_path_during_iteration,"rt")
+
+                        if(!file_handle_during_pattern_iteration){
+                            
+                            console_print(id, "We could not open ^"%s^" for reading for some reason! Skipping...^n",file_path_during_iteration)
+                            continue
+                        }
+
+                        while(!feof(file_handle_during_pattern_iteration)){
+                            
+                            fread_blocks(file_handle_during_pattern_iteration,line_buffer_for_sub_iteration, charsmax(line_buffer_for_sub_iteration), BLOCK_CHAR)
+                            console_print(id, "%s",line_buffer_for_sub_iteration)
+
+                        }
+                        files_printed++
+                        console_print(id, "^nEnd if this file! We have printed %d files so far!^n", files_printed)
+                        fclose(file_handle_during_pattern_iteration)
+                    }
+                }
+            }
+        }
+        else{
+
+            break;
+        }
+
+    }
+    close_dir(dirhandle)
+
 
 
 

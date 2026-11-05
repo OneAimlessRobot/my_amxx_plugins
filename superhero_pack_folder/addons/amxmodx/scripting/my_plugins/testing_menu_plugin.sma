@@ -31,7 +31,7 @@
 #define PLAYER_SUBMENU_NAME "What to do:"
 #define BOT_DIFFICULTY_MENU_NAME "Bot difficulty menu name"
 
-#define CMD_NAME "amx_test_mode"
+#define CMD_NAME "test_menu"
 
 #define MARK_TASK_PERIOD 0.44
 #define DRAW_AIM_VECTOR_TASK_PERIOD 0.44
@@ -195,6 +195,7 @@ public generic_track_task(task_id){
         
     }
 }
+
 public draw_aim_vector_task(task_id){
 
 
@@ -424,7 +425,7 @@ show_player_menu(id){
         
     new bool:should_show_menu = false
     static the_players[MAX_PLAYERS], pnum, pid, player_name[128], item_label_string[128], team_name[128]
-    get_players(the_players, pnum, "a")
+    get_players(the_players, pnum)
     for (new i = 0; i < pnum; i++) {
         
         pid = the_players[i]

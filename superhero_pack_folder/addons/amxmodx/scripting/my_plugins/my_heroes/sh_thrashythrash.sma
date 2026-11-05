@@ -40,6 +40,11 @@ new gHeroName[]="Thrashy Thrash"
 new gThrashyExplosionAmmo[SH_MAXSLOTS+1]
 new bool:gHasThrashZoom[SH_MAXSLOTS+1]
 
+
+new dmg_source_name_short_SUPACANNON[SAFE_BUFFER_SIZE+1]="SUPACANNON"
+new dmg_source_name_log_SUPACANNON[SAFE_BUFFER_SIZE+1]="SUPACANNON"
+new custom_dmg_id_SUPACANNON
+
 new blast_shroom
 
 new xplodedmg,xplode_radius,xplodeoddmg,xplodeod_radius,Float:ak_dmgmult,ndynamites,cooldown
@@ -76,6 +81,11 @@ public plugin_init()
 								"Aw man!!!.... Already? Hmpf Imagine girls having ANY fun EVER!")
 
 	
+	custom_dmg_id_SUPACANNON=sh_log_custom_damage_source(gHeroID,
+					dmg_source_name_short_SUPACANNON,
+					dmg_source_name_log_SUPACANNON,0)
+
+
 	sh_register_superheromod_weapon_model(gHeroID,THRASHER_WEAPON_ID,Model_Weapon_V,Model_Weapon_P)
 
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
@@ -324,7 +334,13 @@ public thrashy_damage(id, attacker, Float:damage, Float:direction[3], traceresul
 
 		// do extra damage
 		new extraDamage = floatround(damage*ak_dmgmult-damage);
-		sh_extra_damage( id, attacker, extraDamage, the_hitpoint )
+		
+		sh_extra_damage(  id, attacker, extraDamage,
+							the_hitpoint,
+							_,_,_,_,
+							SH_NEW_DMG_TR45H_GUN,
+							custom_dmg_id_SUPACANNON)
+
 		if(extraDamage>=health){
 			set_user_rendering(id, kRenderFxFadeSlow, 255, 255, 255, kRenderTransColor, 0);
 			// do turn down that awful racket..to be replaced by a blood spurt!

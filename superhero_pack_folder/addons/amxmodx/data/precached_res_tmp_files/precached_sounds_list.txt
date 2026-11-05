@@ -395,7 +395,6 @@ debris/glass2.wav
 debris/glass3.wav
 items/flashlight1.wav
 common/bodysplat.wav
-player/pl_pain2.wav
 player/pl_pain4.wav
 player/pl_pain5.wav
 player/pl_pain6.wav
@@ -410,17 +409,9 @@ weapons/ric5.wav
 weapons/ric_metal-1.wav
 weapons/ric_metal-2.wav
 weapons/ric_conc-2.wav
-plats/vehicle6.wav
-plats/vehicle_brake1.wav
-plats/vehicle_start1.wav
-plats/vehicle4.wav
-plats/vehicle7.wav
-doors/doormove6.wav
-doors/doorstop4.wav
 squeek/sqk_blast1.wav
 squeek/sqk_die1.wav
 squeek/sqk_hunt1.wav
 squeek/sqk_hunt2.wav
 squeek/sqk_hunt3.wav
 squeek/sqk_deploy1.wav
-shmod/frostnova.wav
