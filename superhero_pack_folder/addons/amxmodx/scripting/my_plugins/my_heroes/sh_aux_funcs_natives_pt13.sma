@@ -1,7 +1,9 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_CUSTOM_COLORS
 #define I_WANT_RESOURCE_ALIASES
+#define I_WANT_PDATA_ALIASES
 #include <amxmisc>
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
@@ -12,7 +14,6 @@
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt13.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
-#include "sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt12.inc"
 #include "../my_include/auxiliar_stuff.inc"
 
@@ -24,8 +25,34 @@
 #define DEFAULT_ETHEREAL_GRAVITY_CVAR_NAME "sh_ethereal_heroes_gravity"
 
 
+#define DEFAULT_DEMONIC_PREPACKAGE_ARMOR_AMOUNT "sh_demonic_hero_prepackage_ap"
+
+
+#define DEFAULT_DEMONIC_PREPACKAGE_HEALTH_AMOUNT "sh_demonic_hero_prepackage_hp"
+
+#define DEFAULT_DEMONIC_PREPACKAGE_SPEED_AMOUNT "sh_demonic_hero_prepackage_speed"
+
+#define DEFAULT_DEMONIC_PREPACKAGE_RESI_AMOUNT "sh_demonic_hero_prepackage_dmg_resi_pct"
+
+#define DEFAULT_DEMONIC_PREPACKAGE_REGEN_AMOUNT "sh_demonic_hero_prepackage_dmg_regen_persec_pct"
+
+
+
+
+
+
 stock REMOVE_WEAPONS_TASKID = -1
-static default_elemental_probe_cvar_ptr = -1
+
+stock DEMONIC_HEALING_TASKID = -1
+
+static default_elemental_probe_cvar_ptr = -1,
+		default_demonic_hero_prepackage_ap = -1,
+		default_demonic_hero_prepackage_hp = -1,
+		default_demonic_hero_prepackage_speed = -1,
+		default_demonic_hero_prepackage_resi = -1,
+		default_demonic_hero_prepackage_regen = -1
+
+
 public plugin_init(){
 
 
@@ -33,17 +60,51 @@ public plugin_init(){
 
 	default_elemental_probe_cvar_ptr = create_cvar(DEFAULT_ETHEREAL_GRAVITY_CVAR_NAME, "0.1", _,"Default gravity for registered ethereal heroes",true, 0.1,true, 0.5)
 
+	default_demonic_hero_prepackage_ap = create_cvar(DEFAULT_DEMONIC_PREPACKAGE_ARMOR_AMOUNT, "400.0", _,"Default registered armor points for demonic heroes",true, 250.0,true, 800.0)
+
+	default_demonic_hero_prepackage_hp = create_cvar(DEFAULT_DEMONIC_PREPACKAGE_HEALTH_AMOUNT, "400.0", _,"Default registered health points for demonic heroes",true, 250.0,true, 800.0)
+
+	default_demonic_hero_prepackage_speed = create_cvar(DEFAULT_DEMONIC_PREPACKAGE_SPEED_AMOUNT, "600.0", _,"Default speed for registered demonic heroes",true, 300.0,true, 900.0)
+
+	default_demonic_hero_prepackage_resi = create_cvar(DEFAULT_DEMONIC_PREPACKAGE_RESI_AMOUNT, "0.33", _,"Default damage resi pct for registered demonic heroes",true, 0.1,true, 0.80)
+
+	default_demonic_hero_prepackage_regen = create_cvar(DEFAULT_DEMONIC_PREPACKAGE_REGEN_AMOUNT, "0.2", _,"Default hp regen pct per second for registered demonic heroes",true, 0.05,true, 0.7)
+
 
 	RegisterHam(Ham_TakeDamage,"player","ham_sh_damage_gating",_, true)
-	
+	RegisterHam(Ham_TakeDamage, "player", "Player_TakeDamage_Post", 1,true)
 	RegisterHam( Ham_Touch, "armoury_entity", "fw_HamPlayerTouchPre", _,true);
 	RegisterHam( Ham_Touch, "weaponbox", "fw_HamPlayerTouchPre" ,_,true);
 	register_forward(FM_CmdStart,"fw_Ethereal_unnarmed")
 	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
 
 	REMOVE_WEAPONS_TASKID = allocate_typed_task_id(player_task)
+	DEMONIC_HEALING_TASKID = allocate_typed_task_id(generic_task)
+
+
+	set_task(1.0,"demonic_healing",DEMONIC_HEALING_TASKID,_,_,"b")
+
 }
 
+public demonic_healing(task_id){
+
+
+	if (! sh_is_active()) return
+	static the_players[SH_MAXSLOTS], pnum, id		
+	get_players(the_players, pnum, "a")
+	for (new k = 0; k < pnum; k++) {
+		
+		id = the_players[k]
+		if(sh_get_player_has_hero_prop(id,SH_DEMONIC_HERO) ){
+
+			new hp_to_heal= floatround((  float(sh_get_max_hp(id)) - entity_get_float(id, EV_FL_health))  * cvar_val(float, default_demonic_hero_prepackage_regen))
+			sh_add_hp(id,hp_to_heal)
+			
+
+
+		}
+	}
+}
 public plugin_cfg(){
 
 
@@ -56,8 +117,19 @@ public plugin_natives(){
 
 	register_native("sh_register_elemental_probe_hero","_sh_register_elemental_probe_hero")
 
+	register_native("sh_register_hero_with_demonic_prepackage","_sh_register_hero_with_demonic_prepackage")
+
 }
 
+public Player_TakeDamage_Post(id, idinflictor, idattacker, Float:damage, damagebits)
+{
+	if ( !sh_is_active() || !is_user_alive(id)){
+		return
+	}
+	if(sh_get_player_has_hero_prop(id, SH_DEMONIC_HERO)){
+		set_pdata_float(id, fPainShock, 1.0, 5)
+	}
+} 
 public bool:_sh_register_elemental_probe_hero(iPlugins, iParams){
 
 	new heroID = get_param(1)
@@ -84,6 +156,32 @@ public bool:_sh_register_elemental_probe_hero(iPlugins, iParams){
 	sh_assign_hero_bit(heroID, SH_ETHEREAL_HERO, true)
 
 	sh_assign_hero_bit(heroID, SH_ELEMENTAL_PROBE_HERO, true)
+
+	return true
+
+}
+
+public bool:_sh_register_hero_with_demonic_prepackage(iPlugins, iParams){
+
+	new heroID = get_param(1)
+
+
+	if(( heroID < 0 )||(heroID >= SH_MAXHEROS)){
+		return false
+	}
+
+	new ap_pcvar_given_here = get_param(2)
+
+	new hp_pcvar_given_here = get_param(3)
+
+	new speed_pcvar_given_here = get_param(4)
+
+	sh_set_hero_hpap(heroID, (hp_pcvar_given_here <= 0) ? default_demonic_hero_prepackage_hp : hp_pcvar_given_here,
+								(ap_pcvar_given_here <= 0) ? default_demonic_hero_prepackage_ap : ap_pcvar_given_here)
+
+	sh_set_hero_speed(heroID, (speed_pcvar_given_here <= 0) ? default_demonic_hero_prepackage_speed : speed_pcvar_given_here)
+
+	sh_assign_hero_bit(heroID, SH_DEMONIC_HERO, true)
 
 	return true
 
@@ -150,6 +248,13 @@ public ham_sh_damage_gating(this, inflictor, attacker, Float:damage, damagebits)
 		}
 	}
 	
+	if(sh_get_player_has_hero_prop(this,SH_DEMONIC_HERO)){
+
+		SetHamParamFloat(4, damage - ( damage * cvar_val(float, default_demonic_hero_prepackage_resi) ) )
+		
+		return HAM_HANDLED
+	}
+	
 	return HAM_IGNORED
 }
 
@@ -181,38 +286,55 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_h
 	//ethereal players can ONLY be damaged by a very sparse selection of SH_NEW_DMG types
 	//AND hand grenades, unless they have the ANTI_GRENADES_HERO property active
 
-
-	if(!sh_get_player_has_hero_prop(victim,SH_ETHEREAL_HERO)){
-		return DMG_FWD_PASS
-	}
 	new dmg_fwd_ret_id:the_return_value=DMG_FWD_PASS
-	switch(new_dmg_type){
+
+	if(sh_get_player_has_hero_prop(victim,SH_ETHEREAL_HERO)){
+		
+		switch(new_dmg_type){
 
 
-		case SH_NEW_DMG_BLEED,
-					SH_NEW_DMG_DRAIN:{
+			case SH_NEW_DMG_BLEED,
+						SH_NEW_DMG_DRAIN:{
 
-				the_return_value = ((victim==attacker) ? DMG_FWD_PASS:  DMG_FWD_BLOCK)
+					the_return_value = ((victim==attacker) ? DMG_FWD_PASS:  DMG_FWD_BLOCK)
+
+
+			}
+			case SH_NEW_DMG_SUPER_BULLET,
+						SH_NEW_DMG_TR45H_GUN,
+						SH_NEW_DMG_SUFFOCATION,
+						SH_NEW_DMG_CLEANSE:{
+
+
+					the_return_value = DMG_FWD_BLOCK
+			}
+			default:{
+
+				the_return_value=DMG_FWD_PASS
+			}
+
 
 
 		}
-		case SH_NEW_DMG_SUPER_BULLET,
-					SH_NEW_DMG_TR45H_GUN,
-					SH_NEW_DMG_SUFFOCATION,
-					SH_NEW_DMG_CLEANSE:{
-
-
-				the_return_value = DMG_FWD_BLOCK
-		}
-		default:{
-
-			the_return_value=DMG_FWD_PASS
-		}
-
-
-
 	}
-	
+	if(sh_get_player_has_hero_prop(victim,SH_DEMONIC_HERO)){
+
+		switch(new_dmg_type){
+
+			case SH_NEW_DMG_SUPER_BULLET,
+						SH_NEW_DMG_SUPER_MELEE,
+						SH_NEW_DMG_FRAG_BLAST:{
+
+					damage -= floatround(float(damage) * cvar_val(float, default_demonic_hero_prepackage_resi))
+
+					
+			}
+
+
+
+		}
+	}
+
 	return the_return_value
 }
 public strip_all_player_weapons(array[1],taskid){

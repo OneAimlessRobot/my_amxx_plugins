@@ -44,6 +44,9 @@ new TASKID_LOOP,
 	TASKID_REVENGE,
 	TASKID_NVG
 
+new dmg_source_name_short_predgun[SAFE_BUFFER_SIZE+1]="predgun"
+new dmg_source_name_log_predgun[SAFE_BUFFER_SIZE+1]="predgun"
+new custom_dmg_id_predgun
 
 new arctic_predator_self_destroy_id
 new dmg_source_name_short_self_destroy[SAFE_BUFFER_SIZE+1]="self_destroy"
@@ -88,6 +91,9 @@ public plugin_init()
 
 	sh_assign_hero_bit(gHeroID, SH_EXPLOSION_POWERS, true)
 	
+	custom_dmg_id_predgun=sh_log_custom_damage_source(gHeroID,
+					dmg_source_name_short_predgun,
+					dmg_source_name_log_predgun,0)
 
 	arctic_predator_self_destroy_id=sh_log_custom_damage_source(
 								gHeroID,
@@ -110,8 +116,7 @@ public plugin_init()
 	register_clcmd("nightvision","ToggleNVG")
 	NVGToggle = get_user_msgid("NVGToggle")
 	
-	register_srvcmd("arcticPredator_loop", "arcticPredator_loop")
-	register_forward(FM_TraceLine,"fw_traceline");
+	register_forward(FM_TraceLine,"fw_traceline", 1);
 	register_event("CurWeapon", "make_tracer", "be", "1=1", "3>0")
 	
 	
@@ -119,6 +124,10 @@ public plugin_init()
 	TASKID_LOOP = allocate_typed_task_id(player_task)
 	TASKID_REVENGE = allocate_typed_task_id(player_task)
 	TASKID_NVG = allocate_typed_task_id(player_task)
+
+
+	set_task( 1.0, "arcticPredator_loop", TASKID_LOOP, _, _, "b")
+	set_task( 0.1, "Revenge_Tracker", TASKID_REVENGE, _, _, "b")
 
 	ArcticPred_Revenge_HudSync = CreateHudSyncObj()
 }
@@ -129,8 +138,6 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 
 	if(sh_get_user_has_hero(id, gHeroID)){
 
-		set_task(0.1, "Revenge_Tracker", id+TASKID_REVENGE, _, _, "b")
-		set_task(1.0,"arcticPredator_loop",id+TASKID_LOOP,"",0,"b" )
 		gAlphaInvis = get_cvar_num("arcticPredator_invisible")
 		arcpredator_weapons(id)
 		discThrown[id] = false
@@ -163,25 +170,34 @@ public plugin_precache()
 	g_spriteBldSpray = engfunc(EngFunc_PrecacheModel,"sprites/bloodspray.spr")
 }
 //----------------------------------------------------------------------------------------------
-public arcticPredator_loop(id)
+public arcticPredator_loop(taskid)
 {
-	id-=TASKID_LOOP
-	if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id)  )
-	{
-		if ( g_huntTimer[id]>0 )
-		{
-			g_huntTimer[id]--
-			new message[128]
-			formatex(message, 127, "%d seconds left in hunt mode", g_huntTimer[id] )
+	
+    if ( !sh_is_active() || sh_is_freezetime() ) return
 
-			set_render_with_color_const(id,INVIS,1,gAlphaInvis,_,0,_,_,_,_,_,PRIO_RENDER_INVISIBILITY)
-			client_print(id,print_center,message)
-		}
-		else
+    static the_players[SH_MAXSLOTS], pnum, id
+    get_players(the_players, pnum, "a")
+    for (new i = 0; i < pnum; i++) {
+			
+		id = the_players[i]
+
+		if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id)  )
 		{
-			if ( g_huntTimer[id] == 0 || !is_user_alive(id) )
+			if ( g_huntTimer[id]>0 )
 			{
-				hunt_endmode(id)
+				g_huntTimer[id]--
+				new message[128]
+				formatex(message, 127, "%d seconds left in hunt mode", g_huntTimer[id] )
+
+				set_render_with_color_const(id,INVIS,1,gAlphaInvis,_,0,_,_,_,_,_,PRIO_RENDER_INVISIBILITY)
+				client_print(id,print_center,message)
+			}
+			else
+			{
+				if ( g_huntTimer[id] == 0 || !is_user_alive(id) )
+				{
+					hunt_endmode(id)
+				}
 			}
 		}
 	}
@@ -555,7 +571,12 @@ if ( has_hero  && weapon == CSW_SCOUT && is_user_alive(id) && ( g_huntTimer[atta
 	
 	// do extra damage
 	new extraDamage = 1000
-	sh_extra_damage( id, attacker, extraDamage, my_hitpoint_enum:bodypart  )
+
+	sh_extra_damage(  id, attacker, extraDamage,
+						my_hitpoint_enum:bodypart  ,
+						_,_,_,_,
+						SH_NEW_DMG_ENERGY_BLAST,
+						custom_dmg_id_predgun)
 }
 return PLUGIN_CONTINUE
 }
@@ -576,27 +597,35 @@ explosion(gHeroID,id,float(damradius),float(maxdamage),_,1,_,_,_,BLUE,_,arctic_p
 
 }
 //----------------------------------------------------------------------------------------------
-public Revenge_Tracker(id)
+public Revenge_Tracker(taskid)
 {
-id-=TASKID_REVENGE
-if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) && is_user_connected(id) && NightVisionUse[id] == true  && killer[id] < 33 && killer[id] > 0 )
-{
-	new distance, origin[3], eorigin[3]
 	
-	get_user_origin(id, origin)
-	
-	get_user_origin(killer[id], eorigin)
-	
-	distance = get_distance(eorigin, origin)
-	
-	new namea[24]
-	get_user_name(killer[id],namea,23)
-	
-	new messagethree[128]
-	formatex(messagethree, 127, "Distance to hunted %s: %d", namea, distance )
-	set_hudmessage(255, 0, 0, 0.01, 0.27, 1, 6.0, 0.5, 0.1, 0.1)
-	ShowSyncHudMsg( id,ArcticPred_Revenge_HudSync, messagethree)
-}
+    if ( !sh_is_active() || sh_is_freezetime() ) return
+
+    static the_players[SH_MAXSLOTS], pnum, id
+    get_players(the_players, pnum, "a")
+    for (new i = 0; i < pnum; i++) {
+			
+		id = the_players[i]
+		if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) && is_user_connected(id) && NightVisionUse[id] == true  && killer[id] < 33 && killer[id] > 0 )
+		{
+			new distance, origin[3], eorigin[3]
+			
+			get_user_origin(id, origin)
+			
+			get_user_origin(killer[id], eorigin)
+			
+			distance = get_distance(eorigin, origin)
+			
+			new namea[24]
+			get_user_name(killer[id],namea,23)
+			
+			new messagethree[128]
+			formatex(messagethree, 127, "Distance to hunted %s: %d", namea, distance )
+			set_hudmessage(255, 0, 0, 0.01, 0.27, 1, 6.0, 0.5, 0.1, 0.1)
+			ShowSyncHudMsg( id,ArcticPred_Revenge_HudSync, messagethree)
+		}
+	}
 }
 //----------------------------------------------------------------------------------------------
 public disc_throw_check(id)
@@ -795,7 +824,7 @@ public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 		return FMRES_IGNORED;
 	
 	// get crosshair aim
-	new MyAim[3], Float:flMyAim[3];
+	static MyAim[3], Float:flMyAim[3];
 	get_user_origin(id,MyAim,3);
 	IVecFVec(MyAim,flMyAim);
 	
@@ -803,7 +832,7 @@ public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 	set_tr(TR_vecEndPos,flMyAim);
 	
 	// get ent looking at
-	new ent, body;
+	static ent, body;
 	get_user_aiming(id,ent,body);
 	
 	// if looking at something

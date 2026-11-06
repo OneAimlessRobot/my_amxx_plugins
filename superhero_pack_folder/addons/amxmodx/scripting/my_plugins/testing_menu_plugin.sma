@@ -9,6 +9,7 @@
 #include <float>
 #include <xs>
 #include <amxmodx>
+#include <cstrike>
 #include "../include/engine.inc"
 #include <fakemeta>
 #include <amxmisc>
@@ -345,7 +346,7 @@ public amx_revive(id,tg_id){
         return
 
     }
-    ExecuteHamB(Ham_Spawn,tg_id)
+    cs_user_spawn(tg_id)
     static name[32], name2[32]
     get_user_name(tg_id,name,31)
     

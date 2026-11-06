@@ -90,7 +90,7 @@ public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 	}
 	
 	// get ent looking at
-	static ent, body;
+	new ent, body;
 	get_user_aiming(id, ent, body);
 	
 	// if looking at something

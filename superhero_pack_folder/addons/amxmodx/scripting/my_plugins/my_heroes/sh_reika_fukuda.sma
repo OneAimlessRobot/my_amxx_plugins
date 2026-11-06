@@ -13,6 +13,7 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt13.inc"
 #include "custom_grenades/custom_grenades.inc"
 
 #define BLOCK_FRACTION 0.76
@@ -40,6 +41,9 @@ new pcvar_reika_explosion_cooldown
 new pcvar_reika_explosion_radius
 new pcvar_reika_explosion_force
 new pcvar_reika_explosion_damage
+new pcvar_reika_hp
+new pcvar_reika_ap
+new pcvar_reika_speed
 
 new REIKA_PARRY_TURN_OFF_DELAY_TASKID
 
@@ -55,11 +59,16 @@ public plugin_init()
     pcvar_reika_explosion_force = create_cvar("reika_explosion_force","250.0")
     pcvar_reika_explosion_damage = create_cvar("reika_explosion_damage","80.0")
     pcvar_reika_parry_mode_time = create_cvar("reika_parry_mode_time","6.0")
+    pcvar_reika_hp = create_cvar("reika_hp","300.0")
+    pcvar_reika_ap = create_cvar("reika_ap","400.0")
+    pcvar_reika_speed = create_cvar("reika_speed","400.0")
 
 
 
     // FIRE THE EVENT TO CREATE THIS SUPERHERO!
     gHeroID=shCreateHero(gHeroName, "Kinetic Demon!", "Release blasts or parry melee and retaliate 3-fold! Switch between and trigger them with knife deployed", true, "reika_level" )
+    
+    sh_register_hero_with_demonic_prepackage(gHeroID,pcvar_reika_ap, pcvar_reika_hp, pcvar_reika_speed)
 
     sh_assign_hero_bit(gHeroID,SH_EXPLOSION_POWERS, true)
 

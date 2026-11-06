@@ -111,6 +111,7 @@ new weapon=get_user_weapon(attacker)
 if(optional_bool&&!(sh_clients_are_same_team(id,attacker))&&(attacker!=id)){
 
 	if(weapon==CSW_KNIFE){
+
 		emit_sound(attacker, CHAN_WEAPON, blood_sound_sample, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		new button = pev(attacker, pev_button);
 		new bool:slashing;
@@ -129,6 +130,7 @@ if(optional_bool&&!(sh_clients_are_same_team(id,attacker))&&(attacker!=id)){
 		}
 		new Float: vec2LOS[2];
 		new Float: vecForward[3];
+		new Float: vecForward2[3];
 		new Float: vecForward2D[2];
 	
 		velocity_by_aim( attacker, 1, vecForward );
@@ -136,31 +138,37 @@ if(optional_bool&&!(sh_clients_are_same_team(id,attacker))&&(attacker!=id)){
 		xs_vec_make2d( vecForward, vec2LOS );
 		xs_vec_normalize( vec2LOS, vec2LOS );
     
-		velocity_by_aim(id, 1, vecForward ); 
+		velocity_by_aim(id, 1, vecForward2 ); 
         
-		xs_vec_make2d( vecForward, vecForward2D );
+		xs_vec_make2d( vecForward2, vecForward2D );
 		new damage=(stabbing?stab_damage:slash_damage)
+		new fx_bleed_type:the_type = BLEED_MINI;
 		if(stabbing){
-			
-			if( (xs_vec_dot( vec2LOS, vecForward2D ) > 0.8) )
-			{
-				sh_bleed_user(id,attacker,BLEED_ULTRA,hero_id,heal_attacker,the_hitpoint)
-				damage=damage*4;
-			}
-			else{
-				sh_bleed_user(id,attacker,BLEED_NORMAL,hero_id,heal_attacker,the_hitpoint)
-			}
+				new bool:is_good_angle = ((xs_vec_dot( vec2LOS, vecForward2D ) > 0.8))
+				the_type = (xs_vec_dot( vec2LOS, vecForward2D ) > 0.8) ? BLEED_ULTRA : BLEED_NORMAL
+				
+				damage *= is_good_angle? 4 : 1;
+
+				the_type = BLEED_NORMAL
+
 		}
 		else if(slashing){
 			
-			sh_bleed_user(id,attacker,BLEED_MINI,hero_id,heal_attacker,the_hitpoint)
+			the_type = BLEED_MINI
+
 		}
+
+		sh_bleed_user(id,attacker,the_type,hero_id,heal_attacker,the_hitpoint)
+
 		new is_valid_dmg_src=is_valid_custom_dmg_source(custom_wpn_id)
+
 		sh_extra_damage(id,attacker,damage,
 								the_hitpoint,
 								_,_,_,_,
 								SH_NEW_DMG_SUPER_MELEE,
 								is_valid_dmg_src?custom_wpn_id:custom_dmg_id_shanking)
+		
+
 		
 		emit_sound(id, CHAN_STATIC, PIERCE_WOUND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 								
@@ -192,7 +200,11 @@ public _sh_bleed_user(iPlugin,iParams){
 	new heroID=get_param(4)
 	new heal_user=get_param(5)
 	new my_hitpoint_enum:hitplace= my_hitpoint_enum:get_param(6)
-	if ( !sh_is_active() || !is_user_alive(user)||!is_user_alive(attacker)||sh_get_id_bit(user,SH_IS_BLEEDING) || get_user_godmode(user)) return
+	if ( !sh_is_active() || !is_user_alive(user)||!is_user_alive(attacker)||sh_get_id_bit(user,SH_IS_BLEEDING) || get_user_godmode(user)){
+		
+		return
+	
+	}
 
 	new attacker_name[128]
 	get_user_name(attacker,attacker_name,127)

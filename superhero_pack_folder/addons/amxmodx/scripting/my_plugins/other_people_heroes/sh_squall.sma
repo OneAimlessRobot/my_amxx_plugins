@@ -41,7 +41,7 @@ public plugin_init()
 	sh_set_hero_info(gHeroID, "Gunblade!", "Use your knife like a gun, just aim and fire");
 		
 	//knife hack part
-	register_forward(FM_TraceLine,"fw_traceline");
+	register_forward(FM_TraceLine,"fw_traceline", 1);
 	//sound replacement and bullet consumption
 	RegisterHam(Ham_Weapon_PrimaryAttack, "weapon_knife", "Ham_Weapon_Attack",_,true);
 	RegisterHam(Ham_Weapon_SecondaryAttack, "weapon_knife", "Ham_Weapon_Attack",_,true);
@@ -72,7 +72,7 @@ public sh_client_spawn(id)
 		gBullets[id] = get_pcvar_num(pcvar_bullets);
 
 //----------------------------------------------------------------------------------------------
-public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
+public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id, trace)
 {
 	if( !sh_is_active() || !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) || gBullets[id] < 0 )
 		return FMRES_IGNORED;
@@ -81,24 +81,23 @@ public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id)
 		return FMRES_IGNORED;
 
 	// get crosshair aim
-	static iMyAim[3], Float:flMyAim[3];
-	get_user_origin(id, iMyAim, 3);
-	IVecFVec(iMyAim, flMyAim);
-
+	static MyAim[3], Float:flMyAim[3];
+	get_user_origin(id,MyAim,3);
+	IVecFVec(MyAim,flMyAim);
+	
 	// set crosshair aim
-	set_tr(TR_vecEndPos, flMyAim);
+	set_tr(TR_vecEndPos,flMyAim);
 	
 	// get ent looking at
-	new ent, body;
-	get_user_aiming(id, ent, body);
+	static ent, body;
+	get_user_aiming(id,ent,body);
 	
 	// if looking at something
-	if( pev_valid(ent) )
-	{
-		set_tr(TR_flFraction, 0.1); // 1.0 == no hit, < 1.0 == hit
-		set_tr(TR_pHit, ent); // entity hit
-		set_tr(TR_iHitgroup, body); // bodypart hit				
-	}	
+	if(is_valid_ent(ent)) {
+		set_tr(TR_flFraction,0.1); // 1.0 == no hit, < 1.0 == hit
+		set_tr(TR_pHit,ent); // entity hit
+		set_tr(TR_iHitgroup,body); // bodypart hit
+	}
 	return FMRES_IGNORED;
 }
 //----------------------------------------------------------------------------------------------

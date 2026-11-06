@@ -310,6 +310,8 @@ public ksun_physical_body(id, attacker, Float:damage, Float:direction[3], traceh
 	switch(hitgroup){
 		case HIT_CHEST:{
 			set_tr2(tracehandle,TR_iHitgroup,HIT_HEAD);
+			SetHamParamTraceResult(5,tracehandle)
+			return HAM_HANDLED
 		}
 		case HIT_HEAD:{
 			return HAM_SUPERCEDE

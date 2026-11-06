@@ -266,9 +266,9 @@ sprites/rifle_smoke2.spr
 sprites/rifle_smoke3.spr
 models/hgibs.mdl
 models/agibs.mdl
-models/metalplategibs.mdl
+models/metalplategibs_green.mdl
 models/woodgibs.mdl
-sprites/flare1.spr
+models/glassgibs.mdl
 models/w_squeak.mdl
 models/shmod/ksun/ksun_rifle/v_r5rifle.mdl
 models/shmod/ksun/ksun_rifle/p_r5rifle.mdl
@@ -294,7 +294,6 @@ models/shmod/erica/pistols/v_elite.mdl
 models/shmod/erica/pistols/p_elite.mdl
 models/shmod/lara/spear/v_spear.mdl
 models/shmod/lara/spear/p_spear.mdl
-models/shmod/gunblade.mdl
 models/shmod/predgun/predawp.mdl
 models/shmod/predgun/v_predgun.mdl
 models/shmod/predgun/p_predgun.mdl
@@ -304,6 +303,7 @@ models/shmod/veronika/ak47grenade.mdl
 models/shmod/veronika/p_9mmar.mdl
 models/shmod/riddick_knife.mdl
 models/shmod/usmarine_m4a1.mdl
+models/shmod/gunblade.mdl
 models/shmod/clonetrooper_v_ak47.mdl
 models/shmod/clonetrooper_p_ak47.mdl
 models/shmod/masterchief_v_p90.mdl

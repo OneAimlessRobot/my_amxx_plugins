@@ -84,7 +84,6 @@ shmod/komak/missed_shot.wav
 shmod/komak/engine_down.wav
 shmod/komak/gear_up.wav
 bullchicken/bc_bite2.wav
-weapons/deagle-1.wav
 shmod/goku_ki_blast.wav
 shmod/goku_kamehameha.wav
 shmod/goku_10x_kamehameha.wav
@@ -109,6 +108,7 @@ weapons/xbow_hitbod1.wav
 shmod/glauncher.wav
 shmod/stealthoninvis.wav
 shmod/stealthrevive.wav
+weapons/deagle-1.wav
 vox/_period.wav
 debris/beamstart8.wav
 weapons/explode3.wav
@@ -408,9 +408,12 @@ weapons/ric4.wav
 weapons/ric5.wav
 weapons/ric_metal-1.wav
 weapons/ric_metal-2.wav
+weapons/ric_conc-1.wav
 weapons/ric_conc-2.wav
 debris/bustcrate1.wav
 debris/bustcrate2.wav
+debris/bustglass1.wav
+debris/bustglass2.wav
 squeek/sqk_blast1.wav
 squeek/sqk_die1.wav
 squeek/sqk_hunt1.wav

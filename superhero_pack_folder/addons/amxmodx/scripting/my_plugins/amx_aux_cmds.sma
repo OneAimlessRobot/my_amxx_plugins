@@ -90,9 +90,9 @@ enum CMD_WRAPPER_STRUCT{
 
     cmd_name[128],
     cmd_callback_func[128],
+    flags,
     parameter_description[512],
     param_num,
-    flags,
     obey_immunity_flags,
     bool:is_client_command,
     command_id
@@ -100,11 +100,11 @@ enum CMD_WRAPPER_STRUCT{
 
 
 new array_of_commands[_:MAX_CUSTOM_CMD_IDS][CMD_WRAPPER_STRUCT]={
-    {"amx_stage_murder","amx_stage_murder","Stage a murder between two players!",2,ADMIN_LEVEL_A,0,false,0},
-    {"amx_stage_assault","amx_stage_assault","Make one player damage another!",3,ADMIN_LEVEL_A,0,false,0},
-    {"amx_stage_hit","amx_stage_hit","Stage a hit in a specific hitzone between two players!",1,ADMIN_LEVEL_A,CMDTARGET_ONLY_ALIVE,true,0},
-    {"amx_entity_detector_mode","amx_entity_detector_mode","get entity names by looking at them! No parameters except player to toggle",1,ADMIN_LEVEL_A,CMDTARGET_ONLY_ALIVE,true,0},
-    {"amx_print_logs","amx_print_logs","Print file names in logs dir! And the files themselves if given pattern matches",1,ADMIN_LEVEL_A,0,false,0}
+    {"amx_stage_murder","amx_stage_murder",ADMIN_LEVEL_A,"Stage a murder between two players!",2,0,false,0},
+    {"amx_stage_assault","amx_stage_assault",ADMIN_LEVEL_A,"Make one player damage another!",3,0,false,0},
+    {"amx_stage_hit","amx_stage_hit",ADMIN_LEVEL_A,"Stage a hit in a specific hitzone between two players!",1,CMDTARGET_ONLY_ALIVE,true,0},
+    {"amx_entity_detector_mode","amx_entity_detector_mode",ADMIN_LEVEL_A,"get entity names by looking at them! No parameters except player to toggle",1,CMDTARGET_ONLY_ALIVE,true,0},
+    {"amx_print_logs","amx_print_logs",ADMIN_LEVEL_A,"Print file names in logs dir! And the files themselves if given pattern matches",1,0,false,0}
 
 
 
@@ -126,19 +126,19 @@ public plugin_init()
         new is_client_cmd=array_of_commands[i][is_client_command]
         if(is_client_cmd){
             command_ide=array_of_commands[i][command_id]=register_clcmd(
-                            array_of_commands[i][cmd_name], 
+                            array_of_commands[i][cmd_name],
                             array_of_commands[i][cmd_callback_func],
-                            array_of_commands[i][parameter_description], 
                             array_of_commands[i][flags],
+                            array_of_commands[i][parameter_description],
                             array_of_commands[i][obey_immunity_flags])
 
         }
         else{
             command_ide=array_of_commands[i][command_id]=register_concmd(
-                            array_of_commands[i][cmd_name], 
+                            array_of_commands[i][cmd_name],
                             array_of_commands[i][cmd_callback_func],
-                            array_of_commands[i][parameter_description], 
                             array_of_commands[i][flags],
+                            array_of_commands[i][parameter_description],
                             array_of_commands[i][obey_immunity_flags])
 
         }
@@ -160,7 +160,7 @@ public plugin_init()
 
         }
     }
-    register_forward(FM_TraceLine, "entity_target_tracing")
+    register_forward(FM_TraceLine, "entity_target_tracing",1)
 
 
 
@@ -305,7 +305,6 @@ public entity_target_tracing(Float:v1[3],Float:v2[3],noMonsters,id,trace)
     if( !is_user_alive(id) || !Get_BitVar(is_entity_scanner_mode, id )||is_user_bot(id)){
         return FMRES_IGNORED;
     }
-
     new entity = get_tr2(trace, TR_pHit);
 
     // if looking at something
@@ -319,11 +318,6 @@ public entity_target_tracing(Float:v1[3],Float:v2[3],noMonsters,id,trace)
         formatex(hud_msg,127,"Classname of entity %d: %s",entity,entity_classname)
         client_print(id,print_center,"%s",hud_msg)
                     
-    }
-    else{
-
-        client_print(id,print_chat,"Invalid entity %d",entity)
-
     }
     return FMRES_IGNORED;
 }
@@ -340,7 +334,7 @@ public amx_entity_detector_mode(id,level,cid){
     if (!player) return PLUGIN_HANDLED
     if(!is_user_alive(player)){
         
-        console_print(id,"That player is still alive! Rejecting^n")
+        console_print(id,"That player is not alive! Rejecting^n")
         return PLUGIN_HANDLED    
             
     }
@@ -433,7 +427,7 @@ public amx_stage_assault(id,level,cid){
     get_user_name(player2,name2,31)
     
     console_print(0, "(Shocked gasps) %s just BELIGERANTELY assaulted a player named %s! (%0.2f damage)^n",name,name2,damage)
-    log_amx("(Shocked gasps) %s just BELIGERANTELY assaulted a player named (%0.2f damage)%s!^n",name,name2,damage)
+    log_amx("(Shocked gasps) %s just BELIGERANTELY assaulted a player named %s! (%0.2f damage)^n",name,name2,damage)
     return PLUGIN_HANDLED
 }
 public amx_stage_hit(id,level,cid){

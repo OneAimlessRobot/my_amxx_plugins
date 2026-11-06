@@ -77,7 +77,7 @@ public plugin_init()
 
 	sh_assign_hero_bit(gHeroID,SH_HEALING_HERO, true)
 	
-	register_forward(FM_TraceLine,"fw_traceline");
+	register_forward(FM_TraceLine,"fw_traceline",1);
 	RegisterHam(Ham_TraceAttack,"player","trace_adriano",_,true)
 
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
@@ -242,15 +242,11 @@ public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id, trace)
 		return FMRES_IGNORED;
 	}
 	
-	if(trace){
-
-		return FMRES_IGNORED
-	}
 
 	new ent= get_tr2(trace,TR_pHit)
 	
 	// if looking at something
-	if( pev_valid(ent))
+	if( is_valid_ent(ent))
 	{
 		if(is_user_alive(ent)&&sh_clients_are_same_team(id,ent)){
 			static hud_msg[128]

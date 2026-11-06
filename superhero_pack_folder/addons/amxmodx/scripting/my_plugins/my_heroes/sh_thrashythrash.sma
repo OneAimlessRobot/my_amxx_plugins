@@ -93,7 +93,6 @@ public plugin_init()
 
 	register_event("DeathMsg","thrash_brat_death","a");
 
-	register_forward(FM_TraceLine,"fw_traceline");
 	register_forward( FM_CmdStart, "fw_CmdStart" )
 
 	register_ham_hook_multiple(Ham_TraceAttack,

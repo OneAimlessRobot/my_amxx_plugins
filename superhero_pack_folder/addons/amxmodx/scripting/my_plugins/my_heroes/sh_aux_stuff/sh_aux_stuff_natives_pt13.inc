@@ -17,3 +17,13 @@
 
 
 native bool:sh_register_elemental_probe_hero(heroID, Float:health_cap = -1.0, cvar_ptr = -1)
+
+//returns true if registration was successful. false otherwise
+//heroID to make into a demonic hero
+//give pcvars to hp, ap and speed if you dont want the default ones
+//these heroes will get no knockback
+//and a configurable passive resistance to all conventional damage
+//and kinetic superheromod damage
+
+
+native bool:sh_register_hero_with_demonic_prepackage(heroID, ap_cvar_ptr = -1, hp_cvar_ptr = -1, speed_cvar_ptr = -1)

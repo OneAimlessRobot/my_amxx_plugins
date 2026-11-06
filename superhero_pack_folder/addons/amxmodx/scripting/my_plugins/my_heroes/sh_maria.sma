@@ -83,7 +83,7 @@ public plugin_init()
 
 	sh_assign_hero_bit(gHeroID,SH_HEALING_HERO, true)
 	
-	register_forward(FM_TraceLine,"fw_traceline");
+	register_forward(FM_TraceLine,"fw_traceline",1);
 	register_event("Damage", "maria_damage", "b", "2!0")
 
 	sh_assign_hero_projectile_weapon_bit(gHeroID,my_weapon_ids:MARIA_WEAPON_CLASSID,true)
@@ -323,15 +323,10 @@ public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id,  trace)
 	if( !sh_is_active() || !is_user_alive(id) ||!sh_get_user_has_hero(id,gHeroID)  ||is_user_bot(id)){
 		return FMRES_IGNORED;
 	}
-
-	if(trace){
-
-		return FMRES_IGNORED
-	}
 	new ent= get_tr2(trace,TR_pHit)
 	
 	// if looking at something
-	if( pev_valid(ent))
+	if( is_valid_ent(ent))
 	{
 		if(is_user_alive(ent)&&sh_clients_are_same_team(id,ent)){
 			static hud_msg[128]

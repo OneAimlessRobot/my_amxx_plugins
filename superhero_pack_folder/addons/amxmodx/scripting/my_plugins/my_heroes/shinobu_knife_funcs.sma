@@ -97,7 +97,7 @@ public shinobu_cloak_apply(task_id){
 
 
 	if (! sh_is_active()) return
-	new the_players[SH_MAXSLOTS], pnum, id		
+	static the_players[SH_MAXSLOTS], pnum, id		
 	get_players(the_players, pnum, "a")
 	for (new k = 0; k < pnum; k++) {
 		
