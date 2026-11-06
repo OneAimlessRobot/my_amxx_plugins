@@ -75,6 +75,8 @@ public plugin_init()
 	create_cvar("arcticpredator_discdmg", "60" )
 	create_cvar("arcticPredator_huntmode", "10" )
 	create_cvar("arcticPredator_cooldown", "30" )
+	create_cvar("arcticPredator_predgun_damage", "10000" )
+
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Hunter", "Invisble Hunt Mode, Press N to toggle Hunter Helmet Power, Throw Predator Disc.", true, "arcticPredator_level")
@@ -570,7 +572,7 @@ if ( has_hero  && weapon == CSW_SCOUT && is_user_alive(id) && ( g_huntTimer[atta
 	message_end()
 	
 	// do extra damage
-	new extraDamage = 1000
+	new extraDamage = max_macro(1000, get_cvar_num("arcticPredator_predgun_damage"))
 
 	sh_extra_damage(  id, attacker, extraDamage,
 						my_hitpoint_enum:bodypart  ,

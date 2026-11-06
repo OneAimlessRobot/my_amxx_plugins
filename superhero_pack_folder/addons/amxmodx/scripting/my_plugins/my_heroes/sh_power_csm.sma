@@ -10,6 +10,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt14.inc"
 #include "custom_grenades/custom_grenades.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt13.inc"
 #include "../my_include/my_author_header.inc"
 // GLOBAL VARIABLES
 
@@ -38,6 +39,7 @@ new pcvar_extract_hp_frac
 new pcvar_extract_cooldown
 new pcvar_max_points
 new pcvar_max_mult
+new pcvar_hp, pcvar_ap, pcvar_speed
 
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -53,23 +55,29 @@ public plugin_init()
 	pcvar_extract_cooldown = create_cvar("power_csm_extract_cooldown", "10.0")
 	pcvar_max_mult = create_cvar("power_csm_max_mult", "10.0")
 	pcvar_max_points = create_cvar("power_csm_max_points", "500.0")
+	pcvar_hp = create_cvar("power_csm_hp", "250.0")
+	pcvar_ap = create_cvar("power_csm_ap", "0.0")
+	pcvar_speed = create_cvar("power_csm_speed", "350.0")
+
 	
 	set_pcvar_bounds(pcvar_max_points,CvarBound_Lower,true, 20.0)
 	set_pcvar_bounds(pcvar_max_mult,CvarBound_Lower,true, 1.0)
 
 	gHeroID=shCreateHero(gHeroName, "Blood fiend!", "Extract 1 3rd of your healt on keydown and fill a damage battery", true, "power_csm_level" )
-	
+
+	sh_register_hero_with_demonic_prepackage(gHeroID,pcvar_ap, pcvar_hp, pcvar_speed)
+
 	power_csm_drain_wpn_id=sh_log_custom_damage_source(
-								gHeroID,
-								power_csm_drain_wpn_short_name,
-								power_csm_drain_wpn_log_name,
-								0)
+							gHeroID,
+							power_csm_drain_wpn_short_name,
+							power_csm_drain_wpn_log_name,
+							0)
 
 	power_csm_bleed_dmg_boost_wpn_id=sh_log_custom_damage_source(
-								gHeroID,
-								power_csm_bleed_dmg_boost_wpn_short_name,
-								power_csm_bleed_dmg_boost_wpn_log_name,
-								0)
+							gHeroID,
+							power_csm_bleed_dmg_boost_wpn_short_name,
+							power_csm_bleed_dmg_boost_wpn_log_name,
+							0)
 	
 	register_ham_hook_multiple(Ham_TraceAttack,
 						full_entity_array_for_trace_attack,
