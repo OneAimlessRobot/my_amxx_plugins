@@ -151,7 +151,7 @@ new fwd_HeroInit, fwd_HeroInit_Pre, fwd_HeroKey, fwd_Spawn, fwd_Death
 new fwd_RoundStart, fwd_RoundEnd, fwd_NewRound
 new fwd_ShDamagePre
 new fwd_ShDamagePost
-new fwd_ShXpPre
+new fwd_ShXpPost
 
 
 
@@ -259,7 +259,7 @@ public plugin_init()
 	
 	fwd_ShDamagePre= CreateMultiForward("sh_extra_damage_fwd_pre",ET_STOP2 ,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_ARRAY,FP_VAL_BYREF,FP_VAL_BYREF,FP_CELL)
 	fwd_ShDamagePost= CreateMultiForward("sh_extra_damage_fwd_post",ET_IGNORE ,FP_CELL,FP_CELL,FP_CELL,FP_CELL,FP_CELL,FP_CELL,FP_ARRAY,FP_CELL,FP_CELL,FP_CELL)
-	fwd_ShXpPre= CreateMultiForward("sh_set_user_xp_fwd_pre",ET_STOP2 ,FP_VAL_BYREF,FP_VAL_BYREF,FP_CELL)
+	fwd_ShXpPost= CreateMultiForward("sh_set_user_xp_fwd_post",ET_IGNORE ,FP_CELL,FP_CELL,FP_CELL)
 
 	// Init saving method commands/cvars/variables
 	saving_init()
@@ -2712,7 +2712,7 @@ public _sh_extra_damage()
 			new xp_to_add=( (headshot && (hsmult > 1.0)))?floatround(gXPGiven[gPlayerLevel[victim]] * hsmult):gXPGiven[gPlayerLevel[victim]]
 			localAddXP(attacker, xp_to_add)
 			new xp_fwd_ret_id:the_xp_return_value=XP_FWD_PASS
-			if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, attacker,xp_to_add,XP_KILL_XP)){
+			if (!ExecuteForward(fwd_ShXpPost, the_xp_return_value, attacker,xp_to_add,XP_KILL_XP)){
 				server_print("Sh xp forward execute error.");
 			}
 			set_user_frags(attacker, ++attackerFrags)
@@ -3064,7 +3064,7 @@ public event_DeathMsg()
 			new xp_to_add=( ((read_data(3)) && (hsmult > 1.0)) )?floatround(gXPGiven[gPlayerLevel[victim]] * hsmult):gXPGiven[gPlayerLevel[victim]]
 			localAddXP(killer, xp_to_add)
 			new xp_fwd_ret_id:the_xp_return_value=XP_FWD_PASS
-			if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, killer,xp_to_add,XP_KILL_XP)){
+			if (!ExecuteForward(fwd_ShXpPost, the_xp_return_value, killer,xp_to_add,XP_KILL_XP)){
 				server_print("Sh xp forward execute error.");
 			}
 		}
@@ -4604,7 +4604,7 @@ public vip_UserEscape()
 
 	new XPtoGive = get_pcvar_num(sh_objectivexp)
 	new xp_fwd_ret_id:the_xp_return_value=XP_FWD_PASS
-	if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, id,XPtoGive,XP_VIP_ESCAPE_XP)){
+	if (!ExecuteForward(fwd_ShXpPost, the_xp_return_value, id,XPtoGive,XP_VIP_ESCAPE_XP)){
 		server_print("Sh xp forward execute error.");
 	}
 	localAddXP(id, XPtoGive)
@@ -4624,7 +4624,7 @@ public vip_Assassinated()
 
 	new XPtoGive = get_pcvar_num(sh_objectivexp)
 	new xp_fwd_ret_id:the_xp_return_value=XP_FWD_PASS
-	if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, attacker,XPtoGive,XP_VIP_ASSASSINATE_XP)){
+	if (!ExecuteForward(fwd_ShXpPost, the_xp_return_value, attacker,XPtoGive,XP_VIP_ASSASSINATE_XP)){
 		server_print("Sh xp forward execute error.");
 	}
 	localAddXP(attacker, XPtoGive)
@@ -4647,7 +4647,7 @@ public vip_Escaped()
 		ct = players[i]
 		if ( ct == gXpBounsVIP || (is_user_alive(ct) && cs_get_user_team(ct) == CS_TEAM_CT) ) {
 			new xp_fwd_ret_id:the_xp_return_value=XP_FWD_PASS
-			if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, ct,XPtoGive,XP_VIP_PROTECT_XP)){
+			if (!ExecuteForward(fwd_ShXpPost, the_xp_return_value, ct,XPtoGive,XP_VIP_PROTECT_XP)){
 				server_print("Sh xp forward execute error.");
 			}		
 			localAddXP(ct, XPtoGive)
@@ -4684,7 +4684,7 @@ public host_Rescued()
 	// gNumHostages should never be 0 if this is called so no need to check for div by 0
 	new XPtoGive = max(1, floatround(get_pcvar_float(sh_objectivexp) / gNumHostages))
 	new xp_fwd_ret_id:the_xp_return_value=XP_FWD_PASS
-	if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, id,XPtoGive,XP_HOSTAGE_RESCUED_XP)){
+	if (!ExecuteForward(fwd_ShXpPost, the_xp_return_value, id,XPtoGive,XP_HOSTAGE_RESCUED_XP)){
 		server_print("Sh xp forward execute error.");
 	}
 	localAddXP(id, XPtoGive)
@@ -4706,7 +4706,7 @@ public host_AllRescued()
 		ct = players[i]
 		if ( cs_get_user_team(ct) != CS_TEAM_CT ) continue
 		new xp_fwd_ret_id:the_xp_return_value=XP_FWD_PASS
-		if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, ct,XPtoGive,XP_HOSTAGE_ALL_RESCUED_XP)){
+		if (!ExecuteForward(fwd_ShXpPost, the_xp_return_value, ct,XPtoGive,XP_HOSTAGE_ALL_RESCUED_XP)){
 			server_print("Sh xp forward execute error.");
 		}
 		localAddXP(ct, XPtoGive)
@@ -4746,7 +4746,7 @@ public bomb_planted(planter)
 	new XPtoGive = get_pcvar_num(sh_objectivexp)
 	
 	new xp_fwd_ret_id:the_xp_return_value=XP_FWD_PASS
-	if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, planter,XPtoGive,XP_BOMB_PLANT_XP)){
+	if (!ExecuteForward(fwd_ShXpPost, the_xp_return_value, planter,XPtoGive,XP_BOMB_PLANT_XP)){
 		server_print("Sh xp forward execute error.");
 	}
 	localAddXP(planter, XPtoGive)
@@ -4773,7 +4773,7 @@ public bomb_defused(defuser)
 			continue
 		}
 		new xp_fwd_ret_id:the_xp_return_value=XP_FWD_PASS
-		if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, ct,XPtoGive,XP_BOMB_TARGET_SAVE_XP)){
+		if (!ExecuteForward(fwd_ShXpPost, the_xp_return_value, ct,XPtoGive,XP_BOMB_TARGET_SAVE_XP)){
 			server_print("Sh xp forward execute error.");
 		}
 		localAddXP(ct, XPtoGive)
@@ -4781,7 +4781,7 @@ public bomb_defused(defuser)
 	}
 
 	new xp_fwd_ret_id:the_xp_return_value=XP_FWD_PASS
-	if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, defuser,XPtoGive,XP_BOMB_DEFUSE_XP)){
+	if (!ExecuteForward(fwd_ShXpPost, the_xp_return_value, defuser,XPtoGive,XP_BOMB_DEFUSE_XP)){
 		server_print("Sh xp forward execute error.");
 	}
 	localAddXP(defuser, XPtoGive)
@@ -4806,7 +4806,7 @@ public bomb_explode(planter, defuser)
 			continue
 		}
 		new xp_fwd_ret_id:the_xp_return_value=XP_FWD_PASS
-		if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, terrorist,XPtoGive,XP_BOMB_EXPLODE_XP)){
+		if (!ExecuteForward(fwd_ShXpPost, the_xp_return_value, terrorist,XPtoGive,XP_BOMB_EXPLODE_XP)){
 			server_print("Sh xp forward execute error.");
 		}
 		localAddXP(terrorist, XPtoGive)
@@ -4814,7 +4814,7 @@ public bomb_explode(planter, defuser)
 
 	}
 	new xp_fwd_ret_id:the_xp_return_value=XP_FWD_PASS
-	if (!ExecuteForward(fwd_ShXpPre, the_xp_return_value, planter,XPtoGive,XP_BOMB_PLANT_XP)){
+	if (!ExecuteForward(fwd_ShXpPost, the_xp_return_value, planter,XPtoGive,XP_BOMB_PLANT_XP)){
 		server_print("Sh xp forward execute error.");
 	}
 	localAddXP(planter, XPtoGive)

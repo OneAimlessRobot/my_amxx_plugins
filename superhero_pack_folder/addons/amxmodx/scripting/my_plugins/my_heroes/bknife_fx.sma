@@ -32,13 +32,15 @@ enum bleed_task_parameter_id{
 	bleed_task_repeats,
 	bleed_task_apply_id,
 	bleed_type_name[128],
-	bleed_type_alphas[bleed_alpha_type]
+	bleed_type_alphas[bleed_alpha_type],
+	sh_custom_color:BLOOD_COLOR_CONST
 }
+
 stock bleed_task_parameters[fx_bleed_type][bleed_task_parameter_id]={	
-					{-1.0,5.0,0.0,0,-1,"no bleeding",{0,0}},
-					{0.25,5.0,0.05,0,-1,"mini bleeding",{50,255}},
-					{0.25,5.0,0.1,0,-1,"bleeding",{75,255}},
-					{0.25,5.0,0.25,0,-1,"ultrableeding",{120,255}}
+					{-1.0,5.0,0.0,0,-1,"no bleeding",{0,0}, FX_NONE},
+					{0.25,5.0,0.05,0,-1,"mini bleeding",{50,255}, RED},
+					{0.25,5.0,0.1,0,-1,"bleeding",{75,255}, DEEP_RED},
+					{0.25,5.0,0.25,0,-1,"ultrableeding",{180,255}, SEVERE_RED}
 
 }
 
@@ -266,8 +268,9 @@ public bleed_task(any:array[5],id){
 	new Float:victim_hp=float(get_user_health(id)),
 		Float:damage_to_deal=victim_hp*
 							bleed_task_parameters[fx_bleed_type:array[0]][bleed_type_damage_pct]
-
-	set_render_with_color_const(id,RED,1,bleed_task_parameters[fx_bleed_type:array[0]][bleed_type_alphas][render_alpha],
+	new sh_custom_color:the_color_of_this_blood = bleed_task_parameters[fx_bleed_type:array[0]][BLOOD_COLOR_CONST]
+	
+	set_render_with_color_const(id, the_color_of_this_blood,1,bleed_task_parameters[fx_bleed_type:array[0]][bleed_type_alphas][render_alpha],
 							bleed_task_parameters[fx_bleed_type:array[0]][bleed_type_alphas][hud_alpha],
 							_,_,
 							bleed_task_parameters[fx_bleed_type:array[0]][bleed_task_period],_,_,_,PRIO_RENDER_EFFECT_ACTIVE)
@@ -276,13 +279,13 @@ public bleed_task(any:array[5],id){
 		generic_heal(array[1],
 					damage_to_deal,
 					_,
-					RED,
+					the_color_of_this_blood,
 					_,
 					_,
 					bleed_task_parameters[fx_bleed_type:array[0]][bleed_type_alphas][hud_alpha],1,0)
 	}
 	else{
-		set_render_with_color_const(array[1],RED,0,_,bleed_task_parameters[fx_bleed_type:array[0]][bleed_type_alphas][hud_alpha],
+		set_render_with_color_const(array[1],the_color_of_this_blood,0,_,bleed_task_parameters[fx_bleed_type:array[0]][bleed_type_alphas][hud_alpha],
 							1,
 							_,
 							bleed_task_parameters[fx_bleed_type:array[0]][bleed_task_period],_,_,kRenderNormal,PRIO_RENDER_EFFECT_ACTIVE)

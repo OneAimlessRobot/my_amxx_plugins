@@ -68,7 +68,7 @@ forward sh_extra_damage_fwd_post(
 			sh_thrash_brat_dmg_type:new_dmg_type,
 			custom_wpn_id);
 
-forward xp_fwd_ret_id:sh_set_user_xp_fwd_pre(&id, &xp, xp_type_bonus_id:xp_type);
+forward sh_set_user_xp_fwd_post(id, xp, xp_type_bonus_id:xp_type);
 
 
 forward sh_extra_health_add_pre(&id,&the_health_to_add)

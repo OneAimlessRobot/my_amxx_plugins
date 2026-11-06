@@ -94,6 +94,7 @@ public _reset_graciete_user(iPlugin,iParams){
 	UnSet_BitVar(g_graciete_leaped_mask,id);
 	UnSet_BitVar(g_graciete_jetpack_on_mask,id);
 	g_graciete_land_power[id]=0.0;
+	emit_sound(id, CHAN_ITEM, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	emit_sound(id, CHAN_ITEM, jp_fly, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 	
 	
@@ -122,7 +123,6 @@ charge_user(id){
 	
 	Set_BitVar(g_graciete_jetpack_on_mask,id);
 	
-	emit_sound(id, CHAN_ITEM, jp_fly, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 	emit_sound(id, CHAN_ITEM, jp_fly, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	trail(id,RED,10,15)
 	charge_task(id+GRACIETE_CHARGE_TASKID)
@@ -138,6 +138,7 @@ uncharge_user(id){
 	}
 	trail(id,RED,0,0)
 	emit_sound(id, CHAN_ITEM, jp_fly, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
+	emit_sound(id, CHAN_ITEM, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	
 	
 	
@@ -154,7 +155,6 @@ public Ham_Think_Post(id) {
 			UnSet_BitVar(g_graciete_leaped_mask, id)
 			if(Get_BitVar(g_graciete_power_landing_mask,id)){
 				
-				emit_sound(id, CHAN_ITEM, jp_fly, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 				explosion(gHeroID,id,
 						cvar_val(float,pcvar_land_explosion_radius),g_graciete_land_power[id],_,1)
 				UnSet_BitVar(g_graciete_power_landing_mask,id);
@@ -279,6 +279,6 @@ public sh_client_death(id)
 	if(!is_user_connected(id)||!sh_is_active()){
 		return
 	}
-	emit_sound(id, CHAN_ITEM, jp_fly, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
+	uncharge_user(id)
 	
 }

@@ -31,6 +31,8 @@ enum xp_fwd_ret_id{
 enum xp_type_bonus_id{
 	XP_KILL_XP=0,
 
+	XP_DAMAGE_XP,
+
 	XP_BOMB_PLANT_XP,
 	XP_BOMB_EXPLODE_XP,
 	XP_BOMB_TARGET_SAVE_XP,

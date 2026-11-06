@@ -19,6 +19,8 @@
 // invisible man grey 8, 8, 8
 // palpatine purple 175,0,255 25
 // godmode blue 0, 0, 128 16
+// grotesque red 128, 0, 0, 13,
+// light red 64, 0, 0, 13,
 
 //Colors To Pick From
 enum sh_custom_color{
@@ -54,6 +56,8 @@ enum sh_custom_color{
 		INVISIBLE_MAN_GREY,
 		PALPATINE_PURPLE,
 		GODMODE_BLUE,
+		DEEP_RED,
+		SEVERE_RED,
 		FX_NONE,
 		FX_KILL,
 		FX_GLOW,
@@ -103,6 +107,8 @@ stock const LineColors[sh_custom_color][3] = {
 	{8, 8, 8 }, // invisible man grey
 	{175,0,255 }, // palpatine purple
 	{0, 0, 128 }, // godmode blue
+	{128, 0, 0}, // deep red
+	{64, 0, 0}, // severe red
 	{0,0,0}, //fx_none
 	{1, 255, 255}, //fx_cyanide
 	{255, 255, 255}, //fx_glow

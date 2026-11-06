@@ -3,7 +3,8 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_MISC_FUNCS
-
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_RESOURCE_ALIASES
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "jetplane_inc/sh_jetplane_funcs.inc"

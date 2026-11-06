@@ -39,7 +39,12 @@ new pcvar_extract_hp_frac
 new pcvar_extract_cooldown
 new pcvar_max_points
 new pcvar_max_mult
-new pcvar_hp, pcvar_ap, pcvar_speed
+new pcvar_min_mult
+new pcvar_hp, pcvar_ap, pcvar_speed, pcvar_dmg_to_points_dec_pct, pcvar_dmg_to_points_inc_pct, pcvar_bleed_dmg_resi_pct,
+			pcvar_dmg_to_points_min_dec_points
+
+
+new power_hud_msg_sync
 
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -54,14 +59,21 @@ public plugin_init()
 	pcvar_extract_hp_frac = create_cvar("power_csm_extract_hp_frac", "0.33")
 	pcvar_extract_cooldown = create_cvar("power_csm_extract_cooldown", "10.0")
 	pcvar_max_mult = create_cvar("power_csm_max_mult", "10.0")
+	pcvar_min_mult = create_cvar("power_csm_min_mult", "10.0")
 	pcvar_max_points = create_cvar("power_csm_max_points", "500.0")
 	pcvar_hp = create_cvar("power_csm_hp", "250.0")
 	pcvar_ap = create_cvar("power_csm_ap", "0.0")
 	pcvar_speed = create_cvar("power_csm_speed", "350.0")
-
+	pcvar_dmg_to_points_dec_pct = create_cvar("power_csm_dmg_to_points_dec_pct", "1.0")
+	pcvar_dmg_to_points_inc_pct = create_cvar("power_csm_dmg_to_points_inc_pct", "1.0")
+	pcvar_bleed_dmg_resi_pct = create_cvar("power_csm_bleed_dmg_resi_pct", "0.5")
+	pcvar_dmg_to_points_min_dec_points = create_cvar("power_csm_dmg_to_points_min_dec_points", "4.0")
 	
 	set_pcvar_bounds(pcvar_max_points,CvarBound_Lower,true, 20.0)
 	set_pcvar_bounds(pcvar_max_mult,CvarBound_Lower,true, 1.0)
+	set_pcvar_bounds(pcvar_dmg_to_points_dec_pct,CvarBound_Lower,true, 1.0)
+	set_pcvar_bounds(pcvar_dmg_to_points_inc_pct,CvarBound_Lower,true, 0.5)
+	set_pcvar_bounds(pcvar_bleed_dmg_resi_pct,CvarBound_Upper,true, 0.8)
 
 	gHeroID=shCreateHero(gHeroName, "Blood fiend!", "Extract 1 3rd of your healt on keydown and fill a damage battery", true, "power_csm_level" )
 
@@ -89,7 +101,7 @@ public plugin_init()
 
 	RegisterHam(Ham_TraceAttack,"player","Power_Damage",_,true)
 	
-	
+	power_hud_msg_sync = CreateHudSyncObj()
 	
 }
 
@@ -101,7 +113,7 @@ public power_tracer_red(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr,
 		return
 	}
 	
-	new bool:the_bool_to_use=((g_power_points[Attacker])>0.0)
+	new bool:the_bool_to_use=((floatround(g_power_points[Attacker])) > 1)
 	generic_weapon_tracer_logic(Attacker,the_bool_to_use,_,gHeroID,sh_custom_color:{RED,RED,RED})
 
 }
@@ -131,8 +143,10 @@ power_csm_execute_extract(id){
 											SH_NEW_DMG_BLEED,
 											power_csm_drain_wpn_id)
 	
-	g_power_points[id] = min_macro(cvar_val(float,pcvar_max_points),g_power_points[id]+dmg_to_deal)
+	g_power_points[id] = min_macro(cvar_val(float,pcvar_max_points),g_power_points[id] + (dmg_to_deal * cvar_val(float, pcvar_dmg_to_points_inc_pct)))
 	
+	show_points_to_player(id)
+
 	sh_bleed_user(id,id,BLEED_ULTRA,gHeroID,0)
 
 }
@@ -185,13 +199,21 @@ public Power_Damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, Dam
 		// do extra damage
 		new Float:max_points_frac= (g_power_points[Attacker]/cvar_val(float,pcvar_max_points)),
 		
-			Float:dmg_mult= (max_points_frac*cvar_val(float,pcvar_max_mult)),
+			Float:dmg_mult= (cvar_val(float,pcvar_min_mult) + (max_points_frac* (cvar_val(float,pcvar_max_mult) - cvar_val(float,pcvar_min_mult)))),
 			
-			Float:extraDamage = Damage * dmg_mult- Damage
-		
-		if (extraDamage > 0.0){
+			Float:extraDamage = Damage * dmg_mult- Damage,
 			
-			sh_extra_damage(Victim, Attacker, floatround(extraDamage),
+			rounded_dmg = floatround(extraDamage)
+
+		if(rounded_dmg > 0){
+
+			g_power_points[Attacker] = max_macro(0.0,g_power_points[Attacker]- max_macro(cvar_val(float, pcvar_dmg_to_points_min_dec_points),(extraDamage * cvar_val(float, pcvar_dmg_to_points_dec_pct))))
+
+			show_points_to_player(Attacker)
+		}
+		if (rounded_dmg > 1){
+			
+			sh_extra_damage(Victim, Attacker, rounded_dmg,
 											the_hitpoint,
 											SH_DMG_NORM,
 											SH_EXTRA_DMG_FLAG_STUN,
@@ -200,8 +222,7 @@ public Power_Damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, Dam
 											power_csm_bleed_dmg_boost_wpn_id)
 			
 			sh_bleed_user(Victim,Attacker,BLEED_NORMAL,gHeroID,_,the_hitpoint)
-
-			g_power_points[Attacker] = max_macro(0.0,g_power_points[Attacker]-extraDamage)
+			
 		}
 	}
 	
@@ -217,10 +238,17 @@ public sh_client_spawn(id)
 		if ( sh_get_user_has_hero(id,gHeroID) ) {
 			
 			power_weapons(id)
-			prepare_power_csm(id)
 		}
 	}
 	
+}
+public sh_client_death(id){
+
+	if (sh_is_active() && is_user_connected(id) && sh_get_user_has_hero(id,gHeroID) ) {
+
+		prepare_power_csm(id)
+
+	}
 }
 public client_disconnected(id){
 	
@@ -235,19 +263,40 @@ if ( sh_is_active() && sh_get_user_has_hero(id,gHeroID) &&is_user_alive(id)) {
 }
 }
 
+show_points_to_player(id){
+
+	if ( !sh_is_active() || !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) ){
+		return
+	}
+
+	static hud_msg_buff[512]
+
+	bzero(hud_msg_buff)
+
+	formatex(hud_msg_buff, charsmax(hud_msg_buff), "You now have %0.2f points!", g_power_points[id])
+
+	set_hudmessage(LineColors[YELLOW][0],LineColors[YELLOW][1],LineColors[YELLOW][2], 0.39, 0.20 ,0,0.0,2.0,0.1,0.1,_,120)
+
+	ShowSyncHudMsg(id, power_hud_msg_sync,"%s",hud_msg_buff)
+}
+
 public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
 	
-    if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
+	if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
 
-        return DMG_FWD_PASS
-    }
-    if((new_dmg_type==SH_NEW_DMG_BLEED)){
-        if((attacker!=victim) && sh_get_user_has_hero(victim,gHeroID) ){
-			g_power_points[victim] = min_macro(cvar_val(float,pcvar_max_points),g_power_points[victim]+(float(damage)*0.5))
+		return DMG_FWD_PASS
+	}
+
+	if((new_dmg_type==SH_NEW_DMG_BLEED)){
+		if(sh_get_user_has_hero(victim,gHeroID) ){
+
+			g_power_points[victim] = min_macro(cvar_val(float,pcvar_max_points),g_power_points[victim]+(float(damage)*cvar_val(float, pcvar_dmg_to_points_inc_pct)))
 			
-			damage = floatround(float(damage)*0.5)
-        }
-    }
+			show_points_to_player(victim)
 
-    return DMG_FWD_PASS
+			damage = floatround(float(damage)*cvar_val(float, pcvar_bleed_dmg_resi_pct))
+		}
+	}
+
+	return DMG_FWD_PASS
 }
