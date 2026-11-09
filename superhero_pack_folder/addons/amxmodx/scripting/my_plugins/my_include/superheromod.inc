@@ -1026,40 +1026,6 @@ public sh_end_cooldown(id)
 	sh_debug_message(id, 5, "Cooldown Timer Ended");
 }
 
-//------------
-// Weapon Look Up Tables, faster then a switch statements.
-//------------
-
-/**
- * Returns max backpack ammo of weapon.
- *
- * @note		Stock created in superheroconst.inc, explained here for usage reference.
- *
- * @param weaponID	The CSW_ index of the weapon. (see amxconst.inc)
- * @return		The weapon's max backpack ammo.
- */
-//sh_get_max_bpammo(weaponID)
-
-/**
- * Returns max clip ammo of weapon.
- *
- * @note		Stock created in superheroconst.inc, explained here for usage reference.
- *
- * @param weaponID	The CSW_ index of the weapon. (see amxconst.inc)
- * @return		The weapon's max clip ammo.
- */
-//sh_get_max_clipammo(weaponID)
-
-/**
- * Returns weapon slot of weapon.
- * Useful to run code only on guns not on grenades, etc.
- *
- * @note		Stock created in superheroconst.inc, explained here for usage reference.
- *
- * @param weaponID	The CSW_ index of the weapon. (see amxconst.inc)
- * @return		The weapon slot.
- */
-//sh_get_weapon_slot(weaponID)
 
 /**
  * Gets the default speed of a weapon.

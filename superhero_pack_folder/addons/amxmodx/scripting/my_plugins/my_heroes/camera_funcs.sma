@@ -91,13 +91,13 @@ public Camera_Damage(this, idinflictor, attacker, Float:damage, damagebits)
 	if(!sh_is_active()){
 		return HAM_IGNORED
 	}
-	if(pev_valid(this)!=2){
+	if(pev_valid(this)<=0){
 		return HAM_IGNORED
 	
 	}
 	
 	
-	if(pev_valid(attacker)!=2){
+	if(pev_valid(attacker)<=0){
 		return HAM_IGNORED
 	
 	}
@@ -105,7 +105,7 @@ public Camera_Damage(this, idinflictor, attacker, Float:damage, damagebits)
 		return HAM_IGNORED
 	
 	}
-	if(pev_valid(idinflictor)!=2){
+	if(pev_valid(idinflictor)<=0){
 		return HAM_IGNORED
 	
 	}
@@ -633,15 +633,15 @@ public _camera_charge_camera(iPlugins,iParams){
 	
 	new id=get_param(1);
 	
-	if(!sh_get_user_has_hero(id,gHeroID)) return PLUGIN_HANDLED;
-	
+	if(!sh_get_user_has_hero(id,gHeroID)) return;
+	if(task_exists(id+CAMERA_CHARGE_TASKID)){
+		return
+	}
 	Set_BitVar(camera_planting_mask,id);
 	Set_BitVar(camera_armed_mask,id);
 	curr_charge[id]=0.0
 	emit_sound(id, CHAN_AUTO, CAMERA_BOOTING_SFX, 1.0, 0.0, 0, PITCH_NORM)
 	charge_task(id+CAMERA_CHARGE_TASKID)
-	
-	return PLUGIN_HANDLED
 	
 	
 	

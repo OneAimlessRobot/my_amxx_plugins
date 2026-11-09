@@ -115,8 +115,18 @@ if ( sh_get_user_has_hero(id,gHeroID) &&is_user_alive(id) && sh_is_active() ) {
 
 public greaper_damage(this, attacker)
 {
+static vic_name[128];
+get_user_name(this,vic_name,127)
 
-set_user_godmode(this,0)
+if(get_user_godmode(this)&&!sh_get_id_bit(this, SH_CONTROLLING_VEHICLE)){
+				
+					
+	if(!is_user_bot(attacker)){
+		sh_chat_message(attacker,gHeroID,"You removed %s's godmode!!",vic_name);
+	}
+	set_user_godmode(this,0)
+	return
+}
 sh_extra_damage(this,attacker,1000,
 				MY_HIT_HEAD,
 				SH_DMG_KILL,

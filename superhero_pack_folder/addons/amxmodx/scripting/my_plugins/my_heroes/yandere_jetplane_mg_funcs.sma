@@ -44,7 +44,7 @@ public plugin_init(){
 
 
 	register_entity_as_wall_touchable(JETPLANE_SHELL_CLASSNAME,"shell_hit_wall")
-	register_touch(JETPLANE_FUSELAGE_CLASSNAME,JETPLANE_SHELL_CLASSNAME,"shell_hit_jet")
+	register_touch(JETPLANE_SHELL_CLASSNAME,JETPLANE_FUSELAGE_CLASSNAME,"shell_hit_jet")
 	register_custom_touchable(JETPLANE_SHELL_CLASSNAME,"shell_hit_player",player_vector,1)
 	
 }
@@ -190,21 +190,16 @@ public mg_think(ent)
 	gametime = get_gametime()
 	new owner=pev(ent,pev_owner)
 	new bool:jet_deployed_here = bool:jet_deployed(owner)
+	new Float:mg_health
+	
+	pev(ent,pev_health,mg_health)
 
-	if ( !jet_deployed_here) {
-		if(pev_valid(ent)){
-			mg_destroy(owner)
-			sh_chat_message(owner,gHeroID,"jet mg died cuz of plane dying!!")
-		}
-		return
-	}
-	new Float:mg_health=float(pev(ent,pev_health))
+
 	
 	if ( (mg_health<1000.0)) {
-		if(pev_valid(ent)){
-			mg_destroy(owner)
-			sh_chat_message(owner,gHeroID,"jet mg died!")
-		}
+		mg_destroy(owner)
+		sh_chat_message(owner,gHeroID,"jet mg died!")
+
 		return
 	}
 	if(jet_deployed_here){
@@ -234,8 +229,8 @@ public mg_think(ent)
 
 			}
 		}
-		set_pev(ent, pev_nextthink, gametime + MG_THINK_PERIOD)
 	}
+	set_pev(ent, pev_nextthink, gametime + MG_THINK_PERIOD)
 }
 
 launch_shell(id)
@@ -329,7 +324,7 @@ public shell_hit_wall(pToucher, pTouched){
 
 		new owner=entity_get_edict(pToucher,EV_ENT_owner)
 		
-		ExecuteHam(Ham_TakeDamage, pTouched, pToucher, owner,
+		ExecuteHamB(Ham_TakeDamage, pTouched, pToucher, owner,
 				cvar_val(float, pcvar_jetplane_mg_dmg),
 				0);
 
@@ -449,6 +444,6 @@ public _mg_destroy(iPlugin,iParams){
 	
 	if(is_valid_ent(user_mg[id])){
 		remove_entity(user_mg[id]);
-		user_mg[id]=-1;
 	}
+	user_mg[id]=-1;
 }

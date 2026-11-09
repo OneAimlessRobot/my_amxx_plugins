@@ -628,6 +628,10 @@ public charge_task(any:param[1],id){
 charge_user(id,sh_grenade_type:the_type){
 	new parm[1]
 	parm[0]=the_type
+	if(task_exists(id+SH_CUSTOM_GRENADE_CHARGE_TASKID)){
+
+		return
+	}
 	charge_task(parm,id+SH_CUSTOM_GRENADE_CHARGE_TASKID)
 }
 public _set_custom_grenade_ammo(iPlugin,iParams){

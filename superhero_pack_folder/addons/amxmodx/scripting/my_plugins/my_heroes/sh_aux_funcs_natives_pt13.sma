@@ -298,6 +298,11 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_h
 
 					the_return_value = ((victim==attacker) ? DMG_FWD_PASS:  DMG_FWD_BLOCK)
 
+					if(the_return_value == DMG_FWD_BLOCK){
+
+						return the_return_value
+					}
+
 
 			}
 			case SH_NEW_DMG_SUPER_BULLET,
@@ -307,6 +312,8 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_h
 
 
 					the_return_value = DMG_FWD_BLOCK
+				
+					return the_return_value
 			}
 			default:{
 
@@ -324,8 +331,9 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_h
 			case SH_NEW_DMG_SUPER_BULLET,
 						SH_NEW_DMG_SUPER_MELEE,
 						SH_NEW_DMG_FRAG_BLAST:{
-
-					damage -= floatround(float(damage) * cvar_val(float, default_demonic_hero_prepackage_resi))
+					
+					new blocked_damage = floatround(float(damage) * cvar_val(float, default_demonic_hero_prepackage_resi))
+					damage -= blocked_damage
 
 					
 			}

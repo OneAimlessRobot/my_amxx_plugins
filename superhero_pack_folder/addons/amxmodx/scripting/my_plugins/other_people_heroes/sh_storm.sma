@@ -106,6 +106,10 @@ switch(key)
 		sh_sound_deny(id)
 		return PLUGIN_HANDLED
 	}
+	if(task_exists(id+STORM_TASK_ID)){
+
+		return PLUGIN_HANDLED
+	}
 
 	gStormTimer[id]=get_cvar_num("storm_time")+1
 

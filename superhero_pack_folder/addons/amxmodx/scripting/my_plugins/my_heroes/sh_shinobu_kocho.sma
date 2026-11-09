@@ -59,6 +59,7 @@ public plugin_init()
 	gHeroID=shCreateHero(gHeroName, "Poison Hashira", "Be polite, be sneaky. And make them suffer", true, "shinobu_level")
 	register_event("Damage","shinobuDamage","b", "2!0")
 	
+	RegisterHam(Ham_TraceAttack, "player", "shinobuDamage",1,true)
 	
 	
 	sh_register_hero_healthcap(gHeroID, 90.0)
@@ -163,20 +164,23 @@ shinobu_damage_interaction(attacker,victim,my_hitpoint_enum:hitpoint){
 		shinobu_burst_damage_task_bootstrap(attacker,victim,1)
 	}	
 }
-public shinobuDamage(id)
+public shinobuDamage(id, attacker, Float:damage, Float:Direction[3], Ptr, DamageBits)
 {
-	if ( !sh_is_active() || !is_user_connected(id)) return PLUGIN_CONTINUE
-	new victim=id
-	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
-	if ( !is_user_alive(attacker)||!attacker) return PLUGIN_CONTINUE
+	if ( sh_is_freezetime() ||!sh_is_inround() ||  !sh_is_active() || !is_user_connected(id)) return HAM_IGNORED
 	
-	if(sh_clients_are_same_team(victim,attacker)||(victim==attacker)){
-		return PLUGIN_CONTINUE
+	if ( !is_user_alive(attacker)||!attacker) return HAM_IGNORED
+	
+	new weapon = get_user_weapon(attacker)
+
+	new my_hitpoint_enum:bodypart = my_hitpoint_enum:get_tr2(Ptr, TR_iHitgroup)
+
+	if(sh_clients_are_same_team(id,attacker)||(id==attacker)){
+		return HAM_IGNORED
 	}	
 	if((weapon==CSW_KNIFE)){
-		shinobu_damage_interaction(attacker,victim,my_hitpoint_enum:bodypart)
+		shinobu_damage_interaction(attacker,id,my_hitpoint_enum:bodypart)
 	}
-	return PLUGIN_CONTINUE
+	return HAM_IGNORED
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, sh_init_mode:mode){
@@ -196,26 +200,27 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 	g_shinobu_tagged_player[id]=0
 }
 shinobu_burst_damage_task_bootstrap(attacker,tg,is_attacking=1){
-	if((g_shinobu_tagged_player[attacker]==tg)&&is_attacking) return
+	if((g_shinobu_tagged_player[attacker] == tg)&&is_attacking) return
 	if(DEBUG){
 
-		sh_chat_message(tg,gHeroID,"you have been tagged by shinobu!")
+		sh_chat_message(attacker,gHeroID,"you have been tagged by shinobu!")
 	}
-	g_shinobu_tagged_player[attacker]=tg
-	new parm[1]
-	parm[0]=tg
 	if(task_exists(attacker+SHINOBU_POISON_KICK_DELAYED_TASKID)){
 
 		if(DEBUG){
 
-			sh_chat_message(tg,gHeroID,"task already exists! Lucky!")
+			sh_chat_message(attacker,gHeroID,"task already exists! Lucky!")
 		}
 		return
 	}
 	else if(DEBUG){
 
-		sh_chat_message(tg,gHeroID,"prepare for trouble, scumbag")
+		sh_chat_message(attacker,gHeroID,"prepare for trouble, scumbag")
 	}
+
+	g_shinobu_tagged_player[attacker]=tg
+	new parm[1]
+	parm[0]=tg
 	set_task(cvar_val(float, pcvar_shinobu_poison_kick_delay),
 				"shinobu_burst_damage_task",attacker+SHINOBU_POISON_KICK_DELAYED_TASKID,parm,sizeof parm)
 
@@ -317,7 +322,26 @@ public shinobu_kd(id)
 	sh_chat_message(id,gHeroID,"%s",shinobu_visiting_sentences[shinobu_visiting_sentences_id:generate_int(0,sizeof(shinobu_visiting_sentences)-1)])	
 	shinobu_teleport_init(id)
 }
+public sh_round_end(){
 
+	for (new id = 1; id < sh_maxplayers()+1; id++) {
+		
+		if(task_exists(id + SHINOBU_POISON_KICK_DELAYED_TASKID)){
+			remove_task(id + SHINOBU_POISON_KICK_DELAYED_TASKID)
+		}
+	}
+
+}
+public sh_round_new(){
+
+	for (new id = 1; id < sh_maxplayers()+1; id++) {
+		
+		if(task_exists(id + SHINOBU_POISON_KICK_DELAYED_TASKID)){
+			remove_task(id + SHINOBU_POISON_KICK_DELAYED_TASKID)
+		}
+	}
+
+}
 public sh_client_death(id,killer)
 {
 	if(!sh_is_active()) return
@@ -338,15 +362,15 @@ public sh_client_death(id,killer)
 		}
 		if(sh_get_user_has_hero(id,gHeroID) ){
 			
-			g_shinobu_tagged_player[id]=0
 			remove_task(id+SHINOBU_POISON_KICK_DELAYED_TASKID)
+			g_shinobu_tagged_player[id]=0
 		}
 		
 	}
 		
 }
 public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
-	if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
+	if ( sh_is_freezetime() ||!sh_is_inround() || !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
 	
 		return DMG_FWD_PASS
 	}

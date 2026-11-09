@@ -37,11 +37,13 @@ gambit_cooldown 120.0		//How many seconds until extra grenade damage can be used
 
 #define AMMOX_HEGRENADE 12
 
+#define NUM_ENTITIES 6000
+
 // GLOBAL VARIABLES
 new gHeroName[]="Gambit"
 new bool:gWillHit[SH_MAXSLOTS+1]
 new gGrenTrail
-
+new bool:gambit_grande_flag[NUM_ENTITIES]
 new Float:gTotalChance
 new const HEGRENADE_MODEL[] = "models/w_hegrenade.mdl"
 new pcvar_dmg_mult
@@ -103,8 +105,8 @@ public grenade_throw(id, gid, wid)
 {
 	if(sh_get_user_has_hero(id,gHeroID) &&!sh_get_cooldown_flag(id)){
 	if(wid == CSW_HEGRENADE){
-		gWillHit[id]=(generate_float(0.0,gTotalChance)<1.0)
-		entity_set_int(gid,EV_INT_iuser1,gWillHit[id])
+		gWillHit[id]=(generate_float(0.0,gTotalChance,70)<1.0)
+		gambit_grande_flag[gid] = gWillHit[id]
 		sh_chat_message(id,gHeroID,"GAMBLE IT ALL! You valliant survivor!")
 		if ( gWillHit[id])
 		{
@@ -140,7 +142,14 @@ public gambit_weapons(id)
 public gambit_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
 	if ( !sh_is_active() || !is_user_alive(id)||!is_user_connected(attacker)||!sh_get_user_has_hero(attacker,gHeroID)) return HAM_IGNORED
-	new gambit_charged= entity_get_int(idinflictor,EV_INT_iuser1)
+	
+	static inflictor_classname[64];
+
+	entity_get_string(idinflictor,EV_SZ_classname,inflictor_classname,63)
+	static bool:it_was_a_grenade; it_was_a_grenade = bool:equal(inflictor_classname,"grenade")
+
+	new gambit_charged= gambit_grande_flag[idinflictor]&&it_was_a_grenade
+
 	if ( gambit_charged ) {
 		if ( is_user_alive(id) ) {
 			// do extra damage
@@ -172,7 +181,7 @@ public cooldown(parm[])
 	
 	new id = parm[1]
 
-	entity_set_int(grenade,EV_INT_iuser1,false)
+	gambit_grande_flag[grenade] = false
 
 	if ( !is_user_alive(id) || sh_get_cooldown_flag(id)) return
 

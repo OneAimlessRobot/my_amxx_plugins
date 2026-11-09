@@ -21,6 +21,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt12.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt9.inc"
 #include "../my_include/my_author_header.inc"
@@ -122,7 +123,7 @@ public plugin_init()
 								"",
 								"")
 
-	register_event("Damage", "yandere_damage", "b", "2!0")
+	RegisterHam(Ham_TraceAttack, "player", "yandere_damage",_,true)
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 
 	RegisterHam(Ham_TraceAttack,"player","Yandere_ham_trace_damage",_,true)
@@ -251,7 +252,7 @@ return -1;
 public yandere_sentence_loop(id){
 	
 	if ( !sh_is_active() || sh_is_freezetime() ||!sh_is_inround()) return
-	new the_players[SH_MAXSLOTS], pnum, i		
+	static the_players[SH_MAXSLOTS], pnum, i		
 	get_players(the_players, pnum, "a")
 	for (new k = 0; k < pnum; k++) {
 		
@@ -273,10 +274,10 @@ public yandere_sentence_loop(id){
 														(Get_BitVar(gIdleAngryMask,i)?2:1):0
 	
 				if(degen_dmg_2_take>0){
-					new client_origin[3]
+					static client_origin[3]
 					get_user_origin(i,client_origin)
-					new Float:floatalpha=25.0+max_macro(0.0,min_macro(120.0,255.0*(float(user_health)/float(cvar_val(num,pcvar_overheal_hp_max)))))
-					sh_screen_fade(i, 0.5, 2.5, LineColors[RED][0], LineColors[RED][1], LineColors[RED][2], floatround(floatalpha))
+					new Float:floatalpha=25.0+max_macro(0.0,min_macro(190.0,255.0*(float(user_health)/float(cvar_val(num,pcvar_overheal_hp_max)))))
+					set_render_with_color_const(i,SEVERE_RED,0,_,floatround(floatalpha),1,0,2.5,0,_,kRenderNormal,PRIO_RENDER_INFORMATIVE,gHeroID)
 					
 					sh_extra_damage(i,i,degen_dmg_2_take,
 									MY_HIT_HEAD,
@@ -303,7 +304,7 @@ notify_yanderes_about_team_life(id=-1,disconnected=0){
 		if(!is_user_connected(id)) return
 	}
 	
-	new the_players[SH_MAXSLOTS], pnum, i		
+	static the_players[SH_MAXSLOTS], pnum, i		
 	
 	get_players(the_players, pnum, "a")
 	
@@ -320,7 +321,7 @@ notify_yanderes_about_team_life(id=-1,disconnected=0){
 				}
 			}
 		}
-		sh_get_player_counts(i,1,g_mates_alive[i],g_mates_dead[i])
+		sh_get_player_counts(i,1,g_mates_alive[i],g_mates_dead[i],true)
 		new bool:can_transform= (get_playersnum(0)>=cvar_val(num,pcvar_min_players))&&(g_mates_alive[i]<=0)
 		if(can_transform && !Get_BitVar(gSuperAngryMask,i) && sh_is_inround() &&!sh_is_freezetime()){
 
@@ -503,39 +504,43 @@ public sh_client_spawn(id, bool:newRound)
 	}
 	
 }
-public yandere_damage(id)
-{
-	if ( !sh_is_active() || !is_user_alive(id)) return PLUGIN_CONTINUE
-	
-	new  damage= read_data(2)
-	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
-	if ( !is_user_alive(attacker)) return PLUGIN_CONTINUE
+public yandere_damage(id, attacker, Float:damage, Float:Direction[3], Ptr, DamageBits){
+
+	if ( !sh_is_active() || !is_user_alive(id) || !is_user_alive(attacker)) return HAM_IGNORED
+
+	new bool:victim_has_hero = bool:sh_get_user_has_hero(id,gHeroID),
+	bool:attacker_has_hero = bool:sh_get_user_has_hero(attacker,gHeroID)
+
+	if(!victim_has_hero&&!attacker_has_hero) return HAM_IGNORED
+
+	new return_result= HAM_IGNORED
+
+	new weapon=get_user_weapon(attacker)
+
+	new my_hitpoint_enum:the_hitpoint = my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
 	
 	if(sh_clients_are_same_team(id,attacker)||(id==attacker)){
-		return PLUGIN_CONTINUE
+		return HAM_IGNORED
 	}
-	if ( sh_get_user_has_hero(attacker,gHeroID) ) {
-		new Float:extraDamage =damage * gNormalDmgMult[attacker] - damage
-		if (floatround(extraDamage) > 0.0){
-			
-			if(Get_BitVar(gSuperAngryMask,attacker)&&(weapon==YANDERE_WEAPON_CLASSID)){
-				sh_extra_damage(id, attacker, floatround(extraDamage),
-								my_hitpoint_enum:bodypart,
-								_,_,_,_,
-								SH_NEW_DMG_DARK_ARTS,
-								custom_dmg_id_senpai_avenger)
-			}
-			else {
-				sh_extra_damage(id, attacker, floatround(extraDamage),
-								my_hitpoint_enum:bodypart,
-								_,_,_,_,
-								SH_NEW_DMG_DARK_ARTS,
-								custom_dmg_id_rage)
-			}
+
+	static attacker_name[128],client_name[128]
+	get_user_name(attacker,attacker_name,127)
+	get_user_name(id,client_name,127)
+
+	if ( attacker_has_hero ) {
+		new Float:extraDamage = damage * gNormalDmgMult[attacker] - damage
+		if (floatround(extraDamage) > 0){
+
+			sh_extra_damage(id, attacker, floatround(extraDamage),
+							the_hitpoint,
+							_,_,_,_,
+							SH_NEW_DMG_DARK_ARTS,
+							Get_BitVar(gSuperAngryMask,attacker)&&(weapon==YANDERE_WEAPON_CLASSID)?
+							custom_dmg_id_senpai_avenger
+							:
+							custom_dmg_id_rage)
 			if(Get_BitVar(gSuperAngryMask,attacker)){
-				static attacker_name[128],client_name[128]
-				get_user_name(attacker,attacker_name,127)
-				get_user_name(id,client_name,127)
+
 				sh_set_stun(id,2.0)
 			
 				generic_heal(attacker,extraDamage*
@@ -549,9 +554,9 @@ public yandere_damage(id)
 					anime_kill_fx(origin)
 					
 				}
-				if((weapon==CSW_KNIFE)&&!sh_get_user_has_hero(id,gHeroID) ){
+				if((weapon==CSW_KNIFE)){
 					
-					Set_BitVar(g_is_cursed_masks[id],attacker)
+					Set_BitVar(g_is_cursed_masks[attacker],id)
 					
 					if(!is_user_bot(attacker)){
 						sh_chat_message(attacker,gHeroID,"%s has been cursed!",client_name)
@@ -566,22 +571,27 @@ public yandere_damage(id)
 		}	
 		
 	}
-	if( sh_get_user_has_hero(id,gHeroID)  && is_user_alive(attacker)){
-		if(Get_BitVar(g_is_cursed_masks[attacker],id)){
-			if(generate_float(0.0,1.0)<cvar_val(float,pcvar_curse_pct)){
-				set_user_godmode(id,0)
+	if( victim_has_hero && is_user_alive(attacker)&& !sh_get_id_bit(attacker, SH_CONTROLLING_VEHICLE)){
+
+		if(Get_BitVar(g_is_cursed_masks[id],attacker)){
+			
+			new Float:obtained_float = generate_float(0.0,1.0,40)
+			new Float:upper=max_macro(0.01,(1.0 -cvar_val(float,pcvar_curse_pct)))
+
+			if(obtained_float> upper){
+				set_user_godmode(attacker,0)
 				sh_extra_damage(attacker,id,1,_,
 							SH_DMG_KILL,
 							_,_,_,
 							SH_NEW_DMG_DARK_ARTS,
 							generic_dmg_dark_arts)
-				UnSet_BitVar(g_is_cursed_masks[attacker],id)
+				UnSet_BitVar(g_is_cursed_masks[id],attacker)
 			}
 		}
 	
 	
 	}
-	return PLUGIN_CONTINUE
+	return return_result
 }
 public plugin_precache()
 {
@@ -659,7 +669,7 @@ public yandere_kd(id)
 
 		if(jet_deployed_here){
 			
-			jet_destroy(id)
+			jet_destroy(id,true,id)
 			
 			if(!is_user_bot(id)){
 				sh_chat_message(id, gHeroID, "You J-ed out!!")

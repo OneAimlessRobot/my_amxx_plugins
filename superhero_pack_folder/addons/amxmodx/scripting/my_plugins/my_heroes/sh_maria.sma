@@ -84,7 +84,7 @@ public plugin_init()
 	sh_assign_hero_bit(gHeroID,SH_HEALING_HERO, true)
 	
 	register_forward(FM_TraceLine,"fw_traceline",1);
-	register_event("Damage", "maria_damage", "b", "2!0")
+	RegisterHam(Ham_TakeDamage,"player", "maria_damage", 1, true)
 
 	sh_assign_hero_projectile_weapon_bit(gHeroID,my_weapon_ids:MARIA_WEAPON_CLASSID,true)
 }
@@ -310,13 +310,13 @@ maria_heal_loop(id){
 	}
 	
 }
-public maria_damage(id)
+public maria_damage(id, inflictor, attacker, Float:damage, damagebits)
 {
-	if ( !sh_is_active() || !is_user_alive(id)||!is_user_connected(id) ||!sh_get_user_has_hero(id,gHeroID) ) return
-	
-	new  Float:damage= float(read_data(2))
-	
+	if ( !sh_is_active() || !is_user_alive(id)||!is_user_connected(id) ||!sh_get_user_has_hero(id,gHeroID) ) return HAM_IGNORED
+
 	add_points(id,damage)
+
+	return HAM_IGNORED
 }
 public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id,  trace)
 {

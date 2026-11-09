@@ -117,7 +117,7 @@ sh_init_healthcap_lib(bool:mode){
 
 	lib_mode?
 	(arrayset(sh_player_healthcap_table,-1.0,sizeof(sh_player_healthcap_table))):
-	(arrayset(sh_player_healthcap_table,99999999.0,sizeof(sh_player_healthcap_table)))
+	(arrayset(sh_player_healthcap_table,FLOAT_MAX,sizeof(sh_player_healthcap_table)))
 	
 }
 
@@ -147,10 +147,17 @@ public bool:_generic_heal(iPlugins, iParms){
 
 
 	}
-	max_hp_to_clamp = (max_hp_to_clamp > 0) ?(min(max_hp_to_clamp,
-					sh_get_max_hp(id)))
-						:
-					sh_get_max_hp(id)
+	new get_user_max_hp = sh_get_max_hp(id)
+
+	max_hp_to_clamp = (max_hp_to_clamp > 0) ?
+											(
+											sh_get_player_has_hero_prop(id,SH_HEALTH_CAP_HERO)?
+											min_macro(floatround(sh_player_healthcap_table[id]),max_hp_to_clamp)
+											:
+											max_macro(get_user_max_hp,max_hp_to_clamp)
+											)
+											:
+											get_user_max_hp
 
 	if(((max_hp_to_clamp)<=mate_health)){
 		

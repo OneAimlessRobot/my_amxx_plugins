@@ -165,7 +165,11 @@ public girlb_kd(id)
     if(!sh_get_user_has_hero(id,gHeroID) ){
         return PLUGIN_HANDLED;
     }
-
+    if(task_exists(id+SHOOT_GLOB_TASKID)){
+		
+		return PLUGIN_HANDLED
+		
+	}
     if(gNumGlobs[id]<=0){
         
         client_print(id,print_center,"You ran out of ice globs")

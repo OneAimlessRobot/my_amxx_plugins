@@ -1,7 +1,9 @@
 #define I_WANT_CONSTANTS
+#define I_WANT_QUICK_CHECKS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_BASIC_MACROS
 #define I_WANT_CUSTOM_COLORS
+#define AUX_STUFF_GIVE_WEAPONS
 #define I_WANT_RESOURCE_ALIASES
 #define I_WANT_ENTITY_VECTORS
 #include "../my_include/superheromod.inc"
@@ -90,7 +92,7 @@ public plugin_init()
 						1,
 						true)
 
-	register_event("Damage", "Teliko_damage", "b", "2!0")
+	RegisterHam(Ham_TraceAttack, "player", "Teliko_damage",_,true)
 }
 public plugin_cfg(){
 	
@@ -234,34 +236,26 @@ public sh_round_end(){
 
 	sound_t_played=sound_ct_played= false
 }
-public Teliko_counter_drop_weapon(id,enemy){
+Teliko_counter_drop_weapon(enemy){
 
-
-	new weapons[32];
-	new num_of_weapons;
+	static weapons[32];
+	static num_of_weapons;
+	num_of_weapons = 0;
 	new wpn_to_drop=0;
 	get_user_weapons(enemy,weapons,num_of_weapons)
 	for(new i=0;i<num_of_weapons;i++){
-	
-		new slot = sh_get_weapon_slot(weapons[i])
-		if (( slot == 1)){
-				
-				wpn_to_drop=weapons[i];
-				sh_drop_weapon(enemy,wpn_to_drop,true);
-				return wpn_to_drop;
-		}
-			
 		
-	
-	} 
-	for(new i=0;i<num_of_weapons;i++){
-	
-		new slot = sh_get_weapon_slot(weapons[i])
-		if (( slot == 2 )){
+
+		if(!is_weaponid_valid(weapons[i])){
+			
+			continue
+		}
+		new my_weapon_slots:slot = wlt_get_def_slot(weapons[i])
+		if (( slot == MY_SLOT_PRIMARY)||(slot == MY_SLOT_SECONDARY)){
 				
-				wpn_to_drop=weapons[i];
-				sh_drop_weapon(enemy,wpn_to_drop,true);
-				return wpn_to_drop;
+			wpn_to_drop=weapons[i];
+			sh_drop_weapon(enemy,wpn_to_drop,true);
+			return wpn_to_drop;
 		}
 			
 		
@@ -271,8 +265,8 @@ public Teliko_counter_drop_weapon(id,enemy){
 	
 }
 public Teliko_mega_counters_effects(id,enemy){
-	new client_name[128],enemy_name[128];
-	new weapon_name[128];
+	static client_name[128],enemy_name[128];
+	static weapon_name[128];
 	get_user_name(id,client_name,127);
 	get_user_name(enemy,enemy_name,127);
 	
@@ -285,17 +279,15 @@ public Teliko_mega_counters_effects(id,enemy){
 		}
 		if(mega_counter_effect%2==1){
 		
-			new wpnid=Teliko_counter_drop_weapon(id,enemy)
+			new wpnid=Teliko_counter_drop_weapon(enemy)
 			if(wpnid){
 				get_weaponname(wpnid,weapon_name,127);
+
+				if(!is_user_bot(id)){
+					sh_chat_message(id,gHeroID,"Enemy %s got their %s destroyed on MEGA COUNTER #%d!",enemy_name,weapon_name,mega_counter_effect+cvar_val(num, pcvar_MEGA_COUNTER_EFFECTS_THRESHOLD));
+				}
+				
 			}
-			else{
-				strcat(weapon_name,"NO_VALID_WEAPON",127);
-			}
-			if(!is_user_bot(id)){
-				sh_chat_message(id,gHeroID,"Enemy %s got their %s destroyed on MEGA COUNTER #%d!",enemy_name,weapon_name,mega_counter_effect+cvar_val(num, pcvar_MEGA_COUNTER_EFFECTS_THRESHOLD));
-			}
-			
 		}
 		if(!is_user_bot(enemy)){
 			sh_chat_message(enemy,gHeroID,"You got your %dth MEGA COUNTER  from %s!!! Watch it!!!",mega_counter_effect+cvar_val(num, pcvar_MEGA_COUNTER_EFFECTS_THRESHOLD),client_name);
@@ -312,61 +304,72 @@ public Inc_counters(id){
 	}
 
 }
-public Teliko_damage(id)
-{
-if ( !sh_is_active() || !is_user_alive(id)) return
+public Teliko_damage(id, attacker, Float:damage, Float:Direction[3], Ptr, DamageBits){
 
-new damage = read_data(2)
-new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
-new headshot = bodypart == 1 ? 1 : 0
-if (!is_user_connected(attacker)||!is_user_alive(attacker)||attacker==id ) return
-new attacker_name[128];
-new client_name[128];
-new weapon_name[128];
-get_user_name(attacker,attacker_name,127);
-get_user_name(id,client_name,127);
-if(weapon>0){
-	get_weaponname(weapon,weapon_name,127);
-}
-else{
-	copy(weapon_name,strlen("NONE"),"NONE");
-	
-}
-if(sh_get_user_has_hero(id,gHeroID) ){
-	
-	Set_BitVar(g_teliko_enemies_masks[id],attacker)
-	if((generate_float(0.0,1.0) < cvar_val(float, pcvar_COUNTER_BULLET_PCT))){
-		
-		emit_sound(id, CHAN_WEAPON, COUNTER_UP_SFX, 1.0, 0.0, 0, PITCH_NORM)
-		Inc_counters(id)
-		
-	}
-	
-}
+	if ( !sh_is_active() || !is_user_alive(id) || !is_user_alive(attacker)) return HAM_IGNORED
 
-if ( sh_get_user_has_hero(attacker,gHeroID) &&Get_BitVar(g_teliko_enemies_masks[attacker],id)&&(g_counter_bullets[attacker]>0))  {
+	new bool:victim_has_hero = bool:sh_get_user_has_hero(id,gHeroID),
+	bool:attacker_has_hero = bool:sh_get_user_has_hero(attacker,gHeroID)
+
+	if(!victim_has_hero&&!attacker_has_hero) return HAM_IGNORED
+
+	new return_result= HAM_IGNORED
+
+	new weapon=get_user_weapon(attacker)
+
+	new my_hitpoint_enum:the_hitpoint = my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
 	
-	new Float:extraDamage = damage * cvar_val(float, pcvar_COUNTER_DMG_Mult) - damage
-	if (floatround(extraDamage)>0){
-		sh_extra_damage(id, attacker, floatround(extraDamage),
-			my_hitpoint_enum:bodypart,
-			_,_,_,_,
-			SH_NEW_DMG_SUPER_BULLET,
-			generic_dmg_super_bullet)
+	new bool:headshot = (the_hitpoint == MY_HIT_HEAD)
+	if(sh_clients_are_same_team(id,attacker)||(id==attacker)){
+		return HAM_IGNORED
 	}
-	if(headshot){
-		emit_sound(attacker, CHAN_WEAPON, COUNTER_MEGA_SFX, 1.0, 0.0, 0, PITCH_NORM)
-		emit_sound(id, CHAN_WEAPON, COUNTER_MEGA_SFX, 1.0, 0.0, 0, PITCH_NORM)
-		sh_chat_message(0,gHeroID,"%s hit a MEGA COUNTER on %s!!!!",attacker_name,client_name);
-		g_num_mega_counters_enemy[attacker][id]++;
-		Teliko_mega_counters_effects(attacker,id);
-		Inc_counters(attacker)
+
+	static attacker_name[128], client_name[128], weapon_name[128];
+	get_user_name(attacker,attacker_name,127);
+	get_user_name(id,client_name,127);
+	if(weapon>0){
+		get_weaponname(weapon,weapon_name,127);
 	}
 	else{
-		emit_sound(attacker, CHAN_AUTO, GLASS_BREAK_SFX, 1.0, 0.0, 0, PITCH_NORM)
+		copy(weapon_name,strlen("NONE"),"NONE");
+		
 	}
-	
-}
+	if(sh_get_user_has_hero(id,gHeroID) ){
+		
+		Set_BitVar(g_teliko_enemies_masks[id],attacker)
+		if((generate_float(0.0,1.0) < cvar_val(float, pcvar_COUNTER_BULLET_PCT))){
+			
+			emit_sound(id, CHAN_WEAPON, COUNTER_UP_SFX, 1.0, 0.0, 0, PITCH_NORM)
+			Inc_counters(id)
+			
+		}
+		
+	}
+
+	if ( sh_get_user_has_hero(attacker,gHeroID) &&Get_BitVar(g_teliko_enemies_masks[attacker],id)&&(g_counter_bullets[attacker]>0))  {
+		
+		new Float:extraDamage = damage * cvar_val(float, pcvar_COUNTER_DMG_Mult) - damage
+		if (floatround(extraDamage)>0){
+			sh_extra_damage(id, attacker, floatround(extraDamage),
+				the_hitpoint,
+				_,_,_,_,
+				SH_NEW_DMG_SUPER_BULLET,
+				generic_dmg_super_bullet)
+		}
+		if(headshot){
+			emit_sound(attacker, CHAN_WEAPON, COUNTER_MEGA_SFX, 1.0, 0.0, 0, PITCH_NORM)
+			emit_sound(id, CHAN_WEAPON, COUNTER_MEGA_SFX, 1.0, 0.0, 0, PITCH_NORM)
+			sh_chat_message(0,gHeroID,"%s hit a MEGA COUNTER on %s!!!!",attacker_name,client_name);
+			g_num_mega_counters_enemy[attacker][id]++;
+			Teliko_mega_counters_effects(attacker,id);
+			Inc_counters(attacker)
+		}
+		else{
+			emit_sound(attacker, CHAN_AUTO, GLASS_BREAK_SFX, 1.0, 0.0, 0, PITCH_NORM)
+		}
+		
+	}
+	return return_result
 }
 
 public plugin_precache()

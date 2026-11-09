@@ -31,8 +31,7 @@
 
 #define JETPLANE_ACCEL_PER_SEC (JETPLANE_THRUST/JETPLANE_MASS)
 
-native Float:get_jet_fuel(jet_id)
-native set_jet_fuel(jet_id,Float:fuel_ammount)
+
 native get_jet_throttle(id)
 native get_jet_flying(id)
 native set_jet_flying(id,value)

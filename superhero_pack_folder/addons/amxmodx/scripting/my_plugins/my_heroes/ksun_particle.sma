@@ -389,7 +389,9 @@ public spore_think(spore){
 	if ( !is_valid_ent(spore) ) return
 
 
-	new Float:spore_hp=float(pev(spore,pev_health))
+	new Float:spore_hp;
+	
+	pev(spore,pev_health,spore_hp)
 
 	new	spore_owner=entity_get_edict(spore,EV_ENT_euser1),
 		spore_target=entity_get_edict(spore,EV_ENT_euser2)

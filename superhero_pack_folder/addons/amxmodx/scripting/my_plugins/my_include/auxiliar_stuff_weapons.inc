@@ -135,7 +135,7 @@ native wlt_get_def_ammo_id(wpn_id);
 
 native wlt_get_def_pos(wpn_id);
 
-native wlt_get_def_slot(wpn_id);
+native my_weapon_slots:wlt_get_def_slot(wpn_id);
 
 native Float:wlt_get_def_prim_atk_delay(wpn_id);
 

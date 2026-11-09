@@ -50,9 +50,6 @@ public plugin_init(){
 	
 	RegisterHam(Ham_Weapon_Reload, wpn_name_for_future_lookup, "fw_WeaponReloadPre",_,true)
 	RegisterHam(Ham_Weapon_Reload, wpn_name_for_future_lookup, "fw_Weapon_Reload_Post", 1,true)
-	
-	RegisterHam(Ham_TraceAttack, "player", "Ham_TraceAttackMariaRiveter",_,true)
-	
 
 	register_entity_as_wall_touchable(MARIA_PROJECTILE_CLASSNAME,"rrrrroovvetoooo_touque_playor")
 	register_custom_touchable(MARIA_PROJECTILE_CLASSNAME,"rrrrroovvetoooo_touque_playor",player_vector,1)
@@ -160,25 +157,6 @@ public CmdStart(id, uc_handle)
 	return FMRES_IGNORED;
 }
 
-public Ham_TraceAttackMariaRiveter(id, idattacker, Float:damage, Float:direction[3], ptr, damagebits)
-{
-	if(damage<=0.0){
-		return HAM_IGNORED
-	}
-
-	if(!is_user_connected(idattacker)){
-		return HAM_IGNORED	
-	}
-	if(get_user_weapon(idattacker) != MARIA_WEAPON_CLASSID|| !sh_get_user_has_hero(idattacker,gHeroID)){
-		return HAM_IGNORED
-	}
-
-	damage= 0.0
-	SetHamParamFloat(3,damage)
-	
-	return HAM_SUPERCEDE
-	
-}
 
 public fw_Item_PostFrame(ent)
 {

@@ -109,7 +109,10 @@ public chikoi_physical_body(id, attacker, Float:damage, Float:direction[3], trac
 		case HIT_CHEST:{
 			set_tr2(tracehandle,TR_iHitgroup,HIT_HEAD);
 			SetHamParamTraceResult(5,tracehandle)
-			set_user_godmode(id,0)
+			if(!sh_get_id_bit(id, SH_CONTROLLING_VEHICLE)){
+
+				set_user_godmode(id, 0)
+			}
 			sh_extra_damage(id, attacker, 1, MY_HIT_HEAD,SH_DMG_KILL,
 						_,_,_,
 						SH_NEW_DMG_SQUASHED,custom_dmg_id)
@@ -127,7 +130,7 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_
 	
 		return DMG_FWD_PASS
 	}
-	if(sh_get_user_has_hero(victim,gHeroID) ){
+	if(sh_get_user_has_hero(victim,gHeroID) && !sh_get_id_bit(victim, SH_CONTROLLING_VEHICLE) ){
 		if(sh_clients_are_same_team(victim,attacker)){
 			return DMG_FWD_PASS
 		

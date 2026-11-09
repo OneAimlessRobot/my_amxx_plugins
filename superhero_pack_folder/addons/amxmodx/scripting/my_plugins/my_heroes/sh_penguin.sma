@@ -36,12 +36,23 @@ penguin_nadespeed 900		//Speed of Penguin grenades when seeking (def 900)
 
 #define AMMOX_HEGRENADE 12
 
+#define NUM_ENTITIES 6000
+
 // GLOBAL VARIABLES
 new gHeroName[]="Penguin"
 
 new Float:gNadeSpeed
 new gSpriteTrail
 
+enum penguin_flags{
+
+	penguin_flags_cooldown=0,
+	penguin_flags_paused,
+
+}
+
+
+new bool:penguin_grenade_flag[NUM_ENTITIES][penguin_flags]
 
 new dmg_source_name_short_penguin[SAFE_BUFFER_SIZE+1]="hominh_he"
 new dmg_source_name_log_penguin[SAFE_BUFFER_SIZE+1]="homing_grenade"
@@ -173,8 +184,8 @@ public on_AmmoX(id)
 						gNadeSpeed = get_cvar_float("penguin_nadespeed")
 						if ( gNadeSpeed <= 0.0 ) gNadeSpeed = 1.0
 
-						entity_set_int(iGrenade,EV_INT_iuser2,true)
-						entity_set_int(iGrenade,EV_INT_iuser3,true)
+						penguin_grenade_flag[iGrenade][penguin_flags_cooldown] = true
+						penguin_grenade_flag[iGrenade][penguin_flags_paused] = true
 						
 						new parm[3]
 						parm[0] = iGrenade
@@ -313,7 +324,7 @@ public penguin_grenade_touch(pToucher, pTouched)
 	// Only if penguin nade touches an enemy explode, else wait for fuse timer to run out
 	if (!is_valid_ent(pToucher)) return
 
-	new paused=entity_get_int(pToucher,EV_INT_iuser3)
+	new paused= penguin_grenade_flag[pToucher][penguin_flags_paused]
 	if ( !paused ) return
 
 	if ( !is_user_connected(pTouched) || get_user_godmode(pTouched) ) return
@@ -336,15 +347,15 @@ public unpause_nade(parm[])
 	if ( !equal(szClassNamePtr, "grenade")) return
 	remove_task(ent)
 
-	entity_set_int(ent,EV_INT_iuser2,true)
-	entity_set_int(ent,EV_INT_iuser3,false)
+	penguin_grenade_flag[ent][penguin_flags_cooldown] = true
+	penguin_grenade_flag[ent][penguin_flags_paused] = false
 }
 //----------------------------------------------------------------------------------------------
 public fw_grenade_think(ent)
 {
 	if(!is_valid_ent(ent)) return PLUGIN_CONTINUE
 
-	new paused=entity_get_int(ent,EV_INT_iuser3)
+	new paused= penguin_grenade_flag[ent][penguin_flags_paused]
 	if ( paused ) {
 		new Float:nextThink = entity_get_float(ent, EV_FL_nextthink)
 		set_pev(ent, pev_nextthink, nextThink + 0.1)
@@ -358,7 +369,16 @@ public penguin_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
 	if ( !sh_is_active() || !is_user_alive(id) || attacker == 0 || !is_user_connected(id)||!is_user_connected(attacker)) return HAM_IGNORED
 
-	new charged=entity_get_int(idinflictor,EV_INT_iuser2)
+	if(!is_valid_ent(idinflictor)){
+
+		return HAM_IGNORED
+	}
+	static inflictor_classname[64];
+
+	entity_get_string(idinflictor,EV_SZ_classname,inflictor_classname,63)
+	static bool:it_was_a_grenade; it_was_a_grenade = bool:equal(inflictor_classname,"grenade")
+
+	new bool:charged=penguin_grenade_flag[idinflictor][penguin_flags_cooldown] &&it_was_a_grenade
 	if ( charged ) {
 		if ( is_user_alive(id) ) {
 			// do extra damage
@@ -392,7 +412,7 @@ public cooldown(parm[])
 	}
 	new id = parm[1]
 
-	entity_set_int(grenade,EV_INT_iuser2,false)
+	penguin_grenade_flag[grenade][penguin_flags_cooldown] = false
 
 	if ( !is_user_alive(id) || sh_get_cooldown_flag(id)) return
 

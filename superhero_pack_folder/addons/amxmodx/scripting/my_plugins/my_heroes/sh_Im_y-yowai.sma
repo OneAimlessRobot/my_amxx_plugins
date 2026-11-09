@@ -169,7 +169,7 @@ if ( !is_user_alive(id) ) return HAM_IGNORED
 
 if (!is_user_connected(attacker)) return HAM_IGNORED
 
-if(sh_get_user_has_hero(id,gHeroID) && Get_BitVar(g_yowai_mode_mask,id)){
+if(sh_get_user_has_hero(id,gHeroID) && Get_BitVar(g_yowai_mode_mask,id) && !sh_get_id_bit(id, SH_CONTROLLING_VEHICLE)){
 	
 	new Float:tg_damage=min_macro(float(get_user_health(id)),float(dmg_threshold))
 	if(g_hits[id]>=g_max_hits_player[id]){
@@ -231,7 +231,7 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_
 	
 		return DMG_FWD_PASS
 	}
-	if(sh_get_user_has_hero(victim,gHeroID) &&Get_BitVar(g_yowai_mode_mask,victim)){
+	if(sh_get_user_has_hero(victim,gHeroID) &&Get_BitVar(g_yowai_mode_mask,victim)&& !sh_get_id_bit(victim, SH_CONTROLLING_VEHICLE)){
 		new tg_damage=min(get_user_health(victim),dmg_threshold)
 		if((g_hits[victim]>=g_max_hits_player[victim])||
 			(custom_weapon_id==sh_get_death_scythe_wpn_id())){

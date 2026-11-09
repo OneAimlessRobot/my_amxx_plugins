@@ -433,7 +433,7 @@ if(sh_get_user_has_hero(attacker,gHeroID) &&!(cs_get_user_team(id)==att_team)&&i
 		velocity_by_aim(id, 1, vecForward ); 
 		
 		xs_vec_make2d( vecForward, vecForward2D );
-		static att_name[128],vic_name[128];
+		static vic_name[128];
 		
 		
 		if(slashing){
@@ -441,28 +441,26 @@ if(sh_get_user_has_hero(attacker,gHeroID) &&!(cs_get_user_team(id)==att_team)&&i
 			if( (xs_vec_dot( vec2LOS, vecForward2D ) > 0.2) )
 			{
 				if(g_slit_kills[attacker]>0){
-					get_user_name(attacker,att_name,127)
 					get_user_name(target,vic_name,127)
-					if(get_user_godmode(target)){
+					if(get_user_godmode(target) && !sh_get_id_bit(target, SH_CONTROLLING_VEHICLE)){
 					
 						
 						if(!is_user_bot(attacker)){
 							sh_chat_message(attacker,gHeroID,"You removed %s's godmode!!",vic_name);
 						}
 						set_user_godmode(target,0)
+						return HAM_IGNORED
 					}
-					else{
-						sh_extra_damage(target,attacker,1,
-							MY_HIT_HEAD,
-							SH_DMG_KILL,_,_,_,
-							SH_NEW_DMG_SUPER_MELEE,
-							custom_dmg_id_sneak)
-						
-						if(!is_user_bot(attacker)){
-							sh_chat_message(attacker,gHeroID,"You slit %s's throat!",vic_name);
-						}
-						return HAM_SUPERCEDE
+					sh_extra_damage(target,attacker,1,
+						MY_HIT_HEAD,
+						SH_DMG_KILL,_,_,_,
+						SH_NEW_DMG_SUPER_MELEE,
+						custom_dmg_id_sneak)
+					
+					if(!is_user_bot(attacker)){
+						sh_chat_message(attacker,gHeroID,"You slit %s's throat!",vic_name);
 					}
+					return HAM_SUPERCEDE
 				}
 				else{
 					

@@ -118,6 +118,9 @@ public plugin_end(){
 charge_user(id){
 	if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)) return
 
+	if(task_exists(id+GRACIETE_CHARGE_TASKID)){
+		return
+	}
 	g_graciete_base_gravity[id]=get_user_gravity(id)
 
 	

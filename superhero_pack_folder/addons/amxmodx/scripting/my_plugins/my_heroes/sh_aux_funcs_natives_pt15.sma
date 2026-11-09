@@ -1,5 +1,7 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_CUSTOM_COLORS
+#define I_WANT_MISC_FUNCS
+#define I_WANT_ENTITY_VECTORS
 #define I_WANT_RESOURCE_ALIASES
 #include <amxmisc>
 #include "../my_include/superheromod.inc"
@@ -26,8 +28,30 @@ public plugin_init(){
 	
 	register_concmd(player_projectile_weapons_print,"sh_print_player_projectile_weapons",ADMIN_IMMUNITY,"param 1: playername")
 
+	register_ham_hook_multiple(Ham_TraceAttack,full_entity_array_for_trace_attack,sizeof(full_entity_array_for_trace_attack),
+						"Ham_TraceAttackProjectileWeapon",_,true)
+
 }
 
+public Ham_TraceAttackProjectileWeapon(id, idattacker, Float:damage, Float:direction[3], ptr, damagebits)
+{
+	if(damage<=0.0){
+		return HAM_IGNORED
+	}
+
+	if(!is_user_connected(idattacker)){
+		return HAM_IGNORED	
+	}
+	if(!Get_BitVar(sh_player_hero_projectile_weapon_tracker[idattacker], _:get_user_weapon(idattacker))){
+		return HAM_IGNORED
+	}
+
+	damage= 0.0
+	SetHamParamFloat(3,damage)
+	
+	return HAM_SUPERCEDE
+	
+}
 
 public plugin_cfg(){
 

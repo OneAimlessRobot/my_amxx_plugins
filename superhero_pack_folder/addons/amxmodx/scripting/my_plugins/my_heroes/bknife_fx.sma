@@ -114,7 +114,7 @@ if(optional_bool&&!(sh_clients_are_same_team(id,attacker))&&(attacker!=id)){
 
 	if(weapon==CSW_KNIFE){
 
-		emit_sound(attacker, CHAN_WEAPON, blood_sound_sample, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+		emit_sound(id, CHAN_WEAPON, blood_sound_sample, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		new button = pev(attacker, pev_button);
 		new bool:slashing;
 		new bool:stabbing;
@@ -169,10 +169,6 @@ if(optional_bool&&!(sh_clients_are_same_team(id,attacker))&&(attacker!=id)){
 								_,_,_,_,
 								SH_NEW_DMG_SUPER_MELEE,
 								is_valid_dmg_src?custom_wpn_id:custom_dmg_id_shanking)
-		
-
-		
-		emit_sound(id, CHAN_STATIC, PIERCE_WOUND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 								
 								
 	}

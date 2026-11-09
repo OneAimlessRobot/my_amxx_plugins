@@ -63,8 +63,6 @@ public plugin_init(){
 	RegisterHam(Ham_Weapon_Reload, wpn_name_for_future_lookup, "fw_WeaponReloadPre",_,true)
 	RegisterHam(Ham_Weapon_Reload, wpn_name_for_future_lookup, "fw_Weapon_Reload_Post", 1,true)
 	
-	RegisterHam(Ham_TraceAttack, "player", "Ham_TraceAttackYakuiMinigun",_,true)
-	
 	register_entity_as_wall_touchable(PILL_CLASSNAME,"FwdTouchWorld")
 	register_custom_touchable(PILL_CLASSNAME,"pilula_sexual_penetra_player",player_vector,1)
 
@@ -214,26 +212,6 @@ public fwd_StartFrame() {
 			}
 		}
 	}
-}
-public Ham_TraceAttackYakuiMinigun(id, idattacker, Float:damage, Float:direction[3], ptr, damagebits)
-{
-	if(damage<=0.0){
-		return HAM_IGNORED
-	}
-
-	if(!is_user_connected(idattacker)){
-		return HAM_IGNORED	
-	}
-	if(get_user_weapon(idattacker) != YAKUI_WEAPON_CLASSID||
-					!sh_get_user_has_hero(idattacker,gHeroID)||
-					!Get_BitVar(gPillGatlingEngaged_mask,idattacker)){
-		return HAM_IGNORED
-	}
-	damage= 0.0
-	SetHamParamFloat(3,damage)
-	
-	return HAM_SUPERCEDE
-	
 }
 public plugin_natives(){
 

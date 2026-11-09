@@ -27,9 +27,17 @@
 new const gHeroName[] = "Ester"
 new generic_dmg_shock = -1
 
-new gPedalIsFlooredMask
-new gUnloadingMask
-new gFinishedMask
+
+enum attack_phase_ester{
+
+	NONE=0,
+	PEDAL_FLOORED,
+	UNLOADING,
+	FINISHED
+
+
+}
+new attack_phase_ester:g_ester_attack_phase[SH_MAXSLOTS+1]
 new g_ester_enemies_masks[SH_MAXSLOTS+1]
 
 new gGunLastDeployed[SH_MAXSLOTS+1]
@@ -128,8 +136,8 @@ public plugin_init()
 	add(hero_name_arr,charsmax(hero_name_arr),gHeroName,charsmax(gHeroName))
 	superheromod_help_link_hero(gHeroID, "Ester: Help file","ester_folder/","ester_help_file.html",hero_name_arr)
 	
-	register_event("Damage", "ester_damage", "b", "2!0")
 	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Player",_,true)
+	
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	register_ham_hook_multiple(Ham_TraceAttack,
 						full_entity_array_for_trace_attack,
@@ -166,7 +174,7 @@ ester_collapse(id){
 	explosion(gHeroID,id,float(get_user_health(id)+damage_to_do[id]),float(get_user_health(id)+damage_to_do[id]),_,0)
 	reset_status(id)
 	user_kill(id,1)
-	Set_BitVar(gFinishedMask,id)
+	g_ester_attack_phase[id] = FINISHED
 }
 public Hook_BloodColor(id)
 {
@@ -234,11 +242,10 @@ stock ester_weapons(id){
 
 reset_status(id){
 
-	UnSet_BitVar(gFinishedMask,id)
+	
+	g_ester_attack_phase[id] = NONE
 	damage_to_do[id]=0
 	gBuiltUpXp[id]=0;
-	UnSet_BitVar(gPedalIsFlooredMask,id);
-	UnSet_BitVar(gUnloadingMask,id);
 	stop_sounds(id)
 	
 }
@@ -246,7 +253,7 @@ reset_status(id){
 stock count_enemies(id){
 	
 	new count=0;
-	if(((gTimesLeft[id]>0)||!Get_BitVar(gFinishedMask,id))&&is_user_alive(id)&&sh_get_user_has_hero(id,gHeroID) ){
+	if(((gTimesLeft[id]>0)||g_ester_attack_phase[id]!=FINISHED)&&is_user_alive(id)&&sh_get_user_has_hero(id,gHeroID) ){
 		new players[SH_MAXSLOTS]
 		new player_count
 		get_players(players,player_count)
@@ -353,14 +360,13 @@ public Ester_revenge_loop(id)
 			}
 		}
 		
-		if(!(Get_BitVar(gPedalIsFlooredMask,i)||Get_BitVar(gUnloadingMask,i))||Get_BitVar(gFinishedMask,i)) continue
+		if(g_ester_attack_phase[i]<=NONE) continue
 
 
 		if( !is_user_alive(i)){
 
 			sh_chat_message(i,gHeroID,"You died during revenge loop.");
 			reset_status(i)
-			Set_BitVar(gFinishedMask,i)
 			continue
 		}
 		static enemy_count;
@@ -371,7 +377,7 @@ public Ester_revenge_loop(id)
 		userArmor = cs_get_user_armor(i, armorType)
 		if ( userArmor == 0 ) armorType = CS_ARMOR_VESTHELM
 		
-		if(Get_BitVar(gPedalIsFlooredMask,i)){
+		if(g_ester_attack_phase[i] == PEDAL_FLOORED){
 			
 			if (cvar_val(num,pcvar_power_cost) > 0 )
 			{
@@ -421,7 +427,7 @@ public Ester_revenge_loop(id)
 			aura(i,{100,100,255});
 			damage_to_do[i]+=gEsterDmg[i]
 		}
-		else if(Get_BitVar(gUnloadingMask,i)){
+		else if(g_ester_attack_phase[i] == UNLOADING){
 			if(enemy_count>0){
 						
 				get_players(the_players, pnum, "a")
@@ -439,7 +445,6 @@ public Ester_revenge_loop(id)
 				damage_to_do[i]-=min(cvar_val(num,pcvar_power_cost),damage_to_do[i])
 				if(!damage_to_do[i]){
 					
-					UnSet_BitVar(gUnloadingMask,i)
 					if(!is_user_bot(i)){
 						sh_chat_message(i,gHeroID,"There.... hah.... hah.... hah...");
 					}
@@ -459,10 +464,8 @@ public Ester_revenge_loop(id)
 	
 	}
 }
-
 public Ester_instant(x, id)
 {
-	emit_sound(x, CHAN_ITEM, "weapons/xbow_hitbod2.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
 	
 	sh_extra_damage(x, id,gEsterDmg[id],
 									MY_HIT_HEAD,
@@ -488,50 +491,6 @@ public sh_client_spawn(id)
 	}
 	
 }
-public ester_damage(id)
-{
-	if ( !sh_is_active() || !is_user_alive(id)) return
-	
-	new damage= read_data(2)
-	new hitpoint, weapon
-	new attacker = get_user_attacker(id,weapon,hitpoint)
-	if ( !is_user_alive(attacker)||attacker == id) return
-	new origin[3]
-	get_user_origin(id,origin)
-	new origin2[3]
-	get_user_origin(attacker,origin2)
-	
-	
-	new CsTeams:att_team=CS_TEAM_UNASSIGNED;
-	att_team=cs_get_user_team(attacker)
-	
-	
-	
-	if(cs_get_user_team(id)==att_team){
-		
-		return;
-		
-	}
-	if(sh_get_user_has_hero(id,gHeroID) ){
-		if(!Get_BitVar(gUnloadingMask,id)&&gTimesLeft[id]){
-			
-			Set_BitVar(g_ester_enemies_masks[id],attacker);
-			if(Get_BitVar(gPedalIsFlooredMask,id)){
-				
-				sh_extra_damage(attacker, id,
-								floatround(floatmul(floatdiv(float(damage),float(damage_to_do[id])),float(gEsterDmg[id])),floatround_ceil),
-								my_hitpoint_enum:hitpoint,
-								_,_,_,_,
-								SH_NEW_DMG_SHOCK,
-								generic_dmg_shock)
-
-				directed_spark(attacker, id)
-			}
-		}
-		fx_blood(origin,origin2,my_hitpoint_enum:hitpoint,true);
-	}
-}
-
 public ester_moralizer_ray_laser(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
 {
 
@@ -539,8 +498,8 @@ public ester_moralizer_ray_laser(Victim, Attacker, Float:Damage, Float:Direction
 		return
 	}
 	
-	generic_weapon_tracer_logic(Attacker,_,MORALIZER_WEAPON_ID,gHeroID,sh_custom_color:{GREEN,GREEN,GREEN},
-					tracer_sfx_show_laser_line|tracer_sfx_show_play_shoot_sound)
+	generic_weapon_tracer_logic(Attacker,_,MORALIZER_WEAPON_ID,gHeroID,sh_custom_color:{YELLOW,ORANGE,LTGREEN},
+					tracer_sfx_show_laser_line)
 
 
 }
@@ -554,6 +513,15 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 	if(!is_user_alive(attacker)||!is_user_alive(id)){
 		return HAM_IGNORED
 	}
+
+	new bool:victim_has_hero = bool:sh_get_user_has_hero(id,gHeroID),
+		bool:attacker_has_hero = bool:sh_get_user_has_hero(attacker,gHeroID)
+
+	static attacker_name[128],client_name[128]
+
+	get_user_name(attacker,attacker_name,127)
+	get_user_name(id,client_name,127)
+	
 	new hitgroup=get_tr2(Ptr,TR_iHitgroup)
 	new headshot=(hitgroup==1)
 	new weapon=get_user_weapon(attacker)
@@ -561,80 +529,95 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 	new CsTeams:att_team=CS_TEAM_UNASSIGNED,CsTeams:vic_team=CS_TEAM_UNASSIGNED;
 	att_team=cs_get_user_team(attacker)
 	vic_team=cs_get_user_team(id)
-	if(!sh_get_user_has_hero(attacker,gHeroID) ){
-		return HAM_IGNORED
-	}
 	
-	if(sh_get_user_has_hero(attacker,gHeroID) ){
-		new attacker_name[128]
-		new client_name[128]
-		get_user_name(attacker,attacker_name,127)
-		get_user_name(id,client_name,127)
-		new is_teamate=(vic_team==att_team)
-		if((weapon==CSW_KNIFE)||(weapon==MORALIZER_WEAPON_ID)){
-		switch(is_teamate){
-			case 0:{
-				if((sh_get_user_effect(id)<KILL)||(sh_get_user_effect(id)>BATH)){
-					sh_effect_user_direct(id,attacker,gHeroID,STUN);
-					if(!is_user_bot(attacker)){
-						sh_chat_message(attacker,gHeroID,(weapon==MORALIZER_WEAPON_ID?"%s: AYO CHILL, %s!":"%s: OW! What was that for, Ester? (%s)?"),client_name,attacker_name)
-					}
-					if(!is_user_bot(id)){
-						sh_chat_message(id,gHeroID,(weapon==MORALIZER_WEAPON_ID?"%s: HEY! LOCK! IN, %s!":"%s: Shut up, %s."),attacker_name,client_name)
-					}
-					new Float:extraDamage = (weapon==MORALIZER_WEAPON_ID?(floatmul(damage,
-										cvar_val(float,pcvar_tmp_dmg_mult)+1.0)):floatadd(damage,cvar_val(float,pcvar_pan_dmg)))
-					if (extraDamage>0){
-					
-						sh_extra_damage(id,attacker,floatround(extraDamage),
-									my_hitpoint_enum:hitgroup,
-									_,_,_,_,_,
-									(weapon==MORALIZER_WEAPON_ID)?moralizing_ray_wpn_id:adulting_pan_wpn_id)
-						
+	new is_teamate=(vic_team==att_team)
 
-						new extra_moralizing_xp=max(0,min((weapon==MORALIZER_WEAPON_ID?cvar_val(num,pcvar_moralizing_tmp_xp_get_mult):cvar_val(num,pcvar_moralizing_pan_xp_get_mult))*
-									mult*floatround(extraDamage+damage),
-									cvar_val(num,pcvar_max_moralizing_xp)-gBuiltUpXp[attacker]))
-						if(extra_moralizing_xp){
-							
-							
-							if(!is_user_bot(attacker)){
-								client_print(attacker,print_center,ESTER_JUST_SHUT_UP_STRING,gHeroName,extra_moralizing_xp)
-								sh_chat_message(attacker,gHeroID,"wow, %s that was such a nice... %s from your.... ^"Moralizing^"...",gHeroName,headshot?"headshot":"(wow... not even headshot)")
-							}
-						}
-						gBuiltUpXp[attacker]+=extra_moralizing_xp
-					}
-				}
-					
-			}
-			case 1:{
-				if(gBuiltUpXp[attacker]>(weapon==MORALIZER_WEAPON_ID?cvar_val(num,pcvar_moralizing_tmp_xp_give):cvar_val(num,pcvar_moralizing_pan_xp_give))){
+	if(attacker_has_hero){
+
+
+		if((weapon==CSW_KNIFE)||(weapon==MORALIZER_WEAPON_ID)){
+			switch(is_teamate){
+				case 0:{
 					if((sh_get_user_effect(id)<KILL)||(sh_get_user_effect(id)>BATH)){
-						sh_effect_user_direct(id,attacker,gHeroID,METYLPHENIDATE);
-						
+						sh_effect_user_direct(id,attacker,gHeroID,STUN);
 						if(!is_user_bot(attacker)){
 							sh_chat_message(attacker,gHeroID,(weapon==MORALIZER_WEAPON_ID?"%s: AYO CHILL, %s!":"%s: OW! What was that for, Ester? (%s)?"),client_name,attacker_name)
 						}
 						if(!is_user_bot(id)){
 							sh_chat_message(id,gHeroID,(weapon==MORALIZER_WEAPON_ID?"%s: HEY! LOCK! IN, %s!":"%s: Shut up, %s."),attacker_name,client_name)
 						}
-						new unextra_moralizing_xp=min(mult*(weapon==MORALIZER_WEAPON_ID?cvar_val(num,pcvar_moralizing_tmp_xp_give):cvar_val(num,pcvar_moralizing_pan_xp_give)),gBuiltUpXp[attacker])
-						if(unextra_moralizing_xp){
+						new Float:extraDamage = (weapon==MORALIZER_WEAPON_ID?(floatmul(damage,
+											cvar_val(float,pcvar_tmp_dmg_mult)+1.0)):floatadd(damage,cvar_val(float,pcvar_pan_dmg)))
+						if (extraDamage>0){
+						
+							sh_extra_damage(id,attacker,floatround(extraDamage),
+										my_hitpoint_enum:hitgroup,
+										_,_,_,_,_,
+										(weapon==MORALIZER_WEAPON_ID)?moralizing_ray_wpn_id:adulting_pan_wpn_id)
+							
+
+							new extra_moralizing_xp=max(0,min((weapon==MORALIZER_WEAPON_ID?cvar_val(num,pcvar_moralizing_tmp_xp_get_mult):cvar_val(num,pcvar_moralizing_pan_xp_get_mult))*
+										mult*floatround(extraDamage+damage),
+										cvar_val(num,pcvar_max_moralizing_xp)-gBuiltUpXp[attacker]))
+							if(extra_moralizing_xp){
+								
+								
+								if(!is_user_bot(attacker)){
+									client_print(attacker,print_center,ESTER_JUST_SHUT_UP_STRING,gHeroName,extra_moralizing_xp)
+									sh_chat_message(attacker,gHeroID,"wow, %s that was such a nice... %s from your.... ^"Moralizing^"...",gHeroName,headshot?"headshot":"(wow... not even headshot)")
+								}
+							}
+							gBuiltUpXp[attacker]+=extra_moralizing_xp
+						}
+					}
+						
+				}
+				case 1:{
+					if(gBuiltUpXp[attacker]>(weapon==MORALIZER_WEAPON_ID?cvar_val(num,pcvar_moralizing_tmp_xp_give):cvar_val(num,pcvar_moralizing_pan_xp_give))){
+						if((sh_get_user_effect(id)<KILL)||(sh_get_user_effect(id)>BATH)){
+							sh_effect_user_direct(id,attacker,gHeroID,METYLPHENIDATE);
 							
 							if(!is_user_bot(attacker)){
-								sh_chat_message(attacker,gHeroID,ESTER_SAVED_THE_DAY_STRING,client_name,unextra_moralizing_xp)
+								sh_chat_message(attacker,gHeroID,(weapon==MORALIZER_WEAPON_ID?"%s: AYO CHILL, %s!":"%s: OW! What was that for, Ester? (%s)?"),client_name,attacker_name)
 							}
-							sh_set_user_xp(id,unextra_moralizing_xp,true);
+							if(!is_user_bot(id)){
+								sh_chat_message(id,gHeroID,(weapon==MORALIZER_WEAPON_ID?"%s: HEY! LOCK! IN, %s!":"%s: Shut up, %s."),attacker_name,client_name)
+							}
+							new unextra_moralizing_xp=min(mult*(weapon==MORALIZER_WEAPON_ID?cvar_val(num,pcvar_moralizing_tmp_xp_give):cvar_val(num,pcvar_moralizing_pan_xp_give)),gBuiltUpXp[attacker])
+							if(unextra_moralizing_xp){
+								
+								if(!is_user_bot(attacker)){
+									sh_chat_message(attacker,gHeroID,ESTER_SAVED_THE_DAY_STRING,client_name,unextra_moralizing_xp)
+								}
+								sh_set_user_xp(id,unextra_moralizing_xp,true);
+							}
+							gBuiltUpXp[attacker]-=unextra_moralizing_xp
 						}
-						gBuiltUpXp[attacker]-=unextra_moralizing_xp
 					}
 				}
 			}
 		}
-		
-		
 	}
+	if(victim_has_hero ){
+		static origin[3], origin2[3]
+		get_user_origin(id,origin)
+		get_user_origin(attacker,origin2)
+		if((g_ester_attack_phase[id] <= UNLOADING)&&gTimesLeft[id]){
+			
+			Set_BitVar(g_ester_enemies_masks[id],attacker);
+			if((g_ester_attack_phase[id] == PEDAL_FLOORED)){
+				
+				sh_extra_damage(attacker, id,
+								floatround(floatmul(floatdiv(damage,float(damage_to_do[id])),float(gEsterDmg[id])),floatround_ceil),
+								my_hitpoint_enum:hitgroup,
+								_,_,_,_,
+								SH_NEW_DMG_SHOCK,
+								generic_dmg_shock)
+
+				directed_spark(id, attacker,20,10,255,_,LAVENDER,6,1)
+			}
+		}
+		fx_blood(origin,origin2,my_hitpoint_enum:hitgroup,true);
 	}
 	return HAM_IGNORED
 }
@@ -670,7 +653,7 @@ public sh_client_death(id)
 		reset_status(id)
 		emit_sound(id, CHAN_VOICE, ester_death_sounds[generate_int(0,(sizeof ester_death_sounds) -1)], 1.0, 0.0,0,generate_int(95,120))
 		
-		gTimesLeft[id]-=(gTimesLeft[id]&&Get_BitVar(gPedalIsFlooredMask,id))?1:0
+		gTimesLeft[id]-=(gTimesLeft[id]&&(g_ester_attack_phase[id] == PEDAL_FLOORED))?1:0
 		
 		g_ester_enemies_masks[id]=0
 	}
@@ -749,7 +732,7 @@ public ester_kd(id)
 		return PLUGIN_HANDLED
 		
 	}
-	if(Get_BitVar(gUnloadingMask,id)){
+	if((g_ester_attack_phase[id] == UNLOADING)){
 		
 		if(!is_user_bot(id)){
 			sh_chat_message(id,gHeroID,"YOURE UNLOADING!!!! NO GOING BACK NOw AHAHAAHAH!!!!");
@@ -761,17 +744,17 @@ public ester_kd(id)
 	new client_name[128];
 	get_user_name(id,client_name,127)
 	emit_sound(id, CHAN_ITEM, NEUROBLAST_CHARGE, 1.0, ATTN_NORM, 0, PITCH_NORM)
-	Set_BitVar(gPedalIsFlooredMask,id)
+	g_ester_attack_phase[id] = PEDAL_FLOORED
 	
 	return PLUGIN_HANDLED
 }
 
 public ester_ku(id)
 {
-	if ( !is_user_alive(id) ||!sh_get_user_has_hero(id,gHeroID) ||!gTimesLeft[id]||!Get_BitVar(gPedalIsFlooredMask,id)||sh_is_freezetime()) {
+	if ( !is_user_alive(id) ||!sh_get_user_has_hero(id,gHeroID) ||!gTimesLeft[id]||(g_ester_attack_phase[id] != PEDAL_FLOORED)||sh_is_freezetime()) {
 		return PLUGIN_HANDLED
 	}
-	UnSet_BitVar(gPedalIsFlooredMask,id)
+	g_ester_attack_phase[id] = NONE
 	stop_sounds(id)
 	new client_name[128]
 	get_user_name(id,client_name,127)
@@ -786,8 +769,8 @@ public ester_ku(id)
 		return PLUGIN_HANDLED;
 	}
 	emit_sound(id, CHAN_ITEM, NEUROBLAST_RELEASE, 1.0, ATTN_NORM, 0, PITCH_NORM)
-	if(!Get_BitVar(gFinishedMask,id)){
-		Set_BitVar(gUnloadingMask,id)
+	if(g_ester_attack_phase[id] <= FINISHED){
+		g_ester_attack_phase[id] = UNLOADING
 		gTimesLeft[id]--;
 	}
 	

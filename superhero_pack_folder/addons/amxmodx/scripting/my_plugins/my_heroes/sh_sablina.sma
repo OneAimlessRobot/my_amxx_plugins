@@ -25,7 +25,7 @@
 
 
 #define SABLINA_SPIKER_CLASSNAME "sablina_spike"
-#define SABLINA_STONE_SPIKE_TICK_LENGTH_SECS 0.5
+#define SABLINA_STONE_SPIKE_TICK_LENGTH_SECS 0.166667
 #define SABLINA_STONE_SPIKE_DIE_DELAY 4.0
 
 stock const gHeroName[] = "Sablina"
@@ -40,7 +40,7 @@ new const gRockCrashSounds[3][128] = {"shmod/sablina/sablina_light_attack.wav",
 											"shmod/sablina/sablina_heavy_attack.wav",
 											"shmod/sablina/sablina_attack_hit.wav"}
 
-#define SPIKE_CHARGING_SOUND "shmod/flora/fields/field_charging.wav"
+#define SPIKE_CHARGING_SOUND "ambience/port_suckin1.wav"
 
 
 
@@ -402,6 +402,8 @@ public increase_dmg_task(id){
 		
 		client_print(id,print_center,"[SH] Sablina: Stone spike charge: %0.2f",(user_stone_spiker_time[id]/user_charge_time_curr_strike[id])*100.0)
 
+		emit_sound(id, CHAN_ITEM, SPIKE_CHARGING_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+
 		set_task(SABLINA_STONE_SPIKE_TICK_LENGTH_SECS,"increase_dmg_task",id+SH_SABLINA_SPIKE_CHARGE_TASKID)
 		return
 		
@@ -426,7 +428,9 @@ public sablina_kd(id)
 		}
 		return
 	}
-
+	if(task_exists(id+SH_SABLINA_SPIKE_CHARGE_TASKID)){
+		return
+	}
 	user_last_maxspeed[id] = get_user_maxspeed(id)
 
 	sh_assign_id_bit(id, SH_IS_CHARGING_HEAVY_ATTACK, true)
@@ -439,7 +443,6 @@ public sablina_kd(id)
 	
 	user_stone_spiker_time[id] = 0.0;
 		
-	emit_sound(id, CHAN_ITEM, SPIKE_CHARGING_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 
 	user_charge_time_curr_strike[id] = calculate_sablina_charge_time(id)
 

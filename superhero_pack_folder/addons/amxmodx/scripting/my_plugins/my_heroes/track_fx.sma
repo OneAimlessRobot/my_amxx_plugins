@@ -52,7 +52,7 @@ public plugin_init(){
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	RADIOACTIVE_TASK_ID=allocate_typed_task_id(player_task)
-	register_event("Damage", "tracked_damage", "b", "2!0")
+	RegisterHam(Ham_TraceAttack, "player", "tracked_damage",_,true)
 
 
 	custom_dmg_id_tracked_vuln=sh_log_custom_damage_source(-1,
@@ -70,13 +70,16 @@ public plugin_natives(){
 	register_native("track_user","_track_user");
 }
 
-public tracked_damage(id)
-{
-	if ( !sh_is_active() || !is_user_alive(id)) return
-	
-	new  Float:damage= float(read_data(2))
-	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
-	if ( !is_user_connected(attacker)) return
+public tracked_damage(id, attacker, Float:damage, Float:Direction[3], Ptr, DamageBits){
+
+	if ( !sh_is_active() || !is_user_alive(id) || !is_user_alive(attacker)) return HAM_IGNORED
+
+
+	new return_result= HAM_IGNORED
+
+	new my_hitpoint_enum:the_hitpoint = my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
+
+	if ( !is_user_connected(attacker)) return return_result
 	
 	new fx_num_vic=(gatling_get_fx_num(id));
 	switch(fx_num_vic){
@@ -85,7 +88,7 @@ public tracked_damage(id)
 			new Float:extraDamage = damage * RADIOACTIVE_DAMAGE_VULNERABILITY_COEFF - damage
 			if (floatround(extraDamage)>0){
 				sh_extra_damage(id, attacker, floatround(extraDamage),
-											my_hitpoint_enum:bodypart,
+											the_hitpoint,
 											_,_,_,_,
 											SH_NEW_DMG_RADIATION_POISON,
 											custom_dmg_id_tracked_vuln)
@@ -93,6 +96,7 @@ public tracked_damage(id)
 		}
 	
 	}
+	return return_result
 	
 }
 

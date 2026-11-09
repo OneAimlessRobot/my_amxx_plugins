@@ -27,6 +27,10 @@
 #include "../my_include/my_author_header.inc"
 
 
+new dmg_source_name_short_yandere_mayday[SAFE_BUFFER_SIZE+1]="yandere_mayday"
+new dmg_source_name_log_yandere_mayday[SAFE_BUFFER_SIZE+1]="yandere_mayday"
+new custom_dmg_id_yandere_mayday
+
 stock hud_sync_jetplane
 stock ham_is_here=0
 stock ham_is_on=0
@@ -90,6 +94,7 @@ public plugin_init()
 	RegisterHam(Ham_TakeDamage,"player","jet_Damage",_,true)
 	
 	register_entity_as_wall_touchable(JETPLANE_FUSELAGE_CLASSNAME,"FwdTouchWorld")
+	register_touch(JETPLANE_FUSELAGE_CLASSNAME,JETPLANE_FUSELAGE_CLASSNAME,"FwdTouchWorld")
 	hud_sync_jetplane=CreateHudSyncObj();
 
 	JET_LOAD_TASKID=allocate_typed_task_id(player_task)
@@ -100,8 +105,6 @@ public plugin_init()
 }
 public plugin_natives(){
 	
-	register_native("clear_jets","_clear_jets");
-	register_native("reset_jet_user","_reset_jet_user");
 	register_native("yandere_jet_uncharge_user","_yandere_jet_uncharge_user");
 	register_native("yandere_jet_charge_user","_yandere_jet_charge_user");
 	register_native("jet_loaded","_jet_loaded");
@@ -112,9 +115,28 @@ public plugin_natives(){
 
 	
 }
+explode_jet_entity(jet){
+	explosion(gHeroID,jet,cvar_val(float, pcvar_jetplane_hp),cvar_val(float, pcvar_jetplane_hp),-1.0,1,_,1.1,_,_,_,custom_dmg_id_yandere_mayday)
+	explosion_custom_entity(jet,cvar_val(float, pcvar_jetplane_hp),cvar_val(float, pcvar_jetplane_hp),JETPLANE_FUSELAGE_CLASSNAME,
+				_,
+				explosion_sfx_show_nothing)
+
+	explosion_custom_entity(jet,
+		cvar_val(float, pcvar_jetplane_hp),
+		cvar_val(float, pcvar_jetplane_hp),
+		"func_breakable",
+		_,
+		explosion_sfx_show_nothing)
+	
+}
 public plugin_cfg(){
 
 	gHeroID = yandere_get_hero_id()
+
+	custom_dmg_id_yandere_mayday = sh_log_custom_damage_source(gHeroID,
+				dmg_source_name_short_yandere_mayday,
+				dmg_source_name_log_yandere_mayday,
+				0)
 }
 public plugin_precache(){
 	
@@ -157,7 +179,7 @@ public _jet_hurt_user_jet(iPlugin,iParams){
 	if(!Get_BitVar(g_jetplane_deployed_mask, id)){
 		return
 	}
-	ExecuteHam(Ham_TakeDamage, g_jetplane[id], damage_entity, attacker, damage_to_do, 0);
+	ExecuteHamB(Ham_TakeDamage, g_jetplane[id], damage_entity, attacker, damage_to_do, 0);
 	
 }
 public _jet_loaded(iPlugin,iParams){
@@ -183,7 +205,7 @@ public _yandere_jet_charge_user(iPlugin, iParams){
 	if(!is_user_alive(id)) return
 
 	if(!sh_get_user_has_hero(id,gHeroID)) return
-
+	
 
 	if(!Get_BitVar(g_jetplane_loaded_mask, id)){
 		
@@ -191,6 +213,9 @@ public _yandere_jet_charge_user(iPlugin, iParams){
 		return
 	}
 
+	if(task_exists(id+JET_CHARGE_TASKID)){
+		return
+	}
 	new Float: Origin[3]
 	
 	entity_get_vector(id, EV_VEC_origin , Origin)
@@ -227,9 +252,6 @@ public _yandere_jet_charge_user(iPlugin, iParams){
 	set_pev(NewEnt,pev_renderamt,float(alpha))
 	set_pev(g_jetplane[id],pev_owner,id)
 	entity_set_origin(g_jetplane[id], Origin)
-	if(!task_exists(id+JET_LOAD_TASKID)){
-		set_task(cvar_val(float, pcvar_jetplane_cooldown),"load_jet",id+JET_LOAD_TASKID)
-	}
 	charge_task(id+JET_CHARGE_TASKID)
 	
 }
@@ -239,6 +261,12 @@ public jet_Damage(this, idinflictor, idattacker, Float:damage, damagebits){
 	
 	if(!Get_BitVar(g_jetplane_deployed_mask, this)) return HAM_IGNORED
 	
+
+	if(!is_valid_ent(g_jetplane[this])) return HAM_IGNORED
+
+	if(entity_get_float(g_jetplane[this],EV_FL_health)<1000.0){
+		return HAM_IGNORED
+	}
 	damage=0.0;
 	return HAM_SUPERCEDE
 	
@@ -250,13 +278,12 @@ public jet_itself_Damage(this, idinflictor, idattacker, Float:damage, damagebits
 	if(!sh_is_active()){
 		return HAM_IGNORED
 	}
-	if(pev_valid(this)!=2){
+	if(pev_valid(this)<=0){
 		return HAM_IGNORED
 	
 	}
 	
-	
-	if(pev_valid(idattacker)!=2){
+	if(pev_valid(idattacker)<=0){
 		return HAM_IGNORED
 	
 	}
@@ -264,18 +291,18 @@ public jet_itself_Damage(this, idinflictor, idattacker, Float:damage, damagebits
 		return HAM_IGNORED
 	
 	}
-	if(pev_valid(idinflictor)!=2){
+	if(pev_valid(idinflictor)<=0){
 		return HAM_IGNORED
 	
 	}
-	static jet_classname[32]
-	jet_classname[31]='^0'
-	pev(this, pev_classname, jet_classname, charsmax(jet_classname))
-	if(!equal(jet_classname, JETPLANE_FUSELAGE_CLASSNAME)){
-		
-		return HAM_IGNORED
-		
+	
+	if(pev_valid(this)){
+
+		new owner_inflictor = pev(idinflictor, pev_owner)
+		set_pev(this,pev_dmg_inflictor,!is_user_connected(idinflictor)?owner_inflictor:idinflictor)
+	
 	}
+
 	return HAM_IGNORED;
 }
 
@@ -292,31 +319,8 @@ uncharge_user(id){
 		Set_BitVar(g_jetplane_loaded_mask, id)
 	}
 	if(pev_valid(g_jetplane[id])==2){
-		emit_sound(g_jetplane[id], CHAN_ITEM, JETPLANE_FLY_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 		jet_destroy(id)
 	}
-	
-	
-}
-
-public _reset_jet_user(iPlugin,iParams){
-	
-	new id= get_param(1)
-	Set_BitVar(g_jetplane_loaded_mask, id);
-	UnSet_BitVar(g_jetplane_armed_mask, id);
-	UnSet_BitVar(g_jetplane_deployed_mask, id);
-	if(is_valid_ent(g_jetplane[id])){
-		emit_sound(g_jetplane[id], CHAN_ITEM, JETPLANE_FLY_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-		remove_entity(g_jetplane[id]);
-		g_jetplane[id]=0;
-	}
-	if(camera[id] > 0)
-	{
-		attach_view(id, id)
-		remove_entity(camera[id])
-		camera[id] = 0
-	}
-	
 	
 	
 }
@@ -356,6 +360,7 @@ public jet_deploy_task(parm[],id){
 	reset_jet_rockets(jetplane_id)
 	reset_jet_scans(jetplane_id)
 	Set_BitVar(g_jetplane_armed_mask, id)
+	sh_assign_id_bit(id,SH_CONTROLLING_VEHICLE,true)
 	sh_chat_message(attacker,gHeroID,"jet armed!");
 	camera[id] = create_entity("info_target")
 	static Float:origin[3],
@@ -428,25 +433,32 @@ public FwdTouchWorld( jet, World ) {
 		return
 	}
 	new owner=pev(jet,pev_owner)
+	static world_classname[128]
+	
+	new bool:world_exploded = false
 	if(is_user_alive(owner)||!sh_get_user_has_hero(owner,gHeroID)){
-
+		
 		if((get_entity_velocity(jet)/cvar_val(float, pcvar_jetplane_speed))>JETPLANE_MIN_CRASH_SPEED_COEFF){
-
-
-			explosion(gHeroID,jet,cvar_val(float, pcvar_jetplane_hp),cvar_val(float, pcvar_jetplane_hp))
-			explosion_custom_entity(jet,cvar_val(float, pcvar_jetplane_hp),cvar_val(float, pcvar_jetplane_hp),JETPLANE_FUSELAGE_CLASSNAME,
-						_,
-						explosion_sfx_show_nothing)
-
-			explosion_custom_entity(jet,
-				cvar_val(float, pcvar_jetplane_hp),
-				cvar_val(float, pcvar_jetplane_hp),
-				"func_breakable",
-				_,
-				explosion_sfx_show_nothing)
 			
-			jet_destroy(owner)
-			user_kill(owner)
+			
+			if(is_valid_ent(World)&&(pev_valid(World)>0)){
+				entity_get_string(World,EV_SZ_classname,world_classname, charsmax(world_classname))
+				if(equali(world_classname,JETPLANE_FUSELAGE_CLASSNAME)){
+
+					explode_jet_entity(World)
+					world_exploded= true
+				}
+			}
+
+			explode_jet_entity(jet)
+			
+			if(world_exploded){
+				new world_owner = entity_get_edict(World,EV_ENT_owner)
+				jet_destroy(world_owner,true,world_owner)
+			}
+			jet_destroy(owner,true,owner)
+
+
 			return
 			
 		}
@@ -479,12 +491,21 @@ public jet_think(ent)
 		return
 	}
 		
-	new Float:jet_health=float(pev(ent,pev_health)),
+	new Float:jet_health,
 	Float:max_jet_speed=cvar_val(float, pcvar_jetplane_speed)
+
+	pev(ent,pev_health,jet_health)
+		
 	if ( (jet_health<1000.0)) {
 		if(g_jetplane[owner]){
-			jet_destroy(owner)
-			sh_chat_message(owner,gHeroID,"jet died!")
+			
+
+			new last_inflictor = pev(g_jetplane[owner],pev_dmg_inflictor)
+
+			explode_jet_entity(g_jetplane[owner])
+
+			jet_destroy(owner,true,last_inflictor)
+			sh_chat_message(owner,gHeroID,"Someone took you out!")
 			uncharge_user(owner)
 		}
 		return 
@@ -701,7 +722,7 @@ public jet_think(ent)
 }
 public charge_task(id){
 
-	if(!sh_is_active()||sh_is_freezetime()){
+	if(!sh_is_active()||sh_is_freezetime()||!sh_is_inround()){
 
 		return
 	
@@ -726,11 +747,13 @@ public charge_task(id){
 	entity_set_vector(g_jetplane[id], EV_VEC_angles, vAngles)
 	entity_get_vector(id, EV_VEC_velocity, velocity)
 	entity_set_vector(g_jetplane[id], EV_VEC_velocity,  velocity)
-	
-	set_pev(g_jetplane[id],pev_health,min_macro(cvar_val(float, pcvar_jetplane_hp),floatadd(float(pev(g_jetplane[id],pev_health)),floatmul(JET_CHARGE_PERIOD,JET_CHARGE_RATE))))
+	new Float:the_hp
+	pev(g_jetplane[id],pev_health,the_hp)
+	set_pev(g_jetplane[id],pev_health,min_macro(cvar_val(float, pcvar_jetplane_hp),floatadd(the_hp,floatmul(JET_CHARGE_PERIOD,JET_CHARGE_RATE))))
 	if(!is_user_bot(id)){
 		static hud_msg[128];
-		formatex(hud_msg,127,"[SH]: Curr build pct: %0.2f^n",float(pev(g_jetplane[id],pev_health)));
+		pev(g_jetplane[id],pev_health,the_hp)
+		formatex(hud_msg,127,"[SH]: Curr build pct: %0.2f^n",the_hp);
 		client_print(id,print_center,"%s",hud_msg)
 	}
 	new parm[2]
@@ -743,6 +766,9 @@ public charge_task(id){
 		Set_BitVar(g_jetplane_deployed_mask,id);
 		set_pev(g_jetplane[id],pev_health,1000.0+pev(g_jetplane[id],pev_health))
 		jet_deploy_task(parm,id)
+		if(!task_exists(id+JET_LOAD_TASKID)){
+			set_task(cvar_val(float, pcvar_jetplane_cooldown),"load_jet",id+JET_LOAD_TASKID)
+		}
 		return
 	}
 	
@@ -829,6 +855,12 @@ disengage_user_jet_throttle(owner){
 public jet_hud_task(id){
 	
 	new owner=id-JET_HUD_TASKID
+	if(!is_user_connected(owner)){
+		return
+	}
+	if((pev_valid(g_jetplane[owner])<=0)||!is_valid_ent(g_jetplane[owner])){
+		return
+	}
 	if(!is_user_alive(owner)){
 		
 		return
@@ -844,9 +876,11 @@ public jet_hud_task(id){
 		g_jetplane_telemetry_data[owner][1]=0.0
 		
 	}
+	new Float:the_hp
+	pev(g_jetplane[owner],pev_health, the_hp)
 	static hud_msg[300]
 	formatex(hud_msg,299,"jetplane hp: %0.2f^njetplane fuel: %0.2f^njetplane AVG SPEED (hu/s): %0.2f^njetplane BOMBS: %d^njetplane JETGATLING rounds: %d^njetplane roquetos: %d^nGround scans left: %d^n",
-		float(pev(g_jetplane[owner],pev_health))-1000.0,
+		the_hp-1000.0,
 		get_user_fuel_ammount(owner),
 		g_jetplane_telemetry_data[owner][2],
 		get_user_jet_bombs(owner),
@@ -864,12 +898,18 @@ public jet_hud_task(id){
 public _jet_destroy(iPlugin,iParams){
 	
 	new id= get_param(1)
+	
+
+	new bool:kill_user= bool:get_param(2)
+	new inflictor= get_param(3)
 	emit_sound(g_jetplane[id], CHAN_WEAPON, JETPLANE_IDLE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
 	emit_sound(g_jetplane[id], CHAN_WEAPON, JETPLANE_FLY_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
 	emit_sound(g_jetplane[id], CHAN_WEAPON, JETPLANE_BLOW_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
 	remove_task(id+JET_SOUND_TASKID)
 	
 	if(is_valid_ent(g_jetplane[id])){
+
+
 		if(is_user_alive(id)){
 			set_pev(id, pev_takedamage, DAMAGE_YES)
 			set_pev(id, pev_solid, SOLID_SLIDEBOX)
@@ -880,32 +920,27 @@ public _jet_destroy(iPlugin,iParams){
 				pev(g_jetplane[id],pev_origin,plane_orig)
 				origin[2]=plane_orig[2]+10.0
 				set_pev(id,pev_origin,origin)
+				UnSet_BitVar(g_jetplane_deployed_mask,id)
+				sh_assign_id_bit(id,SH_CONTROLLING_VEHICLE,false)
 			}
-			
+			if(kill_user){
+
+				if(is_user_connected(inflictor)){
+					sh_extra_damage(id,inflictor, floatround(cvar_val(float,pcvar_jetplane_hp)),_,SH_DMG_KILL,_,_,_,SH_NEW_DMG_FRAG_BLAST,custom_dmg_id_yandere_mayday)
+				}
+			}
 		}
+
 		mg_destroy(id)
 		law_destroy(id)
 		remove_entity(g_jetplane[id]);
 		g_jetplane[id]=-1;
 	}
+	
 	if(camera[id] > 0)
 	{
 		attach_view(id, id)
 		remove_entity(camera[id])
 		camera[id] = 0
-	}
-	UnSet_BitVar(g_jetplane_deployed_mask,id)
-}
-public _clear_jets(iPlugin,iParams){
-	
-	new grenada = find_ent_by_class(-1, JETPLANE_FUSELAGE_CLASSNAME)
-	while(grenada) {
-		remove_entity(grenada)
-		grenada = find_ent_by_class(grenada, JETPLANE_FUSELAGE_CLASSNAME)
-	}
-	
-	if(ham_is_on){
-		DisableHamForward(the_damage_ham_hook)
-		ham_is_on=0;
 	}
 }

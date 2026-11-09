@@ -167,9 +167,12 @@ custom_dmg_id_cyanide=sh_log_custom_damage_source(-1,
 				dmg_source_name_log_cyanide,
 				0)
 
+
+RegisterHam(Ham_TraceAttack, "player", "fx_damage",_,true)
+
 RegisterHam(Ham_TakeDamage, "player", "Player_TakeDamage_Pre", _,true) 
-RegisterHam(Ham_TakeDamage, "player", "Player_TakeDamage_Post", 1,true) 
-register_event("Damage", "fx_damage", "b", "2!0")
+RegisterHam(Ham_TakeDamage, "player", "Player_TakeDamage_Post", 1,true)
+
 register_event("CurWeapon", "weaponChange", "be", "1=1")
 
 }
@@ -216,14 +219,15 @@ public fw_Weapon_Reload_Post(iEnt)
 }
 
 
-public fx_damage(id)
+public fx_damage(id, attacker, Float:damage, Float:Direction[3], Ptr, DamageBits)
 {
-	if ( !sh_is_active() || !is_user_alive(id)) return
-	
-	new  Float:damage= float(read_data(2))
-	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
+	if ( !sh_is_active() || !is_user_alive(id) || !is_user_alive(attacker)) return HAM_IGNORED
 
-	if ( !is_user_alive(attacker)||attacker==id) return
+
+	new return_result= HAM_IGNORED
+
+	new my_hitpoint_enum:the_hitpoint = my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
+
 	
 	new fx_num_att=(gatling_get_fx_num(attacker));
 	new fx_num_vic=(gatling_get_fx_num(id));
@@ -233,7 +237,7 @@ public fx_damage(id)
 			if (floatround(extraDamage)>0){
 				
 				sh_extra_damage(id, attacker, floatround(extraDamage),
-							my_hitpoint_enum:bodypart ,
+							the_hitpoint,
 							_,_,_,_,
 							SH_NEW_DMG_DRUG_POISON,
 							custom_dmg_id_crackhead_rage)
@@ -254,14 +258,14 @@ public fx_damage(id)
 			if (floatround(extraDamage)>0){
 		
 				sh_extra_damage(id, attacker, floatround(extraDamage),
-							my_hitpoint_enum:bodypart ,
+							the_hitpoint,
 							_,_,_,_,
 							SH_NEW_DMG_DRUG_POISON,
 							custom_dmg_id_poison_vuln)
 			}	
 		}
 	}
-	
+	return return_result
 }
 
 public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart ,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,custom_weapon_id){
@@ -676,7 +680,7 @@ public morphine_task(any:array[3],id){
 	if ( !sh_is_active() ||!is_user_alive(id)) return
 	generic_heal(id,
 					float(MORPHINE_HP_ADD),
-					sh_get_max_hp(id),FX_COLOR_OFFSET(array[0]),_,_,_,0)
+					_,FX_COLOR_OFFSET(array[0]),_,_,_,0)
 	
 	task_cycle(array,id)
 }

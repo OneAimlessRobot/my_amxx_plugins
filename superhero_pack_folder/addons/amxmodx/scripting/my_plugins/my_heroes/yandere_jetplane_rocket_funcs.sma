@@ -45,7 +45,7 @@ public plugin_init()
 
 
 	register_entity_as_wall_touchable(JETPLANE_ROCKET_CLASSNAME,"rocket_hit")
-	register_touch(JETPLANE_FUSELAGE_CLASSNAME,JETPLANE_ROCKET_CLASSNAME,"rocket_hit")
+	register_touch(JETPLANE_ROCKET_CLASSNAME,JETPLANE_FUSELAGE_CLASSNAME,"rocket_hit")
 	register_custom_touchable(JETPLANE_ROCKET_CLASSNAME,"rocket_hit",player_vector,1)
 	
 
@@ -286,20 +286,12 @@ public law_think(ent)
 	
 	new bool:jet_deployed_here = bool:jet_deployed(owner)
 
-	if ( !jet_deployed_here) {
-		if(pev_valid(ent)){
-			law_destroy(owner)
-			sh_chat_message(owner,gHeroID,"jet law died cuz of plane dying!!")
-		}
-		return
-	}
-	new Float:law_health=float(pev(ent,pev_health))
+	new Float:law_health
+	pev(ent,pev_health,law_health)
 	
 	if ( (law_health<1000.0)) {
-		if(pev_valid(ent)){
-			law_destroy(owner)
-			sh_chat_message(owner,gHeroID,"jet law died!")
-		}
+		law_destroy(owner)
+		sh_chat_message(owner,gHeroID,"jet law died!")
 		return
 	}
 	if(jet_deployed_here){
@@ -338,8 +330,8 @@ public law_think(ent)
 			}
 		}
 
-		set_pev(ent, pev_nextthink, gametime + LAW_THINK_PERIOD)
 	}
+	set_pev(ent, pev_nextthink, gametime + LAW_THINK_PERIOD)
 }
 
 //----------------------------------------------------------------------------------------------

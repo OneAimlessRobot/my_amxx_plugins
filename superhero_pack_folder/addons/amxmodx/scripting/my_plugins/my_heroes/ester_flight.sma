@@ -575,7 +575,6 @@ ester_remove_statuses(id){
 	if(is_user_connected(id)&&sh_get_user_has_hero(id,gHeroID)){
 		
 		remove_task(id+ESTER_REBORN_EXPLOSION_DELAY_TASKID)
-		set_user_godmode(id,0)
 		remove_user_flight_fx(id)
 	}
 	

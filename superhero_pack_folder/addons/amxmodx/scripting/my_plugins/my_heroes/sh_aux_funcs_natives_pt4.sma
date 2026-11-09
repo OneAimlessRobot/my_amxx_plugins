@@ -44,7 +44,9 @@ stock const new_dmg_type_descriptions_arr[sh_thrash_brat_dmg_type][extra_dmg_des
 	{"SH_Suffocation", "Some heroes can self suffocate!", true},
 	{"SH_Cleanse", "Heroes that commit plenty of sin are most susceptible", false},
 	
-	{"SH_Tr45H_Gun", "Damage from recycled weapons. Only a few heroes use this", false}
+	{"SH_Tr45H_Gun", "Damage from recycled weapons. Only a few heroes use this", false},
+
+	{"SH_Energy_Blade", "Damage from energy swords, disks, etc.", false}
 	
 
 }

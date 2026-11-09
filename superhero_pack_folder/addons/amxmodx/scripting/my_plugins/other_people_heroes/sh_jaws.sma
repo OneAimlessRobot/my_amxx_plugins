@@ -1,7 +1,3 @@
-#include <amxmodx>
-#include <engine>
-#include <fun>
-#include <cstrike>
 #include "../my_include/superheromod.inc"
 
 #define IDLE		0
@@ -203,6 +199,13 @@ jaws_find_target(IgnorePlayer)
 
 	for(new i=0; i<Pnum; i++) {
 		if(IgnorePlayer == Players[i]) continue
+
+		if(sh_get_id_bit(Players[i], SH_CONTROLLING_VEHICLE)){
+			continue;
+		}
+		if(get_user_godmode(Players[i])){
+			continue;
+		}
 		
 		Distance = get_entity_distance(Players[i], JawsEnt)	
 		if(Distance<TargetDistance) {
@@ -251,6 +254,12 @@ public jaws_loop()
 		for(new i=0; i<Pnum; i++) {
 
 			if(!is_user_alive(Players[i])){
+				continue;
+			}
+			if(sh_get_id_bit(Players[i], SH_CONTROLLING_VEHICLE)){
+				continue;
+			}
+			if(get_user_godmode(Players[i])){
 				continue;
 			}
 			Distance = get_entity_distance(Players[i], JawsEnt)

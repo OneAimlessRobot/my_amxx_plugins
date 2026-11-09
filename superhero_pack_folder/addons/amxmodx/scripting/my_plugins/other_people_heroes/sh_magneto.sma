@@ -50,9 +50,9 @@ public client_damage(attacker, victim, damage, wpnindex)
 	if ( !is_user_alive(victim) || !is_user_alive(attacker) ) return
 	if ( !sh_get_user_has_hero(victim,gHeroID) || sh_get_cooldown_flag(victim)) return
 
-	new slot = sh_get_weapon_slot(wpnindex)
+	new my_weapon_slots:slot = wlt_get_def_slot(wpnindex)
 
-	if ( slot == 1 || slot == 2 ) {
+	if ( slot == MY_SLOT_PRIMARY || slot == MY_SLOT_SECONDARY ) {
 
 		new Float:cooldown = get_pcvar_float(pCvarCooldown)
 		if ( cooldown > 0.0 ) sh_set_cooldown(victim, cooldown)

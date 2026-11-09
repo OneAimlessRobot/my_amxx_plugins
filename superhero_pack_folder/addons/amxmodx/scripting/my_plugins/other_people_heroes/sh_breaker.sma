@@ -56,18 +56,18 @@ public client_damage(attacker, victim, damage, wpnindex)
 	
 	if (sh_get_user_has_hero(attacker,gHeroID) && generate_float(0.01, 1.00) <= get_pcvar_float(pCvarChance)) 
 	{ 	
-		new slot=0;
+		new my_weapon_slots:slot=enum_zero;
 		if(wpnindex < CSW_P90){
-			slot = sh_get_weapon_slot(wpnindex) 
+			slot = wlt_get_def_slot(wpnindex) 
 		}
 		else if(xmod_is_melee_wpn(wpnindex)){
-			slot=-1;
+			slot=enum_minus_one;
 		}
 		else{
-			slot=1;
+			slot=MY_SLOT_PRIMARY;
 
 		}
-		if (slot == 1 || slot == 2) 
+		if (slot == MY_SLOT_PRIMARY || slot == MY_SLOT_SECONDARY) 
 		{     
 			cs_set_user_armor (victim, max(armor - get_pcvar_num(pCvarDeduct), 0), armortype)
 			

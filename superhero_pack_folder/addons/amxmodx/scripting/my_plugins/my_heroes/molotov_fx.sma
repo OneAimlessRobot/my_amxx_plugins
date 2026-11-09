@@ -37,7 +37,7 @@ public plugin_init(){
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
-	register_event("Damage", "molotov_damage_vulnerability", "b", "2!0")
+	RegisterHam(Ham_TraceAttack, "player", "molotov_damage_vulnerability",_,true)
 	MOLLY_TASKID=allocate_typed_task_id(player_task)
 	BURN_TASKID_MAIN=allocate_typed_task_id(player_task)
 
@@ -124,23 +124,30 @@ public burn_task(array[3],id)
 	}
 }
 
-public molotov_damage_vulnerability(id){
-	if ( !sh_is_active() || !is_user_alive(id)) return
-	new  Float:damage= float(read_data(2))
-	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
+public molotov_damage_vulnerability(id, attacker, Float:damage, Float:Direction[3], Ptr, DamageBits){
 
+	if ( !sh_is_active() || !is_user_alive(id) || !is_user_alive(attacker)) return HAM_IGNORED
+
+
+	new return_result= HAM_IGNORED
+
+	new my_hitpoint_enum:the_hitpoint = my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
+
+	if ( !is_user_connected(attacker)) return return_result
+	
 	if(sh_get_id_bit(id, SH_IS_BURNING)){
 		new Float:extraDamage = damage * BURN_DAMAGE_VULNERABILITY_COEFF + damage
 		if (floatround(extraDamage)>0){
 			if (floatround(extraDamage)>0){
 				sh_extra_damage(id, attacker, floatround(extraDamage),
-							my_hitpoint_enum:bodypart,
+							the_hitpoint,
 							_,_,_,_,
 							SH_NEW_DMG_FIRE,
 							custom_dmg_id_fire_vuln)
 			}
 		}
 	}
+	return return_result
 
 	
 }

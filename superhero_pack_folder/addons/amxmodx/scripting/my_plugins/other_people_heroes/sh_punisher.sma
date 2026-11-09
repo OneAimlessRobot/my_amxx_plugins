@@ -37,9 +37,9 @@ public change_weapon(id)
 	if ( !sh_is_active() || !sh_get_user_has_hero(id,gHeroID)) return
 
 	//new wpnid = read_data(2)
-	new wpnslot = sh_get_weapon_slot(read_data(2))
-
-	if ( wpnslot != 1 && wpnslot != 2 ) return
+	new my_weapon_slots:wpnslot = wlt_get_def_slot(read_data(2))
+	
+	if (wpnslot != MY_SLOT_PRIMARY || wpnslot != MY_SLOT_SECONDARY) return
 
 	//new clip = read_data(3)
 	if ( read_data(3) == 0 ) {

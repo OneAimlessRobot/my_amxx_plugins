@@ -192,6 +192,10 @@ public zenitsu_ele_cuerte_de_la_spada(pToucher, pTouched) {
 		
 		return
 	}
+	if(sh_get_id_bit(pTouched, SH_CONTROLLING_VEHICLE)){
+
+		return
+	}
 	if(pTouched==pToucher){
 
 		return

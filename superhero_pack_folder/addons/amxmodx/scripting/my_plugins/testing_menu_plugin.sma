@@ -2,6 +2,7 @@
 #define AUX_STUFF_GIVE_MACROS
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_MATH_FUNCS
 #define I_WANT_CUSTOM_COLORS
 #define I_WANT_BASIC_MACROS
 #define I_WANT_PDATA_ALIASES
@@ -37,13 +38,15 @@
 #define MARK_TASK_PERIOD 0.44
 #define DRAW_AIM_VECTOR_TASK_PERIOD 0.44
 #define FIX_AIM_VECTOR_TASK_PERIOD 0.44
+#define AIMBOT_PLAYER_TASK_PERIOD 0.44
 
 
 enum the_global_tasks{
 
     MARK,
     DRAW_AIM_VECTOR,
-    FIX_PLAYER_AIM_VECTOR
+    FIX_PLAYER_AIM_VECTOR,
+    AIMBOT_PLAYER
 
 
 }
@@ -60,18 +63,21 @@ enum global_task_struct{
 
 
 new g_who_marks_who[MAX_PLAYERS+1] = {0, ...},
+    g_who_aimbots_who[MAX_PLAYERS+1] = {0, ...},
     g_who_draws_who_aim_vector[MAX_PLAYERS+1] = {0, ...},
     Float:g_player_countdown_mark[MAX_PLAYERS+1] = {0.0, ...},
     Float:g_player_countdown_draw_aim_vector[MAX_PLAYERS+1] = {0.0, ...},
     Float:g_player_fixed_aim_vector[MAX_PLAYERS+1][3];
 
-new is_being_fixed_bitmask = 0
+new is_being_fixed_bitmask = 0,
+    is_being_aimbotted = 0
 
 new the_global_tasks_array[the_global_tasks][global_task_struct] = {
 
     {"generic_track_task", -1, MARK_TASK_PERIOD},
     {"draw_aim_vector_task", -1, DRAW_AIM_VECTOR_TASK_PERIOD},
     {"fix_player_aim_vector_task", -1, FIX_AIM_VECTOR_TASK_PERIOD},
+    {"aimbot_player_task", -1, AIMBOT_PLAYER_TASK_PERIOD},
 
 
 
@@ -111,16 +117,32 @@ new bot_difficulty_names[bot_difficulty_tag][128] = {
 
 new pcvar_sh_alive_drop = -1,
     pcvar_bot_autokill_delay = -1,
-    pcvar_bot_difficulty = -1
+    pcvar_bot_difficulty = -1,
+    pcvar_round_restart = -1,
+    pcvar_yb_quota = -1,
+    pcvar_bot_join_team = -1,
+    pcvar_yb_ignore_objectives = -1,
+    pcvar_yb_ignore_enemies = -1,
+    pcvar_yb_freeze_bots = -1
 
 public plugin_init(){
 
 
     register_plugin(PLUGIN, VERSION, AUTHOR);
+    
+    pcvar_yb_quota = get_cvar_pointer("yb_quota")
     pcvar_sh_alive_drop = get_cvar_pointer("sh_alivedrop")
+    pcvar_yb_ignore_objectives = get_cvar_pointer("yb_ignore_objectives")
+    pcvar_yb_ignore_enemies = get_cvar_pointer("yb_ignore_enemies")
+    pcvar_yb_freeze_bots = get_cvar_pointer("yb_freeze_bots")
+    pcvar_round_restart = get_cvar_pointer("sv_restart")
+    pcvar_bot_join_team = get_cvar_pointer("yb_join_team")
     pcvar_bot_autokill_delay = get_cvar_pointer(BOTS_AUTOKILL_DELAY_CVAR_NAME)
     pcvar_bot_difficulty = get_cvar_pointer(BOTS_DIFFICULTY_CVAR_NAME)
 
+    register_concmd("set_quota", "set_quota", ADMIN_IMMUNITY, "Set number of bots to play with")
+    register_concmd("set_bot_team", "set_bot_team", ADMIN_IMMUNITY, "Sets the team that bots are allowed to join")
+    register_concmd("amx_countentities", "amx_countentities", ADMIN_IMMUNITY, "Search number of entities based on name")
     register_clcmd(CMD_NAME, "menu_display_inittializer", ADMIN_IMMUNITY, "My first menu")
     RegisterHam(Ham_Spawn, "player", "ham_PlayerSpawn_Post", 1, true)
 
@@ -138,7 +160,8 @@ enum things_to_do_to_players{
     align_angle_vectors,
     revive_player,
     track_player,
-    draw_aim_vector_val
+    draw_aim_vector_val,
+    aimbot_player
 
 }
 
@@ -156,11 +179,56 @@ new things_to_do_to_player_array[things_to_do_to_players][thing_to_do_to_player_
     {"Align their angle vector with yours", "align_with_player_vector", 1},
     {"Revive a player", "amx_revive", 1},
     {"Track a player", "amx_track", 1},
-    {"Render a player's aim vector just for you", "amx_draw_aim_vector", 1}
+    {"Render a player's aim vector just for you", "amx_draw_aim_vector", 1},
+    {"Lock a players aim to an entity", "amx_aimbot_player", 1}
 
 
 }
 
+point_player_towards_other_player(handled_player, target_player){
+    static Float:the_raw_carthesian_vector_to_store[3],
+            Float:the_angle_vector_to_apply[3]
+
+    //the output of this is a carthesian vector!
+    get_entity_direction_vector_raw(handled_player,target_player, the_raw_carthesian_vector_to_store)
+
+    //Normalize it!
+    vector_norm(the_raw_carthesian_vector_to_store,the_raw_carthesian_vector_to_store)
+
+    vector_to_angle(the_raw_carthesian_vector_to_store,the_angle_vector_to_apply)
+
+
+    the_angle_vector_to_apply[0] = -the_angle_vector_to_apply[0]
+
+    entity_set_vector(handled_player, EV_VEC_v_angle,the_angle_vector_to_apply)
+    entity_set_vector(handled_player, EV_VEC_angles,the_angle_vector_to_apply)
+    entity_set_int(handled_player, EV_INT_fixangle, 1)
+
+
+}
+public amx_countentities(id,level,cid){
+
+    if (!cmd_access(id,level,cid,1)){
+        return PLUGIN_HANDLED
+    }
+
+    new arg[128]
+    read_argv(1,arg,charsmax(arg))
+    new count = 0
+
+    new grenada = find_ent_by_class(-1, arg)
+    while(grenada) {
+        count++
+        grenada = find_ent_by_class(grenada,arg)
+
+    }
+
+    client_print(id,print_chat, "We have found a total of %d entities with classname exactly equal to ^"%s^"",count,arg)
+
+    return PLUGIN_HANDLED
+
+
+}
 public generic_track_task(task_id){
 
 
@@ -267,6 +335,41 @@ public fix_player_aim_vector_task(task_id){
     }
     
 }
+public aimbot_player_task(task_id){
+
+    static the_players[MAX_PLAYERS], pnum, id		
+    get_players(the_players, pnum, "a")
+    for (new i = 0; i < pnum; i++) {
+        
+        id = the_players[i]
+
+        if(!is_user_alive(id)){
+
+            continue
+        }
+        if(!is_user_alive(id)){
+
+            continue
+        }
+
+        if(!Get_BitVar(is_being_aimbotted,id)){
+
+            continue
+
+
+        }
+        if(!is_user_alive(g_who_aimbots_who[id])){
+
+            continue
+        }
+
+        point_player_towards_other_player(id,g_who_aimbots_who[id])
+
+
+        
+    }
+    
+}
 public amx_track(id,tg_id){
 
     if (!is_user_connected(id)){
@@ -365,15 +468,19 @@ public ham_PlayerSpawn_Post(ent_id){
     }
 
     g_who_marks_who[ent_id] = 0
+    g_who_aimbots_who[ent_id] = 0
     g_who_draws_who_aim_vector[ent_id] = 0
     g_player_countdown_mark[ent_id] = 0.0
     g_player_countdown_draw_aim_vector[ent_id] = 0.0;
 
-    Assign_BitVar(is_being_fixed_bitmask,ent_id, false_for_macro)
+    Assign_BitVar(is_being_fixed_bitmask,ent_id, false_for_macro);
+    Assign_BitVar(is_being_aimbotted,ent_id, false_for_macro);
+    
 
     return HAM_IGNORED
 
 }
+
 public align_with_player_vector(id, tg_id){
 
     if(!client_is_within_custom_range(tg_id,MAX_PLAYERS)){
@@ -394,6 +501,12 @@ public align_with_player_vector(id, tg_id){
     get_user_name(tg_id, player_name, charsmax(player_name))
 
 
+    if(Get_BitVar(is_being_aimbotted,tg_id)){
+
+        console_print(id,"%s is already being aimbotted!",player_name)
+        return
+
+    }
     if(Get_BitVar(is_being_fixed_bitmask,tg_id)){
 
         Assign_BitVar(is_being_fixed_bitmask,tg_id, false_for_macro)
@@ -416,6 +529,110 @@ public align_with_player_vector(id, tg_id){
 
     Assign_BitVar(is_being_fixed_bitmask,tg_id, true_for_macro)
 
+
+}
+public amx_aimbot_player(id, tg_id){
+
+    if(!client_is_within_custom_range(tg_id,MAX_PLAYERS)){
+        return
+    }
+
+    if(!is_user_alive(tg_id)){
+        
+        
+        console_print(id,"They need to be alive for you to use this!^nRejected.")
+        return
+
+    }
+    static player_name[128]
+    
+
+    get_user_name(tg_id, player_name, charsmax(player_name))
+    
+
+    if(Get_BitVar(is_being_fixed_bitmask,tg_id)){
+
+        console_print(id,"%s is already being aimfixed!",player_name)
+        return
+
+    }
+
+    if(Get_BitVar(is_being_aimbotted,tg_id)){
+
+        Assign_BitVar(is_being_aimbotted,tg_id, false_for_macro)
+        console_print(id,"Removing aimbotting from %s!",player_name)
+        return
+
+    }
+
+    show_aimbot_target_menu(id,tg_id)
+
+
+}
+
+aimbot_player_payload(id, aimbot_cheater, tg_id){
+
+
+    if(!is_user_alive(aimbot_cheater)){
+        console_print(id, "This player is dead! You cant do that")
+        return
+
+    }
+    if(!is_user_alive(tg_id)){
+        console_print(id, "The target is dead! You cant do that")
+        return
+
+    }
+
+    Assign_BitVar(is_being_aimbotted,aimbot_cheater, true_for_macro)
+
+    g_who_aimbots_who[aimbot_cheater] = tg_id
+
+
+
+}
+show_aimbot_target_menu(id,aimbot_user){
+
+    new menuID = menu_create(PLAYER_MENU_NAME, "aimbot_target_player_handler")
+
+    static item_string[3]
+        
+    new bool:should_show_menu = false
+    static the_players[MAX_PLAYERS], pnum, pid, player_name[128], item_label_string[128], team_name[128]
+    get_players(the_players, pnum)
+    for (new i = 0; i < pnum; i++) {
+        
+        pid = the_players[i]
+
+        if(!is_user_alive(pid)){
+
+            continue
+        }
+        if(pid == aimbot_user){
+
+            continue
+        }
+        
+        
+        if(!should_show_menu){
+
+            should_show_menu = true
+
+        }
+        item_string[0] = id
+        item_string[1] = aimbot_user
+        item_string[2] = pid
+
+        get_user_team(pid, team_name, charsmax(team_name))
+        get_user_name(pid,player_name, charsmax(player_name))
+        
+        formatex(item_label_string,charsmax(item_label_string), "%s, %s, %s",player_name, team_name,is_user_alive(pid)?"Alive!":"Dead...")
+
+        menu_additem(menuID,item_label_string,item_string)
+
+    }
+
+    should_show_menu?menu_display(id,menuID):menu_destroy(menuID)
 
 }
 show_player_menu(id){
@@ -520,6 +737,21 @@ public do_something_to_player_submenu_handler(id, menu, item){
     callfunc_end()
 
 }
+public aimbot_target_player_handler(id, menu, item){
+
+    static item_string[3],
+    id = 0,
+    player_id = 0,
+    player_id_to_aimbot = 0
+
+    menu_item_getinfo(menu, item, _,item_string,sizeof(item_string))
+    id = item_string[0]
+    player_id = item_string[1]
+    player_id_to_aimbot = item_string[2]
+    
+    aimbot_player_payload(id, player_id, player_id_to_aimbot)
+
+}
 
 
 public menu_display_inittializer(id,level,cid){
@@ -531,12 +763,22 @@ public menu_display_inittializer(id,level,cid){
         return PLUGIN_HANDLED
     }
     gMenuID = menu_create(MENU_NAME, "menu_function_example")
+
     menu_additem(gMenuID,"Enable testing mode")
     menu_additem(gMenuID,"Disable testing mode")
     menu_additem(gMenuID,"Toggle superhero alive drop")
     menu_additem(gMenuID,"Do something to a player")
     menu_additem(gMenuID,"Toggle Bot Autokill")
     menu_additem(gMenuID,"Change Bot Difficulty")
+    menu_additem(gMenuID,"Count entities of a type")
+    menu_additem(gMenuID,"Toggle entity cap monitor")
+    menu_additem(gMenuID,"Produce game restart")
+    menu_additem(gMenuID,"Set number of bots")
+    menu_additem(gMenuID,"Set bot join team")
+    menu_additem(gMenuID,"Toggle bot freeze")
+    menu_additem(gMenuID,"Toggle bot ignore enemies")
+    menu_additem(gMenuID,"Toggle bot ignore objectives")
+
 
     
     menu_display(id,gMenuID)
@@ -587,14 +829,51 @@ public bot_difficulty_menu_handler(id, menu, item){
 
 
 }
+public set_quota(id,level,cid){
+
+    if (!cmd_access(id,level,cid,1)){
+        return PLUGIN_HANDLED
+    }
+
+    new arg[31]
+    read_argv(1,arg,charsmax(arg))
+    new the_quota_num = str_to_num(arg)
+
+
+    set_pcvar_num(pcvar_yb_quota,clamp_macro(the_quota_num,0,get_maxplayers()))
+    return PLUGIN_HANDLED
+
+}
+public set_bot_team(id,level,cid){
+
+    if (!cmd_access(id,level,cid,1)){
+        return PLUGIN_HANDLED
+    }
+
+    new arg0[128]
+
+    read_argv(1,arg0, charsmax(arg0))
+    
+    set_pcvar_string(pcvar_bot_join_team,arg0)
+    return PLUGIN_HANDLED
+
+}
+
 public menu_function_example(id, menu, item)
 {   
     if(menu!=gMenuID){
         return PLUGIN_HANDLED
     }
     static bool:alivedrop = false,
-            Float:autokill_delay = 0.0
+            Float:autokill_delay = 0.0,
+            bool:bot_freeze = false,
+            bool:bot_ignore_objectives = false,
+            bool:bot_ignore_enemies = false
+
     alivedrop=false;
+    bot_freeze=false;
+    bot_ignore_objectives=false;
+    bot_ignore_enemies=false;
     autokill_delay = 0.0;
     switch(item){
         case 0:{
@@ -635,6 +914,54 @@ public menu_function_example(id, menu, item)
 
             show_bot_difficulty_menu(id)
 
+        }
+        case 6:{
+
+            client_cmd(id, "messagemode amx_countentities")
+        }
+        case 7:{
+
+            server_cmd("toggle_print_num_ents_cycle")
+        }
+        case 8:{
+
+            set_pcvar_num(pcvar_round_restart,1)
+        }
+        case 9:{
+
+            client_cmd(id, "messagemode set_quota")
+            
+        }
+        case 10:{
+            client_cmd(id, "messagemode set_bot_team")
+            
+        }
+        case 11:{
+
+            bot_freeze = (get_pcvar_bool(pcvar_yb_freeze_bots)) 
+
+            set_pcvar_bool(pcvar_yb_freeze_bots,!bot_freeze)
+
+            client_print(id, print_chat, "Keep bots frozen %s",!bot_freeze?"Enabled!":"Disabled...")
+            
+        }
+        case 12:{
+
+            bot_ignore_enemies = (get_pcvar_bool(pcvar_yb_ignore_enemies)) 
+
+            set_pcvar_bool(pcvar_yb_ignore_enemies,!bot_ignore_enemies)
+
+            client_print(id, print_chat, "Bot ignore enemies %s",!bot_ignore_enemies?"Enabled!":"Disabled...")
+            
+        }
+        case 13:{
+
+            bot_ignore_objectives = (get_pcvar_bool(pcvar_yb_ignore_objectives)) 
+
+            set_pcvar_bool(pcvar_yb_ignore_objectives,!bot_ignore_objectives)
+
+            client_print(id, print_chat, "Bot ignore objectives %s",!bot_ignore_objectives?"Enabled!":"Disabled...")
+            
         }
         /*
             menu canceled!

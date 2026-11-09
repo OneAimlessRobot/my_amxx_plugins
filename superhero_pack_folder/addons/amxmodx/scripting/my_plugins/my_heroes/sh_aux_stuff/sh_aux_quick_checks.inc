@@ -22,18 +22,26 @@ stock bool:sh_clients_are_same_team(id,attacker,&CsTeams:stored_id_team=CS_TEAM_
 
 
 //use any <=0 to not discriminate by team. Use 1 to only get id's teamates. use 2 to only look at their enemies
-stock sh_get_player_counts(id,discriminate_team=1, &alive, &dead)
+stock sh_get_player_counts(id,discriminate_team=1, &alive, &dead, bool:discriminate_self = false)
 {
 	alive = 0
 	dead = 0
 
 	new team = get_user_team(id)
 	for (new i = 1; i < sh_maxplayers()+1; i++) {
-		if ((i == id || !is_user_connected(i))&&(discriminate_team<=0)) continue
-		if ((get_user_team(i) != team)&&(discriminate_team==1)) continue
-		if ((get_user_team(i) == team)&&(discriminate_team==2)) continue
-
-		if (is_user_alive(i)) alive++
-		else dead++
+		if ((((i == id)&&(discriminate_self)) || !is_user_connected(i))){
+			
+			continue
+		}
+		if ((get_user_team(i) != team)&&(discriminate_team==1)){
+			
+			continue
+		}
+		if ((get_user_team(i) == team)&&(discriminate_team==2)){
+			
+			continue
+		}
+		
+		(is_user_alive(i))?(alive++):(dead++)
 	}
 }

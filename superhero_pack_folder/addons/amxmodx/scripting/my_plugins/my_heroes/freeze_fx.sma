@@ -25,7 +25,7 @@ public plugin_init(){
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	FREEZE_TASK_ID=allocate_typed_task_id(player_task)
-	register_event("Damage", "frozen_damage", "b", "2!0")
+	RegisterHam(Ham_TraceAttack, "player", "frozen_damage",_,true)
     
 	
 }
@@ -50,26 +50,29 @@ public plugin_precache(){
 }
 
 
-public frozen_damage(id)
+public frozen_damage(id, attacker, Float:damage, Float:Direction[3], Ptr, DamageBits)
 {
-	if ( !sh_is_active() || !is_user_alive(id)) return
-	
-	new  Float:damage= float(read_data(2))
-	new weapon, bodypart, attacker = get_user_attacker(id, weapon, bodypart)
-	if ( !is_user_connected(attacker)) return
+	if ( !sh_is_active() || !is_user_alive(id) || !is_user_alive(attacker)) return HAM_IGNORED
+
+
+	new return_result= HAM_IGNORED
+
+	new my_hitpoint_enum:the_hitpoint = my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
+
+	if ( !is_user_connected(attacker)) return return_result
 	
 	if(sh_get_id_bit(id, SH_IS_FROZEN)){
 
 		new Float:extraDamage = damage * FREEZE_DAMAGE_MULTIPLIER - damage
 		if (floatround(extraDamage)>0){
 			sh_extra_damage(id, attacker, floatround(extraDamage),
-										my_hitpoint_enum:bodypart ,
+										the_hitpoint ,
 										_,_,_,_,
 										SH_NEW_DMG_BLUNT_TRAUMA,
 										custom_dmg_source_blunt_trauma)
 		}
 	}
-	
+	return return_result
 }
 
 public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart ,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,custom_weapon_id){

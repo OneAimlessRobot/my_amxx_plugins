@@ -111,7 +111,11 @@ public launcher_think(ent){
 	if ( pev_valid(ent)!=2) return
 	
 	
-	new Float:launcher_hp=float(pev(ent,pev_health))
+	new Float:launcher_hp
+
+	pev(ent,pev_health,launcher_hp)
+
+	
 	new launcher_owner= entity_get_edict(ent,EV_ENT_euser1)
 	
 	

@@ -253,17 +253,17 @@ public _explosion_with_origin(iPlugins,iParams){
 		return 
 
 	}
-	new Float:fOrigin[3];
+	static Float:fOrigin[3];
 	get_array_f(3,fOrigin,3)
 
-	new iOrigin[3];
+	static iOrigin[3];
 	for(new i=0;i<3;i++)
 		iOrigin[i] = floatround(fOrigin[i]);
 
 	if(sfx_mask>explosion_sfx_show_nothing){
 		explode_fx(iOrigin,floatround(explosion_radius),fx_color,_,sfx_mask)
 	}
-	new entlist[33];
+	static entlist[33];
 	new numfound = find_sphere_class(0,"player", explosion_radius ,entlist, 32,fOrigin);
 
 	new CsTeams:idTeam = cs_get_user_team(explosion_author_id)
@@ -310,7 +310,7 @@ public _explosion(iPlugins,iParams){
 
 		damage_frac_ignore_owner = get_pcvar_float(sh_default_explode_owner_ignore_frac_cvar)
 	}
-	new custom_sound_sample[128]
+	static custom_sound_sample[128]
 
 	get_string(11,custom_sound_sample,(sizeof custom_sound_sample)-1)
 
@@ -321,10 +321,10 @@ public _explosion(iPlugins,iParams){
 		return 
 
 	}
-	new Float:fOrigin[3];
+	static Float:fOrigin[3];
 	entity_get_vector( ent_id, EV_VEC_origin, fOrigin);
 
-	new iOrigin[3];
+	static iOrigin[3];
 	for(new i=0;i<3;i++)
 		iOrigin[i] = floatround(fOrigin[i]);
 
@@ -334,7 +334,7 @@ public _explosion(iPlugins,iParams){
 			emit_sound(ent_id, CHAN_VOICE, custom_sound_sample, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		}
 	}
-	new entlist[33];
+	static entlist[33];
 	new numfound = find_sphere_class(ent_id,"player", explosion_radius ,entlist, 32);
 	new owner_id=((is_user_connected(ent_id))?ent_id:entity_get_edict(ent_id,EV_ENT_owner))
 
@@ -356,8 +356,10 @@ public _explosion(iPlugins,iParams){
 			}
 			sh_screen_shake(pid,10.0,3.0,10.0)
 		}
-		else if(ignore_owner){
-			continue
+		else{
+			if(ignore_owner){
+				continue
+			}
 		}
 		damage_player(hero_id,ent_id,owner_id,pid,explosion_radius,peak_power,optional_force,set_stun,damage_frac_ignore_owner,custom_weapon_id)
 
@@ -377,7 +379,7 @@ public _explosion_custom_entity(iPlugins,iParams){
 		explosion_sfx_flags:sfx_mask= explosion_sfx_flags:get_param(6),
 		sh_custom_color:fx_color=sh_custom_color:get_param(7)
 
-	new custom_sound_sample[128]
+	static custom_sound_sample[128]
 
 	get_string(8,custom_sound_sample,(sizeof custom_sound_sample)-1)
 
@@ -387,10 +389,10 @@ public _explosion_custom_entity(iPlugins,iParams){
 
 	}
 
-	new Float:fOrigin[3];
+	static Float:fOrigin[3];
 	entity_get_vector( ent_id, EV_VEC_origin, fOrigin);
 
-	new iOrigin[3];
+	static iOrigin[3];
 	for(new i=0;i<3;i++)
 		iOrigin[i] = floatround(fOrigin[i]);
 
@@ -401,7 +403,7 @@ public _explosion_custom_entity(iPlugins,iParams){
 		}
 	}
 
-	new entlist[33];
+	static entlist[33];
 	new numfound = find_sphere_class(ent_id,ent_classname, explosion_radius ,entlist, 32);
 
 	new owner_id=entity_get_edict(ent_id,EV_ENT_owner)
@@ -423,7 +425,7 @@ public _explosion_custom_entity(iPlugins,iParams){
 
 public _explosion_custom_entity_with_origin(iPlugins,iParams){
 
-	new ent_classname[128]
+	static ent_classname[128]
 
 	get_string(5,ent_classname,128)
 
@@ -439,12 +441,12 @@ public _explosion_custom_entity_with_origin(iPlugins,iParams){
 		return 
 	
 	}
-	new Float:fOrigin[3];
+	static Float:fOrigin[3];
 
 	get_array_f(2,fOrigin,3)
 
 
-	new iOrigin[3];
+	static iOrigin[3];
 	for(new i=0;i<3;i++)
 		iOrigin[i] = floatround(fOrigin[i]);
 
@@ -452,7 +454,7 @@ public _explosion_custom_entity_with_origin(iPlugins,iParams){
 		explode_fx(iOrigin,floatround(explosion_radius),fx_color,_,sfx_mask)
 	}
 
-	new entlist[33];
+	static entlist[33];
 	new numfound = find_sphere_class(0,ent_classname, explosion_radius ,entlist, 32,fOrigin);
 
 	for (new i=0; i < numfound; i++)
@@ -560,12 +562,12 @@ damage_entity(ent_id,owner_id,tg_id,Float:radius,Float:peak_power,ignore_owner=1
 		
 	
 	}
-	new Float:vic_origin[3],Float:mine_origin[3];
+	static Float:vic_origin[3],Float:mine_origin[3];
 	entity_get_vector(tg_id,EV_VEC_origin,vic_origin);
 	entity_get_vector(ent_id,EV_VEC_origin,mine_origin);
 	new Float:distance=vector_distance(vic_origin,mine_origin);
 	new Float:falloff_coeff= min_macro(1.0,distance/radius);
-	new Float:force,Float:damage
+	static Float:force,Float:damage
 	damage=peak_power-(peak_power/2.0)*falloff_coeff
 	if(optional_force!=0.0){
 		force=optional_force-(optional_force/2.0)*falloff_coeff
@@ -575,7 +577,7 @@ damage_entity(ent_id,owner_id,tg_id,Float:radius,Float:peak_power,ignore_owner=1
 	}
 	if(is_user_alive(owner_id)||(is_user_alive(ent_id))){
 
-		ExecuteHam(Ham_TakeDamage, tg_id, ent_id, owner_id, damage, 0);
+		ExecuteHamB(Ham_TakeDamage, tg_id, ent_id, owner_id, damage, 0);
 	}
 	if(entity_get_float(tg_id,EV_FL_health)<=0.0){
 		return
@@ -691,7 +693,7 @@ damage_entity_origin(Float:mine_origin[3],owner_id,tg_id,Float:radius,Float:peak
 	}
 	if(is_user_alive(owner_id)){
 
-		ExecuteHam(Ham_TakeDamage, tg_id, owner_id, owner_id, damage, 0);
+		ExecuteHamB(Ham_TakeDamage, tg_id, owner_id, owner_id, damage, 0);
 	}
 	if(entity_get_float(tg_id,EV_FL_health)<=0.0){
 		return

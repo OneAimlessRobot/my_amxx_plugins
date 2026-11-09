@@ -17,8 +17,18 @@ frieza_disklife 50
 		      this version will fix that problem up.
 
 */
-
+#define I_WANT_CONSTANTS
+#define I_WANT_ENTITY_VECTORS
+#define I_WANT_MISC_FUNCS
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_include/my_author_header.inc"
+
+
+#define FRIEZA_DISK_CLASSNAME "disk"
+new frieza_disk_wpn_short_name[SAFE_BUFFER_SIZE+1]="frieza_disk"
+new frieza_disk_wpn_log_name[SAFE_BUFFER_SIZE+1]="frieza_disk"
+new frieza_disk_wpn_id = -1
 
 new gHeroName[] = "Frieza"
 
@@ -38,16 +48,22 @@ public plugin_init()
     create_cvar("frieza_cooldown", "50") 
     create_cvar("frieza_diskspeed", "750") 
     create_cvar("frieza_disklife", "50") 
+    create_cvar("frieza_self_immunity_decisecs", "2",FCVAR_NONE,"",true,2.0) 
 
     //THIS LINE MAKES THE HERO SELECTABLE 
     gHeroID=shCreateHero(gHeroName, "Energy Disk", "Unleash an energy disk and take control of where it flies!", true, "frieza_level") 
 
+    frieza_disk_wpn_id=sh_log_custom_damage_source(
+                        gHeroID,
+                        frieza_disk_wpn_short_name,
+                        frieza_disk_wpn_log_name,
+                        0)
 
     //SET THE LIFE OF THE DISK 
     set_task(0.1, "frieza_disklife", 0, "", 0, "b") 
 
-    //REGISTERS A TOUCH EVENT, WHEN TWO THINGS TOUCH
-    register_touch("disk", "*", "touch_event")
+    register_custom_touchable(FRIEZA_DISK_CLASSNAME,"touch_event",player_vector,1)
+
 } 
 //-------------------------------------------------------------------------------------- 
 public plugin_precache() 
@@ -125,26 +141,46 @@ public sh_client_death(id)  //triggered everytime someone dies
 //----------------------------------------------------------------------------------------
 public frieza_disklife(){ 
     for(new id = 1; id < sh_maxplayers()+1; id++){ 
-        if(sh_get_user_has_hero(id,gHeroID) && is_user_alive(id)){ 
+        if(sh_get_user_has_hero(id,gHeroID) && is_user_connected(id)){
+            if(!is_valid_ent(disk[id])){
+                diskTimer[id] = 0
+                disk[id] = -1
+                continue
+            }
+            if(!is_user_alive(id)){
+                new Float: fOrigin[3]
+                new origin[3]
+                //gets the current position of entity
+                entity_get_vector(disk[id], EV_VEC_origin, fOrigin)
+                //converts a floating vector to an integer vector
+                FVecIVec(fOrigin, origin)
+                decay_effects(disk[id], origin)
+                diskTimer[id] = 0
+                disk[id] = -1
+                continue
+                
+
+
+            }
             if(diskTimer[id] > 0){ 
                 diskTimer[id]-- 
-		new Float: fVelocity[3]
-		//gets the velocity by the direction you are looking at
-		velocity_by_aim(id, get_cvar_num("frieza_diskspeed"), fVelocity)
-		//sets the new velocity
-		entity_set_vector(disk[id], EV_VEC_velocity, fVelocity)
+                new Float: fVelocity[3]
+                //gets the velocity by the direction you are looking at
+                velocity_by_aim(id, get_cvar_num("frieza_diskspeed"), fVelocity)
+                //sets the new velocity
+                entity_set_vector(disk[id], EV_VEC_velocity, fVelocity)
             } 
             else if(diskTimer[id] == 0){
-		new Float: fOrigin[3]
-		new origin[3]
-		//gets the current position of entity
+                new Float: fOrigin[3]
+                new origin[3]
+                //gets the current position of entity
                 entity_get_vector(disk[id], EV_VEC_origin, fOrigin)
-		//converts a floating vector to an integer vector
-		FVecIVec(fOrigin, origin)
-		decay_effects(disk[id], origin)
+                //converts a floating vector to an integer vector
+                FVecIVec(fOrigin, origin)
+                decay_effects(disk[id], origin)
                 diskTimer[id]-- 
             } 
-        } 
+        }
     } 
 } 
 //----------------------------------------------------------------------------------------
@@ -229,23 +265,32 @@ public fire_disk(id)
 } 
 //-----------------------------------------------------------------------------------------	
 public touch_event(pToucher, pTouched)  //This is triggered when two entites touch
-{ 
+{
+
+    if(!is_valid_ent(pToucher)){
+
+        return PLUGIN_HANDLED
+    }
+
+    if(!is_valid_ent(pTouched)){
+
+        return PLUGIN_HANDLED
+    }
     new aimvec[3], Float:fAimvec[3]  //This is the position where the disk collides 
     entity_get_vector(pTouched, EV_VEC_origin, fAimvec) 
     FVecIVec(fAimvec, aimvec) 
-    new self_immune = get_cvar_num("frieza_disklife") - 2 //Gives split-second immunity
 
-    if(pTouched == entity_get_edict(pToucher, EV_ENT_owner) && diskTimer[pTouched] > self_immune)
-	return PLUGIN_HANDLED
-    //Checks to see if entity is a player or an inanimate object. 
-    if(is_user_connected(pTouched)){
-	special_effects(pToucher, pTouched, aimvec)
-	return PLUGIN_CONTINUE
+    if(!is_user_connected(pTouched)){
+        special_effects(pToucher, 0, aimvec)
+
+        return PLUGIN_HANDLED
     }
-
-    special_effects(pToucher, 0, aimvec)
-
-    return PLUGIN_CONTINUE 
+    new self_immune = get_cvar_num("frieza_disklife") - get_cvar_num("frieza_self_immunity_decisecs") //Gives split-second immunity
+    if(pTouched == entity_get_edict(pToucher, EV_ENT_owner) && diskTimer[pTouched] > self_immune){
+	    return PLUGIN_HANDLED
+    }
+    special_effects(pToucher, pTouched, aimvec)
+    return PLUGIN_CONTINUE
 } 
 //----------------------------------------------------------------------------------------- 
 public special_effects(pToucher, pTouched, aimvec[3]) //effects for when disk touch
@@ -278,7 +323,7 @@ public special_effects(pToucher, pTouched, aimvec[3]) //effects for when disk to
 
 		damage = get_cvar_num("frieza_damage")
 		new victim = pTouched
-		sh_extra_damage(victim, killer, damage)
+		sh_extra_damage(victim, killer, damage,_,_,_,_,_,SH_NEW_DMG_ENERGY_BLADE, frieza_disk_wpn_id)
 	}
 	//Same link for here to http://shero.rocks-hideout.com/forums/viewtopic.php?t=1941
 	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
@@ -317,6 +362,14 @@ public client_disconnected(id)  //This makes sure that the disk isn't flying aft
 		FVecIVec(fOrigin, origin)
 		decay_effects(disk[id], origin)
 	}
+}
+public sh_round_end(){
+
+    remove_entity_name(FRIEZA_DISK_CLASSNAME)
+}
+public sh_round_start(){
+
+    remove_entity_name(FRIEZA_DISK_CLASSNAME)
 }
 //------------------------------------------------------------------------------------------
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE

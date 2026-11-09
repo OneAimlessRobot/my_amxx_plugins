@@ -22,6 +22,7 @@
 #define I_WANT_CUSTOM_COLORS
 #define I_WANT_BASIC_MACROS
 #include "my_heroes/sh_aux_stuff/sh_aux_consts.inc"
+#include "my_include/auxiliar_stuff_weapons.inc"
 #include "my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt12.inc"
 #include "my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
@@ -997,9 +998,9 @@ public _sh_drop_weapon()
 
 	if ( !user_has_weapon(id, weaponID) ) return
 
-	new slot = sh_get_weapon_slot(weaponID)
+	new my_weapon_slots:slot = wlt_get_def_slot(weaponID)
 
-	if ( slot == 1 || slot == 2 || slot == 5 ) {
+	if ( slot == MY_SLOT_PRIMARY || slot == MY_SLOT_SECONDARY || slot == MY_SLOT_C4 ) {
 
 		//Don't drop/remove the main c4
 		if ( weaponID == CSW_C4 && pev_valid(gXpBounsC4ID) && id == pev(gXpBounsC4ID, pev_owner) ) return
@@ -1016,9 +1017,9 @@ dropWeapon(id, weaponID, bool:remove)
 	if ( id == gXpBounsVIP && getVipFlags() & VIP_BLOCK_WEAPONS ) return
 	if ( !user_has_weapon(id, weaponID) ) return
 
-	new slot = sh_get_weapon_slot(weaponID)
+	new my_weapon_slots:slot = wlt_get_def_slot(weaponID)
 
-	if ( slot == 1 || slot == 2 || slot == 5 ) {
+	if ( slot == MY_SLOT_PRIMARY || slot == MY_SLOT_SECONDARY || slot == MY_SLOT_C4 ) {
 
 		//Don't drop/remove the main c4
 		if ( weaponID == CSW_C4 && pev_valid(gXpBounsC4ID) && id == pev(gXpBounsC4ID, pev_owner) ) return
@@ -2099,7 +2100,11 @@ public powerKeyDown(id)
 		chatMessage(id, _, "VIP's are not allowed to use +power keys")
 		return PLUGIN_HANDLED
 	}
+	if( sh_get_id_bit(id, SH_CONTROLLING_VEHICLE)){
 
+		sh_sound_deny(id)
+		return PLUGIN_HANDLED
+	}
 	// Make sure player isn't stunned
 	if ( gPlayerStunTimer[id] > 0 ) {
 		sh_sound_deny(id)
@@ -3088,9 +3093,9 @@ public _sh_reload_ammo()
 
 	new clip, ammo
 	new wpnid = get_user_weapon(id, clip, ammo)
-	new wpnslot = sh_get_weapon_slot(wpnid)
+	new my_weapon_slots:wpnslot = wlt_get_def_slot(wpnid)
 
-	if ( wpnslot != 1 && wpnslot != 2 ) return
+	if ( wpnslot != MY_SLOT_PRIMARY && wpnslot != MY_SLOT_SECONDARY ) return
 
 	new mode = get_param(2)
 
@@ -3112,7 +3117,7 @@ public _sh_reload_ammo()
 
 			while ( (iWPNidx = engfunc(EngFunc_FindEntityByString, iWPNidx, "classname", wpn)) != 0 ) {
 				if (id == pev(iWPNidx, pev_owner)) {
-					cs_set_weapon_ammo(iWPNidx, sh_get_max_clipammo(wpnid))
+					cs_set_weapon_ammo(iWPNidx, wlt_get_def_clip(wpnid))
 					break
 				}
 			}
@@ -3120,7 +3125,7 @@ public _sh_reload_ammo()
 
 		// Requires reload, but reset max backpack ammo
 		case 2: {
-			new maxbpammo = sh_get_max_bpammo(wpnid)
+			new maxbpammo = wlt_get_def_bp_ammo(wpnid)
 			if ( ammo < maxbpammo ) {
 				cs_set_user_bpammo(id, wpnid, maxbpammo)
 			}

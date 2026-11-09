@@ -241,6 +241,11 @@ public charge_task(id){
 }
 charge_user(id){
 	curr_charge[id]=0.0
+	if(task_exists(id+SPEAR_CHARGE_TASKID)){
+		
+		return
+		
+	}
 	charge_task(id+SPEAR_CHARGE_TASKID)
 
 

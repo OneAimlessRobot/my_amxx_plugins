@@ -47,13 +47,10 @@ public plugin_init()
 }
 
 public plugin_natives(){
-
-	register_native("get_jet_fuel","_get_jet_fuel");
 	register_native("get_jet_flying","_get_jet_flying");
 	register_native("set_jet_flying","_set_jet_flying");
 	register_native("get_jet_engine","_get_jet_engine");
 	register_native("set_jet_engine","_set_jet_engine");
-	register_native("set_jet_fuel","_set_jet_fuel");
 	register_native("reset_jet_fuel","_reset_jet_fuel");
 	register_native("get_user_fuel_ammount","_get_user_fuel_ammount");
 	register_native("set_user_fuel_ammount","_set_user_fuel_ammount");
@@ -214,16 +211,17 @@ public _get_jet_airbrakes(iPlugins,iParams){
 
 	return Get_BitVar(g_jetplane_airbrakes_mask,id)
 }
-public Float:_get_jet_fuel(iPlugins,iParams){
-	new jet_id=get_param(1)
+
+Float:get_jet_fuel(jet_id){
+
+	new Float:fuel_ammount
 	
-	new Float:fuel_ammount=float(pev(jet_id,pev_fuser1))
+	pev(jet_id,pev_fuser1,fuel_ammount)
 	return fuel_ammount;
 
 }
-public _set_jet_fuel(iPlugins,iParams){
-	new jet_id=get_param(1)
-	new Float:fuel_ammount=get_param_f(2)
+set_jet_fuel(jet_id, Float:fuel_ammount){
+
 
 	set_pev(jet_id,pev_fuser1,fuel_ammount)
 }
@@ -242,7 +240,7 @@ public _set_user_fuel_ammount(iPlugins,iParams){
 	
 	new id=get_param(1)
 	new Float:fuel_ammount=get_param_f(2)
-	return set_jet_fuel(jet_get_user_jet(id),fuel_ammount)
+	set_jet_fuel(jet_get_user_jet(id),fuel_ammount)
 
 }
 public _reset_user_fuel_ammount(iPlugins,iParams){
@@ -310,14 +308,18 @@ public OnCmdStart(id,uc_handle)
 		
 		button&=~IN_RIGHT
 	}
+	static user_jet, Float:fuel_ammount;
+	user_jet = jet_get_user_jet(id)
 
-	if(!get_jet_engine(id)||(get_user_fuel_ammount(id) < cvar_val(float, pcvar_fuel_spend))){
+	pev(user_jet,pev_fuser1,fuel_ammount)
+
+	if(!Get_BitVar(g_jetplane_engine_mask,id)||(fuel_ammount < cvar_val(float, pcvar_fuel_spend))){
 		if(Get_BitVar(g_jetplane_flying_mask,id)){
 				sh_chat_message(id,gHeroID,"Jetplane too weak! Forcing a landing...");
 				Assign_BitVar(g_jetplane_flying_mask,id,false_for_macro);
 		}
 	}
-	else if((get_user_fuel_ammount(id) > (cvar_val(float, pcvar_jetplane_fuel)*0.25))&&get_jet_engine(id)){
+	else if((fuel_ammount > (cvar_val(float, pcvar_jetplane_fuel)*0.25))&&Get_BitVar(g_jetplane_engine_mask,id)){
 		if(!Get_BitVar(g_jetplane_flying_mask,id)){
 		
 			sh_chat_message(id,gHeroID,"Jetplane is okay now! Ready for take off!");
@@ -330,13 +332,13 @@ public OnCmdStart(id,uc_handle)
 		if((button & IN_JUMP)){
 			
 			button&=~IN_JUMP
-			set_user_fuel_ammount(id,max_macro(0.0,get_user_fuel_ammount(id)-(cvar_val(float, pcvar_fuel_spend)+((JETPLANE_THOTTLE_FUEL_SPEND_MULT* cvar_val(float, pcvar_fuel_spend))))))
+			set_pev(user_jet,pev_fuser1,max_macro(0.0,fuel_ammount-(cvar_val(float, pcvar_fuel_spend)+((JETPLANE_THOTTLE_FUEL_SPEND_MULT* cvar_val(float, pcvar_fuel_spend))))))
 		}
 	
 	}
 	else
 	{
-		set_user_fuel_ammount(id,min_macro(cvar_val(float, pcvar_jetplane_fuel),get_user_fuel_ammount(id)+((entity_get_int(jet_get_user_jet(id), EV_INT_flags) & FL_ONGROUND)?cvar_val(float, pcvar_fuel_spend)*JETPLANE_STANDSTILL_FUEL_REGEN_MULT:cvar_val(float, pcvar_fuel_spend))))
+		set_pev(user_jet,pev_fuser1,min_macro(cvar_val(float, pcvar_jetplane_fuel),fuel_ammount+((entity_get_int(user_jet, EV_INT_flags) & FL_ONGROUND)?cvar_val(float, pcvar_fuel_spend)*JETPLANE_STANDSTILL_FUEL_REGEN_MULT:cvar_val(float, pcvar_fuel_spend))))
 	}
 	return FMRES_SUPERCEDE
 	

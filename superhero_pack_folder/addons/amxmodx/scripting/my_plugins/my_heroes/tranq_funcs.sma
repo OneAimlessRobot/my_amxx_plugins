@@ -50,8 +50,6 @@ public plugin_init(){
 
 	RegisterHam(Ham_Weapon_Reload,wpn_name_for_future_lookup, "fw_WeaponReloadPre",_,true)
 	RegisterHam(Ham_Weapon_Reload,wpn_name_for_future_lookup, "fw_Weapon_Reload_Post", 1,true)
-
-	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Player",_,true)
 	
 	register_entity_as_wall_touchable(DART_CLASSNAME,"FwdTouchWorld")
 	register_custom_touchable(DART_CLASSNAME,"chorazy_II_toumpaeeeehm",player_vector,1)
@@ -147,25 +145,6 @@ public CmdStart(id, uc_handle)
 	}
 
 	return FMRES_IGNORED;
-}
-
-public fw_TraceAttack_Player(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
-{
-
-	if(Damage<=0.0){
-		return HAM_IGNORED
-	}
-	if(!is_user_connected(Attacker)){
-		return HAM_IGNORED
-	}
-	if(get_user_weapon(Attacker) != DART_GUN_WEAPON_CLASSID || !sh_get_user_has_hero(Attacker,gHeroID) ){
-		return HAM_IGNORED
-	}
-
-	Damage= 0.0
-	SetHamParamFloat(3,Damage)
-
-	return HAM_SUPERCEDE
 }
 
 public fw_Item_PostFrame(ent)

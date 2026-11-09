@@ -56,9 +56,6 @@ public plugin_init(){
 	
 	RegisterHam(Ham_Weapon_Reload,wpn_name_for_future_lookup, "fw_WeaponReloadPre",_,true)
 	RegisterHam(Ham_Weapon_Reload, wpn_name_for_future_lookup, "fw_Weapon_Reload_Post", 1,true)
-	
-	
-	RegisterHam(Ham_TraceAttack, "player", "Ham_TraceAttackSalomeL96",_,true)
 
 	
 	register_entity_as_wall_touchable(SALOME_PROJECTILE_CLASSNAME,"FwdTouchWorld")
@@ -150,26 +147,6 @@ public CmdStart(id, uc_handle)
 		}
 	}
 	return FMRES_IGNORED;
-}
-
-public Ham_TraceAttackSalomeL96(id, idattacker, Float:damage, Float:direction[3], ptr, damagebits)
-{
-	if(damage<=0.0){
-		return HAM_IGNORED
-	}
-	
-	if(!is_user_connected(idattacker)){
-		return HAM_IGNORED	
-	}
-	if(get_user_weapon(idattacker) != SALOME_WEAPON_CLASSID|| !sh_get_user_has_hero(idattacker,gHeroID)){
-		return HAM_IGNORED
-	}
-
-	damage= 0.0
-	SetHamParamFloat(3,damage)
-	
-	return HAM_SUPERCEDE
-	
 }
 public fw_Item_PostFrame(ent)
 {
@@ -451,7 +428,7 @@ public FwdTouchWorld( bull_et, World ) {
 							SALOME_PROJECTILE_SPEED)
 
 		new owner=entity_get_edict(bull_et,EV_ENT_owner)
-		ExecuteHam(Ham_TakeDamage, World, bull_et, owner, damage, 0);
+		ExecuteHamB(Ham_TakeDamage, World, bull_et, owner, damage, 0);
 
 	} 
 	remove_entity(bull_et)

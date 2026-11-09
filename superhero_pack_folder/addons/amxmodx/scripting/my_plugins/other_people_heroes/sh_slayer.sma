@@ -58,7 +58,7 @@ public slayer_loop()
 		{
 			new aid,abody
 			get_user_aiming(id,aid,abody)
-			if (aid && is_user_alive(aid) && get_user_godmode(aid)&&(get_user_team(id)!=get_user_team(aid))&&(aid != id) ) {
+			if (aid && is_user_alive(aid) && get_user_godmode(aid)&&(get_user_team(id)!=get_user_team(aid))&&(aid != id) && !sh_get_id_bit(aid, SH_CONTROLLING_VEHICLE)) {
 				set_user_godmode(aid,0)
 				new name[128]
 				new slayer_name[128]

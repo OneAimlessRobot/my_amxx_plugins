@@ -180,7 +180,8 @@ public shield_think(ent)
 	pev(ent, pev_vuser1, vEnd)
 	gametime = get_gametime()
 	new owner=pev(ent,pev_euser1)
-	new Float:shield_health=float(pev(ent,pev_health))
+	new Float:shield_health
+	pev(ent,pev_health,shield_health)
 	
 	if ( (shield_health<1000.0)) {
 		if(g_jaqueo_shield[owner]){
@@ -210,7 +211,9 @@ public shield_think(ent)
 	
 		
 		if(!is_user_bot(owner)){
-			client_print(owner,print_center,"jaqueo shield hp: %0.2f",float(pev(ent,pev_health))-1000.0)
+			new Float:the_hp;
+			pev(ent,pev_health,the_hp)
+			client_print(owner,print_center,"jaqueo shield hp: %0.2f",the_hp-1000.0)
 		}
 	}
 	set_pev(ent, pev_nextthink, gametime + (JAQUEO_THINK_PERIOD))
@@ -351,8 +354,10 @@ public charge_task(parm[],id){
 	
 	if(!is_user_bot(id)){
 		static hud_msg[128];
-		set_pev(g_jaqueo_shield[id],pev_health,min_macro(shield_max_hp,floatadd(float(pev(g_jaqueo_shield[id],pev_health)),floatmul(JAQUEO_CHARGE_PERIOD,JAQUEO_CHARGE_RATE))))
-		formatex(hud_msg,127,"[SH]: Curr charge: %0.2f^n",float(pev(g_jaqueo_shield[id],pev_health)));
+		new Float:the_hp
+		pev(g_jaqueo_shield[id],pev_health,the_hp)
+		set_pev(g_jaqueo_shield[id],pev_health,min_macro(shield_max_hp,floatadd(the_hp,floatmul(JAQUEO_CHARGE_PERIOD,JAQUEO_CHARGE_RATE))))
+		formatex(hud_msg,127,"[SH]: Curr charge: %0.2f^n",the_hp);
 		client_print(id,print_center,"%s",hud_msg)
 	}
 	new parm[2]

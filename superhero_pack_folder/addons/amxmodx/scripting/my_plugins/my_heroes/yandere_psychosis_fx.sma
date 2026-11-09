@@ -193,9 +193,12 @@ public psychosis_task(id){
 }
 psychosis_user(id){
 	
+	if(task_exists(id+YANDERE_PSYCHOSIS_TASKID)){
+		return
+	}
 	psychosis_on(id)
 	sh_screen_fade(id,0.1,1.0,LineColors[PINK][0],LineColors[PINK][1],LineColors[PINK][2],50)
-	set_task(PSYCHOSIS_PERIOD,"psychosis_task",id+YANDERE_PSYCHOSIS_TASKID)
+	psychosis_task(id+YANDERE_PSYCHOSIS_TASKID)
 	
 	
 	
