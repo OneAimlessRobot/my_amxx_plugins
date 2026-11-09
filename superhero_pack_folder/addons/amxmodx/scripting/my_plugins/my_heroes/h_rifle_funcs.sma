@@ -40,7 +40,7 @@ enum
 
 // Main Vars
 new wpn_name_for_future_lookup[50]
-new g_Had_Mosin, g_Old_Weapon[33]
+new g_Old_Weapon[33]
 new g_Event_MS
 new g_MsgCurWeapon
 
@@ -116,7 +116,7 @@ public Get_Mosin(id)
 {
 	Remove_Mosin(id)
 	
-	Set_BitVar(g_Had_Mosin, id)
+	sh_assign_id_custom_weapon_bit(id, SH_HUNTING_RIFLE, true)
 	
 	give_item(id, wpn_name_for_future_lookup)
 	cs_set_user_bpammo(id, CSW_MOSIN, H_RIFLE_BPAMMO)
@@ -133,7 +133,7 @@ public Get_Mosin(id)
 
 public Remove_Mosin(id)
 {
-	UnSet_BitVar(g_Had_Mosin, id)
+	sh_assign_id_custom_weapon_bit(id, SH_HUNTING_RIFLE, false)
 }
 
 public Event_CurWeapon(id)
@@ -141,7 +141,7 @@ public Event_CurWeapon(id)
 	
 	static CSWID; CSWID = read_data(2)
 	
-	if((CSWID == CSW_MOSIN && g_Old_Weapon[id] == CSW_MOSIN) && Get_BitVar(g_Had_Mosin, id)) 
+	if((CSWID == CSW_MOSIN && g_Old_Weapon[id] == CSW_MOSIN) && sh_get_id_custom_weapon_bit(id, SH_HUNTING_RIFLE)) 
 	{
 		static Ent; Ent = get_weapon_ent_of_player(id, CSW_MOSIN)
 		if(pev_valid(Ent)!=PDATA_SAFE)
@@ -186,7 +186,7 @@ public fw_SetModel(entity, model[])
 		
 		ent_check(weapon,FMRES_IGNORED)
 		
-		if(Get_BitVar(g_Had_Mosin, id))
+		if(sh_get_id_custom_weapon_bit(id, SH_HUNTING_RIFLE))
 		{
 			set_pev(weapon, pev_impulse, weapon_secret_code)
 			engfunc(EngFunc_SetModel, entity, H_RIFLE_MODEL_W)
@@ -234,7 +234,7 @@ public fw_UpdateClientData_Post(id, sendweapons, cd_handle)
 		return FMRES_IGNORED
 	}
 	
-	if((get_user_weapon(id) != CSW_MOSIN)||!Get_BitVar(g_Had_Mosin, id)){
+	if((get_user_weapon(id) != CSW_MOSIN)||!sh_get_id_custom_weapon_bit(id, SH_HUNTING_RIFLE)){
 
 		return FMRES_IGNORED
 
@@ -251,7 +251,7 @@ public fw_PlaybackEvent(flags, invoker, eventid, Float:delay, Float:origin[3], F
 {
 	if (!is_user_connected(invoker))
 		return FMRES_IGNORED		
-	if(get_user_weapon(invoker) == CSW_MOSIN && Get_BitVar(g_Had_Mosin, invoker) && eventid == g_Event_MS)
+	if(get_user_weapon(invoker) == CSW_MOSIN && sh_get_id_custom_weapon_bit(invoker, SH_HUNTING_RIFLE) && eventid == g_Event_MS)
 	{
 		engfunc(EngFunc_PlaybackEvent, flags | FEV_HOSTONLY, invoker, eventid, delay, origin, angles, fparam1, fparam2, iParam1, iParam2, bParam1, bParam2)	
 
@@ -276,7 +276,7 @@ public fw_TraceAttack(Ent, Attacker, Float:Damage, Float:Dir[3], ptr, DamageType
 	}
 	if(!is_user_connected(Attacker))
 		return HAM_IGNORED	
-	if(get_user_weapon(Attacker) != CSW_MOSIN || !Get_BitVar(g_Had_Mosin, Attacker))
+	if(get_user_weapon(Attacker) != CSW_MOSIN || !sh_get_id_custom_weapon_bit(Attacker, SH_HUNTING_RIFLE))
 		return HAM_IGNORED
 		
 	static Float:flEnd[3], Float:vecPlane[3]
@@ -302,7 +302,7 @@ public fw_Item_Deploy_Post(Ent)
 	}
 	if(get_pdata_cbase(Id, m_pActiveItem, XO_PLAYER) != Ent)
 		return
-	if(!Get_BitVar(g_Had_Mosin, Id))
+	if(!sh_get_id_custom_weapon_bit(Id, SH_HUNTING_RIFLE))
 		return
 
 	set_pev(Id, pev_viewmodel2, H_RIFLE_MODEL_V)
@@ -318,7 +318,7 @@ public fw_Item_AddToPlayer_Post(ent, id)
 	
 	if(pev(ent, pev_impulse) == weapon_secret_code)
 	{
-		Set_BitVar(g_Had_Mosin, id)
+		sh_assign_id_custom_weapon_bit(id, SH_HUNTING_RIFLE, true)
 		set_pev(ent, pev_impulse, 0)
 	}			
 }
@@ -333,7 +333,7 @@ public fw_Weapon_Reload(iEnt)
 	if(!is_user_alive(id)){
 		return HAM_IGNORED
 	}
-	if(!Get_BitVar(g_Had_Mosin, id)){
+	if(!sh_get_id_custom_weapon_bit(id, SH_HUNTING_RIFLE)){
 		return HAM_IGNORED
 	}
 	
@@ -354,14 +354,15 @@ public fw_Item_PostFrame( iEnt )
 		return
 	}
 
-	if(!Get_BitVar(g_Had_Mosin, id)){
+	if(!sh_get_id_custom_weapon_bit(id, SH_HUNTING_RIFLE)){
 		return
 	}
 	static iBpAmmo ; iBpAmmo = cs_get_user_bpammo(id, CSW_MOSIN)
 	static iClip ; iClip = get_pdata_int(iEnt, m_iClip, XO_WEAPON)
 
-	if(get_pdata_int(id, m_flNextAttack, XO_PLAYER) > 0.0)
+	if(get_pdata_int(id, m_flNextAttack, XO_PLAYER) > 0.0){
 		return
+	}
 
 	switch(get_pdata_int(iEnt, m_fInSpecialReload, XO_WEAPON) )
 	{

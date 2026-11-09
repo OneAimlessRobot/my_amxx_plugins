@@ -15,7 +15,7 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-new g_Had_Ethereal, g_Ethereal_Clip[33], Float:g_Recoil[33][3]
+new g_Ethereal_Clip[33], Float:g_Recoil[33][3]
 new g_Event_Ethereal, g_SmokePuff_SprId, g_Beam_SprID
 new g_Muzzleflash_Ent, g_Muzzleflash, g_Msg_WeaponList = -1
 new wpn_name_for_future_lookup[50]
@@ -136,7 +136,7 @@ public Hook_Weapon(id)
 
 public Get_Ethereal(id)
 {
-	Set_BitVar(g_Had_Ethereal, id)
+	sh_assign_id_custom_weapon_bit(id, SH_ETHEREAL_RIFLE, true)
 	
 	my_give_item(id, wpn_name_for_future_lookup)
 
@@ -157,12 +157,12 @@ public Get_Ethereal(id)
 
 public Remove_Ethereal(id)
 {
-	UnSet_BitVar(g_Had_Ethereal, id)
+	sh_assign_id_custom_weapon_bit(id, SH_ETHEREAL_RIFLE, false)
 }
 
 public Event_CurWeapon(id)
 {
-	if(!Get_BitVar(g_Had_Ethereal, id))	
+	if(!sh_get_id_custom_weapon_bit(id, SH_ETHEREAL_RIFLE))	
 		return
 
 	static Float:Delay, Float:Delay2
@@ -185,7 +185,7 @@ public fw_UpdateClientData_Post(id, sendweapons, cd_handle)
 		return FMRES_IGNORED
 	}
 
-	if((get_user_weapon(id) != _:CSW_ETHEREAL)||!Get_BitVar(g_Had_Ethereal, id)){
+	if((get_user_weapon(id) != _:CSW_ETHEREAL)||!sh_get_id_custom_weapon_bit(id, SH_ETHEREAL_RIFLE)){
 
 		return FMRES_IGNORED
 
@@ -202,7 +202,7 @@ public fw_PlaybackEvent(flags, invoker, eventid, Float:delay, Float:origin[3], F
 {
 	if (!is_user_connected(invoker))
 		return FMRES_IGNORED	
-	if(get_user_weapon(invoker) != _:CSW_ETHEREAL || !Get_BitVar(g_Had_Ethereal, invoker))
+	if(get_user_weapon(invoker) != _:CSW_ETHEREAL || !sh_get_id_custom_weapon_bit(invoker, SH_ETHEREAL_RIFLE))
 		return FMRES_IGNORED
 	if(eventid != g_Event_Ethereal)
 		return FMRES_IGNORED
@@ -238,7 +238,7 @@ public fw_SetModel(entity, model[])
 		ent_check(weapon,FMRES_IGNORED)
 
 		
-		if(Get_BitVar(g_Had_Ethereal, iOwner))
+		if(sh_get_id_custom_weapon_bit(iOwner, SH_ETHEREAL_RIFLE))
 		{
 			Remove_Ethereal(iOwner)
 			
@@ -261,7 +261,7 @@ public fw_CmdStart(id, uc_handle, seed)
 	if(!is_user_alive(id)){
 		return FMRES_IGNORED
 	}	
-	if(!Get_BitVar(g_Had_Ethereal, id) || (get_user_weapon(id) != _:CSW_ETHEREAL)){
+	if(!sh_get_id_custom_weapon_bit(id, SH_ETHEREAL_RIFLE) || (get_user_weapon(id) != _:CSW_ETHEREAL)){
 		return FMRES_IGNORED
 	}
 		
@@ -317,7 +317,7 @@ public fw_Weapon_PrimaryAttack(Ent)
 	if (!is_user_alive(id)){
 		return HAM_IGNORED
 	}
-	if(get_user_weapon(id) != _:CSW_ETHEREAL || !Get_BitVar(g_Had_Ethereal, id)){
+	if(get_user_weapon(id) != _:CSW_ETHEREAL || !sh_get_id_custom_weapon_bit(id, SH_ETHEREAL_RIFLE)){
 		return HAM_IGNORED
 	}
 	
@@ -337,7 +337,7 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 		return
 	}
 
-	if(Get_BitVar(g_Had_Ethereal, id))
+	if(sh_get_id_custom_weapon_bit(id, SH_ETHEREAL_RIFLE))
 	{
 
 		static iClip;iClip = get_pdata_int(Ent, m_iClip, XO_WEAPON)
@@ -369,7 +369,7 @@ public fw_Weapon_WeaponIdle_Post(Ent)
 	}
 	if(get_pdata_cbase(Id, m_pActiveItem,XO_PLAYER) != Ent)
 		return HAM_IGNORED	
-	if(!Get_BitVar(g_Had_Ethereal, Id))
+	if(!sh_get_id_custom_weapon_bit(Id, SH_ETHEREAL_RIFLE))
 		return HAM_IGNORED	
 		
 	if(get_pdata_float(Ent, m_flTimeWeaponIdle, XO_WEAPON) <= 0.1) 
@@ -394,7 +394,7 @@ public fw_Item_Deploy_Post(Ent)
 		return
 	}
 
-	if(!Get_BitVar(g_Had_Ethereal, Id))
+	if(!sh_get_id_custom_weapon_bit(Id, SH_ETHEREAL_RIFLE))
 	{
 		return
 
@@ -419,13 +419,13 @@ public fw_Item_AddToPlayer_Post(Ent, id)
 
 	if(pev(Ent, pev_impulse) == weapon_secret_code)
 	{	
-		Set_BitVar(g_Had_Ethereal, id)
+		sh_assign_id_custom_weapon_bit(id, SH_ETHEREAL_RIFLE, true)
 		set_pev(Ent, pev_impulse, 0)
 	
 	}
 	static buff_to_use[25]
 
-	(Get_BitVar(g_Had_Ethereal, id)) ? 
+	(sh_get_id_custom_weapon_bit(id, SH_ETHEREAL_RIFLE)) ? 
 		copy(buff_to_use,charsmax(buff_to_use),  ETHEREAL_HUD_SPRITES_NAME )
 								:
 		copy(buff_to_use,charsmax(buff_to_use), wpn_name_for_future_lookup)
@@ -434,7 +434,7 @@ public fw_Item_AddToPlayer_Post(Ent, id)
 	send_weapon_list_stock(id,
 			buff_to_use,
 			cached_ammo_id,
-			Get_BitVar(g_Had_Ethereal, id) ? ETHEREAL_RESERVE: cached_max_bp_ammo,
+			sh_get_id_custom_weapon_bit(id, SH_ETHEREAL_RIFLE) ? ETHEREAL_RESERVE: cached_max_bp_ammo,
 			_:MY_SLOT_PRIMARY,
 			cached_def_pos,
 			CSW_M4A1,
@@ -454,7 +454,7 @@ public fw_Item_PostFrame(ent)
 	static id; id = get_pdata_cbase(ent, m_pPlayer,XO_WEAPON)
 	if(!is_user_alive(id))
 		return HAM_IGNORED
-	if(!Get_BitVar(g_Had_Ethereal, id))
+	if(!sh_get_id_custom_weapon_bit(id, SH_ETHEREAL_RIFLE))
 		return HAM_IGNORED	
 	
 	static Float:flNextAttack; flNextAttack = get_pdata_float(id, m_flNextAttack, XO_PLAYER)
@@ -487,7 +487,7 @@ public fw_Weapon_Reload(ent)
 	static id; id = get_pdata_cbase(ent, m_pPlayer,XO_WEAPON)
 	if(!is_user_alive(id))
 		return HAM_IGNORED
-	if(!Get_BitVar(g_Had_Ethereal, id))
+	if(!sh_get_id_custom_weapon_bit(id, SH_ETHEREAL_RIFLE))
 		return HAM_IGNORED	
 
 	g_Ethereal_Clip[id] = -1
@@ -510,7 +510,7 @@ public fw_Weapon_Reload_Post(ent)
 	static id; id = get_pdata_cbase(ent, m_pPlayer,XO_WEAPON)
 	if(!is_user_alive(id))
 		return HAM_IGNORED
-	if(!Get_BitVar(g_Had_Ethereal, id))
+	if(!sh_get_id_custom_weapon_bit(id, SH_ETHEREAL_RIFLE))
 		return HAM_IGNORED	
 	
 
@@ -529,7 +529,7 @@ public fw_TraceAttack_World(Victim, Attacker, Float:Damage, Float:Direction[3], 
 {
 	if(!is_user_connected(Attacker))
 		return HAM_IGNORED	
-	if(get_user_weapon(Attacker) != _:CSW_ETHEREAL || !Get_BitVar(g_Had_Ethereal, Attacker))
+	if(get_user_weapon(Attacker) != _:CSW_ETHEREAL || !sh_get_id_custom_weapon_bit(Attacker, SH_ETHEREAL_RIFLE))
 		return HAM_IGNORED
 	
 
@@ -557,7 +557,7 @@ public fw_TraceAttack_Player(Victim, Attacker, Float:Damage, Float:Direction[3],
 
 	if(!is_user_connected(Attacker))
 		return HAM_IGNORED	
-	if(get_user_weapon(Attacker) != _:CSW_ETHEREAL || !Get_BitVar(g_Had_Ethereal, Attacker))
+	if(get_user_weapon(Attacker) != _:CSW_ETHEREAL || !sh_get_id_custom_weapon_bit(Attacker, SH_ETHEREAL_RIFLE))
 		return HAM_IGNORED
 	
 	weapon_gating_macro_code_snippet(Attacker,CSW_ETHEREAL,return,HAM_IGNORED)

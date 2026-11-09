@@ -1,0 +1,27 @@
+/*
+
+    when the weapon gating lines were in the shape of:
+    
+    Get_BitVar(g_Had_Arifle, thing_goes_here)
+    
+    I used this java reg exp to deal with it:
+
+    Find: Get_BitVar\(g_Had_Arifle, ([a-zA-Z_]*)\)
+
+    Replace: sh_get_id_custom_weapon_bit($1, SH_ASSAULT_RIFLE)
+
+    Find: UnSet_BitVar\(g_Had_Arifle, ([a-zA-Z_]*) \)
+
+    Replace: sh_assign_id_custom_weapon_bit($1, SH_ASSAULT_RIFLE, false)
+
+
+    Find: Set_BitVar\(g_Had_Arifle, ([a-zA-Z_]*) \)
+
+    Replace: sh_assign_id_custom_weapon_bit($1, SH_ASSAULT_RIFLE, true)
+
+        ([a-zA-Z_]*) -> corresponds to:
+        
+        "Any number of alphanumeric characters here. turn it into a token"
+
+
+*/

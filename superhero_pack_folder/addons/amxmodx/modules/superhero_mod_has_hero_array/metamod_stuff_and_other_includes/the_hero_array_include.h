@@ -20,6 +20,7 @@ typedef uint32_t state_cell_type_t;
 
 #define SH_MAX_HEROES_FINAL 1000
 #define SH_MAX_HERO_PROPERTIES_FINAL 12800
+#define SH_MAX_CUSTOM_WEAPONS_FINAL 12800
 
 
 //We currently support 640 client states
@@ -54,12 +55,14 @@ protected:
 					SH_MAX_HERO_PROPERTIES,
 					SH_MAX_CLIENT_STATES,
 					SH_MAX_HERO_DAMAGES,
+					SH_MAX_CUSTOM_WEAPONS,
 					
 					//arrays
 					ownership_memory[SH_MAX_HEROES_FINAL],
 					cooldown_memory[SH_MAX_HEROES_FINAL],
 					the_player_masks[SH_MAX_CLIENT_STATES_FINAL],
-					the_hero_projectile_weapons[SH_MAX_HEROES_FINAL];
+					the_hero_projectile_weapons[SH_MAX_HEROES_FINAL],
+					the_custom_weapon_masks[SH_MAX_CUSTOM_WEAPONS_FINAL];
 	
 	bool the_hero_flags[SH_MAX_HEROES_FINAL][SH_MAX_HERO_PROPERTIES_FINAL];
 	
@@ -78,11 +81,13 @@ public:
 	void zero_out_hero_projectile_weapon_masks(void);
 	void zero_out_id_hero_cooldown_masks(void);
 	void zero_out_hero_damage_flags(void);
+	void zero_out_custom_weapon_bit_masks(void);
 	
 	void init_hero_array_sizes(state_cell_type_t num_of_heroes_for_init,
 							state_cell_type_t num_of_hero_props_to_init,
 							state_cell_type_t num_of_client_states_to_init,
-							state_cell_type_t num_of_hero_damages_to_init
+							state_cell_type_t num_of_hero_damages_to_init,
+							state_cell_type_t num_of_custom_weapons_to_init
 							);
 	void init_hero_array_sizes(void);
 	bool get_id_has_hero( const state_cell_type_t& player_id, const state_cell_type_t& the_hero_id);  
@@ -108,7 +113,6 @@ public:
 	void assign_hero_damage_heal_mult( const state_cell_type_t& the_hero_id, const state_cell_type_t& the_damage_id, const float& the_mult_to_set );
 	
 	
-	
 	bool get_hero_projectile_weapon_bit( const state_cell_type_t& the_hero_id,  const state_cell_type_t& the_weapon_id);
 	void assign_hero_projectile_weapon_bit( const state_cell_type_t& the_hero_id, const state_cell_type_t& the_weapon_id, const state_cell_type_t& the_value_to_set );
 	
@@ -119,6 +123,12 @@ public:
 
 
 	state_cell_type_t get_max_heroes(void);
+	
+	
+	state_cell_type_t get_max_hero_custom_weapons(void);
+	bool get_id_custom_weapon_bit( const state_cell_type_t& player_id,  const state_cell_type_t& the_custom_weapon_id);
+	void assign_id_custom_weapon_bit( const state_cell_type_t& player_id, const state_cell_type_t& the_custom_weapon_id, const state_cell_type_t& the_polarity_to_set );
+
 };
 inline HeroArrays::HeroArrays(void){
 	printf("The hero module has been initted!\n");
@@ -128,7 +138,8 @@ inline HeroArrays::HeroArrays(void){
 inline void HeroArrays::init_hero_array_sizes(state_cell_type_t num_of_heroes_for_init,
 											state_cell_type_t num_of_hero_props_to_init,
 											state_cell_type_t num_of_client_states_to_init,
-											state_cell_type_t num_of_hero_damages_to_init){
+											state_cell_type_t num_of_hero_damages_to_init,
+											state_cell_type_t num_of_custom_weapons_to_init){
 	this->SH_MAXHEROS=max(1,min(num_of_heroes_for_init,SH_MAX_HEROES_FINAL));
 	if(this->SH_MAXHEROS==1){
 		
@@ -177,6 +188,18 @@ inline void HeroArrays::init_hero_array_sizes(state_cell_type_t num_of_heroes_fo
 				this->SH_MAX_HERO_DAMAGES);
 				
 	}
+	this->SH_MAX_CUSTOM_WEAPONS=max(1,min(num_of_custom_weapons_to_init,SH_MAX_CUSTOM_WEAPONS_FINAL));
+	if(this->SH_MAX_CUSTOM_WEAPONS==1){
+		
+		this->SH_MAX_CUSTOM_WEAPONS=SH_MAX_CUSTOM_WEAPONS_FINAL;
+	}
+	if(this->SH_MAX_CUSTOM_WEAPONS==SH_MAX_CUSTOM_WEAPONS_FINAL){
+		printf("The number of registered custom weapons cannot exceed %d or be less than 0!\n"
+				"The arrays have been clamped to accomodate the max ammount (%d)\n",
+				SH_MAX_CUSTOM_WEAPONS_FINAL,
+				this->SH_MAX_CUSTOM_WEAPONS);
+				
+	}
 }
 inline void HeroArrays::zero_it_out(void){
 		
@@ -186,6 +209,7 @@ inline void HeroArrays::zero_it_out(void){
 		this->zero_out_hero_projectile_weapon_masks();
 		this->zero_out_id_hero_cooldown_masks();
 		this->zero_out_hero_damage_flags();
+		this->zero_out_custom_weapon_bit_masks();
 		
 }
 
@@ -227,10 +251,15 @@ inline void HeroArrays::zero_out_player_masks(void){
 inline void HeroArrays::zero_out_hero_ownership(void){
 	
 	printf("Hero array has been zeroed out!\n");
-	memset(this->ownership_memory,0, sizeof(ownership_memory));
+	memset(this->ownership_memory,0, sizeof(this->ownership_memory));
 		
 }
-
+inline void HeroArrays::zero_out_custom_weapon_bit_masks(void){
+	
+	printf("SH custom weapon possessions array has been zeroed out!\n");
+	memset(this->the_custom_weapon_masks,0, sizeof(this->the_custom_weapon_masks));
+		
+}
 inline state_cell_type_t HeroArrays::get_max_hero_props(void){
 	
 	return this->SH_MAX_HERO_PROPERTIES;
@@ -411,10 +440,14 @@ inline state_cell_type_t HeroArrays::get_max_client_states(void){
 	return this->SH_MAX_CLIENT_STATES;
 }
 
+inline state_cell_type_t HeroArrays::get_max_hero_custom_weapons(void){
+	
+	return this->SH_MAX_CUSTOM_WEAPONS;
+}
 inline bool HeroArrays::get_id_bit( const state_cell_type_t& the_player_id,  const state_cell_type_t& the_effect_flag_id)
 {
 	
-	if( !(the_player_id) || (the_player_id > SH_MAXSLOTS)|| (the_effect_flag_id >= SH_MAX_CLIENT_STATES)){
+	if( !(the_player_id) || (the_player_id > SH_MAXSLOTS)|| (the_effect_flag_id >= this->SH_MAX_CLIENT_STATES)){
 		return false;
 	}
 	
@@ -430,6 +463,27 @@ inline void HeroArrays::assign_id_bit( const state_cell_type_t& the_player_id, c
 	}
 
 	Assign_BitVar(this->the_player_masks[the_effect_flag_id], the_player_id, the_polarity_to_set);
+	
+}
+inline bool HeroArrays::get_id_custom_weapon_bit( const state_cell_type_t& the_player_id,  const state_cell_type_t& the_custom_weapon_id)
+{
+	
+	if( !(the_player_id) || (the_player_id > SH_MAXSLOTS)|| (the_custom_weapon_id >= this->SH_MAX_CUSTOM_WEAPONS)){
+		return false;
+	}
+	
+	
+	return Get_BitVar(this->the_custom_weapon_masks[the_custom_weapon_id], the_player_id);
+}
+
+inline void HeroArrays::assign_id_custom_weapon_bit( const state_cell_type_t& the_player_id, const state_cell_type_t& the_custom_weapon_id, const state_cell_type_t& the_polarity_to_set )
+{
+	
+	if( !(the_player_id) || (the_player_id > SH_MAXSLOTS)|| (the_custom_weapon_id >= this->SH_MAX_CUSTOM_WEAPONS)){
+		return;
+	}
+
+	Assign_BitVar(this->the_custom_weapon_masks[the_custom_weapon_id], the_player_id, the_polarity_to_set);
 	
 }
 

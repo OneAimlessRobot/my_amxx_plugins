@@ -193,9 +193,9 @@ public plugin_init()
 	sh_set_hero_info(gHeroID, "Shadow Clone Jutsu", "Summon a shadow clone which follows you and shoots down any nearby enemies with his gun, press keydown again to use the rasengan")
 	
 
-	is_cache=sh_register_map_restricted_superhero(gHeroID,"cache","This hero precaches too many things. Creating clones on this map crashes the server") //it precaches too many things because of shadow clone. dont let them use this here
+	is_cache= sh_register_superhero_map_restriction(gHeroID,false,"cache","This hero precaches too many things. Creating clones on this map crashes the server") //it precaches too many things because of shadow clone. dont let them use this here
 	
-	is_tuscan=sh_register_map_restricted_superhero(gHeroID,"tuscan","This hero precaches too many things. Creating clones on this map crashes the server") //it precaches too many things because of shadow clone. dont let them use this here
+	is_tuscan= sh_register_superhero_map_restriction(gHeroID,false,"tuscan","This hero precaches too many things. Creating clones on this map crashes the server") //it precaches too many things because of shadow clone. dont let them use this here
 	if(is_cache||is_tuscan){
 
 		return

@@ -18,7 +18,7 @@
 new const Arifle_Sound[] = "weapons/m60-1.wav"
 
 
-new g_Had_Arifle, g_Arifle_Clip[33], Float:g_Recoil[33][3]
+new g_Arifle_Clip[33], Float:g_Recoil[33][3]
 new g_Event_Arifle, g_SmokePuff_SprId
 new g_Muzzleflash_Ent, g_Muzzleflash
 new wpn_name_for_future_lookup[50];
@@ -110,7 +110,7 @@ public _arifle_unset_arifle(iPlugins,iParams){
 
 public Get_Arifle(id)
 {
-	Set_BitVar(g_Had_Arifle, id)
+	sh_assign_id_custom_weapon_bit(id,SH_ASSAULT_RIFLE, true)
 	my_give_item(id, wpn_name_for_future_lookup)
 	
 	static Ent; Ent = my_get_user_weapon_entity(id, CSW_ARIFLE)
@@ -127,13 +127,13 @@ public Get_Arifle(id)
 
 public Remove_Arifle(id)
 {
-	UnSet_BitVar(g_Had_Arifle, id)
+	sh_assign_id_custom_weapon_bit(id,SH_ASSAULT_RIFLE, true)
 }
 
 
 public Event_CurWeapon(id)
 {
-	if(!Get_BitVar(g_Had_Arifle, id))	
+	if(!sh_get_id_custom_weapon_bit(id, SH_ASSAULT_RIFLE))	
 		return
 
 	static Float:Delay, Float:Delay2
@@ -156,7 +156,7 @@ public fw_UpdateClientData_Post(id, sendweapons, cd_handle)
 		return FMRES_IGNORED
 	}
 
-	if((get_user_weapon(id) != _:CSW_ARIFLE)||!Get_BitVar(g_Had_Arifle, id)){
+	if((get_user_weapon(id) != _:CSW_ARIFLE)||!sh_get_id_custom_weapon_bit(id, SH_ASSAULT_RIFLE)){
 
 		return FMRES_IGNORED
 
@@ -191,7 +191,7 @@ public fw_SetModel(entity, model[])
 		
 		ent_check(weapon,FMRES_IGNORED)
 		
-		if(Get_BitVar(g_Had_Arifle, iOwner))
+		if(sh_get_id_custom_weapon_bit(iOwner, SH_ASSAULT_RIFLE))
 		{
 			Remove_Arifle(iOwner)
 			
@@ -217,7 +217,7 @@ public fw_Weapon_PrimaryAttack(Ent)
 		return HAM_IGNORED
 	}
 
-	if(get_user_weapon(id) != _:CSW_ARIFLE || !Get_BitVar(g_Had_Arifle, id)){
+	if(get_user_weapon(id) != _:CSW_ARIFLE || !sh_get_id_custom_weapon_bit(id, SH_ASSAULT_RIFLE)){
 		return HAM_IGNORED
 	}
 	
@@ -236,7 +236,7 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 		return
 	}
 
-	if(Get_BitVar(g_Had_Arifle, id))
+	if(sh_get_id_custom_weapon_bit(id, SH_ASSAULT_RIFLE))
 	{
 
 		static iClip;iClip = get_pdata_int(Ent, m_iClip, XO_WEAPON)
@@ -266,7 +266,8 @@ public fw_Weapon_WeaponIdle_Post(Ent)
 	}
 	if(get_pdata_cbase(Id, m_pActiveItem, XO_PLAYER) != Ent)
 		return
-	if(!Get_BitVar(g_Had_Arifle, Id))
+	
+	if(!sh_get_id_custom_weapon_bit(Id, SH_ASSAULT_RIFLE))
 		return
 
 	if(get_pdata_float(Ent, m_flTimeWeaponIdle, XO_WEAPON) <= 0.1) 
@@ -292,7 +293,7 @@ public fw_Item_Deploy_Post(Ent)
 		return
 	
 
-	if(!Get_BitVar(g_Had_Arifle, Id))
+	if(!sh_get_id_custom_weapon_bit(Id, SH_ASSAULT_RIFLE))
 		return
 	
 	set_pev(Id, pev_viewmodel2, ARIFLE_V_MODEL)
@@ -338,7 +339,7 @@ public fw_Item_AddToPlayer_Post(Ent, id)
 		
 	if(pev(Ent, pev_impulse) == weapon_secret_code)
 	{
-		Set_BitVar(g_Had_Arifle, id)
+		sh_assign_id_custom_weapon_bit(id, SH_ASSAULT_RIFLE, true)
 		set_pev(Ent, pev_impulse, 0)
 	}
 }
@@ -353,7 +354,7 @@ public fw_Item_PostFrame(ent)
 		
 		return HAM_IGNORED
 	}
-	if(!Get_BitVar(g_Had_Arifle, id))
+	if(!sh_get_id_custom_weapon_bit(id, SH_ASSAULT_RIFLE))
 		return HAM_IGNORED	
 	
 
@@ -386,7 +387,7 @@ public fw_Weapon_Reload(ent)
 	static id; id = get_pdata_cbase(ent,  m_pPlayer, XO_WEAPON)
 	if(!is_user_alive(id))
 		return HAM_IGNORED
-	if(!Get_BitVar(g_Had_Arifle, id))
+	if(!sh_get_id_custom_weapon_bit(id, SH_ASSAULT_RIFLE))
 		return HAM_IGNORED	
 
 	g_Arifle_Clip[id] = -1
@@ -412,7 +413,7 @@ public fw_Weapon_Reload_Post(ent)
 	static id; id = get_pdata_cbase(ent,  m_pPlayer, XO_WEAPON)
 	if(!is_user_alive(id))
 		return HAM_IGNORED
-	if(!Get_BitVar(g_Had_Arifle, id))
+	if(!sh_get_id_custom_weapon_bit(id, SH_ASSAULT_RIFLE))
 		return HAM_IGNORED	
 		
 	if((get_pdata_int(ent, m_fInReload, XO_WEAPON) == 1))
@@ -431,7 +432,7 @@ public fw_PlaybackEvent(flags, invoker, eventid, Float:delay, Float:origin[3], F
 {
 	if (!is_user_connected(invoker))
 		return FMRES_IGNORED	
-	if(get_user_weapon(invoker) != _:CSW_ARIFLE || !Get_BitVar(g_Had_Arifle, invoker))
+	if(get_user_weapon(invoker) != _:CSW_ARIFLE || !sh_get_id_custom_weapon_bit(invoker, SH_ASSAULT_RIFLE))
 		return FMRES_IGNORED
 	if(eventid != g_Event_Arifle)
 		return FMRES_IGNORED
@@ -447,7 +448,7 @@ public fw_TraceAttack_World(Victim, Attacker, Float:Damage, Float:Direction[3], 
 {
 	if(!is_user_connected(Attacker))
 		return HAM_IGNORED	
-	if(get_user_weapon(Attacker) != _:CSW_ARIFLE || !Get_BitVar(g_Had_Arifle, Attacker)){
+	if(get_user_weapon(Attacker) != _:CSW_ARIFLE || !sh_get_id_custom_weapon_bit(Attacker, SH_ASSAULT_RIFLE)){
 		return HAM_IGNORED
 	}
 
@@ -474,7 +475,7 @@ public fw_TraceAttack_Player(Victim, Attacker, Float:Damage, Float:Direction[3],
 
 	if(!is_user_connected(Attacker))
 		return HAM_IGNORED	
-	if(get_user_weapon(Attacker) != _:CSW_ARIFLE || !Get_BitVar(g_Had_Arifle, Attacker))
+	if(get_user_weapon(Attacker) != _:CSW_ARIFLE || !sh_get_id_custom_weapon_bit(Attacker, SH_ASSAULT_RIFLE))
 		return HAM_IGNORED
 	
 	weapon_gating_macro_code_snippet(Attacker,CSW_ARIFLE,return,HAM_IGNORED)

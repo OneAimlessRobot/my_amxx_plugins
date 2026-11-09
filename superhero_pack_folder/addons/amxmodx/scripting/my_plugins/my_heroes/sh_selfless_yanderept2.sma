@@ -22,6 +22,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt12.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt17.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt9.inc"
 #include "../my_include/my_author_header.inc"
@@ -40,6 +41,8 @@ stock const yandere_sentences[5][]={
 
 stock hud_sync
 new Float:degen_iter_period
+
+new can_jet_here = false
 
 new pcvar_base_dmg_mult,
 pcvar_dmg_pct_per_inc,
@@ -90,6 +93,7 @@ public plugin_init()
 	pcvar_min_players = create_cvar("yandere_min_players", "6")
 	gHeroID=shCreateHero(gHeroName, "YANDERE!", "Protect live teamates and avenge dead ones!", true, "yandere_level" )
 	
+	can_jet_here = (sh_test_map_name_here(true,"cs_assault")||sh_test_map_name_here(true,"starwars"))
 
 	sh_assign_hero_bit(gHeroID,SH_EXPLOSION_POWERS, true)
 
@@ -434,7 +438,9 @@ public yandere_timer_transform(id){
 		if(Get_BitVar(gSuperAngryMask,id)&&is_user_alive(id)){
 			UnSet_BitVar(gTransTimerStartedMask,id)
 			BlowUp(id)
-			jet_destroy(id)
+			if(can_jet_here){
+				jet_destroy(id)
+			}
 			if(!sh_is_freezetime()){
 				if(!user_has_weapon(id,YANDERE_WEAPON_CLASSID)){
 					sh_give_weapon(id, YANDERE_WEAPON_CLASSID,true)
@@ -657,31 +663,44 @@ public yandere_kd(id)
 		yandere_psychosis_user(id)
 	}
 	else{
-		new bool:jet_deployed_here=bool:jet_deployed(id)
-		if(!jet_loaded(id)&&!jet_deployed_here){
+		
+		if(can_jet_here){
+			new bool:jet_deployed_here=bool:jet_deployed(id)
+			if(!jet_loaded(id)&&!jet_deployed_here){
+
+				if(!is_user_bot(id)){
+					sh_sound_deny(id)
+				}
+				return
+				
+			}
+
+			if(jet_deployed_here){
+				
+				jet_destroy(id,true,id)
+				
+				if(!is_user_bot(id)){
+					sh_chat_message(id, gHeroID, "You J-ed out!!")
+				}
+
+				sh_reset_min_gravity(id)
+				return
+				
+			}
+			yandere_jet_charge_user(id)
+		
+		
+		}
+		else{
+
 
 			if(!is_user_bot(id)){
+				
+				sh_chat_message(id, gHeroID, "You cannot use a jet here. the map is too small!")
 				sh_sound_deny(id)
 			}
 			return
-			
 		}
-
-		if(jet_deployed_here){
-			
-			jet_destroy(id,true,id)
-			
-			if(!is_user_bot(id)){
-				sh_chat_message(id, gHeroID, "You J-ed out!!")
-			}
-
-			sh_reset_min_gravity(id)
-			return
-			
-		}
-		yandere_jet_charge_user(id)
-	
-	
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -689,6 +708,9 @@ public yandere_ku(id)
 {
 	
 	if ( !is_user_alive(id) ||!sh_get_user_has_hero(id,gHeroID) ) {
+		return
+	}
+	if(!can_jet_here){
 		return
 	}
 	
@@ -699,21 +721,22 @@ public yandere_ku(id)
 }
 public sh_round_end(){
 	
-	for(new i=1;i< sh_maxplayers()+1;i++){
-		
-		if(is_user_alive(i)){
-			if(sh_get_user_has_hero(i,gHeroID) ){
-				jet_destroy(i)
-			}
+	if(can_jet_here){
+		for(new i=1;i< sh_maxplayers()+1;i++){
 			
+			if(is_user_alive(i)){
+				if(sh_get_user_has_hero(i,gHeroID) ){
+					jet_destroy(i)
+				}
+				
+			}
+		
 		}
-	
+		
+		remove_entity_name(JETPLANE_BOMB_CLASSNAME)
+		remove_entity_name(JETPLANE_SHELL_CLASSNAME)
+		remove_entity_name(JETPLANE_ROCKET_CLASSNAME)
 	}
-	
-	remove_entity_name(JETPLANE_BOMB_CLASSNAME)
-	remove_entity_name(JETPLANE_SHELL_CLASSNAME)
-	remove_entity_name(JETPLANE_ROCKET_CLASSNAME)
-	
 	new total_alive,total_dead;
 	sh_get_player_counts(0,0,total_alive,total_dead)
 	
@@ -754,7 +777,7 @@ killyandere(id,bool:dropping=false){
 				yandere_unpsychosis_user(id)
 			}
 		}
-		else if(jet_deployed(id)){
+		else if(jet_deployed(id)&&can_jet_here){
 			
 			jet_destroy(id);
 		}

@@ -12,7 +12,7 @@ sprites/scope_arc.tga
 sprites/scope_arc_nw.tga
 sprites/scope_arc_ne.tga
 sprites/scope_arc_sw.tga
-maps/cs_assault.txt
+maps/de_dust4ever.txt
 models/player/yakui/yakui.mdl
 models/player/ksun/ksun.mdl
 models/player/ester/ester.mdl
@@ -22,7 +22,6 @@ models/player/thrash/thrashT.mdl
 models/player/jaqueo/jaqueo.mdl
 models/player/jaqueo/jaqueoT.mdl
 models/player/haloune/haloune.mdl
-models/player/graciete/graciete.mdl
 models/player/L96/L96.mdl
 models/player/L96/L96T.mdl
 models/player/swat/swat.mdl

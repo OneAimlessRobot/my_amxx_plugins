@@ -189,7 +189,7 @@ public plugin_init()
 		set_fail_state("You can only load the ^"SuperHero Core^" once, please check your plugins-shero.ini")
 	}
 
-	sh_init_hero_array_lib(SH_MAXHEROS,_,_,_:sh_thrash_brat_dmg_type)
+	sh_init_hero_array_lib(SH_MAXHEROS,_,_,sh_thrash_brat_dmg_type,sh_custom_weapon_ids)
 
 	server_print("We currently support: %d client states in total!^n",sh_max_client_states())
 

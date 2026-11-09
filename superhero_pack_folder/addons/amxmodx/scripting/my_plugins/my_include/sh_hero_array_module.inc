@@ -99,6 +99,18 @@ enum sh_thrash_brat_dmg_type{
 
 };
 
+enum sh_custom_weapon_ids{
+
+	SH_ETHEREAL_RIFLE=0,
+	SH_SHARD_CANNON,
+	SH_ASSAULT_RIFLE,
+	SH_HUNTING_RIFLE,
+	SH_DOUBLE_BARREL_SHOTGUN,
+	SH_QUAD_BARREL_SHOTGUN
+
+
+};
+
 //hero properties
 
 
@@ -360,11 +372,36 @@ native sh_assign_hero_projectile_weapon_bit(the_hero_id, my_weapon_ids:the_weapo
 
 
 
+native bool:sh_get_id_custom_weapon_bit(player_id, sh_custom_weapon_ids:the_flag_id)
+
+
+/*
+
+//The third parameter decides the polarity to set
+
+enum sh_custom_weapon_ids{
+
+	SH_ETHEREAL_RIFLE=0,
+	SH_SHARD_CANNON,
+	SH_ASSAULT_RIFLE,
+	SH_HUNTING_RIFLE,
+	SH_DOUBLE_BARREL_SHOTGUN,
+	SH_QUAD_BARREL_SHOTGUN
+
+
+};
+
+
+*/
+
+native sh_assign_id_custom_weapon_bit(player_id, sh_custom_weapon_ids:the_flag_id, bool:the_polarity)
+
+
 
 
 //Init the lib
 //leaving a parameter at zero automatically initializes it at the maximum value within the library
-native sh_init_hero_array_lib(max_heros=0, max_hero_props=0, max_client_states=0, max_hero_damages=0);
+native sh_init_hero_array_lib(max_heros=0, max_hero_props=0, max_client_states=0, max_hero_damages=0, max_custom_weapons=0);
 
 //returns the number of client states that are currently mappable by this instance of the library
 native sh_max_client_states()
@@ -379,6 +416,7 @@ native sh_max_hero_props()
 //returns the number of heroes that are currently mappable by this instance of the library
 native sh_maxhero_capacity()
 
+native sh_max_custom_weapon_ids()
 
 //to be used by the superhero core
 native sh_zero_out_cooldown_memory();

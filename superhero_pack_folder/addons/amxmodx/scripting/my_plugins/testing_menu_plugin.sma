@@ -770,6 +770,7 @@ public menu_display_inittializer(id,level,cid){
     menu_additem(gMenuID,"Do something to a player")
     menu_additem(gMenuID,"Toggle Bot Autokill")
     menu_additem(gMenuID,"Change Bot Difficulty")
+    menu_additem(gMenuID,"Check Bot Difficulty")
     menu_additem(gMenuID,"Count entities of a type")
     menu_additem(gMenuID,"Toggle entity cap monitor")
     menu_additem(gMenuID,"Produce game restart")
@@ -820,7 +821,8 @@ public bot_difficulty_menu_handler(id, menu, item){
 
 
     menu_item_getinfo(menu, item, _,item_string,sizeof(item_string))
-    difficulty = bot_difficulty_tag:item_string[0]
+    static shitty_variable_leave_me_alone_stupid_warning; shitty_variable_leave_me_alone_stupid_warning = _:bot_difficulty_tag
+    difficulty = bot_difficulty_tag:clamp_macro(item_string[0], 0,shitty_variable_leave_me_alone_stupid_warning-1)
 
     set_pcvar_num(pcvar_bot_difficulty,_:difficulty)
 
@@ -917,26 +919,33 @@ public menu_function_example(id, menu, item)
         }
         case 6:{
 
-            client_cmd(id, "messagemode amx_countentities")
+            client_print(id, print_chat, "The current bot difficulty is: %s!",
+            
+                        bot_difficulty_names[bot_difficulty_tag:cvar_val(num, pcvar_bot_difficulty)])
+
         }
         case 7:{
 
-            server_cmd("toggle_print_num_ents_cycle")
+            client_cmd(id, "messagemode amx_countentities")
         }
         case 8:{
 
-            set_pcvar_num(pcvar_round_restart,1)
+            server_cmd("toggle_print_num_ents_cycle")
         }
         case 9:{
+
+            set_pcvar_num(pcvar_round_restart,1)
+        }
+        case 10:{
 
             client_cmd(id, "messagemode set_quota")
             
         }
-        case 10:{
+        case 11:{
             client_cmd(id, "messagemode set_bot_team")
             
         }
-        case 11:{
+        case 12:{
 
             bot_freeze = (get_pcvar_bool(pcvar_yb_freeze_bots)) 
 
@@ -945,7 +954,7 @@ public menu_function_example(id, menu, item)
             client_print(id, print_chat, "Keep bots frozen %s",!bot_freeze?"Enabled!":"Disabled...")
             
         }
-        case 12:{
+        case 13:{
 
             bot_ignore_enemies = (get_pcvar_bool(pcvar_yb_ignore_enemies)) 
 
@@ -954,7 +963,7 @@ public menu_function_example(id, menu, item)
             client_print(id, print_chat, "Bot ignore enemies %s",!bot_ignore_enemies?"Enabled!":"Disabled...")
             
         }
-        case 13:{
+        case 14:{
 
             bot_ignore_objectives = (get_pcvar_bool(pcvar_yb_ignore_objectives)) 
 

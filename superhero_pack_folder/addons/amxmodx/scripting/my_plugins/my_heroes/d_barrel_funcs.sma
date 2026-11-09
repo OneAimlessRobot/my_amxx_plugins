@@ -34,8 +34,8 @@ enum
 }
 
 
-new g_Volcano, g_OldWeapon[33]
-new g_Had_Volcano, Float:g_punchangles[33][3], g_gatling_event, g_smokepuff_id, m_iBlood[2]
+new g_OldWeapon[33]
+new Float:g_punchangles[33][3], g_gatling_event, g_smokepuff_id, m_iBlood[2]
 new g_SpecialShot
 
 new wpn_name_for_future_lookup[50]
@@ -110,28 +110,9 @@ public fw_PrecacheEvent_Post(type, const name[])
 	if(equal(old_event, name))
 		g_gatling_event = get_orig_retval()
 }
-
-public Mileage_WeaponGet(id, ItemID)
-{
-	if(ItemID == g_Volcano) get_gatling(id)
-}
-
-public Mileage_WeaponRefillAmmo(id, ItemID)
-{
-	if(ItemID == g_Volcano) 
-	{
-		cs_set_user_bpammo(id, _:CSW_GATLING, D_BARREL_DEFAULT_BPAMMO)
-	}
-}
-
-public Mileage_WeaponRemove(id, ItemID)
-{
-	if(ItemID == g_Volcano) remove_gatling(id)
-}
-
 public get_gatling(id)
 {
-	Set_BitVar(g_Had_Volcano, id)
+	sh_assign_id_custom_weapon_bit(id, SH_DOUBLE_BARREL_SHOTGUN, true)
 	my_give_item(id, wpn_name_for_future_lookup)
 	
 	// Set Clip
@@ -145,7 +126,7 @@ public get_gatling(id)
 
 public remove_gatling(id)
 {
-	UnSet_BitVar(g_Had_Volcano, id)
+	sh_assign_id_custom_weapon_bit(id, SH_DOUBLE_BARREL_SHOTGUN, false)
 }
 
 
@@ -154,7 +135,7 @@ public Event_CurWeapon(id)
 	
 	static CSWID; CSWID = read_data(2)
 
-	if((CSWID == _:CSW_GATLING && g_OldWeapon[id] == _:_:CSW_GATLING) && Get_BitVar(g_Had_Volcano, id)) 
+	if((CSWID == _:CSW_GATLING && g_OldWeapon[id] == _:_:CSW_GATLING) && sh_get_id_custom_weapon_bit(id, SH_DOUBLE_BARREL_SHOTGUN)) 
 	{
 		static Ent; Ent = my_get_user_weapon_entity(id, _:_:CSW_GATLING)
 		if(pev_valid(Ent)==PDATA_SAFE) 
@@ -178,7 +159,7 @@ public fw_CmdStart(id, uc_handle, seed)
 	if(!is_user_alive(id)){
 		return FMRES_IGNORED
 	}
-	if(get_user_weapon(id) != _:CSW_GATLING || !Get_BitVar(g_Had_Volcano, id)){
+	if(get_user_weapon(id) != _:CSW_GATLING || !sh_get_id_custom_weapon_bit(id, SH_DOUBLE_BARREL_SHOTGUN)){
 		return FMRES_IGNORED
 	}
 
@@ -258,7 +239,7 @@ public fw_SetModel(entity, model[])
 		
 		ent_check(weapon,FMRES_IGNORED)
 		
-		if(Get_BitVar(g_Had_Volcano, id))
+		if(sh_get_id_custom_weapon_bit(id, SH_DOUBLE_BARREL_SHOTGUN))
 		{
 			set_pev(weapon, pev_impulse, weapon_secret_code)
 			engfunc(EngFunc_SetModel, entity, WeaponModel[2])
@@ -281,7 +262,7 @@ public fw_TraceAttack(ent, attacker, Float:Damage, Float:fDir[3], ptr, iDamageTy
 
 	if(!is_user_alive(attacker))
 		return HAM_IGNORED	
-	if(get_user_weapon(attacker) != _:CSW_GATLING || !Get_BitVar(g_Had_Volcano, attacker))
+	if(get_user_weapon(attacker) != _:CSW_GATLING || !sh_get_id_custom_weapon_bit(attacker, SH_DOUBLE_BARREL_SHOTGUN))
 		return HAM_IGNORED
 		
 	SetHamParamFloat(3, float(D_BARREL_DAMAGE) / generate_float(6.0, 7.0))	
@@ -297,7 +278,7 @@ public fw_TraceAttack_Post(Ent, Attacker, Float:Damage, Float:Dir[3], ptr, Damag
 
 	if(!is_user_connected(Attacker))
 		return HAM_IGNORED	
-	if(get_user_weapon(Attacker) != _:CSW_GATLING  || !Get_BitVar(g_Had_Volcano, Attacker))
+	if(get_user_weapon(Attacker) != _:CSW_GATLING  || !sh_get_id_custom_weapon_bit(Attacker, SH_DOUBLE_BARREL_SHOTGUN))
 		return HAM_IGNORED
 	if(cs_get_user_team(Ent) == cs_get_user_team(Attacker))
 		return HAM_IGNORED
@@ -345,7 +326,7 @@ public fw_TraceAttack_World(ent, attacker, Float:Damage, Float:fDir[3], ptr, iDa
 {
 	if(!is_user_alive(attacker))
 		return HAM_IGNORED	
-	if(get_user_weapon(attacker) != _:CSW_GATLING || !Get_BitVar(g_Had_Volcano, attacker))
+	if(get_user_weapon(attacker) != _:CSW_GATLING || !sh_get_id_custom_weapon_bit(attacker, SH_DOUBLE_BARREL_SHOTGUN))
 		return HAM_IGNORED
 
 	
@@ -371,7 +352,7 @@ public fw_UpdateClientData_Post(id, sendweapons, cd_handle)
 	}
 
 
-	if((get_user_weapon(id) != _:CSW_GATLING)||!Get_BitVar(g_Had_Volcano, id)){
+	if((get_user_weapon(id) != _:CSW_GATLING)||!sh_get_id_custom_weapon_bit(id, SH_DOUBLE_BARREL_SHOTGUN)){
 
 		return FMRES_IGNORED
 
@@ -389,7 +370,7 @@ public fw_PlaybackEvent(flags, invoker, eventid, Float:delay, Float:origin[3], F
 	if(!is_user_connected(invoker))
 		return FMRES_IGNORED	
 		
-	if(get_user_weapon(invoker) == _:CSW_GATLING && Get_BitVar(g_Had_Volcano, invoker) && eventid == g_gatling_event)
+	if(get_user_weapon(invoker) == _:CSW_GATLING && sh_get_id_custom_weapon_bit(invoker, SH_DOUBLE_BARREL_SHOTGUN) && eventid == g_gatling_event)
 	{
 		engfunc(EngFunc_PlaybackEvent, flags | FEV_HOSTONLY, invoker, eventid, delay, origin, angles, fparam1, fparam2, iParam1, iParam2, bParam1, bParam2)
 		native_playanim(invoker, generate_int(GATLING_ANIM_SHOOT1, GATLING_ANIM_SHOOT2))
@@ -414,7 +395,7 @@ public fw_Item_Deploy_Post(ent)
 	
 	if(weaponid != _:CSW_GATLING)
 		return
-	if(!Get_BitVar(g_Had_Volcano, id))
+	if(!sh_get_id_custom_weapon_bit(id, SH_DOUBLE_BARREL_SHOTGUN))
 		return
 		
 	static SubModel; SubModel = D_BARREL_SUBMODEL
@@ -441,7 +422,7 @@ public fw_Weapon_Reload_Post(ent)
 	if(!is_user_alive(id)){
 		return HAM_IGNORED
 	}
-	if(Get_BitVar(g_Had_Volcano, id))
+	if(sh_get_id_custom_weapon_bit(id, SH_DOUBLE_BARREL_SHOTGUN))
 	{
 		static CurBpAmmo; CurBpAmmo = cs_get_user_bpammo(id, _:CSW_GATLING)
 		
@@ -474,7 +455,7 @@ public fw_Item_PostFrame(ent)
 		
 		return HAM_IGNORED
 	}
-	if(!Get_BitVar(g_Had_Volcano, id)) return HAM_IGNORED
+	if(!sh_get_id_custom_weapon_bit(id, SH_DOUBLE_BARREL_SHOTGUN)) return HAM_IGNORED
 
 	static iBpAmmo ; iBpAmmo = cs_get_user_bpammo(id, _:CSW_GATLING)
 	static iClip ; iClip = get_pdata_int(ent, m_iClip, XO_WEAPON)
@@ -500,7 +481,7 @@ public fw_Item_AddToPlayer_Post(ent, id)
 		
 	if(pev(ent, pev_impulse) == weapon_secret_code)
 	{
-		Set_BitVar(g_Had_Volcano, id)
+		sh_assign_id_custom_weapon_bit(id, SH_DOUBLE_BARREL_SHOTGUN, true)
 		set_pev(ent, pev_impulse, 0)
 	}
 
@@ -518,7 +499,7 @@ public fw_Weapon_PrimaryAttack(ent)
 	if(get_pdata_cbase(id, m_pActiveItem, XO_PLAYER) != ent){
 		return
 	}
-	if(!Get_BitVar(g_Had_Volcano, id))
+	if(!sh_get_id_custom_weapon_bit(id, SH_DOUBLE_BARREL_SHOTGUN))
 		return
 		
 	pev(id, pev_punchangle, g_punchangles[id])
@@ -532,7 +513,7 @@ public fw_Weapon_PrimaryAttack_Post(ent)
 	if(!is_user_alive(id)){
 		return
 	}
-	if(!Get_BitVar(g_Had_Volcano, id))
+	if(!sh_get_id_custom_weapon_bit(id, SH_DOUBLE_BARREL_SHOTGUN))
 		return
 	
 

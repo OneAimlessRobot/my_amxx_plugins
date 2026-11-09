@@ -19,7 +19,7 @@ new const Shard_Cannon_Sound[] = "weapons/shard_cannon-1.wav"
 #include "../my_include/my_author_header.inc"
 
 // Main Vars
-new g_Had_SHARD_CANNON = 0, g_Old_Weapon[33], Float:g_ShootDelay[33], Float:g_Recoil[33]
+new g_Old_Weapon[33], Float:g_ShootDelay[33], Float:g_Recoil[33]
 new g_Event_MS, g_SmokePuff_Id
 new g_MsgCurWeapon
 new wpn_name_for_future_lookup[50]
@@ -100,7 +100,7 @@ public Get_Shard_Cannon(id)
 {
 	Remove_Shard_Cannon(id)
 	
-	Set_BitVar(g_Had_SHARD_CANNON, id)
+	sh_assign_id_custom_weapon_bit(id, SH_SHARD_CANNON, true)
 	
 	sh_give_weapon(id,  CSW_SHARD_CANNON)
 	cs_set_user_bpammo(id, CSW_SHARD_CANNON, SHARD_CANNON_BPAMMO)
@@ -117,7 +117,7 @@ public Get_Shard_Cannon(id)
 
 public Remove_Shard_Cannon(id)
 {
-	UnSet_BitVar(g_Had_SHARD_CANNON, id)
+	sh_assign_id_custom_weapon_bit(id, SH_SHARD_CANNON, false)
 }
 
 public Event_CurWeapon(id)
@@ -125,7 +125,7 @@ public Event_CurWeapon(id)
 	
 	static CSWID; CSWID = read_data(2)
 	
-	if((CSWID == CSW_SHARD_CANNON && g_Old_Weapon[id] == CSW_SHARD_CANNON) && Get_BitVar(g_Had_SHARD_CANNON, id)) 
+	if((CSWID == CSW_SHARD_CANNON && g_Old_Weapon[id] == CSW_SHARD_CANNON) && sh_get_id_custom_weapon_bit(id, SH_SHARD_CANNON)) 
 	{
 		static Ent; Ent = get_weapon_ent_of_player(id, CSW_SHARD_CANNON)
 		if(pev_valid(Ent)!=PDATA_SAFE)
@@ -172,7 +172,7 @@ public fw_SetModel(entity, model[])
 		
 		ent_check(weapon,FMRES_IGNORED)
 		
-		if(Get_BitVar(g_Had_SHARD_CANNON, id))
+		if(sh_get_id_custom_weapon_bit(id, SH_SHARD_CANNON))
 		{
 			set_pev(weapon, pev_impulse, weapon_secret_code)
 			engfunc(EngFunc_SetModel, entity, SHARD_CANNON_MODEL_W)
@@ -195,7 +195,7 @@ public fw_CmdStart(id, uc_handle, seed)
 	if(!is_user_alive(id)){
 		return FMRES_IGNORED
 	}
-	if((get_user_weapon(id) != CSW_SHARD_CANNON) || !Get_BitVar(g_Had_SHARD_CANNON, id)){
+	if((get_user_weapon(id) != CSW_SHARD_CANNON) || !sh_get_id_custom_weapon_bit(id, SH_SHARD_CANNON)){
 		return FMRES_IGNORED
 	}
 	static iEnt; iEnt = get_weapon_ent_of_player(id, get_user_weapon(id))
@@ -240,7 +240,7 @@ public fw_UpdateClientData_Post(id, sendweapons, cd_handle)
 	if(!is_user_alive(id)){
 		return FMRES_IGNORED
 	}
-	if((get_user_weapon(id) != CSW_SHARD_CANNON)||!Get_BitVar(g_Had_SHARD_CANNON, id)){
+	if((get_user_weapon(id) != CSW_SHARD_CANNON)||!sh_get_id_custom_weapon_bit(id, SH_SHARD_CANNON)){
 
 		return FMRES_IGNORED
 
@@ -257,7 +257,7 @@ public fw_PlaybackEvent(flags, invoker, eventid, Float:delay, Float:origin[3], F
 {
 	if (!is_user_connected(invoker))
 		return FMRES_IGNORED		
-	if(get_user_weapon(invoker) == CSW_SHARD_CANNON && Get_BitVar(g_Had_SHARD_CANNON, invoker) && eventid == g_Event_MS)
+	if(get_user_weapon(invoker) == CSW_SHARD_CANNON && sh_get_id_custom_weapon_bit(invoker, SH_SHARD_CANNON) && eventid == g_Event_MS)
 	{
 		engfunc(EngFunc_PlaybackEvent, flags | FEV_HOSTONLY, invoker, eventid, delay, origin, angles, fparam1, fparam2, iParam1, iParam2, bParam1, bParam2)	
 		
@@ -282,7 +282,7 @@ public fw_TraceAttack_World(Victim, Attacker, Float:Damage, Float:Direction[3], 
 {
 	if(!is_user_connected(Attacker))
 		return HAM_IGNORED	
-	if(get_user_weapon(Attacker) != _:CSW_SHARD_CANNON || !Get_BitVar(g_Had_SHARD_CANNON, Attacker)){
+	if(get_user_weapon(Attacker) != _:CSW_SHARD_CANNON || !sh_get_id_custom_weapon_bit(Attacker, SH_SHARD_CANNON)){
 		return HAM_IGNORED
 	}
 
@@ -310,7 +310,7 @@ public fw_TraceAttack_Player(Victim, Attacker, Float:Damage, Float:Direction[3],
 
 	if(!is_user_connected(Attacker))
 		return HAM_IGNORED	
-	if(get_user_weapon(Attacker) != _:CSW_SHARD_CANNON || !Get_BitVar(g_Had_SHARD_CANNON, Attacker))
+	if(get_user_weapon(Attacker) != _:CSW_SHARD_CANNON || !sh_get_id_custom_weapon_bit(Attacker, SH_SHARD_CANNON))
 		return HAM_IGNORED
 	
 	weapon_gating_macro_code_snippet(Attacker,CSW_SHARD_CANNON,return,HAM_IGNORED)
@@ -328,7 +328,7 @@ public fw_Item_Deploy_Post(Ent)
 	static Id; Id = get_pdata_cbase(Ent, m_pPlayer, XO_WEAPON)
 	if(get_pdata_cbase(Id, m_pActiveItem, XO_PLAYER) != Ent)
 		return
-	if(!Get_BitVar(g_Had_SHARD_CANNON, Id))
+	if(!sh_get_id_custom_weapon_bit(Id, SH_SHARD_CANNON))
 		return
 
 	set_pev(Id, pev_viewmodel2, SHARD_CANNON_MODEL_V)
@@ -345,7 +345,7 @@ public fw_Weapon_PrimaryAttack(Ent)
 	static Id; Id = get_pdata_cbase(Ent, m_pPlayer, XO_WEAPON)
 	if(get_pdata_cbase(Id,  m_pActiveItem, XO_PLAYER) != Ent)
 		return
-	if(!Get_BitVar(g_Had_SHARD_CANNON, Id))
+	if(!sh_get_id_custom_weapon_bit(Id, SH_SHARD_CANNON))
 		return
 		
 	pev(Id, pev_punchangle, g_Recoil[Id])
@@ -361,7 +361,7 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 	static Id; Id = get_pdata_cbase(Ent, m_pPlayer, XO_WEAPON)
 	if(get_pdata_cbase(Id, 373) != Ent)
 		return
-	if(!Get_BitVar(g_Had_SHARD_CANNON, Id))
+	if(!sh_get_id_custom_weapon_bit(Id, SH_SHARD_CANNON))
 		return
 	
 
@@ -394,7 +394,7 @@ public fw_Item_AddToPlayer_Post(ent, id)
 
 	if(pev(ent, pev_impulse) == weapon_secret_code)
 	{
-		Set_BitVar(g_Had_SHARD_CANNON, id)
+		sh_assign_id_custom_weapon_bit(id, SH_SHARD_CANNON, true)
 		set_pev(ent, pev_impulse, 0)
 	}			
 }
@@ -407,7 +407,7 @@ public fw_Weapon_Reload(iEnt)
 	static id ; id = get_pdata_cbase(iEnt, m_pPlayer, XO_WEAPON)
 	if(!is_user_alive(id))
 		return HAM_IGNORED
-	if(!Get_BitVar(g_Had_SHARD_CANNON, id))
+	if(!sh_get_id_custom_weapon_bit(id, SH_SHARD_CANNON))
 		return HAM_IGNORED	
 	if(get_pdata_int(iEnt, m_fInSpecialReload, XO_WEAPON))
 		return HAM_SUPERCEDE
@@ -429,6 +429,11 @@ public fw_Item_PostFrame( iEnt )
 		
 		return HAM_IGNORED
 	}
+
+	if(!sh_get_id_custom_weapon_bit(id, SH_SHARD_CANNON)){
+		return HAM_IGNORED
+	}
+
 	static iBpAmmo ; iBpAmmo = cs_get_user_bpammo(id,CSW_SHARD_CANNON)
 	static iClip ; iClip = get_pdata_int(iEnt, m_iClip, XO_WEAPON)
 
