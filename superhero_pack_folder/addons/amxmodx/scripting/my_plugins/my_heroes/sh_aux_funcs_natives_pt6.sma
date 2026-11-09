@@ -25,7 +25,6 @@ stock help_files_directory[STRLEN_FOR_FILES+1]
 #define HELP_FILE_URL_BASE "http://lenasattic.ddns.net:11020/webcrookedstuff/cstrike_folder/addons/amxmodx/configs/shero_extra_help/"
 #define NUM_OF_EXTRA_HELP_FILES 2
 
-new num_successful_help_file_registrations = 0
 
 
 stock const help_file_dir_name[128]="/shero_extra_help/"
@@ -35,7 +34,8 @@ enum help_file_disk_list_node{
 	file_name[128],
 	file_path[128],
 	callback_name_for_filling[128],
-	callback_id	
+	callback_id,
+	bool:validated
 
 
 }
@@ -43,8 +43,8 @@ enum help_file_disk_list_node{
 
 new help_file_structs_array[NUM_OF_EXTRA_HELP_FILES][help_file_disk_list_node] = {
 
-	{"sh_extra_help_motd.html", "", "createHelpMotdFile", -1},
-	{"sh_extra_help_motd_2.html", "", "createHelpMotdFilePt2", -1}
+	{"sh_extra_help_motd.html", "", "createHelpMotdFile", -1, false},
+	{"sh_extra_help_motd_2.html", "", "createHelpMotdFilePt2", -1, false}
 
 
 
@@ -126,7 +126,7 @@ public createHelpMotdFilePt2(extraHelpFile){
 //----------------------------------------------------------------------------------------------
 showExtraHelp(id)
 {	
-	if(num_successful_help_file_registrations>0){
+	if(help_file_structs_array[0][validated]){
 		show_motd(id, help_file_structs_array[0][file_path], "SuperHero extra Help")
 	}
 }
@@ -150,7 +150,8 @@ setupHelpMotds()
 				log_amx("Failed to create %s, please verify file/folder permissions",help_file_structs_array[i][file_path])
 				
 			}
-			else{
+			else
+			{
 				help_file_structs_array[i][callback_id] = get_func_id(help_file_structs_array[i][callback_name_for_filling])
 				if(help_file_structs_array[i][callback_id]<0){
 
@@ -191,10 +192,14 @@ setupHelpMotds()
 
 				fclose(extraHelpFile)
 
-				num_successful_help_file_registrations++
+				help_file_structs_array[i][validated] = true
 			}
 			
 		
+		}
+		else{
+
+			help_file_structs_array[i][validated] = true
 		}
 
 	}

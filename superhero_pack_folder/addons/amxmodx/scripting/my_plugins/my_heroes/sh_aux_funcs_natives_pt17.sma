@@ -322,7 +322,7 @@ public bool:_sh_register_superhero_map_restriction(iPlugins,iParams){
 	}
 
 	new map_restriction_string[STRING_SIZE_FOR_MAP_STRING],
-			the_reason_string[STRING_SIZE_FOR_MAP_STRING]
+			the_reason_string[REASON_STRING_LENGTH]
 
 	get_string(3,map_restriction_string,charsmax(map_restriction_string))
 
@@ -352,7 +352,7 @@ public bool:_sh_register_superhero_map_restriction(iPlugins,iParams){
 
 
 bool:sh_register_superhero_map_blacklist_entry(heroID, const the_map_string[STRING_SIZE_FOR_MAP_STRING],
-															const the_reason_string[STRING_SIZE_FOR_MAP_STRING]){
+															const the_reason_string[REASON_STRING_LENGTH]){
 	
 
 	if(hero_map_blacklist_structs_counts[heroID] >= MAX_HERO_MAP_RESTRICTIONS_PER_HERO){
@@ -380,7 +380,7 @@ bool:sh_register_superhero_map_blacklist_entry(heroID, const the_map_string[STRI
 }
 
 bool:sh_register_superhero_map_whitelist_entry(heroID, const the_map_string[STRING_SIZE_FOR_MAP_STRING],
-															const the_reason_string[STRING_SIZE_FOR_MAP_STRING]){
+															const the_reason_string[REASON_STRING_LENGTH]){
 
 
 	if(hero_map_whitelist_structs_counts[heroID] >= MAX_HERO_MAP_RESTRICTIONS_PER_HERO){
@@ -473,6 +473,7 @@ public init_fwd_ret_id:sh_hero_init_pre(id,heroID, sh_init_mode:mode){
 			}
 		}
 	}
+	//this check needs to come after the blacklist check!
 
 	if(hero_map_whitelist_structs_counts[heroID]>0){
 
