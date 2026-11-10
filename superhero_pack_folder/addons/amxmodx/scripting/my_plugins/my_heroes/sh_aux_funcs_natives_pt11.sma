@@ -66,8 +66,9 @@ static const sh_hero_property_structs_array[hero_property_flags_id][hero_propert
 			
 			{"Elemental probe hero", "A peculiar but unmixable set of heroes.^nThey all have ^"Ethereal hero^" in common", 1},
 			
-			{"Demonic hero", "They all receive extra health and armor as well as no knockback from hitscan attacks", 25}
+			{"Demonic hero", "They all receive extra health and armor as well as no knockback from hitscan attacks", 25},
 			
+			{"Passive invisibility hero", "Heroes that grant passive, rapidly changing invisibility. Equipping many would get messy", 1}
 			
 
 }

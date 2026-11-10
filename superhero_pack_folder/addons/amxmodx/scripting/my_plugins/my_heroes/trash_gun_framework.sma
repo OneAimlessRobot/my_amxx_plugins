@@ -162,7 +162,7 @@ public client_disconnected(disconnected_id){
 			wpn_ent,
 			first_owner
 
-	get_players(the_players, pnum, "a")
+	get_players(the_players, pnum, "ah")
 	for (new i = 0; i < pnum; i++) {
 
 

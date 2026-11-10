@@ -103,11 +103,11 @@ public plugin_init(){
 
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 
-	GLOW_TASKID=allocate_typed_task_id(generic_task)
 
 	prepare_shero_aux_lib_pt5()
 	init_hud_syncs()
 
+	GLOW_TASKID=allocate_typed_task_id(generic_task)
 	set_task(GLOBAL_GLOW_TASK_LOOP_PERIOD,"global_glow_task",GLOW_TASKID,_,_,"b")
     
 	
@@ -851,11 +851,11 @@ teamglow_player(id){
 		
 		case CS_TEAM_T:{
 
-			set_render_with_color_const(id,RED,1,50,_,0,_,GLOBAL_GLOW_TASK_LOOP_PERIOD,0,_,kRenderNormal,PRIO_RENDER_PASSIVE)
+			set_render_with_color_const(id,RED,1,16,_,0,_,GLOBAL_GLOW_TASK_LOOP_PERIOD,0,_,kRenderNormal,PRIO_RENDER_PASSIVE)
 		}
 		case CS_TEAM_CT:{
 
-			set_render_with_color_const(id,BLUE,1,50,_,0,_,GLOBAL_GLOW_TASK_LOOP_PERIOD,0,_,kRenderNormal,PRIO_RENDER_PASSIVE)
+			set_render_with_color_const(id,BLUE,1,16,_,0,_,GLOBAL_GLOW_TASK_LOOP_PERIOD,0,_,kRenderNormal,PRIO_RENDER_PASSIVE)
 
 		}
 
@@ -867,7 +867,7 @@ public global_glow_task(task_id){
 
 	
 	static the_players[SH_MAXSLOTS], pnum, id		
-	get_players(the_players, pnum, "a")
+	get_players(the_players, pnum, "ah")
 	for (new i = 0; i < pnum; i++) {
 		
 		id = the_players[i]

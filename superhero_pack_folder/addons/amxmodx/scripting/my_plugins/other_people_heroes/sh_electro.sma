@@ -165,7 +165,7 @@ public electro_jump_check(parm[4])
 
 	new lastVictim = parm[0]
 	new players[SH_MAXSLOTS], numberofplayers, i
-	get_players(players, numberofplayers, "a")
+	get_players(players, numberofplayers, "ah")
 
 	new Float:decay = get_pcvar_float(gPcvarJumpDecay)
 

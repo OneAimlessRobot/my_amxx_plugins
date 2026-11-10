@@ -368,7 +368,7 @@ public torpedo_touch(pToucher, pTouched) {
 	new vicOrigin[3], Float:dRatio,  distance, damage
 	new players[SH_MAXSLOTS], pnum, vic
 
-	get_players(players, pnum, "a")
+	get_players(players, pnum, "ah")
 
 	for (new i = 0; i < pnum; i++) {
 		vic = players[i]

@@ -153,7 +153,7 @@ public cyclone_loop()
 		
 	// Do player physics	
 	if(gPlayersOnly) {
-		get_players(players, pnum, "a")
+		get_players(players, pnum, "ah")
 		for (new i = 0; i < pnum; i++) {
 			if(players[i] == gCurrentCyclone) continue
 

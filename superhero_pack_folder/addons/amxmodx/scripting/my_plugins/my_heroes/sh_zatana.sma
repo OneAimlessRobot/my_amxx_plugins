@@ -380,7 +380,7 @@ public zatana_active_loop(taskid)
     if ( !sh_is_active() || sh_is_freezetime() || !sh_is_inround() ) return
 
     static the_players[SH_MAXSLOTS], pnum, id		
-    get_players(the_players, pnum, "a")
+    get_players(the_players, pnum, "ah")
     for (new i = 0; i < pnum; i++) {
         
         id = the_players[i]
@@ -444,7 +444,7 @@ public zatana_passive_loop(taskid)
     if ( !sh_is_active() || sh_is_freezetime() ) return
 
     static the_players[SH_MAXSLOTS], pnum, id		
-    get_players(the_players, pnum, "a")
+    get_players(the_players, pnum, "ah")
     for (new i = 0; i < pnum; i++) {
         
         id = the_players[i]
@@ -491,9 +491,8 @@ public zatana_passive_loop(taskid)
         the_actual_alpha = floatround( the_alpha_floated, floatround_round)
 
         set_render_with_color_const(id,FX_NONE,1,the_actual_alpha,
-                            20,
-                            _,_,
-                            ZATANA_PASSIVE_TASK_TIME_PERIOD,0,_,_,PRIO_RENDER_INVISIBILITY,gHeroID)
+							_,0,_,
+                            ZATANA_PASSIVE_TASK_TIME_PERIOD,0,_,kRenderTransAlpha,PRIO_RENDER_INVISIBILITY,gHeroID)
 
         
         if(!is_user_bot(id)){
@@ -552,6 +551,9 @@ public fw_Zatana_aim_button(id, uc_handle)
     if (!is_user_alive(id)){
         return FMRES_IGNORED
     }
+
+
+    if(sh_get_id_bit(id, SH_CONTROLLING_VEHICLE)) return FMRES_IGNORED
 
     if(!sh_get_user_has_hero(id,gHeroID)){
 

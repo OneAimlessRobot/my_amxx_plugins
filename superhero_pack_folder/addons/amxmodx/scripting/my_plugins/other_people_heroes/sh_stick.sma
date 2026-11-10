@@ -75,7 +75,7 @@ public stick_senseloop()
 	gRadius = get_cvar_num("stick_radius")
 	gBright = get_cvar_num("stick_bright")
 
-	get_players(players, pnum, "a")
+	get_players(players, pnum, "ah")
 
 	for (new i = 0; i < pnum; i++) {
 		id = players[i]

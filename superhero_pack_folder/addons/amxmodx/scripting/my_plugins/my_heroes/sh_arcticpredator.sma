@@ -178,7 +178,7 @@ public arcticPredator_loop(taskid)
     if ( !sh_is_active() || sh_is_freezetime() ) return
 
     static the_players[SH_MAXSLOTS], pnum, id
-    get_players(the_players, pnum, "a")
+    get_players(the_players, pnum, "ah")
     for (new i = 0; i < pnum; i++) {
 			
 		id = the_players[i]
@@ -605,7 +605,7 @@ public Revenge_Tracker(taskid)
     if ( !sh_is_active() || sh_is_freezetime() ) return
 
     static the_players[SH_MAXSLOTS], pnum, id
-    get_players(the_players, pnum, "a")
+    get_players(the_players, pnum, "ah")
     for (new i = 0; i < pnum; i++) {
 			
 		id = the_players[i]

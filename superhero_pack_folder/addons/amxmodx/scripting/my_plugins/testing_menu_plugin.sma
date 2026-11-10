@@ -39,8 +39,49 @@
 #define DRAW_AIM_VECTOR_TASK_PERIOD 0.44
 #define FIX_AIM_VECTOR_TASK_PERIOD 0.44
 #define AIMBOT_PLAYER_TASK_PERIOD 0.44
+enum main_menu_constants{
+
+    ENABLE_TESTING_MODE = 0,
+    DISABLE_TESTING_MODE,
+    TOGGLE_SUPERHERO_ALIVEDROP,
+    EXEC_SUPERHEROMOD_CFG,
+    DO_SOMETHING_TO_PLAYER,
+    TOGGLE_BOT_AUTOKILL,
+    CHANGE_BOT_DIFFICULTY,
+    CHECK_BOT_DIFFICULTY,
+    COUNT_ENTITIES_OF_TYPE,
+    TOGGLE_ENTITY_CAP_MONITOR,
+    PRODUCE_ROUND_RESTART,
+    SET_NUMBER_OF_BOTS,
+    SET_BOT_JOINED_TEAM,
+    TOGGLE_BOT_FREEZE,
+    TOGGLE_BOT_IGNORE_ENEMIES,
+    TOGGLE_BOT_IGNORE_OBJECTIVES
 
 
+
+}
+/*
+
+
+    menu_additem(gMenuID,"Enable testing mode")
+    menu_additem(gMenuID,"Disable testing mode")
+    menu_additem(gMenuID,"Toggle superhero alive drop")
+    menu_additem(gMenuID,"Exec superheromod cfg")
+    menu_additem(gMenuID,"Do something to a player")
+    menu_additem(gMenuID,"Toggle Bot Autokill")
+    menu_additem(gMenuID,"Change Bot Difficulty")
+    menu_additem(gMenuID,"Check Bot Difficulty")
+    menu_additem(gMenuID,"Count entities of a type")
+    menu_additem(gMenuID,"Toggle entity cap monitor")
+    menu_additem(gMenuID,"Produce game restart")
+    menu_additem(gMenuID,"Set number of bots")
+    menu_additem(gMenuID,"Set bot join team")
+    menu_additem(gMenuID,"Toggle bot freeze")
+    menu_additem(gMenuID,"Toggle bot ignore enemies")
+    menu_additem(gMenuID,"Toggle bot ignore objectives")
+
+*/
 enum the_global_tasks{
 
     MARK,
@@ -599,7 +640,7 @@ show_aimbot_target_menu(id,aimbot_user){
         
     new bool:should_show_menu = false
     static the_players[MAX_PLAYERS], pnum, pid, player_name[128], item_label_string[128], team_name[128]
-    get_players(the_players, pnum)
+    get_players(the_players, pnum, "h")
     for (new i = 0; i < pnum; i++) {
         
         pid = the_players[i]
@@ -643,7 +684,7 @@ show_player_menu(id){
         
     new bool:should_show_menu = false
     static the_players[MAX_PLAYERS], pnum, pid, player_name[128], item_label_string[128], team_name[128]
-    get_players(the_players, pnum)
+    get_players(the_players, pnum, "h")
     for (new i = 0; i < pnum; i++) {
         
         pid = the_players[i]
@@ -767,6 +808,7 @@ public menu_display_inittializer(id,level,cid){
     menu_additem(gMenuID,"Enable testing mode")
     menu_additem(gMenuID,"Disable testing mode")
     menu_additem(gMenuID,"Toggle superhero alive drop")
+    menu_additem(gMenuID,"Exec superheromod cfg")
     menu_additem(gMenuID,"Do something to a player")
     menu_additem(gMenuID,"Toggle Bot Autokill")
     menu_additem(gMenuID,"Change Bot Difficulty")
@@ -877,33 +919,39 @@ public menu_function_example(id, menu, item)
     bot_ignore_objectives=false;
     bot_ignore_enemies=false;
     autokill_delay = 0.0;
-    switch(item){
-        case 0:{
+    
+    switch(main_menu_constants:item){
+        case ENABLE_TESTING_MODE:{
 
             server_cmd("+testing")
             server_exec()
 
         }
-        case 1:{
+        case DISABLE_TESTING_MODE:{
 
             server_cmd("-testing")
             server_exec()
 
         }
-        case 2:{
+        case TOGGLE_SUPERHERO_ALIVEDROP:{
             alivedrop = (get_pcvar_bool(pcvar_sh_alive_drop)) 
 
             set_pcvar_bool(pcvar_sh_alive_drop,!alivedrop)
 
             client_print(id, print_chat, "Superhero alive drop %s",!alivedrop?"Enabled!":"Disabled...")
         }
-        case 3:{
+        case EXEC_SUPERHEROMOD_CFG:{
+            
+            server_cmd("exec %s", "exec_superhero_cfg.cfg")
+
+        }
+        case DO_SOMETHING_TO_PLAYER:{
 
             
             show_player_menu(id)
 
         }
-        case 4:{
+        case TOGGLE_BOT_AUTOKILL:{
 
             autokill_delay = (get_pcvar_float(pcvar_bot_autokill_delay))
 
@@ -912,40 +960,40 @@ public menu_function_example(id, menu, item)
             client_print(id, print_chat, "Bot autokill %s",(autokill_delay<=0.0)?"Enabled!":"Disabled...")
 
         }
-        case 5:{
+        case CHANGE_BOT_DIFFICULTY:{
 
             show_bot_difficulty_menu(id)
 
         }
-        case 6:{
+        case CHECK_BOT_DIFFICULTY:{
 
             client_print(id, print_chat, "The current bot difficulty is: %s!",
             
                         bot_difficulty_names[bot_difficulty_tag:cvar_val(num, pcvar_bot_difficulty)])
 
         }
-        case 7:{
+        case COUNT_ENTITIES_OF_TYPE:{
 
             client_cmd(id, "messagemode amx_countentities")
         }
-        case 8:{
+        case TOGGLE_ENTITY_CAP_MONITOR:{
 
             server_cmd("toggle_print_num_ents_cycle")
         }
-        case 9:{
+        case PRODUCE_ROUND_RESTART:{
 
             set_pcvar_num(pcvar_round_restart,1)
         }
-        case 10:{
+        case SET_NUMBER_OF_BOTS:{
 
             client_cmd(id, "messagemode set_quota")
             
         }
-        case 11:{
+        case SET_BOT_JOINED_TEAM:{
             client_cmd(id, "messagemode set_bot_team")
             
         }
-        case 12:{
+        case TOGGLE_BOT_FREEZE:{
 
             bot_freeze = (get_pcvar_bool(pcvar_yb_freeze_bots)) 
 
@@ -954,7 +1002,7 @@ public menu_function_example(id, menu, item)
             client_print(id, print_chat, "Keep bots frozen %s",!bot_freeze?"Enabled!":"Disabled...")
             
         }
-        case 13:{
+        case TOGGLE_BOT_IGNORE_ENEMIES:{
 
             bot_ignore_enemies = (get_pcvar_bool(pcvar_yb_ignore_enemies)) 
 
@@ -963,7 +1011,7 @@ public menu_function_example(id, menu, item)
             client_print(id, print_chat, "Bot ignore enemies %s",!bot_ignore_enemies?"Enabled!":"Disabled...")
             
         }
-        case 14:{
+        case TOGGLE_BOT_IGNORE_OBJECTIVES:{
 
             bot_ignore_objectives = (get_pcvar_bool(pcvar_yb_ignore_objectives)) 
 

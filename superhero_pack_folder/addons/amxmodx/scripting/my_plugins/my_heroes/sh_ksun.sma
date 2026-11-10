@@ -134,7 +134,7 @@ public plugin_cfg(){
 }
 stock covert_spike_damage(id, &bool:spored_someone = false){
 	static the_players[SH_MAXSLOTS], pnum, payer	
-	get_players(the_players, pnum, "a")
+	get_players(the_players, pnum, "ah")
 	for (new k = 0; k < pnum; k++) {
 		
 		payer = the_players[k]
@@ -183,7 +183,7 @@ stock overt_spike_damage(attacker,&Float:damage,is_in_ham_hook=1, &bool:spored_s
 	new CsTeams:att_team=cs_get_user_team(attacker)
 	
 	static the_players[SH_MAXSLOTS], pnum, collector		
-	get_players(the_players, pnum, "a")
+	get_players(the_players, pnum, "ah")
 	for (new k = 0; k < pnum; k++) {
 		
 		collector = the_players[k]
@@ -513,7 +513,7 @@ public ksun_step_silent(task_id)
 	if (! sh_is_active()) return
 	
 	new the_players[SH_MAXSLOTS], pnum, id		
-	get_players(the_players, pnum, "a")
+	get_players(the_players, pnum, "ah")
 	for (new k = 0; k < pnum; k++) {
 		
 		id = the_players[k]

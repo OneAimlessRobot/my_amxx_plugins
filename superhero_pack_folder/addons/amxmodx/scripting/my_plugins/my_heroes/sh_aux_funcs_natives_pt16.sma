@@ -416,7 +416,7 @@ public debug_glow_hud_taskid(task_id){
 
 	
 	static the_players[SH_MAXSLOTS], pnum, id		
-	get_players(the_players, pnum, "a")
+	get_players(the_players, pnum, "ah")
 	for (new i = 0; i < pnum; i++) {
 		
 		id = the_players[i]

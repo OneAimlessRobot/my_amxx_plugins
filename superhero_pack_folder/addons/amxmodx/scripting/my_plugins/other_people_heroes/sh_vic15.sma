@@ -160,7 +160,7 @@ public vic15_auraloop()
 	new Radius = get_cvar_num("vic15_auraradius")
 	new Pain = get_cvar_num("vic15_auradamage")
 	new players[SH_MAXSLOTS], pnum, id, enemy
-	get_players(players, pnum, "a")
+	get_players(players, pnum, "ah")
 	for (new i = 0; i < pnum; i++) {
 		id = players[i]
 		if ( sh_get_user_has_hero(id,gHeroID)&& is_user_alive(id) ) {
@@ -191,7 +191,7 @@ public vic15_ringloop()
 	new Distance, Origin[3], eOrigin[3]
 	new Radius = get_cvar_num("vic15_auraradius")
 	new players[SH_MAXSLOTS], pnum, id, enemy
-	get_players(players, pnum, "a")
+	get_players(players, pnum, "ah")
 	for (new i = 0; i < pnum; i++) {
 		id = players[i]
 		if ( sh_get_user_has_hero(id,gHeroID)&& is_user_alive(id) ) {

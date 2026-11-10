@@ -38,9 +38,9 @@ enum bleed_task_parameter_id{
 
 stock bleed_task_parameters[fx_bleed_type][bleed_task_parameter_id]={	
 					{-1.0,5.0,0.0,0,-1,"no bleeding",{0,0}, FX_NONE},
-					{0.25,5.0,0.05,0,-1,"mini bleeding",{50,255}, RED},
-					{0.25,5.0,0.1,0,-1,"bleeding",{75,255}, DEEP_RED},
-					{0.25,5.0,0.25,0,-1,"ultrableeding",{180,255}, SEVERE_RED}
+					{0.25,5.0,0.05,0,-1,"mini bleeding",{50,16}, RED},
+					{0.25,5.0,0.1,0,-1,"bleeding",{75,16}, DEEP_RED},
+					{0.25,5.0,0.25,0,-1,"ultrableeding",{180,16}, SEVERE_RED}
 
 }
 
@@ -269,7 +269,7 @@ public bleed_task(any:array[5],id){
 	set_render_with_color_const(id, the_color_of_this_blood,1,bleed_task_parameters[fx_bleed_type:array[0]][bleed_type_alphas][render_alpha],
 							bleed_task_parameters[fx_bleed_type:array[0]][bleed_type_alphas][hud_alpha],
 							_,_,
-							bleed_task_parameters[fx_bleed_type:array[0]][bleed_task_period],_,_,_,PRIO_RENDER_EFFECT_ACTIVE)
+							bleed_task_parameters[fx_bleed_type:array[0]][bleed_task_period],_,_,kRenderNormal,PRIO_RENDER_EFFECT_ACTIVE)
 							
 	if(array[2]){
 		generic_heal(array[1],

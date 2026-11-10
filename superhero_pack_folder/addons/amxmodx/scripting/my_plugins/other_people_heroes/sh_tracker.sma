@@ -58,7 +58,7 @@ public sh_client_spawn(id)
 {
   new players[SH_MAXSLOTS], num
   
-  get_players(players, num, "a")
+  get_players(players, num, "ah")
   
   numTargets[id] = 0
   
@@ -97,7 +97,7 @@ public tracker_loop()
 {
   new players[SH_MAXSLOTS], num
   
-  get_players(players, num, "a")
+  get_players(players, num, "ah")
   new bright = get_cvar_num("tracker_bright")
   new scale = get_cvar_num("tracker_scale")
   

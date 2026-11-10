@@ -69,7 +69,7 @@ public skeletor_campcheck()
 	static dx, dy, dz, distance
 
 	static players[SH_MAXSLOTS], playerCount, player, i
-	get_players(players, playerCount, "a")
+	get_players(players, playerCount, "ah")
 
 	for ( i = 0; i < playerCount; i++ ) {
 		player = players[i]
@@ -115,7 +115,7 @@ skeletor_summon(victim)
 	new CsTeams:victimTeam = cs_get_user_team(victim)
 
 	new players[SH_MAXSLOTS], playerCount, player
-	get_players(players, playerCount, "a")
+	get_players(players, playerCount, "ah")
 
 	for ( new i = 0; i < playerCount; i++ ) {
 		player = players[i]

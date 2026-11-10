@@ -239,7 +239,7 @@ check_bubblezone(id, vec[], vecdif[], length, speed1, speed2, radius)
 
 	new players[SH_MAXSLOTS], origin[3]
 	new playerCount, player
-	get_players(players, playerCount, "a")
+	get_players(players, playerCount, "ah")
 
 	for ( new i = 0; i < playerCount; i++ ) {
 		player = players[i]

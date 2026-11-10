@@ -246,7 +246,7 @@ public reset_poisoned(victim)
 public remove_poison(attacker)
 {
 	new players[SH_MAXSLOTS], pnum, victim
-	get_players(players, pnum, "a")
+	get_players(players, pnum, "ah")
 
 	// Removes poison on alive players that the attacker poisoned
 	for (new i = 0; i < pnum; i++) {

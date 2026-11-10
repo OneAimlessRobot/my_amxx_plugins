@@ -95,7 +95,7 @@ public chaff_task(array[1], id){
 		
 		array[0]--
 
-		set_render_with_color_const(id,FX_NONE,1,CHAFF_ALPHA,15,1,_,CHAFF_PERIOD,_,_,_,PRIO_RENDER_DELETE_INVISIBILITY)
+		set_render_with_color_const(id,FX_NONE,1,CHAFF_ALPHA,15,1,_,CHAFF_PERIOD,_,_,kRenderTransAlpha,PRIO_RENDER_DELETE_INVISIBILITY)
 		
 	
 		set_damage_icon(id,2,DMG_ICON_BATTERY,LineColors[WHITE],CHAFF_PERIOD)

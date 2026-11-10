@@ -658,7 +658,7 @@ public goku_power_touch(pToucher, pTouched) {
 	new vicOrigin[3], Float:dRatio,  distance, damage
 	new players[SH_MAXSLOTS], pnum, vic
 
-	get_players(players, pnum, "a")
+	get_players(players, pnum, "ah")
 
 	for (new i = 0; i < pnum; i++) {
 		vic = players[i]
@@ -787,7 +787,7 @@ public goku_loop()
 
 	new players[SH_MAXSLOTS], pnum, id
 
-	get_players(players, pnum, "a")
+	get_players(players, pnum, "ah")
 
 	for (new i = 0; i < pnum; i++) {
 		id = players[i]
@@ -944,7 +944,7 @@ public shake_n_stun(id)
 
 	get_user_origin(id, idOrigin)
 
-	get_players(players, pnum, "a")
+	get_players(players, pnum, "ah")
 
 	for (new i = 0; i < pnum; i++) {
 		vic = players[i]
@@ -984,7 +984,7 @@ public powerup_effect(parm[])
 	new players[SH_MAXSLOTS], pnum
 	new idOthers, Origin[3]
 
-	get_players(players, pnum, "a")
+	get_players(players, pnum, "ah")
 
 	// Show a powerup to all alive players except the one being powered up.
 	for (new i = 0; i < pnum; i++) {

@@ -155,7 +155,7 @@ public hawkeye_aim()
 	if ( !sh_is_active() ) return
 
 	new players[SH_MAXSLOTS], pnum, id
-	get_players(players, pnum, "a")
+	get_players(players, pnum, "ah")
 
 	for (new i = 0; i < pnum; i++) {
 		id = players[i]

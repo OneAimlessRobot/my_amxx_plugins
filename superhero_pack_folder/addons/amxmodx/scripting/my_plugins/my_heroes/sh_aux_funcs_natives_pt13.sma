@@ -91,7 +91,7 @@ public demonic_healing(task_id){
 
 	if (! sh_is_active()) return
 	static the_players[SH_MAXSLOTS], pnum, id		
-	get_players(the_players, pnum, "a")
+	get_players(the_players, pnum, "ah")
 	for (new k = 0; k < pnum; k++) {
 		
 		id = the_players[k]
@@ -383,7 +383,7 @@ public sh_round_start(){
 			pnum,
 			id
 	
-	get_players(the_players, pnum, "a")
+	get_players(the_players, pnum, "ah")
 	for (new i = 0; i < pnum; i++) {
 		
 		id = the_players[i]

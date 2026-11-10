@@ -253,7 +253,7 @@ public _ksun_player_engage_ultimate(iPlugins, iParams){
 	
 	Assign_BitVar(g_player_in_ultimate_mask, id, true_for_macro);
 	emit_sound(id, CHAN_AUTO, KSUN_ULTIMATE_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	set_task(KSUN_ULTIMATE_LOOP_PERIOD,"ultimate_task",id+KSUN_ULTIMATE_TASKID)
+	ultimate_task(id+KSUN_ULTIMATE_TASKID)
 }
 
 

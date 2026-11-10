@@ -22,6 +22,8 @@
 
 #include "wet_fx_inc/wet_fx.inc"
 
+#include "special_fx_inc/sh_gatling_special_fx.inc"
+
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_ENTITY_VECTORS
@@ -226,6 +228,20 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					"",
 					MY_CSW_FLASHBANG,
 					BABY_BLUE,
+					250.0,
+					1200.0,
+					1.0,
+					5.0,
+					1.5,
+					0.5,
+					true},
+
+	{"random_fx_grenade",
+					"models/shmod/custom_nades_hackaround/w_smokegrenade.mdl",
+					SMOKE_EXPLODE_SOUND,
+					"",
+					MY_CSW_SMOKEGRENADE,
+					CUSTOM,
 					250.0,
 					1200.0,
 					1.0,
@@ -743,7 +759,7 @@ else{
 
 engclient_cmd(id, "weapon_knife")
 emit_sound(id, CHAN_WEAPON, THROWABLE_LAUNCH_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-trail(Ent,sh_grenade_structs_arr[the_type][grenade_color_num],10,5)
+gren_trail_fx(Ent,the_type)
 
 //set curr grenade touched wall -> 0 as a start
 //set prev grenade touched wall -> 0 as a start
@@ -847,7 +863,7 @@ for( new i= 0;(i< numfound);i++){
 	new pid = entlist[i];
 	if( !is_user_alive(pid) ) continue
 	
-	gren_effect_user(pid,owner,the_type)
+	gren_effect_user(id_grenade,pid,owner,the_type)
 }
 
 
@@ -920,6 +936,41 @@ public client_connect(id){
 
 }
 
+random_fx_gren_effect_func(grenade_ent, Float:the_origin_of_expolosion[3]){
+
+	if ( !is_valid_ent(grenade_ent) || (pev_valid(grenade_ent)<=0) ) return
+
+
+
+	new owner=pev(grenade_ent, pev_owner);
+
+	if(!is_user_connected(owner)){
+		remove_entity(grenade_ent)
+		return
+	}
+
+	static sh_custom_color:the_color,
+			fx_id:fx_num;
+
+	fx_num = fx_id:pev(grenade_ent, pev_iuser4)
+
+	the_color = FX_COLOR_OFFSET(fx_num)
+
+
+
+	the_origin_of_expolosion[2] = the_origin_of_expolosion[2]+30.0
+	make_shockwave(the_origin_of_expolosion,
+				sh_grenade_structs_arr[GREN_RANDOM_FX][blast_radius],
+				LineColors[the_color],1,5,8,4)
+
+	anime_kill_fx(the_origin_of_expolosion)
+	if(strlen(sh_grenade_structs_arr[GREN_RANDOM_FX][sh_grenade_break_sound])>0){
+
+		emit_sound(grenade_ent, CHAN_WEAPON,
+						sh_grenade_structs_arr[GREN_RANDOM_FX][sh_grenade_break_sound],
+						VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	}
+}
 default_neutral_effect_func(grenade_ent,sh_grenade_type:gren_type, Float:the_origin_of_expolosion[3]){
 
 	if ( !is_valid_ent(grenade_ent) ) return
@@ -945,12 +996,62 @@ default_neutral_effect_func(grenade_ent,sh_grenade_type:gren_type, Float:the_ori
 	}
 }
 
+gren_trail_fx(ent_id,sh_grenade_type:gren_type){
+
+	static sh_custom_color:color_const,
+			fx_id:fx_num
+
+	color_const = sh_grenade_structs_arr[gren_type][grenade_color_num]
+	fx_num = FX_ID_NONE
+
+	switch(gren_type){
+
+		case GREN_NONE:{
+
+			return
+		
+		}
+		case GREN_RANDOM_FX:{
+
+			/*
+			
+				this strategy has very, very, very short legs...
+				
+				but it will work for now.
+
+				I will need a gigantic entity array eventually,
+				
+				like I have with penguin and gambit, though...
+
+			*/
+
+			fx_num = sh_gen_effect()
+			color_const = FX_COLOR_OFFSET(fx_num)
+			set_pev(ent_id, pev_iuser4, _:fx_num)
+
+
+
+		}
+		default:{
+
+		}
+	}
+	glow(ent_id, LineColors[color_const][0],LineColors[color_const][1],LineColors[color_const][2],150, true)
+	trail(ent_id,color_const,10,5)
+	
+}
 bool:gren_effect_neutral(grenade_ent, sh_grenade_type:gren_type, Float:the_origin_of_expolosion[3]){
 
 	switch(gren_type){
 
 		case GREN_NONE:{
 			return false
+		}
+		case GREN_RANDOM_FX:{
+
+			random_fx_gren_effect_func(grenade_ent,the_origin_of_expolosion)
+			return true
+
 		}
 		case GREN_CONC:{
 
@@ -970,8 +1071,11 @@ bool:gren_effect_neutral(grenade_ent, sh_grenade_type:gren_type, Float:the_origi
 	}
 	return false
 }
-gren_effect_user(tg,attacker,sh_grenade_type:gren_type){
+gren_effect_user(grenade_ent,tg,attacker,sh_grenade_type:gren_type){
 
+	static fx_id:the_fx_num;
+
+	the_fx_num = FX_ID_NONE;
 	switch(gren_type){
 
 		case GREN_SLEEP:{
@@ -1015,6 +1119,11 @@ gren_effect_user(tg,attacker,sh_grenade_type:gren_type){
 		case GREN_WET:{
 			
 			sh_wet_user(tg,attacker);
+		}
+		case GREN_RANDOM_FX:{
+			the_fx_num = fx_id:pev(grenade_ent, pev_iuser4)
+
+			sh_effect_user_direct(tg, attacker,-1,the_fx_num)
 		}
 	}
 	

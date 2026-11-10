@@ -4,16 +4,12 @@
 #define sh_yandere_jet_bomb_funcs
 
 
-#define BOMB_DROP_PERIOD 20.0
-
-
-#define BOMB_RADIUS 500.0
+#define BOMB_DROP_PERIOD 10.0
 
 
 
 #define BOMB_EXPLODE_SOUND "weapons/explode3.wav"
 
-#define JETBOMB_FALLOFF_DIST 100.0
 #define JETPLANE_BOMB_CLASSNAME "yandere_bomb"
 #define BOMB_MODEL "models/shmod/yandere/jetplane/projectiles/airattack_nuke.mdl"
 

@@ -14,6 +14,7 @@
 #include "special_fx_inc/sh_gatling_funcs.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 
 #define PLUGIN "Superhero yakui mk2 pt2"
 #define VERSION "1.0.0"
@@ -23,6 +24,10 @@
 new gNumPills[SH_MAXSLOTS+1]
 new gatling_action:g_plAction[SH_MAXSLOTS+1]
 new Float:g_nextSound[SH_MAXSLOTS+1]
+
+new Float:user_last_maxspeed[SH_MAXSLOTS+1]
+
+
 
 new Float:g_recoil_pillgatling[SH_MAXSLOTS+1][3]
 
@@ -38,6 +43,9 @@ new g_guns_eventids_bitsum = 0
 // Sounds
 new m_SOUND[][] = {"shmod/yakui/hw_shoot1.wav", "shmod/yakui/hw_spin.wav", "shmod/yakui/hw_spinup.wav", "shmod/yakui/hw_spindown.wav"}
 
+new YAKUI_CHARGING_SPEED_TASKID
+
+#define YAKUI_CHARGING_SPEED_TASK_PERIOD 0.3
 
 new Float:windup_time
 new const g_guns_events[][] = {"events/m249.sc"}
@@ -67,6 +75,11 @@ public plugin_init(){
 	register_custom_touchable(PILL_CLASSNAME,"pilula_sexual_penetra_player",player_vector,1)
 
 	register_think(PILL_CLASSNAME, "pill_think")
+
+	YAKUI_CHARGING_SPEED_TASKID=allocate_typed_task_id(generic_task)
+	set_task(YAKUI_CHARGING_SPEED_TASK_PERIOD,"yakui_speed_task",YAKUI_CHARGING_SPEED_TASKID,_,_,"b")
+    
+
 	unregister_forward(FM_PrecacheEvent, g_fwid, 1)
 
 }
@@ -197,18 +210,30 @@ public Item_PostFrame_Post(iEnt)
 }
 //sound and anim
 public fwd_StartFrame() {
-	static Float:gtime, id
+	static Float:gtime, id, button
 	
 	gtime = get_gametime()
 	
 	for(id = 1; id < sh_maxplayers()+1; id++) {
+
+		button = pev(id,pev_button)
 		if(g_plAction[id] != act_none) {
 			
-			if(!(pev(id,pev_button) & IN_ATTACK) && !(pev(id,pev_button) & IN_USE)&& (( g_lastShot[id] + GAT_WINDUP_PERIOD) < gtime)) {
-				native_playanim(id, yakui_pillgatling_anim_spinidledown)
-				emit_sound(id, CHAN_WEAPON, m_SOUND[3], 1.0, ATTN_NORM, 0, PITCH_NORM)
-				g_nextSound[id] = gtime + SHUTDOWN_TIME
-				g_plAction[id] = act_none
+			if(
+				
+				(get_user_weapon(id)!=YAKUI_WEAPON_CLASSID)
+			
+							||
+
+				(!(button & IN_ATTACK) && !(button& IN_USE)&& (( g_lastShot[id] + GAT_WINDUP_PERIOD) < gtime))) {
+				
+					native_playanim(id, yakui_pillgatling_anim_spinidledown)
+					emit_sound(id, CHAN_WEAPON, m_SOUND[3], 1.0, ATTN_NORM, 0, PITCH_NORM)
+					g_nextSound[id] = gtime + SHUTDOWN_TIME
+					g_plAction[id] = act_none
+					set_user_maxspeed_controlled(id, user_last_maxspeed[id],true, true)
+					sh_assign_id_bit(id, SH_IS_CHARGING_HEAVY_ATTACK, false)
+					continue
 			}
 		}
 	}
@@ -271,6 +296,44 @@ public _gatling_dec_num_pills(iPlugin,iParams){
 
 }
 
+public yakui_speed_task(task_id){
+
+	
+
+	if (!sh_is_active()||sh_is_freezetime()||!sh_is_inround()){
+
+		return
+	
+	}
+
+	static the_players[SH_MAXSLOTS], pnum, id		
+	get_players(the_players, pnum, "ah")
+	for (new i = 0; i < pnum; i++) {
+		
+		id = the_players[i]
+
+		if ( !client_is_hero_user(id, gHeroID)){
+			
+			continue;
+		}
+
+		if(!Get_BitVar(gPillGatlingEngaged_mask,id)){
+			
+			continue
+
+		}
+		if(g_plAction[id]==act_run){
+
+			set_user_maxspeed_controlled(id, 100.0,true, false)
+
+		}
+
+
+
+	}
+
+
+}
 //----------------------------------------------------------------------------------------------
 public CmdStart(id, uc_handle)
 {	
@@ -305,10 +368,16 @@ public CmdStart(id, uc_handle)
 	if(buttons & IN_USE){
 		
 		buttons &= ~IN_USE;
+		if(!Get_BitVar(can_fire_mask,id)){
+			
+			user_last_maxspeed[id] = get_user_maxspeed(id)
+
+			sh_assign_id_bit(id, SH_IS_CHARGING_HEAVY_ATTACK, true)
+		
+		}
 		Assign_BitVar(can_fire_mask, id, true_for_macro);
 	}
 	else{
-
 		Assign_BitVar(can_fire_mask, id, false_for_macro);
 	}
 
@@ -563,6 +632,7 @@ public fw_ItemDeployPre(entity)
 		
 		return HAM_IGNORED
 	}
+	Assign_BitVar(can_fire_mask, pPlayer, false_for_macro);
 
 	ExecuteHam(Ham_Item_Deploy, entity)
 	set_pdata_float(pPlayer, m_flNextAttack, PILL_DEPLOY_TIME ,XO_PLAYER)

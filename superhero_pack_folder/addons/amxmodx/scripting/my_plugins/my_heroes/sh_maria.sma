@@ -346,7 +346,7 @@ public maria_loop(id){
 	if ( !sh_is_active()) return
 	new the_players[SH_MAXSLOTS], pnum, i
 
-	get_players(the_players, pnum, "a")
+	get_players(the_players, pnum, "ah")
 	for (new k = 0; k < pnum; k++) {
 		
 		i = the_players[k]

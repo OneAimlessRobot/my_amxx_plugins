@@ -11,12 +11,22 @@ invisman_checkonground 0	//Must player be on ground to be invisible (Default 0 =
 
 */
 
+#define I_WANT_CONSTANTS
+
+
 #include "../my_include/superheromod.inc"
+#define I_WANT_CUSTOM_COLORS
+#define I_WANT_BASIC_MACROS
+#include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 
 // GLOBAL VARIABLES
 
+#define INVISMAN_TICK_PERIOD 0.555
 new const gHeroName[] = "Invisible Man"
 new gIsInvisible[SH_MAXSLOTS+1]
+new gUserStoredAlpha[SH_MAXSLOTS+1]
 new Float:gStillTime[SH_MAXSLOTS+1]
 new const gButtons = IN_ATTACK | IN_ATTACK2 | IN_RELOAD | IN_USE 
 new const gButtonsMove = IN_FORWARD | IN_BACK | IN_MOVELEFT | IN_MOVERIGHT | IN_JUMP
@@ -38,8 +48,10 @@ public plugin_init()
 	gHeroID = sh_create_hero(gHeroName, pcvarLevel)
 	sh_set_hero_info(gHeroID, "Invisibility", "Makes you less visible and harder to see. Only works while standing/not shooting and not zooming.")
 
+	sh_assign_hero_bit(gHeroID,SH_PASSIVE_INVISIBILITY_HERO, true)
+
 	// CHECK SOME BUTTONS
-	set_task(0.1, "checkButtons", _, _, _, "b")
+	set_task(INVISMAN_TICK_PERIOD, "checkButtons", _, _, _, "b")
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, sh_init_mode:mode)
@@ -48,35 +60,31 @@ public sh_hero_init(id, heroID, sh_init_mode:mode)
 
 	switch(mode) {
 		case SH_HERO_DROP: {
-			remInvisibility(id)
+			remInvisibility(id,gUserStoredAlpha[id])
 		}
 	}
 
 	sh_debug_message(id, 1, "%s %s", gHeroName, mode ? "ADDED" : "DROPPED")
 }
 //----------------------------------------------------------------------------------------------
-public sh_client_spawn(id)
+public setInvisibility(id, alpha, stored_alpha)
 {
-	remInvisibility(id)
+
+	static bool:alpha_mode;
+	alpha_mode = (alpha < 100)
+
+	set_render_with_color_const(id,alpha_mode?INVISIBLE_MAN_GREY:FX_NONE,1,alpha,
+					_,0,_,
+					0.0,0,alpha_mode?kRenderFxGlowShell:kRenderFxNone,
+					kRenderTransColor,PRIO_RENDER_INVISIBILITY,gHeroID)
 }
 //----------------------------------------------------------------------------------------------
-public setInvisibility(id, alpha)
-{
-	if ( alpha < 100 ) {
-		sh_set_rendering(id, 8, 8, 8, alpha, kRenderFxGlowShell, kRenderTransColor)
-	}
-	else {
-		// Using FxNone, color makes no difference, straight alpha transition
-		sh_set_rendering(id, 0, 0, 0, alpha, kRenderFxNone, kRenderTransColor)
-	}
-}
-//----------------------------------------------------------------------------------------------
-public remInvisibility(id)
+public remInvisibility(id, stored_alpha)
 {
 	gStillTime[id] = -1.0
 
 	if ( gIsInvisible[id] > 0 ) {
-		sh_set_rendering(id)
+		remove_glow_user(id,PRIO_RENDER_INVISIBILITY,stored_alpha,kRenderTransColor,_,gHeroID)
 	}
 
 	gIsInvisible[id] = 0
@@ -89,7 +97,7 @@ public checkButtons()
 	new bool:setVisible
 	new butnprs
 
-	new players[SH_MAXSLOTS], playerCount, id
+	static players[SH_MAXSLOTS], playerCount, id
 	get_players(players, playerCount, "ah")
 
 	for( new i = 0; i < playerCount; i++ ) {
@@ -125,7 +133,7 @@ public checkButtons()
 		}
 
 		if ( setVisible ) {
-			remInvisibility(id)
+			remInvisibility(id,gUserStoredAlpha[id])
 		}
 		else {
 			//new sysTime = get_systime()
@@ -141,14 +149,16 @@ public checkButtons()
 
 			if ( sysTime - delay >= gStillTime[id] ) {
 				gIsInvisible[id] = 100
-				setInvisibility(id, alpha)
+				setInvisibility(id, alpha, gUserStoredAlpha[id] )
+				gUserStoredAlpha[id] = alpha
 			}
 			else if ( sysTime > gStillTime[id] ) {
 				new Float:prcnt = (sysTime - gStillTime[id]) / delay
 				new rPercent = floatround(prcnt * 100)
 				alpha = floatround( 255 - ((255 - alpha) * prcnt) )
 				gIsInvisible[id] = rPercent
-				setInvisibility(id, alpha)
+				setInvisibility(id, alpha,gUserStoredAlpha[id] )
+				gUserStoredAlpha[id] = alpha
 			}
 		}
 	}
@@ -158,6 +168,6 @@ public client_damage(attacker, victim)
 {
 	if ( !sh_is_active() || !sh_get_user_has_hero(victim,gHeroID)) return
 
-	remInvisibility(victim)
+	remInvisibility(victim,gUserStoredAlpha[victim])
 }
 //----------------------------------------------------------------------------------------------

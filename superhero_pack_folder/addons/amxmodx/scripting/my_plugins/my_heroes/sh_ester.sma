@@ -430,7 +430,7 @@ public Ester_revenge_loop(id)
 		else if(g_ester_attack_phase[i] == UNLOADING){
 			if(enemy_count>0){
 						
-				get_players(the_players, pnum, "a")
+				get_players(the_players, pnum, "ah")
 				for (new k = 0; k < pnum; k++) {
 					
 					x = the_players[k]

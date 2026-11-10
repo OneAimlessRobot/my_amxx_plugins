@@ -474,7 +474,7 @@ public flora_checks(task_id){
 
 
 	new the_players[SH_MAXSLOTS], pnum, id		
-	get_players(the_players, pnum, "a")
+	get_players(the_players, pnum, "ah")
 	for (new i = 0; i < pnum; i++) {
 		
 		id = the_players[i]

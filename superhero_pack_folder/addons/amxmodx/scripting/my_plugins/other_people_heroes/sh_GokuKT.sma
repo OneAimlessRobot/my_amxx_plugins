@@ -230,7 +230,7 @@ public powerup_effect(parm[])
 	new players[SH_MAXSLOTS], pnum
 	new idOthers, Origin[3]
 
-	get_players(players, pnum, "a")
+	get_players(players, pnum, "ah")
 
 	// Show a powerup to all alive players except the one being powered up.
 	for (new i = 0; i < pnum; i++) {

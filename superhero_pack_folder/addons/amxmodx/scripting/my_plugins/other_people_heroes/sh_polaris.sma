@@ -67,7 +67,7 @@ public find_polaris(parm[])
 	}
 
 	new players[SH_MAXSLOTS], pnum				
-	get_players(players, pnum, "a")
+	get_players(players, pnum, "ah")
 
 	gRange = get_cvar_num("polaris_range")
 

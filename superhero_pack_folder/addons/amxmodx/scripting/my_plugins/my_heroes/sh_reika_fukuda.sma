@@ -89,6 +89,8 @@ public reika_parry_switch_cmdstart_hook(id, uc_handle)
 	}
     if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) ) return FMRES_IGNORED;
 
+    if(sh_get_id_bit(id, SH_CONTROLLING_VEHICLE)) return FMRES_IGNORED
+
     static button;
     button= get_uc(uc_handle, UC_Buttons);
     new wpnid=get_user_weapon(id)

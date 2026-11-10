@@ -122,7 +122,7 @@ public zenitsu_charge(id, uc_handle, seed)
 	if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)||Get_BitVar(g_zenitsu_has_touched_player_mask, id)||sh_get_stun(id)||!zenitsu_get_charge_mode_engaged(id)){
 			return FMRES_IGNORED;
 	}
-	if(sh_get_stun(id)) return FMRES_IGNORED
+	if(sh_get_stun(id)||sh_get_id_bit(id, SH_CONTROLLING_VEHICLE)) return FMRES_IGNORED
 	static buttons
 
 	

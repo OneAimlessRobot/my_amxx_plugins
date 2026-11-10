@@ -179,7 +179,7 @@ public black_loop()
 	entity_get_vector(gCurrentBH, EV_VEC_origin, fl_Origin)
 	
 	// Do player physics	
-	get_players(ppl, pnum, "a")
+	get_players(ppl, pnum, "ah")
 	for (new i = 0; i < pnum; i++) {
 		if(ppl[i] == gCurrentBH) continue
 

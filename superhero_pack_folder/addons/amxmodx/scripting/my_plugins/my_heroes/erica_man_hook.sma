@@ -270,6 +270,13 @@ public CmdStart(attacker, uc_handle)
 		return FMRES_IGNORED;
 		
 	}
+
+	if(sh_get_id_bit(attacker, SH_CONTROLLING_VEHICLE)){
+
+		stop_dragging(attacker)		
+		return FMRES_IGNORED
+
+	}
 	if ( !sh_get_user_has_hero(attacker,gHeroID)||!Get_BitVar(hook_on_mask, attacker)||(g_hook_kills[attacker]<=0)) return FMRES_IGNORED;
 
 	

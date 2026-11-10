@@ -1,5 +1,9 @@
 #include "../my_include/superheromod.inc"
 
+new dmg_source_name_short_jaws[SAFE_BUFFER_SIZE+1]="Jaws"
+new dmg_source_name_log_jaws[SAFE_BUFFER_SIZE+1]="Jaws"
+new jaws_dmg_id
+
 #define IDLE		0
 #define DIVING		1
 #define ATTACKING	2
@@ -34,6 +38,10 @@ public plugin_init() {
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Summon Jaws", "Jaws will hunt down and eat your enemies", true, "jaws_level")
 	
+	jaws_dmg_id=sh_log_custom_damage_source(gHeroID,
+			dmg_source_name_short_jaws ,
+			dmg_source_name_log_jaws,
+			0)
 	
 #if defined DEBUG
 	register_clcmd("jaws","jaws_create")
@@ -199,13 +207,6 @@ jaws_find_target(IgnorePlayer)
 
 	for(new i=0; i<Pnum; i++) {
 		if(IgnorePlayer == Players[i]) continue
-
-		if(sh_get_id_bit(Players[i], SH_CONTROLLING_VEHICLE)){
-			continue;
-		}
-		if(get_user_godmode(Players[i])){
-			continue;
-		}
 		
 		Distance = get_entity_distance(Players[i], JawsEnt)	
 		if(Distance<TargetDistance) {
@@ -247,38 +248,22 @@ public jaws_loop()
 		// The HL engine is no longer taking care of jaws's physics, so we need to add the gravity ourself
 		Velocity[2] -= 100.0
 			
-		new Players[SH_MAXSLOTS], Pnum, Distance, DeathMSG
-		get_players(Players, Pnum, "a")
-		DeathMSG = get_user_msgid("DeathMsg")
+		static Players[SH_MAXSLOTS], Pnum, Distance
+		get_players(Players, Pnum, "ah")
 		
 		for(new i=0; i<Pnum; i++) {
 
 			if(!is_user_alive(Players[i])){
 				continue;
 			}
-			if(sh_get_id_bit(Players[i], SH_CONTROLLING_VEHICLE)){
-				continue;
-			}
-			if(get_user_godmode(Players[i])){
-				continue;
-			}
 			Distance = get_entity_distance(Players[i], JawsEnt)
 		
 			if(Distance<100) {
-				set_msg_block(DeathMSG, BLOCK_SET)
-				user_kill(Players[i], 1)
-				set_msg_block(DeathMSG, BLOCK_NOT)
-							
-				message_begin(MSG_BROADCAST, DeathMSG)
-				write_byte(JawsOwner)
-				write_byte(Players[i])
-				write_byte(0)
-				write_string("jaws")
-				message_end()
 				
-				if(cs_get_user_team(JawsOwner) != cs_get_user_team(Players[i]))
-					set_user_frags(JawsOwner, get_user_frags(JawsOwner) + 1)
-				// Let amx_gore_ultimate take care of the gibbing
+				set_user_godmode(Players[i], 0)
+				sh_extra_damage(Players[i], JawsOwner, 1, MY_HIT_HEAD,SH_DMG_KILL,
+							_,_,_,
+							SH_NEW_DMG_BLEED,jaws_dmg_id)
 			}
 		}
 	}

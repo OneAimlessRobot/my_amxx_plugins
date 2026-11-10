@@ -148,7 +148,7 @@ public _ksun_glisten(iPlugins,iParms){
 	
 	new id= get_param(1)
 	
-	set_render_with_color_const(id,PURPLE,1,180,100,1,0,KSUN_HEAL_GLOW_TIME,_,_, kRenderNormal,PRIO_RENDER_INFORMATIVE)
+	set_render_with_color_const(id,PURPLE,1,25,100,1,0,KSUN_HEAL_GLOW_TIME,_,_, kRenderNormal,PRIO_RENDER_INFORMATIVE)
 	static arr[3]
 	arr[0]=LineColors[PURPLE][0]
 	arr[1]=LineColors[PURPLE][1]

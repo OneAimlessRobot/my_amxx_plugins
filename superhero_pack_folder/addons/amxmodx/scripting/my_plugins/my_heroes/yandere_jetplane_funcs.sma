@@ -899,6 +899,12 @@ public _jet_destroy(iPlugin,iParams){
 	
 	new id= get_param(1)
 	
+	if(!client_is_within_range(id)){
+		return
+	}
+	if(!Get_BitVar(g_jetplane_deployed_mask,id)){
+		return
+	}
 
 	new bool:kill_user= bool:get_param(2)
 	new inflictor= get_param(3)
@@ -910,23 +916,23 @@ public _jet_destroy(iPlugin,iParams){
 	if(is_valid_ent(g_jetplane[id])){
 
 
-		if(is_user_alive(id)){
+		if(is_user_connected(id)){
 			set_pev(id, pev_takedamage, DAMAGE_YES)
 			set_pev(id, pev_solid, SOLID_SLIDEBOX)
+			new Float:origin[3],Float:plane_orig[3]
+			pev(id,pev_origin,origin)
+			pev(g_jetplane[id],pev_origin,plane_orig)
+			origin[2]=plane_orig[2]+10.0
+			set_pev(id,pev_origin,origin)
+			UnSet_BitVar(g_jetplane_deployed_mask,id)
+			sh_assign_id_bit(id,SH_CONTROLLING_VEHICLE,false)
 			sh_set_rendering(id);
-			if(Get_BitVar(g_jetplane_deployed_mask,id)){
-				new Float:origin[3],Float:plane_orig[3]
-				pev(id,pev_origin,origin)
-				pev(g_jetplane[id],pev_origin,plane_orig)
-				origin[2]=plane_orig[2]+10.0
-				set_pev(id,pev_origin,origin)
-				UnSet_BitVar(g_jetplane_deployed_mask,id)
-				sh_assign_id_bit(id,SH_CONTROLLING_VEHICLE,false)
-			}
-			if(kill_user){
+			if(is_user_alive(id)){
+				if(kill_user){
 
-				if(is_user_connected(inflictor)){
-					sh_extra_damage(id,inflictor, floatround(cvar_val(float,pcvar_jetplane_hp)),_,SH_DMG_KILL,_,_,_,SH_NEW_DMG_FRAG_BLAST,custom_dmg_id_yandere_mayday)
+					if(is_user_connected(inflictor)){
+						sh_extra_damage(id,inflictor, floatround(cvar_val(float,pcvar_jetplane_hp)),MY_HIT_HEAD,SH_DMG_KILL,_,_,_,SH_NEW_DMG_FRAG_BLAST,custom_dmg_id_yandere_mayday)
+					}
 				}
 			}
 		}

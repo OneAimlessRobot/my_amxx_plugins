@@ -144,7 +144,7 @@ public sh_round_new(){
 			wpn_item_id,
 			bool:dropped_this_person_weapons
 	
-	get_players(the_players, pnum, "a")
+	get_players(the_players, pnum, "ah")
 	for (new i = 0; i < pnum; i++) {
 		
 		id = the_players[i]

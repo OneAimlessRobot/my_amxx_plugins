@@ -129,7 +129,7 @@ public ester_drain_loop(task_id){
 			Float:curr_hp_ratio
 	
 	new the_players[SH_MAXSLOTS], pnum, id		
-	get_players(the_players, pnum, "a")
+	get_players(the_players, pnum, "ah")
 	for (new i = 0; i < pnum; i++) {
 		id = the_players[i]
         
@@ -297,7 +297,7 @@ public OnCmdStart(id, uc_handle)
 			return FMRES_IGNORED;
 	}
 
-	if(sh_get_stun(id)){
+	if(sh_get_stun(id)||sh_get_id_bit(id, SH_CONTROLLING_VEHICLE)){
 		if(Get_BitVar(g_flying_mask,id)){
 			remove_user_flight_fx(id)
 			
@@ -507,7 +507,7 @@ public ester_respawn(parm[2])
 
 	positionChangeTimer(id)
 }
-public godmode_render_update(id){
+public godmode_timer_update(id){
 	
 	id-=ESTER_REBORN_GLOW_TASKID
 	
@@ -517,10 +517,9 @@ public godmode_render_update(id){
 			client_print(id,print_center,"Blowing up in %0.2f...",g_ester_blow_up_time_left[id])
 		}
 		g_ester_blow_up_time_left[id]=g_ester_blow_up_time_left[id]-FLIGHT_GODMODE_THINK_TIME
-		set_render_with_color_const(id,WHITE,1,40,_,0,_,FLIGHT_GODMODE_THINK_TIME,1,_,kRenderNormal,PRIO_RENDER_EFFECT_ACTIVE)
 		
 		if(g_ester_blow_up_time_left[id]>0.0){
-			set_task(FLIGHT_GODMODE_THINK_TIME,"godmode_render_update",id+ESTER_REBORN_GLOW_TASKID)
+			set_task(FLIGHT_GODMODE_THINK_TIME,"godmode_timer_update",id+ESTER_REBORN_GLOW_TASKID)
 		}
 		else{
 
@@ -567,7 +566,7 @@ public positionChangeTimer(id)
 
 		sh_set_godmode(id,ESTER_REBORN_EXPLOSION_DELAY_TIME)
 
-		godmode_render_update(id+ESTER_REBORN_GLOW_TASKID)
+		godmode_timer_update(id+ESTER_REBORN_GLOW_TASKID)
 	}
 }
 ester_remove_statuses(id){

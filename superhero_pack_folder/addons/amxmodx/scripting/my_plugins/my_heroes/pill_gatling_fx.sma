@@ -81,7 +81,7 @@ stock fx_task_parameters[fx_id][fx_task_parameter_id]={
 					
 					{-1.0,5.0,1.0,-1,-1,"","","cyanide","We have removed nothing! You should be dead...",0,damage_icon_types:-1,PRIO_RENDER_EFFECT_ACTIVE, kRenderNormal,0},
 					
-					{1.0,2.0,20.0,-1,-1,"this_shite_do_nothin","uneffect_task_generic","glowstick juice","Removed ur glow bro!",-1,damage_icon_types:-1,PRIO_RENDER_DELETE_INVISIBILITY, kRenderNormal,255},
+					{1.0,2.0,20.0,-1,-1,"this_shite_do_nothin","uneffect_task_generic","glowstick juice","Removed ur glow bro!",-1,damage_icon_types:-1,PRIO_RENDER_DELETE_INVISIBILITY, kRenderNormal,16},
 					
 					{0.5,4.0,30.0,-1,-1,"poison_task","uneffect_task_generic","poison","Removed ur poisan!",1,DMG_ICON_POISON,PRIO_RENDER_EFFECT_ACTIVE, kRenderNormal,16},
 					

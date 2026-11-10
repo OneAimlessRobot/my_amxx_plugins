@@ -324,7 +324,7 @@ restore_game_state(){
 	}
 
 	static g_players[SH_MAXSLOTS], num;
-	get_players(g_players, num);
+	get_players(g_players, num, "h");
 
 
 	static x;
@@ -345,7 +345,7 @@ save_game_state(){
 		}
 	}
 	static g_players[SH_MAXSLOTS], num;
-	get_players(g_players, num);
+	get_players(g_players, num, "h");
 	
 	static x;
 	for(new i = 0; i < num; i++)
@@ -370,7 +370,7 @@ purge_game_state(){
 		rg_round_end(5.0,WINSTATUS_DRAW,ROUND_END_DRAW,"Rewind this!",_,true)
 	}
 	static g_players[SH_MAXSLOTS], num;
-	get_players(g_players, num);
+	get_players(g_players, num, "h");
 	
 	static x;
 	for(new i = 0; i < num; i++)

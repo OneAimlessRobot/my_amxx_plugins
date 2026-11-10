@@ -369,7 +369,7 @@ public sequoia_active_loop(taskid)
     if ( !sh_is_active() || sh_is_freezetime() || !sh_is_inround() ) return
 
     static the_players[SH_MAXSLOTS], pnum, id		
-    get_players(the_players, pnum, "a")
+    get_players(the_players, pnum, "ah")
     for (new i = 0; i < pnum; i++) {
         
         id = the_players[i]
@@ -505,7 +505,7 @@ public sequoia_passive_loop(taskid)
     if ( !sh_is_active() || sh_is_freezetime() ) return
 
     static the_players[SH_MAXSLOTS], pnum, id
-    get_players(the_players, pnum, "a")
+    get_players(the_players, pnum, "ah")
     for (new i = 0; i < pnum; i++) {
         
         id = the_players[i]
@@ -551,10 +551,9 @@ public sequoia_passive_loop(taskid)
 
         the_actual_alpha = floatround( the_alpha_floated, floatround_round)
 
-        set_render_with_color_const(id,CHUCKY_BLUE,1,the_actual_alpha,
-                            20,
-                            _,_,
-                            SEQUOIA_PASSIVE_TASK_TIME_PERIOD,0,_,_,PRIO_RENDER_INVISIBILITY,gHeroID)
+        set_render_with_color_const(id,FX_NONE,1,the_actual_alpha,
+							_,0,_,
+                            SEQUOIA_PASSIVE_TASK_TIME_PERIOD,0,_,kRenderTransAlpha,PRIO_RENDER_INVISIBILITY,gHeroID)
 
         
         if(!is_user_bot(id)){

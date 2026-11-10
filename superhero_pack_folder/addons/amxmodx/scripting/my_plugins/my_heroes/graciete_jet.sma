@@ -26,12 +26,14 @@ new g_graciete_jetpack_on_mask = 0;
 new g_graciete_power_landing_mask = 0;
 new g_graciete_leaped_mask = 0;
 
-new pcvar_jet_cooldown
+new pcvar_jet_max_cooldown, pcvar_jet_min_cooldown
 new pcvar_land_explosion_radius
 new pcvar_jet_max_velocity
 new pcvar_jet_velocity_pct_inc
 new pcvar_jet_max_power
 new pcvar_jet_stomp_grav_mult
+new pcvar_min_jet_start_launch_speed
+new pcvar_min_launch_height
 
 new Float:g_graciete_base_gravity[SH_MAXSLOTS+1];
 new Float:g_graciete_land_power[SH_MAXSLOTS+1];
@@ -49,8 +51,11 @@ public plugin_init()
 	register_plugin(PLUGIN, VERSION, AUTHOR)
 	pcvar_jet_max_velocity = create_cvar("graciete_jet_max_velocity", "8")
 	pcvar_jet_velocity_pct_inc = create_cvar("graciete_jet_velocity_pct_inc", "8") //pct of remaining speed rel. to maximum to add
-	pcvar_jet_cooldown = create_cvar("graciete_jet_cooldown", "8")
+	pcvar_jet_max_cooldown = create_cvar("graciete_jet_max_cooldown", "8")
+	pcvar_jet_min_cooldown = create_cvar("graciete_jet_min_cooldown", "8")
 	pcvar_jet_max_power = create_cvar("graciete_jet_max_power", "8")
+	pcvar_min_jet_start_launch_speed = create_cvar("graciete_min_jet_start_launch_speed", "8")
+	pcvar_min_launch_height = create_cvar("graciete_min_launch_height","8")
 	pcvar_jet_stomp_grav_mult = create_cvar("graciete_jet_stomp_grav_mult", "8")
 	pcvar_land_explosion_radius = create_cvar("graciete_land_explosion_radius", "8")
 	
@@ -184,6 +189,10 @@ public CmdStart(id, uc_handle)
 			return FMRES_IGNORED;
 	}
 	if(sh_get_stun(id)) return FMRES_IGNORED
+
+
+	if(sh_get_id_bit(id, SH_CONTROLLING_VEHICLE)) return FMRES_IGNORED
+
 	new button = get_uc(uc_handle, UC_Buttons);
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
 	
@@ -222,17 +231,41 @@ public graciete_jump(id){
 	emit_sound(id, CHAN_WEAPON, jp_jump, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 	UnSet_BitVar(g_graciete_jetpack_loaded_mask, id);
 	Set_BitVar(g_graciete_leaped_mask, id);
-	static Float:velocity_vec[3], Float:velocity_magnitude = 0.0, Float:speed_to_add = 0.0
+	static Float:velocity_vec[3], Float:velocity_magnitude = 0.0, Float:speed_to_add = 0.0, Float:speed_to_set = 0.0
+	static Float:speed_frac = 0.0
+	static Float:the_cooldown = 0.0
 	velocity_magnitude= 0.0
 	speed_to_add = 0.0
+	speed_to_set = 0.0
+	speed_frac = 0.0
+	the_cooldown = 0.0
 
 	get_user_velocity(id,velocity_vec)
 
+
+
 	velocity_magnitude = vector_length(velocity_vec)
+	
+
 
 	speed_to_add = ((cvar_val(float, pcvar_jet_max_velocity) - velocity_magnitude)  * cvar_val(float, pcvar_jet_velocity_pct_inc))
-	JetpackJump(id, floatround(min_macro(cvar_val(float, pcvar_jet_max_velocity), speed_to_add + velocity_magnitude)));
-	set_task(float(cvar_val(num, pcvar_jet_cooldown)),"load_jetpack",id+GRACIETE_LOAD_TASKID);
+
+	speed_to_set = max_macro(max_macro(0.0, cvar_val(float, pcvar_min_jet_start_launch_speed)), min_macro(cvar_val(float, pcvar_jet_max_velocity), speed_to_add + velocity_magnitude))
+
+	speed_frac = clamp_macro( speed_to_set/cvar_val(float, pcvar_jet_max_velocity), 0.1, 0.99)
+
+	the_cooldown = cvar_val(float, pcvar_jet_min_cooldown)
+	
+				+ 
+	
+		speed_frac
+
+				*
+	
+	(cvar_val(float, pcvar_jet_max_cooldown) - cvar_val(float, pcvar_jet_min_cooldown))
+
+	JetpackJump(id, floatround(speed_to_set));
+	set_task(the_cooldown,"load_jetpack",id+GRACIETE_LOAD_TASKID);
 	
 }
 public load_jetpack(id){
@@ -283,7 +316,7 @@ public JetpackJump( id,intensity){
 	velocity[0]=velocity[0]*float(intensity);
 	velocity[1]=velocity[1]*float(intensity);
 	velocity[2]=velocity[2]*float(intensity);
-	velocity[2]=floatabs(velocity[2]);
+	velocity[2]=max_macro(max_macro(0.0,cvar_val(float, pcvar_min_launch_height)),floatabs(velocity[2]));
 	set_pev(id, pev_velocity, velocity);
 }
 

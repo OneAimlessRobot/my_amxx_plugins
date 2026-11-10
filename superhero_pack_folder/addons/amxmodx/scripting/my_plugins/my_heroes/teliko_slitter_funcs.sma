@@ -277,6 +277,13 @@ public CmdStart(attacker, uc_handle)
 		stop_dragging(attacker)
 		return FMRES_IGNORED
 	}
+
+	if(sh_get_id_bit(attacker, SH_CONTROLLING_VEHICLE)){
+
+		stop_dragging(attacker)		
+		return FMRES_IGNORED
+
+	}
 	if ( !sh_get_user_has_hero(attacker,gHeroID) ||sh_get_user_has_hero(attacker,gHeroID_erica) ||!Get_BitVar(slitter_on_mask,attacker)||(g_slit_kills[attacker]<=0)){
 		return FMRES_IGNORED
 	}

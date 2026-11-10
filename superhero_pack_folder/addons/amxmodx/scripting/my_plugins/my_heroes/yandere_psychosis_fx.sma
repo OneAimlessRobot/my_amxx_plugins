@@ -235,7 +235,11 @@ gPsychosisTime[id]=cvar_val(float, pcvar_psychosis_time)
 sh_set_cooldown(id, cvar_val(float, pcvar_psychosis_cooldown) * 1.0)
 curr_player_pain_sound[id]=generate_int(0,NUM_YANDERE_PAIN_SOUNDS-1)
 emit_sound(id, CHAN_AUTO,yandere_pain_sounds[curr_player_pain_sound[id]] , VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
-UnSet_BitVar(g_yandere_leaped_mask,id);
+
+new flags = pev(id, pev_flags)
+if((flags  & FL_INGROUND2)){
+	UnSet_BitVar(g_yandere_leaped_mask,id)
+}
 sh_assign_id_bit(id,SH_IS_PSYCHOSIS,true)
 cs_set_user_armor(id,cs_get_user_armor(id)+cvar_val(num, pcvar_psychosis_add_ap),CS_ARMOR_VESTHELM)
 message_begin(MSG_ONE, MsgSetFOV, {0,0,0}, id)

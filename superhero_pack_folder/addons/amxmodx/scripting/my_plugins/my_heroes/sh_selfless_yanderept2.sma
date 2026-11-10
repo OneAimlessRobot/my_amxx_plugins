@@ -227,7 +227,7 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
 	if(sh_get_user_has_hero(id,gHeroID) ){
-	
+		notify_single_yandere_about_team_life(id,-1,1)
 		gNormalSpeed[id]=cvar_val(float,pcvar_base_extra_speed)
 		gBaseSpeed[id]=cvar_val(float,pcvar_base_extra_speed);
 		UnSet_BitVar(gPlayedSoundMask,id)
@@ -244,7 +244,7 @@ public get_first_alive(){
 
 
 new the_players[SH_MAXSLOTS], pnum	
-get_players(the_players, pnum, "a")
+get_players(the_players, pnum, "ah")
 for (new k = 0; k < pnum; k++) {
 	//will immediatly return valid value if pnum is >0
 	return the_players[k]
@@ -257,7 +257,7 @@ public yandere_sentence_loop(id){
 	
 	if ( !sh_is_active() || sh_is_freezetime() ||!sh_is_inround()) return
 	static the_players[SH_MAXSLOTS], pnum, i		
-	get_players(the_players, pnum, "a")
+	get_players(the_players, pnum, "ah")
 	for (new k = 0; k < pnum; k++) {
 		
 		i = the_players[k]
@@ -300,6 +300,34 @@ public yandere_sentence_loop(id){
 		}
 	}
 }
+notify_single_yandere_about_team_life(yandere_id,life_id=-1,disconnected=0){
+	if(!sh_get_user_has_hero(yandere_id,gHeroID) ) return;
+
+	if(!(disconnected)){
+		if(!sh_clients_are_same_team(life_id,yandere_id)){
+			if((life_id!=yandere_id)){
+				return;
+			}
+		}
+	}
+	sh_get_player_counts(yandere_id,1,g_mates_alive[yandere_id],g_mates_dead[yandere_id],true)
+	new bool:can_transform= (get_playersnum(0)>=cvar_val(num,pcvar_min_players))&&(g_mates_alive[yandere_id]<=0)
+	if(can_transform && !Get_BitVar(gSuperAngryMask,yandere_id) && sh_is_inround() &&!sh_is_freezetime()){
+
+		Set_BitVar(gTransTimerStartedMask,yandere_id)
+
+	}
+	else{
+
+		UnSet_BitVar(gTransTimerStartedMask,yandere_id)
+
+	}
+	
+	update_stats(yandere_id)
+	if(!sh_is_freezetime()&&!sh_get_stun(yandere_id)){
+		set_user_maxspeed(yandere_id,gNormalSpeed[yandere_id])
+	}
+}
 
 notify_yanderes_about_team_life(id=-1,disconnected=0){
 	if(!sh_is_active()) return
@@ -310,38 +338,13 @@ notify_yanderes_about_team_life(id=-1,disconnected=0){
 	
 	static the_players[SH_MAXSLOTS], pnum, i		
 	
-	get_players(the_players, pnum, "a")
+	get_players(the_players, pnum, "ah")
 	
 	for (new k = 0; k < pnum; k++) {
 		
 		i = the_players[k]
-
-		if(!sh_get_user_has_hero(i,gHeroID) ) continue;
-
-		if(!(disconnected)){
-			if(!sh_clients_are_same_team(id,i)){
-				if((id!=i)){
-					continue;
-				}
-			}
-		}
-		sh_get_player_counts(i,1,g_mates_alive[i],g_mates_dead[i],true)
-		new bool:can_transform= (get_playersnum(0)>=cvar_val(num,pcvar_min_players))&&(g_mates_alive[i]<=0)
-		if(can_transform && !Get_BitVar(gSuperAngryMask,i) && sh_is_inround() &&!sh_is_freezetime()){
-
-			Set_BitVar(gTransTimerStartedMask,i)
-
-		}
-		else{
-
-			UnSet_BitVar(gTransTimerStartedMask,i)
-
-		}
+		notify_single_yandere_about_team_life(i,id,disconnected)
 		
-		update_stats(i)
-		if(!sh_is_freezetime()&&!sh_get_stun(i)){
-			set_user_maxspeed(i,gNormalSpeed[i])
-		}
 	}
 
 
@@ -350,7 +353,7 @@ public yandere_loop(id){
 	if ( !sh_is_active() || sh_is_freezetime() ) return
 
 	new the_players[SH_MAXSLOTS], pnum, i		
-	get_players(the_players, pnum, "a")
+	get_players(the_players, pnum, "ah")
 	for (new k = 0; k < pnum; k++) {
 		
 		i = the_players[k]
@@ -478,6 +481,7 @@ public sh_round_start(){
 		if(!is_user_alive(id)) return
 
 		if ( sh_get_user_has_hero(id,gHeroID) ) {
+			notify_single_yandere_about_team_life(id,-1,1)
 			if(get_user_maxspeed(id)<gNormalSpeed[id]){
 				set_user_maxspeed(id,gNormalSpeed[id])
 			}
@@ -505,7 +509,6 @@ public sh_client_spawn(id, bool:newRound)
 				set_user_maxspeed(id,gBaseSpeed[id])
 			}
 		}
-		notify_yanderes_about_team_life(id)
 		
 	}
 	

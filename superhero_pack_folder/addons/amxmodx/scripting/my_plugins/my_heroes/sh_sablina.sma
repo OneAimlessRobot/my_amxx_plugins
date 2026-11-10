@@ -278,7 +278,7 @@ public sablina_loop(taskid)
 	if ( !sh_is_active() || sh_is_freezetime() ) return
 
 	new the_players[SH_MAXSLOTS], pnum, id		
-	get_players(the_players, pnum, "a")
+	get_players(the_players, pnum, "ah")
 	for (new i = 0; i < pnum; i++) {
 		
 		id = the_players[i]
@@ -312,10 +312,9 @@ public sablina_loop(taskid)
 
 		the_actual_alpha = floatround( the_alpha_floated, floatround_round)
 
-		set_render_with_color_const(id,LAVENDER,1,the_actual_alpha,
-							20,
-							_,_,
-							SABLINA_TASK_PERIOD,0,_,_,PRIO_RENDER_INVISIBILITY,gHeroID)
+		set_render_with_color_const(id,FX_NONE,1,the_actual_alpha,
+							_,0,_,
+							SABLINA_TASK_PERIOD,0,_,kRenderTransAlpha,PRIO_RENDER_INVISIBILITY,gHeroID)
 
 	}
 }
@@ -757,7 +756,7 @@ public sh_round_start(){
 			pnum,
 			id
 	
-	get_players(the_players, pnum, "a")
+	get_players(the_players, pnum, "ah")
 	for (new i = 0; i < pnum; i++) {
 		
 		id = the_players[i]

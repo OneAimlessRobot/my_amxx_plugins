@@ -12,6 +12,7 @@
 #include "./superheromod_help_files_includes/superheromod_help_files.inc"
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
+#include "custom_grenades/custom_grenades.inc"
 
 
 // GLOBAL VARIABLES
@@ -80,6 +81,7 @@ public player_prethink_yakui_weapon(id, uc_handle)
 	}
 	if ( !is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID) ) return FMRES_IGNORED;
 
+	if(sh_get_id_bit(id, SH_CONTROLLING_VEHICLE)) return FMRES_IGNORED
 
 	static button;
 	button= get_uc(uc_handle, UC_Buttons);
@@ -169,6 +171,7 @@ if ( sh_is_active() && is_user_alive(id) && sh_get_user_has_hero(id,gHeroID) ) {
 	if(is_valid_ent(weapon_id)){
 		set_pdata_int(weapon_id, m_iClip, PILLGATLING_CLIP_SIZE, XO_WEAPON);
 		cs_set_user_bpammo(id, YAKUI_WEAPON_CLASSID,gatling_get_num_pills(id)-PILLGATLING_CLIP_SIZE);
+		give_custom_grenades(id,GREN_RANDOM_FX,10)
 		
 	}
 }

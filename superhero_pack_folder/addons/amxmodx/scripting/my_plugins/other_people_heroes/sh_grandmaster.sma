@@ -59,7 +59,7 @@ public sh_client_death(victim)
 	new CsTeams:idTeam = cs_get_user_team(victim)
 
 	new players[SH_MAXSLOTS], playerCount, player
-	get_players(players, playerCount, "a")
+	get_players(players, playerCount, "ah")
 
 	// Look for alive players with unused Grandmaster Powers on the same team
 	for ( new i = 0; i < playerCount; i++ ) {

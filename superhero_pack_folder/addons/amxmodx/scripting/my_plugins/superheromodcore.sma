@@ -3492,10 +3492,10 @@ showPlayerLevels(id, say, said[])
 		}
 
 		if ( equali("ALL", said[1]) ) {
-			get_players(players, playerCount)
+			get_players(players, playerCount, "h")
 		}
 		else {
-			get_players(players, playerCount, "eg", said[1])
+			get_players(players, playerCount, "heg", said[1])
 		}
 		if ( playerCount == 0 ) {
 			console_print(id, "No clients in such team")
@@ -3568,10 +3568,10 @@ showPlayerSkills(id, say, said[])
 			copy(said[1], 31,"TERRORIST")
 		}
 		if ( equali("ALL", said[1]) ) {
-			get_players(players, playerCount)
+			get_players(players, playerCount, "h")
 		}
 		else {
-			get_players(players, playerCount, "eg", said[1] )
+			get_players(players, playerCount, "heg", said[1] )
 		}
 		if ( playerCount == 0 ) {
 			console_print(id, "No clients in such team")
@@ -3706,8 +3706,8 @@ showWhoHas(id, say, said[])
 	n += formatex(buffer[n], charsmax(buffer)-n, "WhoHas: %s^n^n", gSuperHeros[heroIndex][hero])
 
 	// Get a List of Players
-	new players[SH_MAXSLOTS], playerCount
-	get_players(players, playerCount)
+	static players[SH_MAXSLOTS], playerCount
+	get_players(players, playerCount, "h")
 
 	new pid, teamName[5], name[32]
 	for ( new team = 2; team >= 0; team-- ) {
@@ -3781,10 +3781,10 @@ public adminSetLevel(id, level, cid)
 		}
 
 		if ( equali("ALL", arg[1]) ) {
-			get_players(players, inum)
+			get_players(players, inum, "h")
 		}
 		else {
-			get_players(players, inum, "eg", arg[1])
+			get_players(players, inum, "heg", arg[1])
 		}
 
 		if ( !inum ) {
@@ -3867,10 +3867,10 @@ public adminSetXP(id, level, cid)
 		}
 
 		if ( equali("ALL", arg[1]) ) {
-			get_players(players, inum)
+			get_players(players, inum, "h")
 		}
 		else {
-			get_players(players, inum, "eg", arg[1])
+			get_players(players, inum, "heg", arg[1])
 		}
 
 		if ( !inum ) {
