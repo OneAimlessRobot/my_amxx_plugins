@@ -57,7 +57,6 @@ public plugin_init()
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Poison Hashira", "Be polite, be sneaky. And make them suffer", true, "shinobu_level")
-	register_event("Damage","shinobuDamage","b", "2!0")
 	
 	RegisterHam(Ham_TraceAttack, "player", "shinobuDamage",1,true)
 	
