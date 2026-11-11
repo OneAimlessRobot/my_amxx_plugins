@@ -220,15 +220,14 @@ public Ester_DamageReflect(id, idinflictor, attacker, Float:damage, damagebits)
 		sh_get_id_bit(id,SH_IS_REBORN)&&
 		!Get_BitVar(g_smashed_someone_mask,id)){
 		
-			sh_extra_damage(attacker, id,floatround(
-					clamp_macro(cvar_val(float, pcvar_ester_damage_reflect_coeff),0.1,1.0)*damage),
+			sh_extra_damage(attacker, id, 1 + (floatround(clamp_macro(cvar_val(float, pcvar_ester_damage_reflect_coeff),0.1,1.0)*damage)),
 				_,_,_,_,_,
 				SH_NEW_DMG_SHOCK,
 				generic_dmg_source_shock)
 
 
 			directed_spark(id, attacker)
-			damage=1.0+damage- (damage*clamp_macro(cvar_val(float, pcvar_ester_damage_reflect_coeff),0.1,1.0))
+			damage=1.0 + (damage- (damage*clamp_macro(cvar_val(float, pcvar_ester_damage_reflect_coeff),0.1,1.0)))
 			SetHamParamFloat(4, damage);
 	
 	}

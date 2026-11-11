@@ -608,7 +608,7 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 			if((g_ester_attack_phase[id] == PEDAL_FLOORED)){
 				
 				sh_extra_damage(attacker, id,
-								floatround(floatmul(floatdiv(damage,float(damage_to_do[id])),float(gEsterDmg[id])),floatround_ceil),
+								1+ floatround(floatmul(floatdiv(damage,float(damage_to_do[id])),float(gEsterDmg[id])),floatround_ceil),
 								my_hitpoint_enum:hitgroup,
 								_,_,_,_,
 								SH_NEW_DMG_SHOCK,
