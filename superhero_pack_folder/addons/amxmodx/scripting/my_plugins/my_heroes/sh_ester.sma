@@ -602,7 +602,7 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 		static origin[3], origin2[3]
 		get_user_origin(id,origin)
 		get_user_origin(attacker,origin2)
-		if((g_ester_attack_phase[id] <= UNLOADING)&&gTimesLeft[id]){
+		if((g_ester_attack_phase[id] <= UNLOADING)&&gTimesLeft[id]&&(damage_to_do[id]>0)){
 			
 			Set_BitVar(g_ester_enemies_masks[id],attacker);
 			if((g_ester_attack_phase[id] == PEDAL_FLOORED)){

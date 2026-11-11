@@ -411,6 +411,8 @@ weapons/ric_metal-2.wav
 weapons/ric_conc-2.wav
 doors/doormove9.wav
 doors/doorstop4.wav
+debris/bustmetal1.wav
+debris/bustmetal2.wav
 debris/bustglass1.wav
 debris/bustglass2.wav
 debris/bustcrate1.wav

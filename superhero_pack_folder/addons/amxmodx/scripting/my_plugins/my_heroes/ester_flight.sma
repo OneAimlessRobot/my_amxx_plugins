@@ -221,14 +221,14 @@ public Ester_DamageReflect(id, idinflictor, attacker, Float:damage, damagebits)
 		!Get_BitVar(g_smashed_someone_mask,id)){
 		
 			sh_extra_damage(attacker, id,floatround(
-					cvar_val(float, pcvar_ester_damage_reflect_coeff)*damage),
+					clamp_macro(cvar_val(float, pcvar_ester_damage_reflect_coeff),0.1,1.0)*damage),
 				_,_,_,_,_,
 				SH_NEW_DMG_SHOCK,
 				generic_dmg_source_shock)
 
 
 			directed_spark(id, attacker)
-			damage=1.0+damage- (damage*clamp_macro(cvar_val(float, pcvar_ester_damage_reflect_coeff),0.0,1.0))
+			damage=1.0+damage- (damage*clamp_macro(cvar_val(float, pcvar_ester_damage_reflect_coeff),0.1,1.0))
 			SetHamParamFloat(4, damage);
 	
 	}
@@ -450,11 +450,14 @@ public sh_client_death(id, killer){
 public ester_reborn_loop_task(parm[2]){
 	
 	new id= parm[0]
-	if(is_user_alive(id)&&sh_get_user_has_hero(id,gHeroID)){
-		
-		return
-		
-	}
+
+	if ( !is_user_connected(id) || is_user_alive(id) ) return
+	if ( !sh_get_user_has_hero(id,gHeroID)) return
+	if ( (g_ester_respawned_attempts[id]>=
+				cvar_val(num,pcvar_ester_total_respawn_attempts))||
+				!sh_is_inround()) return
+	if ( g_which_team_is_user[id]!= cs_get_user_team(id) ) return
+
 	new Float:chance=generate_float(0.0,1.0)
 	if(chance<(cvar_val(float,pcvar_ester_calculation_chance_numerator)/
 						cvar_val(float,pcvar_ester_calculation_chance_denominator))){
