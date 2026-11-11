@@ -473,7 +473,12 @@ public guide_kamehameha(args[])
 	if ( !is_valid_ent(ent) ) return
 
 	if ( !is_user_connected(id) ) {
-		vegetto_power_touch(ent,0)
+		remove_entity(ent)
+		return
+	}
+	if(!is_user_alive(id)){
+		
+		remove_power(id,ent)
 		return
 	}
 

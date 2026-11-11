@@ -1,6 +1,7 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_MATH_FUNCS
 #include <float>
 #include <xs>
 #include "../my_include/superheromod.inc"
@@ -16,13 +17,24 @@
 
 
 #define TELIKO_SLITTER_DUMMY_ENTITY_CLASSNAME "teliko_slitter"
-new gHeroID_erica = -1
+
 new slitter_on_mask = 0
 new g_player_slitter[SH_MAXSLOTS + 1]
 new g_slit_kills[SH_MAXSLOTS + 1]
 
 new Float:g_prev_max_speed[SH_MAXSLOTS+1] = { 0.0, ...}
 
+//I could not for the life of me
+//get this to work
+//by putting these in cmdstart as static arrays where every client uses each
+
+static Float:vec2LOS[SH_MAXSLOTS+1][2],
+		Float:vecForward[SH_MAXSLOTS+1][3],
+		Float:vecForward_tg[SH_MAXSLOTS+1][3],
+		Float:vecForward2D[SH_MAXSLOTS+1][2],
+		Float:vOrigin[SH_MAXSLOTS+1][3],
+		Float:vEnd[SH_MAXSLOTS+1][3],
+		Float:vTrace[SH_MAXSLOTS+1][3]
 
 //floats
 new pcvar_slitter_distance
@@ -67,6 +79,8 @@ spawn_teliko_slitter(id,target){
 	//the times
 	entity_set_int(teliko_hook_to_be_spawned, EV_INT_iuser1,floatround(SLITTER_DRAG_THINK_TIMES))
 
+	sh_assign_id_bit(id,SH_USING_HOOK_ATTACK, true)
+
 	entity_set_float(teliko_hook_to_be_spawned, EV_FL_nextthink,
 				get_gametime()+SLITTER_DRAG_THINK_PERIOD)
 }
@@ -110,7 +124,7 @@ stop_dragging(id,target=-1,bool:deduct=false){
 			
 		}
 		if(is_valid_ent(g_player_slitter[id])){
-
+			sh_assign_id_bit(id,SH_USING_HOOK_ATTACK, false)
 			remove_entity(g_player_slitter[id])
 			g_player_slitter[id]=-1
 		}
@@ -168,7 +182,6 @@ public loadCVARS()
 {	
 
 	gHeroID = teliko_get_hero_id()
-	gHeroID_erica = tranq_get_hero_id()
 	
 	custom_dmg_id_sneak=sh_log_custom_damage_source(gHeroID,
 					dmg_source_name_short_sneak,
@@ -271,6 +284,10 @@ public CmdStart(attacker, uc_handle)
 		return FMRES_IGNORED
 	}
 
+	if(sh_get_id_bit(attacker,SH_USING_HOOK_ATTACK)){
+
+		return FMRES_IGNORED;
+	}
 	if(!is_user_alive(attacker)){
 
 		
@@ -284,7 +301,7 @@ public CmdStart(attacker, uc_handle)
 		return FMRES_IGNORED
 
 	}
-	if ( !sh_get_user_has_hero(attacker,gHeroID) ||sh_get_user_has_hero(attacker,gHeroID_erica) ||!Get_BitVar(slitter_on_mask,attacker)||(g_slit_kills[attacker]<=0)){
+	if ( !sh_get_user_has_hero(attacker,gHeroID)||!Get_BitVar(slitter_on_mask,attacker)||(g_slit_kills[attacker]<=0)){
 		return FMRES_IGNORED
 	}
 
@@ -308,16 +325,6 @@ public CmdStart(attacker, uc_handle)
 
 				if(!is_valid_ent(g_player_slitter[attacker])){
 					
-					
-					new Float:vec2LOS[2],
-							Float:vecForward[3],
-							Float:vecForward_tg[3],
-							Float:vecForward2D[2],
-							Float:vOrigin[3],
-							Float:vEnd[3],
-							Float:vTrace[3]
-					
-					
 					static id,
 						tr,
 						Float:slitter_distance = 0.0;
@@ -326,26 +333,29 @@ public CmdStart(attacker, uc_handle)
 
 					tr = 0,
 					Float:slitter_distance = 0.0;
+
+
 					
 					slitter_distance = cvar_val(float,pcvar_slitter_distance)
 					
-					velocity_by_aim( attacker, floatround(slitter_distance), vecForward );
+					velocity_by_aim( attacker, floatround(slitter_distance), vecForward[attacker] );
 					
 
-					pev(attacker, pev_origin, vOrigin)
+					pev(attacker, pev_origin, vOrigin[attacker])
 					
-					vEnd[0]=vOrigin[0]+vecForward[0]
-					vEnd[1]=vOrigin[1]+vecForward[1]
-					vEnd[2]=vOrigin[2]+vecForward[2]
+					vEnd[attacker][0]=vOrigin[attacker][0]+vecForward[attacker][0]
+					vEnd[attacker][1]=vOrigin[attacker][1]+vecForward[attacker][1]
+					vEnd[attacker][2]=vOrigin[attacker][2]+vecForward[attacker][2]
 					tr = create_tr2()
 					if(tr<=0){
 						return FMRES_IGNORED
 					}
-					engfunc(EngFunc_TraceLine, vOrigin, vEnd, 0, attacker, tr)
-					get_tr2(tr, TR_vecEndPos, vTrace)
+					engfunc(EngFunc_TraceLine, vOrigin[attacker], vEnd[attacker], 0, attacker, tr)
+					get_tr2(tr, TR_vecEndPos, vTrace[attacker])
 					id = get_tr2(tr, TR_pHit)
+					free_tr2(tr)
+					
 					if (!is_user_alive(id) ){
-						free_tr2(tr)
 						return FMRES_IGNORED
 					
 					}
@@ -353,23 +363,22 @@ public CmdStart(attacker, uc_handle)
 						return FMRES_IGNORED
 					}
 
-					xs_vec_make2d( vecForward, vec2LOS );
-					xs_vec_normalize( vec2LOS, vec2LOS );
+					xs_vec_make2d( vecForward[attacker], vec2LOS[attacker] );
+					vector_norm2d( vec2LOS[attacker], vec2LOS[attacker] );
 
-					velocity_by_aim(id, 1, vecForward_tg );
+					velocity_by_aim(id, 1, vecForward_tg[attacker] );
 					
-					xs_vec_make2d( vecForward_tg, vecForward2D );
-					xs_vec_normalize( vecForward2D, vecForward2D );
+					xs_vec_make2d( vecForward_tg[attacker], vecForward2D[attacker] );
+					vector_norm2d( vecForward2D[attacker], vecForward2D[attacker] );
 					static att_name[128],vic_name[128];
 
-					if( (xs_vec_dot( vec2LOS, vecForward2D ) > 0.5) )
+					if( (xs_vec_dot( vec2LOS[attacker], vecForward2D[attacker] ) > 0.5) )
 					{	
 						if(g_slit_kills[attacker]<=0){
 
 							if(!is_user_bot(attacker)){
 								sh_chat_message(attacker,gHeroID,"Already hit %d slit attacks this life!",cvar_val(num,pcvar_max_slitter_kills_per_life));
 							}
-							free_tr2(tr)
 							return FMRES_IGNORED
 						}
 						entity_set_vector(id, EV_VEC_velocity, Float:{0.01,0.01,0.01})
@@ -384,7 +393,6 @@ public CmdStart(attacker, uc_handle)
 							sh_chat_message(id,gHeroID,"You got snuck up on by %s!",att_name);
 						}
 					}
-					free_tr2(tr)
 				}
 				else {
 					new target=entity_get_edict(g_player_slitter[attacker],EV_ENT_euser1)
@@ -435,7 +443,7 @@ if(sh_get_user_has_hero(attacker,gHeroID) &&!(cs_get_user_team(id)==att_team)&&i
 		velocity_by_aim( attacker, 1, vecForward );
 		
 		xs_vec_make2d( vecForward, vec2LOS );
-		xs_vec_normalize( vec2LOS, vec2LOS );
+		vector_norm2d( vec2LOS, vec2LOS );
 		
 		velocity_by_aim(id, 1, vecForward ); 
 		

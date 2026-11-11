@@ -1,6 +1,7 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_QUICK_CHECKS
+#define I_WANT_MATH_FUNCS
 #define I_WANT_BASIC_MACROS
 #define I_WANT_CUSTOM_COLORS
 #define I_WANT_RESOURCE_ALIASES
@@ -138,7 +139,7 @@ if(optional_bool&&!(sh_clients_are_same_team(id,attacker))&&(attacker!=id)){
 		velocity_by_aim( attacker, 1, vecForward );
       
 		xs_vec_make2d( vecForward, vec2LOS );
-		xs_vec_normalize( vec2LOS, vec2LOS );
+		vector_norm2d( vec2LOS, vec2LOS );
     
 		velocity_by_aim(id, 1, vecForward2 ); 
         

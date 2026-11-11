@@ -40,6 +40,14 @@ stock multiply_3d_vector_by_scalar(Float:in_vec[3],Float:scalar,Float:out_vec[3]
 	}
 
 }
+stock multiply_2d_vector_by_scalar(Float:in_vec[2],Float:scalar,Float:out_vec[2]){
+	
+	for(new i=0;i<2;i++){
+		out_vec[i]=in_vec[i]*scalar
+			
+	}
+
+}
 stock add_3d_vectors(Float:a_vec[3],Float:b_vec[3],Float:out_vec[3]){
 	
 	for(new i=0;i<3;i++){
@@ -65,7 +73,7 @@ stock mirror_3d_vec(Float:in_vec[3],Float:out_vec[3]){
 
 }
 
-stock Float:dot_product( Float:input_a[3], Float:input_b[3], vec_size = 3) {
+stock Float:dot_product( Float:input_a[], Float:input_b[], vec_size = 3) {
 	
 	new Float:result = 0.0;
 	for (new i = 0; i < vec_size; i++) {
@@ -191,6 +199,29 @@ stock vector_norm(Float:vec_result[3], Float:vec_in[3]) {
 	new Float:len = vector_length(vec_in);
 	new Float:inv_len = 1.0 / len;
 	multiply_3d_vector_by_scalar(vec_result, inv_len, vec_in);
+	
+}
+stock Float:vector_length_var(Float:vec_in[], vector_size=3) {
+
+	static Float:result = 0.0
+
+	result = 0.0
+	for(new i=0;i<vector_size;i++){
+
+		result += (vec_in[i]*vec_in[i])
+
+	}
+
+	result = floatsqroot(result)
+
+	return result
+
+}
+stock vector_norm2d(Float:vec_result[2], Float:vec_in[2]) {
+	
+	new Float:len = vector_length_var(vec_in,2);
+	new Float:inv_len = 1.0 / len;
+	multiply_2d_vector_by_scalar(vec_result, inv_len, vec_in);
 	
 }
 stock print_vector(Float:vec_in[3]) {
