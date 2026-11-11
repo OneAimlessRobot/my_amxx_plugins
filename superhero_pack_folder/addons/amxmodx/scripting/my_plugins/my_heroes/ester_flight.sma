@@ -266,6 +266,7 @@ remove_user_flight_fx(id){
 				VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
 	
 	UnSet_BitVar(g_flying_mask, id);
+	sh_assign_id_bit(id,SH_USER_IS_FLYING, false)
 	
 	
 }
@@ -296,7 +297,7 @@ public OnCmdStart(id, uc_handle)
 			return FMRES_IGNORED;
 	}
 
-	if(sh_get_stun(id)||sh_get_id_bit(id, SH_CONTROLLING_VEHICLE)){
+	if(sh_get_stun(id)||sh_get_id_bit(id, SH_CONTROLLING_VEHICLE)||((sh_get_id_bit(id,SH_USER_IS_FLYING))&&!Get_BitVar(g_flying_mask,id))){
 		if(Get_BitVar(g_flying_mask,id)){
 			remove_user_flight_fx(id)
 			
@@ -331,6 +332,7 @@ public OnCmdStart(id, uc_handle)
 			UnSet_BitVar(g_smashed_breakable_mask,id);
 			if(!Get_BitVar(g_flying_mask,id)){
 				Set_BitVar(g_flying_mask,id);
+				sh_assign_id_bit(id,SH_USER_IS_FLYING, true)
 				
 			}
 			Set_BitVar(g_draining_mask,id)

@@ -100,6 +100,7 @@ remove_user_flight_fx(id){
 	Assign_BitVar(g_zenitsu_is_glowing_mask, id, false_for_macro);
 	Assign_BitVar(g_zenitsu_is_charging_mask, id, false_for_macro);
 	Assign_BitVar(g_zenitsu_was_charging_mask, id, false_for_macro);
+	sh_assign_id_bit(id,SH_USER_IS_FLYING, false)
 	
 	
 }
@@ -119,10 +120,11 @@ public zenitsu_charge(id, uc_handle, seed)
 	if(!sh_is_active()||sh_is_freezetime()){
 		return FMRES_IGNORED
 	}
+	
 	if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)||Get_BitVar(g_zenitsu_has_touched_player_mask, id)||sh_get_stun(id)||!zenitsu_get_charge_mode_engaged(id)){
 			return FMRES_IGNORED;
 	}
-	if(sh_get_stun(id)||sh_get_id_bit(id, SH_CONTROLLING_VEHICLE)) return FMRES_IGNORED
+	if(sh_get_stun(id)||sh_get_id_bit(id, SH_CONTROLLING_VEHICLE)||((sh_get_id_bit(id,SH_USER_IS_FLYING))&&!Get_BitVar(g_zenitsu_is_charging_mask,id))) return FMRES_IGNORED
 	static buttons
 
 	
@@ -134,6 +136,8 @@ public zenitsu_charge(id, uc_handle, seed)
 
 	if(Get_BitVar(g_zenitsu_is_charging_mask, id))
 	{
+
+		sh_assign_id_bit(id,SH_USER_IS_FLYING, true)
 		if(!Get_BitVar(g_zenitsu_was_charging_mask, id)){
 
 			engclient_cmd(id, "weapon_knife")

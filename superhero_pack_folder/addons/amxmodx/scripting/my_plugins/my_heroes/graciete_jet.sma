@@ -191,7 +191,10 @@ public CmdStart(id, uc_handle)
 	if(sh_get_stun(id)) return FMRES_IGNORED
 
 
-	if(sh_get_id_bit(id, SH_CONTROLLING_VEHICLE)) return FMRES_IGNORED
+	//if(sh_get_id_bit(id, SH_CONTROLLING_VEHICLE)||) return FMRES_IGNORED
+
+
+	if(sh_get_id_bit(id, SH_CONTROLLING_VEHICLE)||sh_get_id_bit(id,SH_USER_IS_FLYING)) return FMRES_IGNORED
 
 	new button = get_uc(uc_handle, UC_Buttons);
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
