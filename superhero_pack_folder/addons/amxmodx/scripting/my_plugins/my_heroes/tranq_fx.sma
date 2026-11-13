@@ -187,7 +187,7 @@ public sleep_task(any:array[4],id){
 		array[0]--
 		set_task(SLEEP_PERIOD,"sleep_task",id+SLEEP_TASKID,array, sizeof(array))
 	}
-	else{
+	else if(sh_get_id_bit(id,SH_IS_SLEEPING)){
 		set_task(Float:array[2],"fully_wake_up_task",id+FULLY_WAKE_UP_TASKID,array,sizeof(array))
 	}
 
