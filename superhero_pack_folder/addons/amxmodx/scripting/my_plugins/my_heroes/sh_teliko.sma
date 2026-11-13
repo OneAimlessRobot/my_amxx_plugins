@@ -92,7 +92,7 @@ public plugin_init()
 						1,
 						true)
 
-	RegisterHam(Ham_TraceAttack, "player", "Teliko_damage",_,true)
+	RegisterHam(Ham_TakeDamage, "player", "Teliko_damage",1,true)
 }
 public plugin_cfg(){
 	
@@ -304,7 +304,12 @@ public Inc_counters(id){
 	}
 
 }
-public Teliko_damage(id, attacker, Float:damage, Float:Direction[3], Ptr, DamageBits){
+public Teliko_damage(id, idinflictor, attacker, Float:damage, damagebits)
+{
+	if(damage <= 0.0){
+
+		return HAM_IGNORED
+	}	
 
 	if ( !sh_is_active() || !is_user_alive(id) || !is_user_alive(attacker)) return HAM_IGNORED
 
@@ -315,10 +320,12 @@ public Teliko_damage(id, attacker, Float:damage, Float:Direction[3], Ptr, Damage
 
 	new return_result= HAM_IGNORED
 
-	new weapon=get_user_weapon(attacker)
+	new weapon, my_hitpoint_enum:the_hitpoint
 
-	new my_hitpoint_enum:the_hitpoint = my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
+	get_user_attacker(id, weapon, _:the_hitpoint)
 	
+	pev(id, pev_dmg_take, damage)
+
 	new bool:headshot = (the_hitpoint == MY_HIT_HEAD)
 	if(sh_clients_are_same_team(id,attacker)||(id==attacker)){
 		return HAM_IGNORED

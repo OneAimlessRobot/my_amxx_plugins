@@ -87,7 +87,6 @@ new pcvar_zatana_gravity,
     pcvar_zatana_base_cooldown,
     pcvar_min_alpha,
     pcvar_max_alpha,
-    pcvar_endeavour_hp,
     pcvar_post_attack_stun_time,
     pcvar_post_attack_stun_movespeed,
     pcvar_strikes_damage,
@@ -119,8 +118,6 @@ public plugin_init(){
 
     pcvar_zatana_gravity = create_cvar("zatana_gravity", "0.25")
 
-    pcvar_endeavour_hp = create_cvar("zatana_endeavour_hp", "0.25")
-
     pcvar_zatana_base_cooldown = create_cvar("zatana_base_cooldown", "10.0")
 
     pcvar_min_alpha = create_cvar("zatana_min_alpha", "10.0")
@@ -143,9 +140,6 @@ public plugin_init(){
                     "Do you know what happens to very experimental, hard to explain or just overall unfinished heroes? Take a guess")
 
     sh_register_elemental_probe_hero(gHeroID, ZATANA_HEALTHCAP, pcvar_zatana_gravity)
-
-
-    RegisterHam(Ham_TakeDamage,"player","zatana_no_instant_kill",_, true)
 
     register_think(ZATANA_CHASE_CAMERA_CLASSNAME, "zatana_camera_think")
 
@@ -691,65 +685,6 @@ bool:do_player_iteration(id){
     }
     return result
 }
-zatana_haramball_shield_react_primitive(id,attacker, Float:damage){
-
-            
-    set_user_health(id,floatround(cvar_val(float, pcvar_endeavour_hp)))
-
-    sh_chat_message(id,gHeroID,"We blocked an instant kill! The damage received would have been: %0.2f",damage)
-    
-    if(!sh_get_id_bit(id,SH_IS_SHOCKED)){
-        sh_shock_user(id,attacker)
-    }
-
-}
-//----------------------------------------------------------------------------------------------
-public zatana_no_instant_kill(this, inflictor, attacker, Float:damage, damagebits)
-{   
-    //already ethereal. resists any conventional damage that isnt a grenade
-    //lets just take care of grenades.
-    //more details in sh_aux_funcs_natives_pt13.sma
-    //the hero (bit) property based damage gating module
-    //we can assume the damage is a grenade
-    //as the handle in the other plugin will take care of the rest
-    //zatana cannot be insta killed AT full health.
-
-
-    if(!sh_is_active()||sh_is_freezetime() ||!is_user_alive(this)) return HAM_IGNORED
-
-    if(!is_valid_ent(inflictor)){
-
-        return HAM_IGNORED
-    }
-
-    if(!sh_get_user_has_hero(this,gHeroID)){
-
-        return FMRES_IGNORED
-    }
-
-    //alright FINE. lets check...
-
-    static inflictor_classname[64];
-
-    entity_get_string(inflictor,EV_SZ_classname,inflictor_classname,63)
-    static bool:it_was_a_grenade; it_was_a_grenade = bool:equal(inflictor_classname,"grenade")
-    static user_hp; user_hp = get_user_health(this);
-    if( it_was_a_grenade){
-
-        if((user_hp >= ZATANA_HEALTHCAP_INT_VERSION) && ( floatround(damage) > ZATANA_HEALTHCAP_INT_VERSION) ){
-            
-            zatana_haramball_shield_react_primitive(this, attacker, damage)
-
-            SetHamParamFloat(4,0.0)
-            
-            return HAM_SUPERCEDE
-        }
-
-        
-    }
-    return HAM_IGNORED
-}
-
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, sh_init_mode:mode){
     if(heroID!=gHeroID) return
@@ -1055,32 +990,4 @@ reset_zatana(id,bool:reset_floating_mode=false, bool:stun_user=false){
 
 
     }
-}
-
-
-public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
-    if ( !sh_is_active() || !is_user_alive(victim)||(victim==attacker)){
-
-        return DMG_FWD_PASS
-    }
-
-    //ethereal players can ONLY be damaged by a very sparse selection of SH_NEW_DMG types
-    //AND hand grenades, unless they have the ANTI_GRENADES_HERO property active
-
-
-    if(!sh_get_user_has_hero(victim,gHeroID)){
-        return DMG_FWD_PASS
-    }
-    new dmg_fwd_ret_id:the_return_value=DMG_FWD_PASS
-
-    new user_hp = get_user_health(victim);
-
-    if((user_hp >= ZATANA_HEALTHCAP_INT_VERSION) && ( damage > ZATANA_HEALTHCAP_INT_VERSION) && (dmgMode!= SH_DMG_KILL)){
-            
-            zatana_haramball_shield_react_primitive(victim, attacker,float(damage))
-
-            the_return_value = DMG_FWD_BLOCK
-    }
-
-    return the_return_value
 }

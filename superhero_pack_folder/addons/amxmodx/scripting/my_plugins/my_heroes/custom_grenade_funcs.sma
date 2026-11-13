@@ -1080,7 +1080,7 @@ gren_effect_user(grenade_ent,tg,attacker,sh_grenade_type:gren_type){
 
 		case GREN_SLEEP:{
 
-			sh_sleep_user(tg,attacker,-1)
+			sh_sleep_user(tg,attacker, _,-1)
 		}
 		case GREN_CHAFF:{
 
@@ -1097,15 +1097,15 @@ gren_effect_user(grenade_ent,tg,attacker,sh_grenade_type:gren_type){
 			
 		}
 		case GREN_SHOCK:{
-			sh_shock_user(tg,attacker)
+			sh_shock_user(tg,attacker,3.0)
 		}
 		case GREN_FREEZE:{
 			
-			sh_freeze_user(tg,5.0,130.0)
+			sh_freeze_user(tg,_,130.0)
 		}
 		case GREN_DISRUPT:{
 			
-			sh_disrupt_user(tg,attacker,-1)
+			sh_disrupt_user(tg,attacker, _,-1)
 		}
 		case GREN_SHRAPNEL:{
 			
@@ -1118,12 +1118,12 @@ gren_effect_user(grenade_ent,tg,attacker,sh_grenade_type:gren_type){
 		}
 		case GREN_WET:{
 			
-			sh_wet_user(tg,attacker);
+			sh_wet_user(tg,attacker,25.0);
 		}
 		case GREN_RANDOM_FX:{
 			the_fx_num = fx_id:pev(grenade_ent, pev_iuser4)
 
-			sh_effect_user_direct(tg, attacker,-1,the_fx_num)
+			sh_effect_user_direct(tg, attacker,10.0,-1,the_fx_num)
 		}
 	}
 	

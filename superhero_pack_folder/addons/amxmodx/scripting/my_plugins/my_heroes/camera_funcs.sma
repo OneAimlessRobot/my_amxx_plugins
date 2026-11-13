@@ -461,7 +461,7 @@ public laser_on_player_think(ent){
 	if ( is_user_alive(iHit) ) {
 		
 		if(!sh_clients_are_same_team(owner,iHit)&&(iHit!=owner)){
-			make_effect(iHit,owner,gHeroID,GLOW,false)
+			make_effect(iHit,owner,4.0,gHeroID,GLOW,false)
 
 				
 		}

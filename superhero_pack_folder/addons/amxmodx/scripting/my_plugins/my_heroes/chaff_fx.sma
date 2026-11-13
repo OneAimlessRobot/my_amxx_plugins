@@ -42,8 +42,9 @@ public plugin_natives(){
 public _sh_chaff_user(iPlugin,iParams){
 	
 	new user=get_param(1)
+	new Float:the_time=get_param_f(2)
 	if(!sh_get_id_bit(user, SH_IS_CHAFFED)){
-		chaff_user(user)
+		chaff_user(user,the_time)
 	}
 	
 	
@@ -58,7 +59,7 @@ public _sh_unchaff_user(iPlugin,iParams){
 	
 	
 }
-chaff_user(id){
+chaff_user(id, Float:the_time){
 	if(!sh_is_active()||!is_user_alive(id)||sh_get_id_bit(id, SH_IS_CHAFFED)) return
 
 
@@ -87,7 +88,7 @@ public chaff_task(array[1], id){
 		return
 	
 	}
-	else if(!sh_get_id_bit(id, SH_IS_CHAFFED)||!array[0]){
+	else if(!sh_get_id_bit(id, SH_IS_CHAFFED)||(array[0]<=0)){
 
 		unchaff_user(id)
 	}

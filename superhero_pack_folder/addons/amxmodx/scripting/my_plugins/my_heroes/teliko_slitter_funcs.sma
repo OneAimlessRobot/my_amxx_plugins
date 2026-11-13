@@ -284,17 +284,12 @@ public CmdStart(attacker, uc_handle)
 		return FMRES_IGNORED
 	}
 
-	if(sh_get_id_bit(attacker,SH_USING_HOOK_ATTACK)){
-
-		return FMRES_IGNORED;
-	}
 	if(!is_user_alive(attacker)){
 
 		
 		stop_dragging(attacker)
 		return FMRES_IGNORED
 	}
-
 	if(sh_get_id_bit(attacker, SH_CONTROLLING_VEHICLE)){
 
 		stop_dragging(attacker)		
@@ -305,6 +300,11 @@ public CmdStart(attacker, uc_handle)
 		return FMRES_IGNORED
 	}
 
+	new bool:is_dragging = bool:is_valid_ent(g_player_slitter[attacker])
+	if(sh_get_id_bit(attacker,SH_USING_HOOK_ATTACK)&&!is_dragging){
+
+		return FMRES_IGNORED;
+	}
 	static button, prev_button = 0
 
 	button= get_uc(uc_handle, UC_Buttons);
@@ -323,7 +323,7 @@ public CmdStart(attacker, uc_handle)
 				
 				Assign_BitVar(hook_button_pressed_mask,attacker, true_for_macro)
 
-				if(!is_valid_ent(g_player_slitter[attacker])){
+				if(!is_dragging){
 					
 					static id,
 						tr,

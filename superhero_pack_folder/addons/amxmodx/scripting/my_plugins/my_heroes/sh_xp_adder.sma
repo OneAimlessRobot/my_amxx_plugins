@@ -15,34 +15,38 @@ enum xp_bonus_struct{
 	
 	xp_extra_type_string[32],
 	
-	Float:xp_extra_type_mult,
+	Float:xp_extra_type_mult, // these are positive. Enum flag for subtraction takes care of penalties and rewards
 
-	xp_extra_type_bonus,
+	xp_extra_type_bonus, // these are positive. Enum flag for subtraction takes care of penalties and rewards
 
     bool:notify_before,
 
-    bool:notify_after
+    bool:notify_after,
+
+    bool:is_subtracted
 
 }
 
 stock const xp_extra_earn_struct_arr[xp_type_bonus_id][xp_bonus_struct] = {
-	{"for killing players" ,"XP_KILL_XP", 9.0, 0, false,true},
+	{"for killing players" ,"XP_KILL_XP", 9.0, 0, false,true, false},
 
-	{"for the damage you caused to the enemy team", "XP_DAMAGE_XP", 1.0, 0, false,true},
+	{"for the damage you caused to the enemy team", "XP_DAMAGE_XP", 1.0, 0, false,true, false},
 
-	{"for planting the bomb", "XP_BOMB_PLANT_XP",500.0, 50, true,true},
-	{"along with your team for detonating the bomb", "XP_BOMB_EXPLODE_XP",900.0, 10, true,true},
-	{"along with your team for saving the bomb target", "XP_BOMB_TARGET_SAVE_XP",500.0, 10, true,true},
-
-
-	{"for being the bomb defuser", "XP_BOMB_DEFUSE_XP",1000.0, 5, true,true},
-	{"for rescuing a hostage", "XP_HOSTAGE_RESCUED_XP",500.0,25, true,true},
-	{"along with your team for rescuing all the hostages", "XP_HOSTAGE_ALL_RESCUED_XP",900.0,15, true,true},
+	{"for planting the bomb", "XP_BOMB_PLANT_XP",500.0, 50, true,true, false},
+	{"along with your team for detonating the bomb", "XP_BOMB_EXPLODE_XP",900.0, 10, true,true, false},
+	{"along with your team for saving the bomb target", "XP_BOMB_TARGET_SAVE_XP",500.0, 10, true,true, false},
 
 
-	{"for killing the vip", "XP_VIP_ASSASSINATE_XP",3.0,15, true,true},
-	{"for escaping as the vip", "XP_VIP_ESCAPE_XP",2000.0, 30, true,true},
-	{"along with your team for protecting the vip", "XP_VIP_PROTECT_XP",2500.0, 10, true,true}
+	{"for being the bomb defuser", "XP_BOMB_DEFUSE_XP",1000.0, 5, true,true, false},
+
+	{"killing a single or multiple hostages", "XP_KILL_HOSTAGE_XP",500.0,25, true,true, true},
+	{"for rescuing a single or multiple hostages", "XP_HOSTAGE_RESCUED_XP",500.0,25, true,true, false},
+	{"along with your team for rescuing all the hostages", "XP_HOSTAGE_ALL_RESCUED_XP",900.0,15, true,true, false},
+
+
+	{"for killing the vip", "XP_VIP_ASSASSINATE_XP",3.0,15, true,true, false},
+	{"for escaping as the vip", "XP_VIP_ESCAPE_XP",2000.0, 30, true,true, false},
+	{"along with your team for protecting the vip", "XP_VIP_PROTECT_XP",2500.0, 10, true,true, false}
 
 
 
@@ -136,13 +140,17 @@ public sh_set_user_xp_fwd_post(id, xp,xp_type_bonus_id:xp_type){
 
         return XP_FWD_PASS
     }
-    player_built_xp_this_round[id][xp_type]+=(xp+
-                xp_extra_earn_struct_arr[xp_type][xp_extra_type_bonus]);
+    new bool:is_subtracted_here = xp_extra_earn_struct_arr[xp_type][is_subtracted]
+
+    new xp_diff = ( (is_subtracted_here?-1:1)*(xp+xp_extra_earn_struct_arr[xp_type][xp_extra_type_bonus]) )
+
+    player_built_xp_this_round[id][xp_type]+=xp_diff
     
     if((xp_type>enum_zero) && xp_extra_earn_struct_arr[xp_type][notify_before]){
-        sh_chat_message(id,-1,"You shall be awarded an extra %d xp %s at the end of the round",(xp+
-        
-                xp_extra_earn_struct_arr[xp_type][xp_extra_type_bonus]),
+
+        sh_chat_message(id,-1,"You shall be %s %d xp %s at the end of the round",
+                is_subtracted_here?"deducted":"awarded an extra",
+                (is_subtracted_here?-1:1)*xp_diff,
                 xp_extra_earn_struct_arr[xp_type][xp_extra_earn_string])
     }
     return XP_FWD_PASS
@@ -157,19 +165,21 @@ public sh_round_start(){
     for(new i=1;i< sh_maxplayers()+1;i++){
         if(is_user_connected(i)){
             for(new xp_type_bonus_id:type=enum_zero; type<xp_type_bonus_id; type++){
-                new xp_earned=player_built_xp_this_round[i][type]*
+                new bool:is_subtracted_here = xp_extra_earn_struct_arr[type][is_subtracted]
+                new xp_diff=player_built_xp_this_round[i][type]*
                             (floatround( xp_extra_earn_struct_arr[type][xp_extra_type_mult]));
 
-                if(xp_earned>0){
+                if(xp_diff!=0){
                     if(xp_extra_earn_struct_arr[type][notify_after]){
 
-                        sh_chat_message(i,-1,"You were awarded an extra %d xp %s last round!",
-                                    xp_earned,
+                        sh_chat_message(i,-1,"You were %s %d xp %s last round!",
+                                    xp_extra_earn_struct_arr[type][is_subtracted]?"deducted":"awarded an extra",
+                                    (is_subtracted_here?-1:1)*xp_diff,
                                     xp_extra_earn_struct_arr[type][xp_extra_earn_string])
                     
                     }    
                     
-                    sh_set_user_xp(i,xp_earned,true);
+                    sh_set_user_xp(i,xp_diff,true);
                 }
             }
             arrayset(player_built_xp_this_round[i], 0, xp_type_bonus_id)

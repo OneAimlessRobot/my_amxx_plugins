@@ -6,11 +6,11 @@
 
 #define FROZEN_SFX "shmod/frostnova.wav" 
 
-#define FREEZE_TIME 5.0
+#define FREEZE_TIME 20.0
 
 #define FREEZE_DAMAGE_MULTIPLIER 2.0 
 
-native sh_freeze_user(id,Float:time,Float:speed)
+native sh_freeze_user(id,Float:the_time = FREEZE_TIME,Float:speed)
 native sh_unfreeze_user(id)
 
 

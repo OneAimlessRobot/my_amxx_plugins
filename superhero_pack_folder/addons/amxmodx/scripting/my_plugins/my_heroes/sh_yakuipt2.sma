@@ -240,14 +240,14 @@ public yakui_kd(id){
 	
 		case YAKUI_WEAPON_CLASSID:{
 			if(gatling_get_pillgatling(id)){
-				make_effect(id,id,gHeroID)
+				make_effect(id,id,5.0,gHeroID)
 				gatling_dec_num_pills(id)
 			}
 			
 		}
 		case CSW_KNIFE:{
 			if(gatling_get_needle(id)){
-				make_effect(id,id,gHeroID,gatling_get_needle_fx(id))
+				make_effect(id,id,5.0,gHeroID,gatling_get_needle_fx(id))
 				gatling_needle_cycle_fx(id)
 			}
 

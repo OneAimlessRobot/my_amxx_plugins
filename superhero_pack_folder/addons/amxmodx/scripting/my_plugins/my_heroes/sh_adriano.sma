@@ -78,7 +78,7 @@ public plugin_init()
 	sh_assign_hero_bit(gHeroID,SH_HEALING_HERO, true)
 	
 	register_forward(FM_TraceLine,"fw_traceline",1);
-	RegisterHam(Ham_TraceAttack,"player","trace_adriano",_,true)
+	RegisterHam(Ham_TakeDamage,"player", "ham_adriano", 1,true)
 
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 
@@ -184,23 +184,24 @@ public heal_teamate(id,teamate){
 				sh_chat_message(teamate,gHeroID,"%s: Come on, %s! %s",attacker_name,client_name,adriano_sentences[generate_int(0,sizeof(adriano_sentences)-1)])
 			}
 		}
-		
-		
 	}
 	
 }
-public trace_adriano(id, attacker, Float:damage, Float:direction[3], traceresult, damagebits)
-{	
-	if(damage<=0.0){
+public ham_adriano(id, idinflictor, attacker, Float:damage, damagebits)
+{
+	if(damage <= 0.0){
+
 		return HAM_IGNORED
 	}
-	
 	if( !sh_is_active() || !is_user_alive(id) || !is_user_connected(id)) return HAM_IGNORED;
+
 	if ( (attacker==id)||!is_user_connected(attacker)||!sh_get_user_has_hero(attacker,gHeroID) ) return HAM_IGNORED
 	
-	new weapon = get_user_weapon(attacker)
+	new weapon, my_hitpoint_enum:the_hitpoint
+
+	get_user_attacker(id, weapon, _:the_hitpoint)
 	
-	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(traceresult,TR_Hitgroup)
+	pev(id, pev_dmg_take, damage)
 
 	switch(weapon){
 		case CSW_ETHEREAL:{

@@ -93,6 +93,10 @@ public Ham_Needle_Swing(weapon_ent)
 }
 public Ham_Needle(id, idinflictor, attacker, Float:damage, damagebits)
 {
+	if(damage <= 0.0){
+
+		return HAM_IGNORED
+	}
 	if ( !sh_is_active()) return HAM_IGNORED
 	
 	if ( !is_user_alive(attacker)) {
@@ -128,7 +132,7 @@ public Ham_Needle(id, idinflictor, attacker, Float:damage, damagebits)
 		SetHamParamFloat(4, damage);
 		if(stabbing){
 
-			make_effect(id,attacker,gHeroID,curr_needle_fx[attacker],false)
+			make_effect(id,attacker,5.0,gHeroID,curr_needle_fx[attacker],false)
 		}
 	}
 	

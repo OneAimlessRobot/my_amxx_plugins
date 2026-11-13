@@ -46,7 +46,7 @@ public plugin_init()
 
 	/*sh_register_admin_only_hero(gHeroID,ADMIN_ALL,0,
 				"Its under maintenance")*/
-	RegisterHam(Ham_TraceAttack,"player","Lara_ham_trace_damage",_,true)
+	RegisterHam(Ham_TakeDamage,"player","Lara_ham_damage",1,true)
 	
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	
@@ -107,17 +107,23 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 	
 	
 }
-public Lara_ham_trace_damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
+public Lara_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
-	if ( !sh_is_active() || !is_user_alive(Victim)||!is_user_alive(Attacker)){
+	if(damage <= 0.0){
+
+		return HAM_IGNORED
+	}
+	if ( !sh_is_active() || !is_user_alive(id)||!is_user_alive(attacker)){
 
 		return HAM_IGNORED
 	}
 
-	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
+	new weapon, my_hitpoint_enum:the_hitpoint
+	get_user_attacker(id, weapon, _:the_hitpoint)
+	pev(id, pev_dmg_take, damage)
 
-	return do_bleed_knife_attack(Victim,Attacker,gHeroID,SPEAR_SLASH_DAMAGE,SPEAR_STAB_DAMAGE,
-						sh_get_user_has_hero(Attacker,gHeroID),
+	return do_bleed_knife_attack(id,attacker,gHeroID,SPEAR_SLASH_DAMAGE,SPEAR_STAB_DAMAGE,
+						sh_get_user_has_hero(attacker,gHeroID),
 								custom_dmg_id_lara_spear,
 								dmg_source_name_short_lara_spear,_,_,the_hitpoint);
 	

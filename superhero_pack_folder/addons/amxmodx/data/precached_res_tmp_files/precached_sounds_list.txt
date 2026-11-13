@@ -14,6 +14,7 @@ debris/metal2.wav
 debris/metal3.wav
 common/wpn_denyselect.wav
 plats/elevbell1.wav
+shmod/zeus_lightningbolt.wav
 weapons/electro5.wav
 ambience/particle_suck2.wav
 shmod/generic_shero_sfx/generic_sh_explosion.wav
@@ -52,7 +53,6 @@ weapons/xbow_hitbod2.wav
 doors/aliendoor3.wav
 ichy/ichy_alert3.wav
 ichy/ichy_attack1.wav
-shmod/zeus_lightningbolt.wav
 turret/tu_ping.wav
 shmod/jeremy/jeremybuildup.wav
 shmod/chikoi_death_sound.wav

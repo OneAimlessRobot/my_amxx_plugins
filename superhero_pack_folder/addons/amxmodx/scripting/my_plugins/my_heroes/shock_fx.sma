@@ -46,10 +46,11 @@ public plugin_natives(){
 public _sh_shock_user(iPlugin,iParams){
 	
 	new user=get_param(1),
-		attacker = get_param(2)
+		attacker = get_param(2),
+		Float:the_time = get_param_f(3)
 	
 	if(!sh_get_id_bit(user,SH_IS_SHOCKED)){
-		shock_user(user,attacker)
+		shock_user(user,attacker,the_time)
 	}
 	
 	
@@ -74,7 +75,7 @@ public unshock_task(id){
 	unshock_user(id)
 	
 }
-shock_user(id,attacker){
+shock_user(id,attacker, Float:the_time){
 	
 	if(!sh_is_active()||!is_user_alive(id)||sh_get_id_bit(id,SH_IS_SHOCKED)||!is_user_connected(attacker)) return
 
@@ -93,9 +94,9 @@ shock_user(id,attacker){
 						generic_dmg_source_shock)
 
 	}
-	sh_set_stun(id,SHOCK_TIME,180.0)
+	sh_set_stun(id,the_time,180.0)
 
-	set_render_with_color_const(id,LTBLUE,1,50,50,1,1,SHOCK_TIME,_,_,kRenderNormal,PRIO_RENDER_EFFECT_ACTIVE)
+	set_render_with_color_const(id,LTBLUE,1,50,50,1,1,the_time,_,_,kRenderNormal,PRIO_RENDER_EFFECT_ACTIVE)
 
 
 	sh_assign_id_bit(id,SH_IS_SHOCKED,true)
@@ -111,11 +112,11 @@ shock_user(id,attacker){
 		
 		if( sh_get_id_bit(pid,SH_IS_SHOCKED)) continue
 		
-		shock_user(pid,attacker)
+		shock_user(pid,attacker,the_time)
 	}
 
 	set_damage_icon(id,2,DMG_ICON_SHOCK,LineColors[LTBLUE])
-	set_task(SHOCK_TIME,"unshock_task",id+UNSHOCK_TASKID)
+	set_task(the_time,"unshock_task",id+UNSHOCK_TASKID)
 
 	
 	

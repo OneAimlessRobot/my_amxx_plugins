@@ -43,22 +43,25 @@ public _make_effect(iPlugin,iParams){
 
 	new vic= get_param(1)
 	new attacker= get_param(2)
+	new Float:the_time = get_param_f(3)
 	new hero_id=get_param(3)
 	new fx_id:fx_num= fx_id:get_param(4)
 	new override=get_param(5)
 
-	new fx_id:true_fx_num= (fx_num<=fx_id:FX_ID_NONE)?sh_gen_effect():fx_num
+	new fx_id:true_fx_num= ((fx_num<=enum_zero)||!FX_ID_IS_APPLIABLE(fx_num))?sh_gen_effect():fx_num
+	
 	
 	if(!is_user_connected(vic)||!is_user_connected(attacker)){
 		
 		return
 	}
-	if((sh_get_user_effect(vic)>=GLOW)&&(sh_get_user_effect(vic)<=BATH)&&!override){
+	new fx_id:vic_fx_id =sh_get_user_effect(vic)
+	if(FX_ID_IS_APPLIABLE(vic_fx_id)&&!override){
 
 		return
 	}
 	sh_uneffect_user(vic)
-	sh_effect_user_direct(vic,attacker,hero_id,true_fx_num)
+	sh_effect_user_direct(vic,attacker,the_time,hero_id,true_fx_num)
 
 }
 

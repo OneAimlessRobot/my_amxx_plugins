@@ -247,6 +247,7 @@ public _explosion_with_origin(iPlugins,iParams){
 	}
 
 	new custom_weapon_id = get_param(12)
+	new sh_thrash_brat_dmg_type:dmg_type_to_use = sh_thrash_brat_dmg_type:get_param(13)
 
 	if((!is_user_alive(explosion_author_id))){
 
@@ -284,7 +285,7 @@ public _explosion_with_origin(iPlugins,iParams){
 		else if(ignore_owner){
 			continue
 		}
-		damage_player_origin(hero_id,fOrigin,explosion_author_id,pid,explosion_radius,peak_power,optional_force,set_stun,damage_frac_ignore_owner,custom_weapon_id)
+		damage_player_origin(hero_id,fOrigin,explosion_author_id,pid,explosion_radius,peak_power,optional_force,set_stun,damage_frac_ignore_owner,custom_weapon_id,dmg_type_to_use)
 
 	}
 }
@@ -315,6 +316,7 @@ public _explosion(iPlugins,iParams){
 	get_string(11,custom_sound_sample,(sizeof custom_sound_sample)-1)
 
 	new custom_weapon_id = get_param(12)
+	new sh_thrash_brat_dmg_type:dmg_type_to_use = sh_thrash_brat_dmg_type:get_param(13)
 
 	if((pev_valid(ent_id)!=2)){
 
@@ -361,7 +363,7 @@ public _explosion(iPlugins,iParams){
 				continue
 			}
 		}
-		damage_player(hero_id,ent_id,owner_id,pid,explosion_radius,peak_power,optional_force,set_stun,damage_frac_ignore_owner,custom_weapon_id)
+		damage_player(hero_id,ent_id,owner_id,pid,explosion_radius,peak_power,optional_force,set_stun,damage_frac_ignore_owner,custom_weapon_id,dmg_type_to_use)
 
 	}
 }
@@ -407,8 +409,10 @@ public _explosion_custom_entity(iPlugins,iParams){
 	new numfound = find_sphere_class(ent_id,ent_classname, explosion_radius ,entlist, 32);
 
 	new owner_id=entity_get_edict(ent_id,EV_ENT_owner)
+	static Float:entity_hp_left = 0.0
 	for (new i=0; i < numfound; i++)
-	{		
+	{	
+		entity_hp_left = 0.0
 		new eid = entlist[i];
 		
 		if(!is_valid_ent(eid)){
@@ -418,6 +422,11 @@ public _explosion_custom_entity(iPlugins,iParams){
 		if(pev_valid(eid)!=2){
 			continue
 		
+		}
+		pev(eid,pev_health,entity_hp_left)
+		if(entity_hp_left <= 0.0){
+
+			continue
 		}
 		damage_entity(ent_id,owner_id,eid,explosion_radius,peak_power,_,optional_force)
 	}
@@ -456,9 +465,10 @@ public _explosion_custom_entity_with_origin(iPlugins,iParams){
 
 	static entlist[33];
 	new numfound = find_sphere_class(0,ent_classname, explosion_radius ,entlist, 32,fOrigin);
-
+	static Float:entity_hp_left = 0.0
 	for (new i=0; i < numfound; i++)
-	{		
+	{	
+		entity_hp_left = 0.0
 		new eid = entlist[i];
 		
 		if(!is_valid_ent(eid)){
@@ -469,10 +479,15 @@ public _explosion_custom_entity_with_origin(iPlugins,iParams){
 			continue
 		
 		}
+		pev(eid,pev_health,entity_hp_left)
+		if(entity_hp_left <= 0.0){
+
+			continue
+		}
 		damage_entity_origin(fOrigin,explosion_owner_id,eid,explosion_radius,peak_power,_,optional_force)
 	}
 }
-damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,Float:optional_force=0.0,set_stun=0,Float:damage_frac_ignore_owner=SH_DEFAULT_DAMAGE_FRAC_EXPLOSION_IGNORE_OWNER,custom_weapon_id=-1){
+damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,Float:optional_force=0.0,set_stun=0,Float:damage_frac_ignore_owner=SH_DEFAULT_DAMAGE_FRAC_EXPLOSION_IGNORE_OWNER,custom_weapon_id=-1, sh_thrash_brat_dmg_type:dmg_type_to_use = SH_NEW_DMG_FRAG_BLAST){
 	
 	
 	if((pev_valid(ent_id)!=2)){
@@ -530,7 +545,7 @@ damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,Float:op
 	
 	sh_extra_damage(pid,owner_id,idamage,
 			_,_,_,_,_,
-			SH_NEW_DMG_FRAG_BLAST,
+			dmg_type_to_use,
 			custom_weapon_id)
 	
 	set_velocity_from_origin(pid,mine_origin,force)
@@ -575,7 +590,7 @@ damage_entity(ent_id,owner_id,tg_id,Float:radius,Float:peak_power,ignore_owner=1
 	else{
 		force=damage
 	}
-	if(is_user_alive(owner_id)||(is_user_alive(ent_id))){
+	if((is_user_alive(owner_id)||(is_user_alive(ent_id)))){
 
 		ExecuteHamB(Ham_TakeDamage, tg_id, ent_id, owner_id, damage, 0);
 	}
@@ -596,7 +611,7 @@ damage_entity(ent_id,owner_id,tg_id,Float:radius,Float:peak_power,ignore_owner=1
 }
 
 
-damage_player_origin(hero_id,Float:mine_origin[3],owner_id,pid,Float:radius,Float:peak_power,Float:optional_force=0.0,set_stun=0,Float:damage_frac_ignore_owner=SH_DEFAULT_DAMAGE_FRAC_EXPLOSION_IGNORE_OWNER,custom_weapon_id=-1){
+damage_player_origin(hero_id,Float:mine_origin[3],owner_id,pid,Float:radius,Float:peak_power,Float:optional_force=0.0,set_stun=0,Float:damage_frac_ignore_owner=SH_DEFAULT_DAMAGE_FRAC_EXPLOSION_IGNORE_OWNER,custom_weapon_id=-1, sh_thrash_brat_dmg_type:dmg_type_to_use = SH_NEW_DMG_FRAG_BLAST){
 	
 	if(!is_user_connected(owner_id)){
 	
@@ -647,7 +662,7 @@ damage_player_origin(hero_id,Float:mine_origin[3],owner_id,pid,Float:radius,Floa
 	
 	sh_extra_damage(pid,owner_id,idamage,
 			_,_,_,_,_,
-			SH_NEW_DMG_FRAG_BLAST,
+			dmg_type_to_use,
 			custom_weapon_id)
 	
 	set_velocity_from_origin(pid,mine_origin,force)
@@ -691,6 +706,7 @@ damage_entity_origin(Float:mine_origin[3],owner_id,tg_id,Float:radius,Float:peak
 	else{
 		force=damage
 	}
+	
 	if(is_user_alive(owner_id)){
 
 		ExecuteHamB(Ham_TakeDamage, tg_id, owner_id, owner_id, damage, 0);

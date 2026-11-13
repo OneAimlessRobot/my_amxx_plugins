@@ -35,7 +35,6 @@ enum{
 	TRACK_TASK_TRACK_COLOR,
 	TRACK_TASK_PERIOD,
 	TRACK_TASK_CURR_IT,
-	TRACK_TASK_NUM_ITS,
 	TRACK_DETECTORS_ONLY,
 	NUM_INIT_TRACK_PARAMS
 
@@ -52,7 +51,8 @@ public plugin_init(){
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	RADIOACTIVE_TASK_ID=allocate_typed_task_id(player_task)
-	RegisterHam(Ham_TraceAttack, "player", "tracked_damage",_,true)
+
+	RegisterHam(Ham_TakeDamage, "player", "tracked_damage",1,true)
 
 
 	custom_dmg_id_tracked_vuln=sh_log_custom_damage_source(-1,
@@ -70,14 +70,23 @@ public plugin_natives(){
 	register_native("track_user","_track_user");
 }
 
-public tracked_damage(id, attacker, Float:damage, Float:Direction[3], Ptr, DamageBits){
+public tracked_damage(id, idinflictor, attacker, Float:damage, damagebits)
+{
+	if(damage <= 0.0){
 
+		return HAM_IGNORED
+	}
 	if ( !sh_is_active() || !is_user_alive(id) || !is_user_alive(attacker)) return HAM_IGNORED
 
 
 	new return_result= HAM_IGNORED
 
-	new my_hitpoint_enum:the_hitpoint = my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
+	new weapon,my_hitpoint_enum:the_hitpoint
+
+	get_user_attacker(id, weapon, _:the_hitpoint)
+	
+	pev(id, pev_dmg_take, damage)
+
 
 	if ( !is_user_connected(attacker)) return return_result
 	
@@ -101,7 +110,7 @@ public tracked_damage(id, attacker, Float:damage, Float:Direction[3], Ptr, Damag
 }
 
 public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
-	if (!sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)) return DMG_FWD_PASS
+	if (!sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker) || !CUSTOM_DMG_TYPE_IS_SPECIAL(new_dmg_type)) return DMG_FWD_PASS
 
 	new fx_num_vic=(gatling_get_fx_num(victim));
 	switch(fx_num_vic){
@@ -109,8 +118,8 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_h
 		case RADIOACTIVE:{
 			new Float:extraDamage = float(damage) * RADIOACTIVE_DAMAGE_VULNERABILITY_COEFF - float(damage)
 			if (floatround(extraDamage)>0){
-				new_dmg_type=SH_NEW_DMG_RADIATION_POISON
-				damage=floatround(extraDamage)
+				
+				damage+=floatround(extraDamage)
 			}
 		}
 	}
@@ -205,10 +214,10 @@ public track_task(any:array[NUM_INIT_TRACK_PARAMS+SH_MAXSLOTS+1],id){
 						SH_NEW_DMG_RADIATION_POISON,
 						generic_dmg_id_radiation_poison)
 	}
-	if((array[TRACK_TASK_CURR_IT]<array[TRACK_TASK_NUM_ITS])){
+	if((array[TRACK_TASK_CURR_IT]>0)){
 		
 		set_damage_icon(id,2,DMG_ICON_RADIATION,LineColors[color_const],Float:array[TRACK_TASK_PERIOD])
-		array[TRACK_TASK_CURR_IT]++
+		array[TRACK_TASK_CURR_IT]--
 		set_task(Float:array[TRACK_TASK_PERIOD],"track_task",id+RADIOACTIVE_TASK_ID,array, sizeof(array))
 	}
 	else{
@@ -225,16 +234,16 @@ public _track_user(iPlugins, iParams){
 		do_damage=get_param(3),
 		Float:damage_health_pct=get_param_f(4),
 		Float:period=get_param_f(5),
-		Float:time=get_param_f(6),
+		Float:the_time=get_param_f(6),
 		sh_custom_color:track_color=sh_custom_color:get_param(7),
 		bool:detectors_only=bool:get_param(8)
 
 	
 	if(!is_user_connected(id)||!is_user_connected(attacker)) return 
 
-	new  radioactive_times=floatround(time/period)
-	new players[SH_MAXSLOTS]
-	new team_name[32]
+	new radioactive_times=floatround(the_time/period)
+	static players[SH_MAXSLOTS]
+	static team_name[32]
 	new player_count;
 	gatling_set_fx_num(id, RADIOACTIVE)
 	
@@ -242,21 +251,18 @@ public _track_user(iPlugins, iParams){
 	get_user_team(attacker,team_name,32)
 	get_players(players,player_count,"eah",team_name)
 
-	new any:array[NUM_INIT_TRACK_PARAMS+SH_MAXSLOTS+1]
+	static any:array[NUM_INIT_TRACK_PARAMS+SH_MAXSLOTS+1]
 	array[TRACK_TASK_ATTACKER] = attacker
 	array[TRACK_TASK_PLAYER_COUNT] = player_count
 	array[TRACK_TASK_DO_DAMAGE] = do_damage
 	array[TRACK_TASK_DAMAGE_HEALTH_PCT] = damage_health_pct
 	array[TRACK_TASK_TRACK_COLOR] = track_color
-	array[TRACK_TASK_CURR_IT] = 0
-	array[TRACK_TASK_NUM_ITS] = radioactive_times
+	array[TRACK_TASK_CURR_IT] = radioactive_times
 	array[TRACK_TASK_PERIOD] = period
 	array[TRACK_DETECTORS_ONLY] = detectors_only
 	for(new i=0;i<player_count;i++){
 		
-		if(is_user_alive(players[i])){
-			array[NUM_INIT_TRACK_PARAMS+i]=players[i]
-		}
+		array[NUM_INIT_TRACK_PARAMS+i]=players[i]
 	}
 	set_task(period,"track_task",id+RADIOACTIVE_TASK_ID,array, sizeof(array))
 

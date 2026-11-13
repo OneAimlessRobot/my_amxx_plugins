@@ -136,7 +136,7 @@ public plugin_init()
 	add(hero_name_arr,charsmax(hero_name_arr),gHeroName,charsmax(gHeroName))
 	superheromod_help_link_hero(gHeroID, "Ester: Help file","ester_folder/","ester_help_file.html",hero_name_arr)
 	
-	RegisterHam(Ham_TraceAttack, "player", "fw_TraceAttack_Player",_,true)
+	RegisterHam(Ham_TakeDamage, "player", "fw_HamTakeDamage",1,true)
 	
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	register_ham_hook_multiple(Ham_TraceAttack,
@@ -171,7 +171,8 @@ public plugin_init()
 }
 
 ester_collapse(id){
-	explosion(gHeroID,id,float(get_user_health(id)+damage_to_do[id]),float(get_user_health(id)+damage_to_do[id]),_,0)
+	explosion(gHeroID,id,float(get_user_health(id)+damage_to_do[id]),float(get_user_health(id)+damage_to_do[id]),_,0,
+			_,_,_,_,_,_,SH_NEW_DMG_ENERGY_BLAST)
 	reset_status(id)
 	user_kill(id,1)
 	g_ester_attack_phase[id] = FINISHED
@@ -285,15 +286,16 @@ public weaponChange(id)
 		return PLUGIN_CONTINUE
 	}
 	new wpnid = read_data(2)
+	new fx_id:the_fx_id = sh_get_user_effect(id)
 	if (wpnid == MORALIZER_WEAPON_ID) {
 		if(gGunLastDeployed[id]!=wpnid){
-			if(sh_get_user_effect(id)!=METYLPHENIDATE){
-				sh_effect_user_direct(id,id,gHeroID,METYLPHENIDATE);
+			if(!FX_ID_IS_APPLIABLE(the_fx_id)){
+				sh_effect_user_direct(id,id,2.0,gHeroID,METYLPHENIDATE);
 			}
 		}
 	}
 	else{
-		if(sh_get_user_effect(id)==METYLPHENIDATE){
+		if(the_fx_id==METYLPHENIDATE){
 			sh_uneffect_user(id);
 			
 		}
@@ -504,7 +506,7 @@ public ester_moralizer_ray_laser(Victim, Attacker, Float:Damage, Float:Direction
 
 }
 
-public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr, DamageBits)
+public fw_HamTakeDamage(id, attacker, Float:damage, Float:Direction[3], Ptr, DamageBits)
 {	
 	if(damage<=0.0){
 		return HAM_IGNORED
@@ -522,14 +524,19 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 	get_user_name(attacker,attacker_name,127)
 	get_user_name(id,client_name,127)
 	
-	new hitgroup=get_tr2(Ptr,TR_iHitgroup)
-	new headshot=(hitgroup==1)
-	new weapon=get_user_weapon(attacker)
+	new weapon, my_hitpoint_enum:the_hitpoint
+
+	get_user_attacker(id, weapon, _:the_hitpoint)
+	
+	pev(id, pev_dmg_take, damage)
+
+	new headshot=(the_hitpoint==enum_one)
 	new mult=(headshot?cvar_val(num,pcvar_moralizing_headshot_xp_mult):1);
 	new CsTeams:att_team=CS_TEAM_UNASSIGNED,CsTeams:vic_team=CS_TEAM_UNASSIGNED;
 	att_team=cs_get_user_team(attacker)
 	vic_team=cs_get_user_team(id)
-	
+	new fx_id:the_fx_id = sh_get_user_effect(id)
+	new bool:fx_is_appliable_here = (FX_ID_IS_APPLIABLE(the_fx_id))
 	new is_teamate=(vic_team==att_team)
 
 	if(attacker_has_hero){
@@ -538,8 +545,8 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 		if((weapon==CSW_KNIFE)||(weapon==MORALIZER_WEAPON_ID)){
 			switch(is_teamate){
 				case 0:{
-					if((sh_get_user_effect(id)<KILL)||(sh_get_user_effect(id)>BATH)){
-						sh_effect_user_direct(id,attacker,gHeroID,STUN);
+					if(!(fx_is_appliable_here)){
+						sh_effect_user_direct(id,attacker,3.0,gHeroID,STUN);
 						if(!is_user_bot(attacker)){
 							sh_chat_message(attacker,gHeroID,(weapon==MORALIZER_WEAPON_ID?"%s: AYO CHILL, %s!":"%s: OW! What was that for, Ester? (%s)?"),client_name,attacker_name)
 						}
@@ -551,7 +558,7 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 						if (extraDamage>0){
 						
 							sh_extra_damage(id,attacker,floatround(extraDamage),
-										my_hitpoint_enum:hitgroup,
+										the_hitpoint,
 										_,_,_,_,_,
 										(weapon==MORALIZER_WEAPON_ID)?moralizing_ray_wpn_id:adulting_pan_wpn_id)
 							
@@ -574,8 +581,9 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 				}
 				case 1:{
 					if(gBuiltUpXp[attacker]>(weapon==MORALIZER_WEAPON_ID?cvar_val(num,pcvar_moralizing_tmp_xp_give):cvar_val(num,pcvar_moralizing_pan_xp_give))){
-						if((sh_get_user_effect(id)<KILL)||(sh_get_user_effect(id)>BATH)){
-							sh_effect_user_direct(id,attacker,gHeroID,METYLPHENIDATE);
+						
+						if(!(fx_is_appliable_here)){
+							sh_effect_user_direct(id,attacker,3.0,gHeroID,METYLPHENIDATE);
 							
 							if(!is_user_bot(attacker)){
 								sh_chat_message(attacker,gHeroID,(weapon==MORALIZER_WEAPON_ID?"%s: AYO CHILL, %s!":"%s: OW! What was that for, Ester? (%s)?"),client_name,attacker_name)
@@ -609,7 +617,7 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 				
 				sh_extra_damage(attacker, id,
 								1+ floatround(floatmul(floatdiv(damage,float(damage_to_do[id])),float(gEsterDmg[id])),floatround_ceil),
-								my_hitpoint_enum:hitgroup,
+								the_hitpoint,
 								_,_,_,_,
 								SH_NEW_DMG_SHOCK,
 								generic_dmg_shock)
@@ -617,7 +625,7 @@ public fw_TraceAttack_Player(id, attacker, Float:damage, Float:Direction[3], Ptr
 				directed_spark(id, attacker,20,10,255,_,LAVENDER,6,1)
 			}
 		}
-		fx_blood(origin,origin2,my_hitpoint_enum:hitgroup,true);
+		fx_blood(origin,origin2, the_hitpoint,true);
 	}
 	return HAM_IGNORED
 }

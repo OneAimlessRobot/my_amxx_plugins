@@ -99,7 +99,7 @@ public plugin_init()
 						true)
 	sh_assign_hero_bit(gHeroID, SH_BLEED_POWERS, true);
 
-	RegisterHam(Ham_TraceAttack,"player","Power_Damage",_,true)
+	RegisterHam(Ham_TakeDamage,"player","Power_Damage",1,true)
 	
 	power_hud_msg_sync = CreateHudSyncObj()
 	
@@ -179,41 +179,43 @@ public power_csm_kd(id)
 	power_csm_execute_extract(id)
 	sh_set_cooldown(id, cvar_val(float, pcvar_extract_cooldown) * 1.0 )
 }
-public Power_Damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits){
-	
-	if(Damage<=0.0){
+public Power_Damage(id, idinflictor, attacker, Float:damage, damagebits)
+{
+	if(damage <= 0.0){
+
 		return HAM_IGNORED
 	}
+	
+	if( !sh_is_active() || !is_user_alive(id) || !is_user_connected(id)) return HAM_IGNORED;
 
-	if ( !sh_is_active() || !is_user_alive(Victim) ) return HAM_IGNORED
+	if ( (attacker==id)||!is_user_connected(attacker)||!sh_get_user_has_hero(attacker,gHeroID) ) return HAM_IGNORED
+	
+	new weapon,my_hitpoint_enum:the_hitpoint
 
-
-	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
-
-	new bool:has_hero= bool:sh_get_user_has_hero(Attacker,gHeroID) 
-
-	if (!is_user_connected(Attacker)) return HAM_IGNORED
+	get_user_attacker(id, weapon, _:the_hitpoint)
+	
+	pev(id, pev_dmg_take, damage)
 
 	//I had to tell her not to bleed her teammates
-	if ( has_hero  && (g_power_points[Attacker]>0.0) && !sh_clients_are_same_team(Attacker,Victim)) {
+	if ( (g_power_points[attacker]>0.0) && !sh_clients_are_same_team(attacker,id)) {
 		// do extra damage
-		new Float:max_points_frac= (g_power_points[Attacker]/cvar_val(float,pcvar_max_points)),
+		new Float:max_points_frac= (g_power_points[attacker]/cvar_val(float,pcvar_max_points)),
 		
 			Float:dmg_mult= (cvar_val(float,pcvar_min_mult) + (max_points_frac* (cvar_val(float,pcvar_max_mult) - cvar_val(float,pcvar_min_mult)))),
 			
-			Float:extraDamage = Damage * dmg_mult- Damage,
+			Float:extraDamage = damage * dmg_mult- damage,
 			
 			rounded_dmg = floatround(extraDamage)
 
 		if(rounded_dmg > 0){
 
-			g_power_points[Attacker] = max_macro(0.0,g_power_points[Attacker]- max_macro(cvar_val(float, pcvar_dmg_to_points_min_dec_points),(extraDamage * cvar_val(float, pcvar_dmg_to_points_dec_pct))))
+			g_power_points[attacker] = max_macro(0.0,g_power_points[attacker]- max_macro(cvar_val(float, pcvar_dmg_to_points_min_dec_points),(extraDamage * cvar_val(float, pcvar_dmg_to_points_dec_pct))))
 
-			show_points_to_player(Attacker)
+			show_points_to_player(attacker)
 		}
 		if (rounded_dmg > 1){
 			
-			sh_extra_damage(Victim, Attacker, rounded_dmg,
+			sh_extra_damage(id, attacker, rounded_dmg,
 											the_hitpoint,
 											SH_DMG_NORM,
 											SH_EXTRA_DMG_FLAG_STUN,
@@ -221,7 +223,7 @@ public Power_Damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, Dam
 											SH_NEW_DMG_BLEED,
 											power_csm_bleed_dmg_boost_wpn_id)
 			
-			sh_bleed_user(Victim,Attacker,BLEED_NORMAL,gHeroID,_,the_hitpoint)
+			sh_bleed_user(id,attacker,BLEED_NORMAL,gHeroID,_,the_hitpoint)
 			
 		}
 	}

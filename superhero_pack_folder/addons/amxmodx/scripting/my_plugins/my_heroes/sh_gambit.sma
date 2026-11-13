@@ -141,6 +141,10 @@ public gambit_weapons(id)
 }
 public gambit_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
+	if(damage <= 0.0){
+
+		return HAM_IGNORED
+	}
 	if ( !sh_is_active() || !is_user_alive(id)||!is_user_connected(attacker)||!sh_get_user_has_hero(attacker,gHeroID)) return HAM_IGNORED
 	
 	static inflictor_classname[64];

@@ -34,6 +34,7 @@ new wpn_name_for_future_lookup[50];
 new dmg_source_name_short_l96[SAFE_BUFFER_SIZE+1]="Salomé"
 new dmg_source_name_log_l96[SAFE_BUFFER_SIZE+1]="Salomé's L96"
 new custom_dmg_id_l96
+new bool:is_hostage_map = false
 //new HamHook:TakeDamage
 public plugin_init(){
 	
@@ -59,6 +60,13 @@ public plugin_init(){
 
 	
 	register_entity_as_wall_touchable(SALOME_PROJECTILE_CLASSNAME,"FwdTouchWorld")
+
+	is_hostage_map =  (engfunc(EngFunc_FindEntityByString, -1, "classname", "hostage_entity") > 0)
+	
+	if(is_hostage_map){
+		register_custom_touchable(SALOME_PROJECTILE_CLASSNAME,"FwdTouchWorld",hostage_vector,1)
+	}
+	
 	register_custom_touchable(SALOME_PROJECTILE_CLASSNAME,"bulletina_touque_playor",player_vector,1)
 
 
@@ -416,7 +424,7 @@ public FwdTouchWorld( bull_et, World ) {
 	
 	static szClassname[32]
 	entity_get_string(World,EV_SZ_classname,szClassname, charsmax(szClassname))
-	if(equal(szClassname,"func_breakable")){
+	if(equal(szClassname,"func_breakable")||(is_hostage_map&&(equal(szClassname,"hostage_entity")))){
 		static Float:bullet_launch_pos[3]
 				
 		entity_get_vector(bull_et,EV_VEC_vuser1,bullet_launch_pos)
@@ -430,7 +438,7 @@ public FwdTouchWorld( bull_et, World ) {
 		new owner=entity_get_edict(bull_et,EV_ENT_owner)
 		ExecuteHamB(Ham_TakeDamage, World, bull_et, owner, damage, 0);
 
-	} 
+	}
 	remove_entity(bull_et)
 }
 public bulletina_touque_playor(pToucher, pTouched)

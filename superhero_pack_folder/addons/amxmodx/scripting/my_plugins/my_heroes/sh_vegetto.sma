@@ -15,6 +15,7 @@
 #include "vegetto_inc/vegetto_inc.inc"
 #include "../my_include/my_author_header.inc"
 
+#define VEGETTO_POWER_CLASSNAME  "vegetto_power"
 /*
 
 	make it so that every kind of goku blast is guideable.
@@ -49,6 +50,9 @@ new vegetto_dmgs_arr[5][sh_extra_damage_struct] = {
 	{"vegetto_death_ball", "vegetto_death_ball", -1}
 
 }
+
+new bool:is_hostage_map = false
+
 new pcvar_aps,
 	pcvar_ap_mult,
 	pcvar_hp_mult,
@@ -108,8 +112,14 @@ public plugin_init()
 				0)
 	}
 
-	register_entity_as_wall_touchable("vexd_vegetto_power","vegetto_power_touch")
-	register_custom_touchable("vexd_vegetto_power","vegetto_power_touch",player_vector,1)
+	register_entity_as_wall_touchable(VEGETTO_POWER_CLASSNAME,"vegetto_power_touch")
+	register_custom_touchable(VEGETTO_POWER_CLASSNAME,"vegetto_power_touch",player_vector,1)
+
+	is_hostage_map =  (engfunc(EngFunc_FindEntityByString, -1, "classname", "hostage_entity") > 0)
+	
+	if(is_hostage_map){
+		register_custom_touchable(VEGETTO_POWER_CLASSNAME,"vegetto_power_touch",hostage_vector,1)
+	}
 
 	register_event("CurWeapon", "curweapon", "be", "1=1")
 	vegetto_hud_sync=CreateHudSyncObj()
@@ -385,7 +395,7 @@ public create_power(id)
 
 	g_powerID[id] = newEnt
 
-	entity_set_string(newEnt, EV_SZ_classname, "vexd_vegetto_power")
+	entity_set_string(newEnt, EV_SZ_classname, VEGETTO_POWER_CLASSNAME)
 	entity_set_model(newEnt, entModel)
 
 	entity_set_vector(newEnt, EV_VEC_mins, VecMins)
@@ -589,6 +599,14 @@ public vegetto_power_touch(pToucher, pTouched) {
 	vExplodeAt[1] = floatround(fl_vExplodeAt[1])
 	vExplodeAt[2] = floatround(fl_vExplodeAt[2])
 
+	if(is_hostage_map){
+		explosion_custom_entity(pToucher,
+										float(dmgRadius),float(maxDamage),
+										"hostage_entity",
+										_,
+										explosion_sfx_show_nothing)
+	}
+
 
 
 	explosion_custom_entity(pToucher,
@@ -598,8 +616,8 @@ public vegetto_power_touch(pToucher, pTouched) {
 									explosion_sfx_show_nothing)
 
 	// Cause the Damage
-	new vicOrigin[3], Float:dRatio,  distance, damage
-	new players[SH_MAXSLOTS], pnum, vic
+	static vicOrigin[3], Float:dRatio,  distance, damage
+	static players[SH_MAXSLOTS], pnum, vic
 
 	get_players(players, pnum, "ah")
 	
@@ -915,7 +933,8 @@ public shake_n_stun(id)
 		}
 	}
 
-	explosion(gHeroID,id,float(cvar_val(num,pcvar_powerup_explode_radius_ssj4)),100.0,_,_,1)
+	explosion(gHeroID,id,float(cvar_val(num,pcvar_powerup_explode_radius_ssj4)),100.0,_,_,1,
+			_,_,_,_,_,SH_NEW_DMG_ENERGY_BLAST)
 }
 //----------------------------------------------------------------------------------------------
 public powerup_effect(parm[])

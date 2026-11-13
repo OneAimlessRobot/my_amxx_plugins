@@ -31,6 +31,8 @@ new maria_riveter_wpn_id
 new dmg_source_name_short_riveter[SAFE_BUFFER_SIZE+1]="riveter"
 new dmg_source_name_log_riveter[SAFE_BUFFER_SIZE+1]="riveter"
 
+new bool:is_hostage_map = false
+
 public plugin_init(){
 	
 
@@ -47,12 +49,18 @@ public plugin_init(){
 	RegisterHam(Ham_Item_PostFrame, wpn_name_for_future_lookup, "fw_Item_PostFrame",_,true)	
 	
 	
-	
 	RegisterHam(Ham_Weapon_Reload, wpn_name_for_future_lookup, "fw_WeaponReloadPre",_,true)
 	RegisterHam(Ham_Weapon_Reload, wpn_name_for_future_lookup, "fw_Weapon_Reload_Post", 1,true)
 
 	register_entity_as_wall_touchable(MARIA_PROJECTILE_CLASSNAME,"rrrrroovvetoooo_touque_playor")
 	register_custom_touchable(MARIA_PROJECTILE_CLASSNAME,"rrrrroovvetoooo_touque_playor",player_vector,1)
+
+	is_hostage_map =  (engfunc(EngFunc_FindEntityByString, -1, "classname", "hostage_entity") > 0)
+	
+	if(is_hostage_map){
+		register_custom_touchable(MARIA_PROJECTILE_CLASSNAME,"rrrrroovvetoooo_touque_playor",hostage_vector,1)
+	}
+	
 
 	register_think(MARIA_PROJECTILE_CLASSNAME, "rivette_thinque")
 
@@ -438,7 +446,13 @@ public rrrrroovvetoooo_touque_playor(pToucher, pTouched)
 									"func_breakable",
 									MARIA_PROJECTILE_EXPLODE_FORCE,
 									explosion_sfx_show_nothing)
-	
+	if(is_hostage_map){
+		explosion_custom_entity(pToucher,
+										MARIA_PROJECTILE_EXPLODE_RADIUS,damage,
+										"hostage_entity",
+										MARIA_PROJECTILE_EXPLODE_FORCE,
+										explosion_sfx_show_nothing)
+	}
 	remove_entity(pToucher)
 }
 public plugin_precache()

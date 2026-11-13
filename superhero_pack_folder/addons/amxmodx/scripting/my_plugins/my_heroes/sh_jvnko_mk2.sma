@@ -66,7 +66,7 @@ public plugin_init()
 						true)
 	sh_assign_hero_bit(gHeroID, SH_TR45H_HERO, true);
 
-	RegisterHam(Ham_TraceAttack,"player","Jvnko_Damage",_,true)
+	RegisterHam(Ham_TakeDamage,"player","Jvnko_Damage",1,true)
 	
 	
 	
@@ -92,32 +92,33 @@ public jvnko_tracer_red(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr,
 	generic_weapon_tracer_logic(Attacker,the_bool_to_use,_,gHeroID,sh_custom_color:{RED,RED,RED})
 
 }
-public Jvnko_Damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits){
+public Jvnko_Damage(id, idinflictor, attacker, Float:damage, damagebits){
 	
-	if(Damage<=0.0){
+	
+	if(damage<=0.0){
 		return HAM_IGNORED
 	}
+	
+	if( !sh_is_active() || !is_user_alive(id) || !is_user_connected(id)) return HAM_IGNORED;
 
-	if ( !sh_is_active() || !is_user_alive(Victim) ) return HAM_IGNORED
+	if ( (attacker==id)||!is_user_connected(attacker)||!sh_get_user_has_hero(attacker,gHeroID) ) return HAM_IGNORED
+	
+	new weapon, my_hitpoint_enum:the_hitpoint
 
+	get_user_attacker(id, weapon, _:the_hitpoint)
+	
+	pev(id, pev_dmg_take, damage)
 
-	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
-
-	new bool:has_hero= bool:sh_get_user_has_hero(Attacker,gHeroID) 
-
-	if (!is_user_connected(Attacker)) return HAM_IGNORED
-
-	if ( has_hero  && sh_get_id_bit(Attacker,SH_IS_TR45H_GUN_EQUIPPED) && !sh_clients_are_same_team(Attacker,Victim)) {
-		new wpn_id= get_user_weapon(Attacker),
-			wpn_ent = get_weapon_ent_of_player(Attacker, wpn_id),
+	if (sh_get_id_bit(attacker,SH_IS_TR45H_GUN_EQUIPPED) && !sh_clients_are_same_team(attacker,id)) {
+		new wpn_ent = get_weapon_ent_of_player(attacker, weapon),
 			Float:the_dmg = deplete_trash_wpn_dmg_reserve(wpn_ent),
-			Float:pre_extraDamage = ( ( Damage * cvar_val(float,pcvar_dmg_mult))- Damage),
+			Float:pre_extraDamage = ( ( damage * cvar_val(float,pcvar_dmg_mult))- damage),
 			Float:extraDamage =  max_macro(0.0, min_macro(the_dmg,pre_extraDamage));
 		
 		if (extraDamage > 0.0){
 			deplete_trash_wpn_dmg_reserve(wpn_ent,extraDamage)
 
-			sh_extra_damage(Victim, Attacker, floatround(extraDamage),
+			sh_extra_damage(id, attacker, floatround(extraDamage),
 											the_hitpoint,
 											SH_DMG_NORM,
 											SH_EXTRA_DMG_FLAG_STUN,

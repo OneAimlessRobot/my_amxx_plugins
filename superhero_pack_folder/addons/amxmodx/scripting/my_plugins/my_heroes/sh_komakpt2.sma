@@ -92,7 +92,7 @@ public plugin_init()
 	hud_sync=CreateHudSyncObj()
 
 	//register_forward(FM_TraceLine,"trace_komakery_hit_on_right_arm");
-	RegisterHam(Ham_TraceAttack,"player","trace_komakery_hit_on_right_arm",0,true)
+	RegisterHam(Ham_TraceAttack,"player","trace_komakery_hit_on_right_arm",_,true)
 	register_ham_hook_multiple(Ham_TraceAttack,
 					full_entity_array_except_player,
 					length_of_trace_attack_entity_array-1,
@@ -216,7 +216,7 @@ public Komak_Fire_Weapon_Post(weapon_ent)
 
 }
 
-public trace_komakery_hit_on_right_arm(this, idattacker, Float:damage, Float:direction[3], traceresult, damagebits)
+public trace_komakery_hit_on_right_arm(this, idattacker, Float:damage, Float:direction[3], Ptr, damagebits)
 {
 	if(damage<=0.0){
 		return HAM_IGNORED
@@ -231,11 +231,11 @@ public trace_komakery_hit_on_right_arm(this, idattacker, Float:damage, Float:dir
 	if(client_is_hittable_here){
 		if(sh_get_user_has_hero(this,gHeroID) ){
 
-			new hitgroup=get_tr2(traceresult,TR_iHitgroup);
+			new hitgroup=get_tr2(Ptr,TR_iHitgroup);
 			switch(hitgroup){
 				case HIT_RIGHTARM:{
-					set_tr2(traceresult,TR_iHitgroup,HIT_SHIELD);
-					SetHamParamTraceResult(5,traceresult)
+					set_tr2(Ptr,TR_iHitgroup,HIT_SHIELD);
+					SetHamParamTraceResult(5,Ptr)
 					return_result=HAM_IGNORED
 				}
 			}
@@ -244,7 +244,7 @@ public trace_komakery_hit_on_right_arm(this, idattacker, Float:damage, Float:dir
 	}
 	return return_result
 }
-public trace_komakery_hit(this, idattacker, Float:damage, Float:direction[3], traceresult, damagebits)
+public trace_komakery_hit(this, idattacker, Float:damage, Float:direction[3], Ptr, damagebits)
 {
 
 	if( !sh_is_active() ||!is_user_alive(idattacker)||!sh_get_user_has_hero(idattacker,gHeroID) ||Get_BitVar(gClutchDown_mask, idattacker) ){

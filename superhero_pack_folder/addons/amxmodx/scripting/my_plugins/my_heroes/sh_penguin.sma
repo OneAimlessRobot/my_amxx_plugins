@@ -367,6 +367,10 @@ public fw_grenade_think(ent)
 
 public penguin_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
+	if(damage <= 0.0){
+
+		return HAM_IGNORED
+	}
 	if ( !sh_is_active() || !is_user_alive(id) || attacker == 0 || !is_user_connected(id)||!is_user_connected(attacker)) return HAM_IGNORED
 
 	if(!is_valid_ent(idinflictor)){

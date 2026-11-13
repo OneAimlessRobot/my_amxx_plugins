@@ -48,8 +48,9 @@ public plugin_natives(){
 public _sh_co2_user(iPlugin,iParams){
 	
 	new user=get_param(1)
+	new Float:the_time = get_param_f(2)
 	if(!sh_get_id_bit(user,SH_IS_CO2)){
-		co2_user(user)
+		co2_user(user,the_time)
 	}
 	
 	
@@ -88,7 +89,7 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_h
 }
 
 
-co2_user(id){
+co2_user(id, Float:the_time){
 	if(!sh_is_active()||!is_user_alive(id)||sh_get_id_bit(id,SH_IS_CO2)) return
 	
 	if(sh_get_id_bit(id,SH_IS_BURNING)){
@@ -102,13 +103,13 @@ co2_user(id){
 	new Float:time_to_apply_mult= (is_tomie_user?2.0:1.0)
 	
 	set_render_with_color_const(id,LTGREEN,1,50,50,1,_,
-							CO2_TIME*time_to_apply_mult,_,_,kRenderNormal,PRIO_RENDER_EFFECT_ACTIVE)
+							the_time*time_to_apply_mult,_,_,kRenderNormal,PRIO_RENDER_EFFECT_ACTIVE)
 	
 	set_damage_icon(id,2,DMG_ICON_GAS,LineColors[LTGREEN],
-							CO2_TIME*time_to_apply_mult)
+							the_time*time_to_apply_mult)
 	
 	
-	set_task(CO2_TIME*time_to_apply_mult,"unco2_task",id+UNCO2_TASKID)
+	set_task(the_time*time_to_apply_mult,"unco2_task",id+UNCO2_TASKID)
 	
 	
 	

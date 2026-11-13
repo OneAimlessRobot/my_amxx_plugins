@@ -48,7 +48,7 @@ public plugin_init()
 							JAQUEO_COOL_SCOUT_V_MODEL,
 							JAQUEO_COOL_SCOUT_P_MODEL)
 
-	RegisterHam(Ham_TraceAttack,"player","Jaqueo_Damage",_,true)
+	RegisterHam(Ham_TakeDamage,"player","Jaqueo_Damage",1,true)
 	
 }
 public plugin_natives(){
@@ -93,30 +93,28 @@ public jaqueo_drop_weapons(id){
 	
 }
 //----------------------------------------------------------------------------------------------
-public Jaqueo_Damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
-{	
+public Jaqueo_Damage(id, idinflictor, attacker, Float:damage, damagebits)
+{
+	if(damage <= 0.0){
 
-	if(Damage<=0.0){
 		return HAM_IGNORED
 	}
+	if( !sh_is_active() || !is_user_alive(id) || !is_user_connected(id)) return HAM_IGNORED;
 
-	if ( !sh_is_active() || !is_user_alive(Victim) ) return HAM_IGNORED
+	if ( (attacker==id)||!is_user_connected(attacker)||!sh_get_user_has_hero(attacker,gHeroID) ) return HAM_IGNORED
+	
+	new weapon, my_hitpoint_enum:the_hitpoint
 
-	if ((Attacker==Victim)||!is_user_alive(Attacker)) return HAM_IGNORED
+	get_user_attacker(id, weapon, _:the_hitpoint)
+	
+	pev(id, pev_dmg_take, damage)
 
-	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
-
-	new weapon = get_user_weapon(Attacker)
-	new bool:has_hero= bool:sh_get_user_has_hero(Attacker,gHeroID) 
-
-
-
-	if ( has_hero&& weapon == CSW_SCOUT) {
+	if (  weapon == CSW_SCOUT) {
 		// do extra damage
-		new Float:extraDamage = Damage * scout_mult- Damage
+		new Float:extraDamage = damage * scout_mult- damage
 		if (extraDamage > 0.0){
 			
-			sh_extra_damage(Victim, Attacker, floatround(extraDamage),
+			sh_extra_damage(id, attacker, floatround(extraDamage),
 											the_hitpoint,
 											_,_,_,_,
 											SH_NEW_DMG_SUPER_BULLET,

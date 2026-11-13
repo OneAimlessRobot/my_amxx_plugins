@@ -162,6 +162,10 @@ stock dmg_message(id,Float:damage){
 }
 public Yowai_normal_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
+if(damage <= 0.0){
+
+	return HAM_IGNORED
+}
 
 if(!sh_is_active()||sh_is_freezetime()) return HAM_IGNORED
 

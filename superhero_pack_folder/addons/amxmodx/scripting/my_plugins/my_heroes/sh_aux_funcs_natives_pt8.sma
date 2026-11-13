@@ -96,4 +96,19 @@ public sh_client_spawn(id){
 
 	sh_give_weapon(id,CSW_KNIFE)
 		
+	if(client_is_within_range(id)){
+
+		sh_assign_id_bit(id,SH_USER_IS_FLYING, false)
+		sh_assign_id_bit(id,SH_USING_HOOK_ATTACK, false)
+		sh_assign_id_bit(id,SH_CONTROLLING_VEHICLE, false)
+	}
+}
+public sh_client_death(id){
+
+	if(client_is_within_range(id)){
+
+		sh_assign_id_bit(id,SH_USER_IS_FLYING, false)
+		sh_assign_id_bit(id,SH_USING_HOOK_ATTACK, false)
+		sh_assign_id_bit(id,SH_CONTROLLING_VEHICLE, false)
+	}
 }

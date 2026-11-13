@@ -254,7 +254,7 @@ native sh_get_max_hp(id);
  */
 native sh_get_max_ap(id);
 
-native sh_get_hero_name_from_id(id,truncated_hero_name_buff[MAX_HERO_NAME_LENGTH])
+native sh_get_hero_name_from_id(heroID,truncated_hero_name_buff[MAX_HERO_NAME_LENGTH])
 
 // it retrieves a hero id for a partial match (the first one). Optionally,
 // if succeeded, also sets the passeed to match to the exact hero name
@@ -265,6 +265,13 @@ native sh_match_string_with_hero_name(id,truncated_hero_name_buff[MAX_HERO_NAME_
 
 
 native sh_get_player_save_key_on_db(id,key_ret_result[MAX_PLAYER_SAVE_KEY_LENGTH])
+
+//returns true if picking was successful. False otherwise
+
+native bool:sh_pick_hero_without_menu(id, heroID)
+
+native bool:sh_remove_user_power_without_menu(id, heroID)
+
 //------------
 // Hero Creation/Property Natives
 //------------

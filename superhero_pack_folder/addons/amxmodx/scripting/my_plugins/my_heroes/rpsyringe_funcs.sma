@@ -162,7 +162,7 @@ public seringa_toqueta_de_entiteta(pToucher, pTouched) {
 		new pid = entlist[i];
 		if( !is_user_alive(pid) ) continue
 		
-		make_effect(pid,id,gHeroID,fx_num,false)
+		make_effect(pid,id,5.0,gHeroID,fx_num,false)
 	}
 	
 	anime_kill_fx(fl_vExplodeAt)

@@ -17,6 +17,7 @@ native make_fire(id, Float:rad)
 
 native make_shockwave(Float:point[3],Float:radius,const color[3],shockwave_frame_rate=1,shockwave_life=10,shockwave_line_width=8,shockwave_amplitude=1,alpha=255)
 
+native thunder_effects(Float:fl_Origin[3])
 
 /** 
 hide=0

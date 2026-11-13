@@ -89,7 +89,7 @@ public plugin_init()
 	sh_register_superheromod_weapon_model(gHeroID,THRASHER_WEAPON_ID,Model_Weapon_V,Model_Weapon_P)
 
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
-	RegisterHam(Ham_TraceAttack,"player","thrashy_damage",_,true)
+	RegisterHam(Ham_TakeDamage, "player","thrashy_damage",1,true)
 
 	register_event("DeathMsg","thrash_brat_death","a");
 
@@ -289,21 +289,26 @@ public thrash_brat_death()
 		BlowUp(id,true)
 	}
 }
-public thrashy_damage(id, attacker, Float:damage, Float:direction[3], traceresult, damagebits)
-{	
-	if(damage<=0.0){
+public thrashy_damage(id, idinflictor, attacker, Float:damage, damagebits)
+{
+	if(damage <= 0.0){
+
 		return HAM_IGNORED
 	}
 	
 	if( !sh_is_active() || !is_user_alive(id) || !is_user_connected(id)) return HAM_IGNORED;
-	if ( (attacker==id)||!is_user_connected(attacker)||!sh_get_user_has_hero(attacker,gHeroID)) return HAM_IGNORED
+
+	if ( (attacker==id)||!is_user_connected(attacker)||!sh_get_user_has_hero(attacker,gHeroID) ) return HAM_IGNORED
 	
 	if(sh_clients_are_same_team(attacker,id)){
 		return HAM_IGNORED
 	}
-	new weapon = get_user_weapon(attacker)
 
-	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(traceresult,TR_Hitgroup)
+	new weapon, my_hitpoint_enum:the_hitpoint
+
+	get_user_attacker(id, weapon, _:the_hitpoint)
+	
+	pev(id, pev_dmg_take, damage)
 
 	if ( weapon == THRASHER_WEAPON_ID )
 	{

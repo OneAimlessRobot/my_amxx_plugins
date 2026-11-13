@@ -185,6 +185,10 @@ clear_retaliate(id){
 }
 public reika_parry_damage_timer_trigger(id, idinflictor, attacker, Float:damage, damagebits)
 {
+    if(damage <= 0.0){
+
+        return HAM_IGNORED
+    }
 
 
     if ( !sh_is_active() || !is_user_alive(id)||!is_user_alive(attacker)){

@@ -51,21 +51,32 @@ gokukt_health 800 // How much HP does goku have in kaioken mode.
 */
 
 #define I_WANT_CONSTANTS
+#define I_WANT_QUICK_CHECKS
 #define I_WANT_CUSTOM_COLORS
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include <amxmodx>
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/bleed_knife_inc/sh_bknife_fx.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 
 // GLOBAL VARIABLES
-new HeroName[] = "Gokus Kaioken technic"
+new HeroName[] = "Saiyan Kaioken Technic"
 
 new GokuKTTimer[SH_MAXSLOTS+1]
 //reset variables
 new bool:reset_speed[SH_MAXSLOTS+1], bool:reset_health[SH_MAXSLOTS+1], bool:reset_armor[SH_MAXSLOTS+1]
 //pcvar holders
 new goku_speed, goku_hp, goku_ap, goku_time, goku_cooldown
+
+//pcvar holders (floats)
+
+new goku_kt_dmg_boost_wpn_short_name[SAFE_BUFFER_SIZE+1]="goku_kt_dmg_boost"
+new goku_kt_dmg_boost_dmg_boost_wpn_log_name[SAFE_BUFFER_SIZE+1]="goku_kt_dmg_boost"
+new goku_kt_dmg_boost_wpn_id = -1
+
+new goku_kt_dmg_mult = -1
+
 new g_spritePowerUp
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -79,14 +90,83 @@ public plugin_init()
 	goku_speed = create_cvar("gokukt_speed", "5000.0")
 	goku_ap = create_cvar("gokukt_armor", "5000")
 	goku_hp = create_cvar("gokukt_health", "800")
+	goku_kt_dmg_mult = create_cvar("gokukt_dmg_mult", "5.0")
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(HeroName, "Goku's Kaioken Technic", "Go into Kaiokenmode for X Seconds", true, "gokukt_level")
 	
+	goku_kt_dmg_boost_wpn_id=sh_log_custom_damage_source(
+							gHeroID,
+							goku_kt_dmg_boost_wpn_short_name,
+							goku_kt_dmg_boost_dmg_boost_wpn_log_name,
+							0)
+	
+	RegisterHam(Ham_TakeDamage,"player","Kaioken_Damage",1,true)
+
 	// LOOP
 	set_task(1.0, "gokukt_loop", 0, "", 0, "b") //forever loop
 	 
 }
+public Kaioken_Damage(id, idinflictor, attacker, Float:damage, damagebits){
+	
+	if(damage<=0.0){
+		return HAM_IGNORED
+	}
+
+	if ( !sh_is_active() || !is_user_alive(id) ) return HAM_IGNORED
+
+
+	if (!is_user_connected(attacker)) return HAM_IGNORED
+
+
+	new weapon, my_hitpoint_enum:the_hitpoint
+	get_user_attacker(id, weapon, _:the_hitpoint)
+	pev(id, pev_dmg_take, damage)
+
+	new bool:has_hero= bool:sh_get_user_has_hero(attacker,gHeroID) 
+
+	//I had to tell her not to bleed her teammates
+	if ( has_hero && ( GokuKTTimer[attacker] >0 ) &&  !sh_clients_are_same_team(attacker,id)) {
+		
+		
+		new rounded_dmg = floatround(damage)
+
+		if(rounded_dmg > 0){
+			sh_extra_damage(id, attacker, rounded_dmg,
+											the_hitpoint,
+											SH_DMG_NORM,
+											SH_EXTRA_DMG_FLAG_STUN,
+											_,_,
+											SH_NEW_DMG_ENERGY_BLAST,
+											goku_kt_dmg_boost_wpn_id)
+		}
+	}
+	
+	return HAM_IGNORED
+	
+	
+	
+}
+
+public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
+	if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
+	
+		return DMG_FWD_PASS
+	}
+	if( GokuKTTimer[attacker] <=0 ){
+		
+		return DMG_FWD_PASS 
+	}
+
+	new dmg_fwd_ret_id:result= DMG_FWD_PASS
+	if((new_dmg_type==SH_NEW_DMG_ENERGY_BLAST)||(new_dmg_type==SH_NEW_DMG_ENERGY_BLADE)){
+		if(sh_get_user_has_hero(attacker,gHeroID) ){
+			damage *= (floatround(cvar_val(float,goku_kt_dmg_mult)))
+		}
+	}
+	return result
+}
+
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
 {
@@ -179,8 +259,14 @@ public end_kaioken(id)
 		reset_speed[id] = false
 	}
 	if ( reset_health[id] ) {
+
+		
 		sh_set_hp(id, set_health)
+
 		reset_health[id] = false
+
+		sh_bleed_user(id,id,BLEED_MINI,gHeroID,0,MY_HIT_GENERIC)
+		
 	}
 	if ( reset_armor[id] ) {
 		set_user_armor(id, set_armor)

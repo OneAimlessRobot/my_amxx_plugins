@@ -15,11 +15,14 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-
 stock SLEEP_TASKID,
 		FULLY_WAKE_UP_TASKID
 
 new Float:gKeepAngles[SH_MAXSLOTS+1][3]
+
+new on_sleep_start_fwd,
+	on_sleep_end_fwd
+
 public plugin_init(){
 
 
@@ -28,6 +31,9 @@ register_forward(FM_CmdStart, "CmdStart");
 RegisterHam(Ham_Player_PreThink,"player","Ham_PlayerPreThink",_,true)
 register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
 register_event("CurWeapon", "weaponChange", "be", "1=1")	
+
+on_sleep_start_fwd = CreateMultiForward("sh_on_sleep_start_fwd",ET_CONTINUE ,FP_CELL,FP_CELL, FP_FLOAT, FP_CELL)
+on_sleep_end_fwd = CreateMultiForward("sh_on_sleep_end_fwd",ET_CONTINUE ,FP_CELL,FP_CELL, FP_FLOAT, FP_CELL)
 
 SLEEP_TASKID=allocate_typed_task_id(player_task)
 FULLY_WAKE_UP_TASKID=allocate_typed_task_id(player_task)
@@ -112,10 +118,11 @@ public _sh_sleep_user(iPlugin,iParams){
 	new user=get_param(1)
 	if(!sh_get_id_bit(user,SH_IS_SLEEPING)){
 		new attacker=get_param(2)
-		new heroID=get_param(3)
-		new attacker_name[128]
+		new Float:the_time = get_param_f(3)
+		new heroID=get_param(4)
+		static attacker_name[128]
 		get_user_name(attacker,attacker_name,127)
-		new user_name[128]
+		static user_name[128]
 		get_user_name(user,user_name,127)
 		if((user==attacker)){
 			if(user&&CAN_SELF_SLEEP){
@@ -127,7 +134,7 @@ public _sh_sleep_user(iPlugin,iParams){
 				if(!is_user_bot(attacker)){
 					sh_chat_message(attacker,heroID,"You just put %s to sleep!!!",user_name)
 				}
-				sleep_user(user,attacker)
+				sleep_user(user,attacker, the_time,heroID)
 			}
 		}
 		else{
@@ -138,7 +145,7 @@ public _sh_sleep_user(iPlugin,iParams){
 			if(!is_user_bot(attacker)){
 				sh_chat_message(attacker,heroID,"You just put %s to sleep!!!",user_name)
 			}
-			sleep_user(user,attacker)
+			sleep_user(user,attacker, the_time,heroID)
 		}
 	}
 
@@ -161,7 +168,7 @@ public _sh_unsleep_user(iPlugin,iParams){
 
 
 }
-public sleep_task(array[1],id){
+public sleep_task(any:array[4],id){
 	id-=SLEEP_TASKID
 	if(!sh_get_id_bit(id, SH_IS_SLEEPING)){
 
@@ -175,33 +182,53 @@ public sleep_task(array[1],id){
 	}
 	set_render_with_color_const(id,BLACK,1,255,255,1,1,SLEEP_PERIOD,_,_,kRenderNormal,PRIO_RENDER_DELETE_ASLEEP)
 
-	if(sh_get_id_bit(id,SH_IS_SLEEPING)&&(array[0]<(SLEEP_TIMES))){
-		array[0]++
+	if(sh_get_id_bit(id,SH_IS_SLEEPING)&&(array[0]>0)){
+		array[0]--
 		set_task(SLEEP_PERIOD,"sleep_task",id+SLEEP_TASKID,array, sizeof(array))
 	}
 	else{
-		set_task(3.0,"fully_wake_up_task",id+FULLY_WAKE_UP_TASKID)
+		set_task(Float:array[1],"fully_wake_up_task",id+FULLY_WAKE_UP_TASKID,array,sizeof(array))
 	}
 
 
 }
-sleep_user(id,attacker){
+sleep_user(id,attacker, Float:the_time,heroID){
 	if ( !sh_is_active() ||!is_user_alive(id)||!is_user_alive(attacker)) return
-	new array[1]
-	array[0] = 0
+	new any:array[4]
+	array[0] = SLEEP_TIMES
+	array[1] = attacker
+	array[2] = the_time
+	array[3] = heroID
+
 	entity_get_vector( id, EV_VEC_angles, gKeepAngles[id] )
 	sh_assign_id_bit(id,SH_IS_SLEEPING,true)
 	sleep_user_switch_weapon(id)
-	sh_set_stun(id,SLEEP_TIME*2.0)
-	//fade_screen_user(id)
+	sh_set_stun(id,the_time*2.0)
 	emit_sound(id, CHAN_VOICE, SLEEP_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	if (!ExecuteForward(on_sleep_start_fwd, _,
+								id,
+								attacker,
+								the_time,
+								heroID)){
+
+		server_print("Sh on sleep start forward execute error.");
+	}
 	sleep_task(array,id+SLEEP_TASKID)
 
 
 
 }
-public fully_wake_up_task(id){
+public fully_wake_up_task(any:array[4],id){
 	id-=FULLY_WAKE_UP_TASKID
+	if (!ExecuteForward(on_sleep_end_fwd, _,
+								id,
+								array[1],
+								Float:array[2],
+								array[3])){
+
+		server_print("Sh on sleep end forward execute error.");
+	}
+
 	unsleep_user(id)
 	
 

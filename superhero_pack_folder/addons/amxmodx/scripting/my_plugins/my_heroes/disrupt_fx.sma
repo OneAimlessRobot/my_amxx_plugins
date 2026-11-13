@@ -42,8 +42,9 @@ public plugin_natives(){
 public disorient_user(array[1],id)
 {
 	id-=DISORIENT_TASKID
-	new Float:xAngles[3]
-	new Float:xMoveDir[3]
+
+	static Float:xAngles[3],
+		Float:xMoveDir[3]
 	set_pev( id, pev_fixangle, 0 );
 	pev(id, pev_angles, xAngles)
 	pev(id, pev_velocity, xMoveDir)
@@ -55,8 +56,8 @@ public disorient_user(array[1],id)
 	set_pev(id, pev_velocity, xMoveDir)
 	set_pev(id, pev_angles, xAngles)
 	set_pev(id, pev_fixangle, 1);
-	if(array[0]<DISORIENT_TIMES){
-		array[0]++
+	if(array[0]>0){
+		array[0]--
 		set_task(DISORIENT_PERIOD,"disorient_user",id+DISORIENT_TASKID,array, sizeof(array))
 	}
 	return PLUGIN_CONTINUE
@@ -66,7 +67,8 @@ public _sh_disrupt_user(iPlugin,iParams){
 	new user=get_param(1)
 	if(!sh_get_id_bit(user,SH_IS_DISRUPT)){
 		new attacker=get_param(2)
-		new heroID=get_param(3)
+		new Float:the_time = get_param_f(3)
+		new heroID=get_param(4)
 		new attacker_name[128]
 		get_user_name(attacker,attacker_name,127)
 		new user_name[128]
@@ -81,7 +83,7 @@ public _sh_disrupt_user(iPlugin,iParams){
 				if(!is_user_bot(attacker)){
 					sh_chat_message(attacker,heroID,"You disrupted %s!!!",user_name)
 				}
-				disrupt_user(user)
+				disrupt_user(user, the_time)
 			}
 		}
 		else{
@@ -93,7 +95,7 @@ public _sh_disrupt_user(iPlugin,iParams){
 			if(!is_user_bot(attacker)){
 				sh_chat_message(attacker,heroID,"You disrupted %s!!!",user_name)
 			}
-			disrupt_user(user)
+			disrupt_user(user, the_time)
 		}
 	}
 	
@@ -121,8 +123,8 @@ public disrupt_task(array[1],id){
 	
 	set_render_with_color_const(id,WHITE,1,200,_,0,_,DISRUPT_PERIOD,0,_,kRenderNormal,PRIO_RENDER_EFFECT_ACTIVE)
 	
-	if(sh_get_id_bit(id,SH_IS_DISRUPT)&&(array[0]<DISRUPT_TIMES)){
-		array[0]++
+	if(sh_get_id_bit(id,SH_IS_DISRUPT)&&(array[0]>0)){
+		array[0]--
 		set_task(DISRUPT_PERIOD,"disrupt_task",id+DISRUPT_TASKID,array, sizeof(array))
 	}
 	else{
@@ -131,10 +133,10 @@ public disrupt_task(array[1],id){
 	}
 	
 }
-disrupt_user(id){
+disrupt_user(id, Float:the_time){
 	if(!sh_is_active()||!is_user_alive(id)) return
 	new array[1]
-	array[0] = 0
+	array[0] = DISRUPT_TIMES
 	sh_screen_shake(id,10.0,floatmul(DISRUPT_PERIOD,float(DISRUPT_TIMES)),10.0)
 	sh_set_stun(id,floatmul(DISRUPT_PERIOD,float(DISRUPT_TIMES)))
 	sh_assign_id_bit(id,SH_IS_DISRUPT, true)

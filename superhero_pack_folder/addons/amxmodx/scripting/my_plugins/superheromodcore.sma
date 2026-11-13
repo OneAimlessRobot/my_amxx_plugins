@@ -97,7 +97,7 @@ new gHasAnubisMask = 0
 
 new gXpBounsVIP
 
-
+#define SH_MENU_SCROLL_SIZE 7
 // Other miscellaneous global variables
 new gHelpHudMsg[340]
 new gmsgStatusText, gmsgScoreInfo, gmsgDeathMsg, gmsgDamage
@@ -426,6 +426,8 @@ public plugin_natives()
 	register_native("sh_give_item", "_sh_give_item")
 	register_native("sh_reset_max_speed", "_sh_reset_max_speed")
 	register_native("sh_reset_min_gravity", "_sh_reset_min_gravity")
+	register_native("sh_remove_user_power_without_menu", "_sh_remove_user_power_without_menu")
+	register_native("sh_pick_hero_without_menu", "_sh_pick_hero_without_menu")
 }
 
 //----------------------------------------------------------------------------------------------
@@ -1517,6 +1519,183 @@ getBindNumber(id, heroIndex)
 	}
 	return 0
 }
+
+public bool:_sh_pick_hero_without_menu(iPlugins, iParams){
+	
+	new id = get_param(1)
+	
+	if(!is_user_connected(id)){
+		return false
+	}
+	
+	new heroID = get_param(2)
+	
+	if(heroID < 0 || heroID >= gSuperHeroCount){
+
+		return false
+	
+	}
+	
+	return pickPowerWithoutMenu(id,heroID)
+
+
+}
+
+//----------------------------------------------------------------------------------------------
+public bool:_sh_remove_user_power_without_menu(iPlugins, iParams)
+{
+	new id = get_param(1)
+	
+	if(!is_user_connected(id)){
+		return false
+	}
+	
+	new heroID = get_param(2)
+	
+	if(heroID < 0 || heroID >= gSuperHeroCount){
+
+		return false
+	
+	}
+	if ( heroID < 0 || heroID >= gSuperHeroCount ) return false
+	
+	if( !sh_get_user_has_hero(id, heroID)) return false
+	
+	// Ok shift over any levels higher
+	new playerpowercount = getPowerCount(id)
+	new level = 1
+	for ( new x = level; x <= playerpowercount && x <= SH_MAXLEVELS; x++ ) {
+		if( gPlayerPowers[id][x] == heroID){
+			
+			level = x
+			break;
+		
+		}
+		
+	}
+	
+	for ( new x = level; x <= playerpowercount && x <= SH_MAXLEVELS; x++ ) {
+		
+		if ( x != SH_MAXLEVELS ){
+		
+			gPlayerPowers[id][x] = gPlayerPowers[id][x + 1]
+		
+		}
+	}
+	new powers = gPlayerPowers[id][0]--
+	if ( powers < 0 ) gPlayerPowers[id][0] = 0
+
+	//Clear out powers higher than powercount
+	for ( new x = powers + 1; x <= gNumLevels && x <= SH_MAXLEVELS; x++ ) {
+		gPlayerPowers[id][x] = -1
+	}
+	new fwd_result=INIT_FWD_PASS
+	if(!ExecuteForward(fwd_HeroInit_Pre, fwd_result, id, heroID, SH_HERO_DROP)){
+
+		server_print("Hero init pre forward execution error!!!")
+		return false
+	}
+	// Disable this power
+	initHero(id, heroID, SH_HERO_DROP)
+
+	// Display Levels will have to rebind this heroes powers...
+	gPlayerBinds[id][0] = 0
+
+	return bool:Get_BitVar(gChangedHeroesMask, id);
+
+}
+bool:pickPowerWithoutMenu(id, heroID){
+
+	// Don't show menu if mod off or they're not connected
+	if ( !get_pcvar_num(sv_superheros) || !is_user_connected(id) || Get_BitVar(gReadXPNextRoundMask, id) ) return false;
+
+	if ( heroID < 0 || heroID >= gSuperHeroCount) return false;
+
+	if( sh_get_user_has_hero(id, heroID)) return false;
+
+	if ( Get_BitVar(gIsPowerBannedMask, id)) {
+		return false
+	}
+
+	new playerpowercount = getPowerCount(id)
+	new playerLevel = gPlayerLevel[id]
+
+	if ( playerpowercount >= playerLevel || playerpowercount >= gMaxPowers ) return false
+
+	// Now decrement the level powers that they've picked
+	new heroLevel = getHeroLevel(heroID)
+
+	for ( new y = heroLevel; y >= 0; y-- ) {
+		if ( --gMaxPowersLeft[id][y] < 0 ) gMaxPowersLeft[id][y] = 0
+		//If none left on this level, there should be none left on any higher levels
+		if ( gMaxPowersLeft[id][y] <= 0 && y < SH_MAXLEVELS ) {
+			if ( gMaxPowersLeft[id][y+1] != 0 ) {
+				for ( new z = y; z <= gNumLevels; z++ ) {
+					gMaxPowersLeft[id][z] = 0
+				}
+			}
+		}
+	}
+	// OK BUILD A LIST OF HEROES THIS PERSON CAN PICK FROM
+	gPlayerMenuChoices[id][0] = 0  // <- 0 choices so far
+	new MaxBinds = min(get_pcvar_num(sh_maxbinds), SH_MAXBINDPOWERS)
+	new bool:thisEnabled
+
+	thisEnabled = false
+	if ( playerLevel >= heroLevel && 
+	
+					gMaxPowersLeft[id][heroLevel] > 0
+								&&
+			!(gPlayerBinds[id][0] >= MaxBinds && gSuperHeros[heroID][requiresKeys])) {
+		
+		thisEnabled = true
+	}
+	else{
+
+		return false
+	}
+
+	if ( thisEnabled ) {
+
+		new init_fwd_ret_id:fwd_result=INIT_FWD_PASS
+		if(!ExecuteForward(fwd_HeroInit_Pre, fwd_result, id, heroID, SH_HERO_ADD)){
+
+			server_print("Hero init pre forward execution error!!!")
+			return false
+		}
+		if(fwd_result!=INIT_FWD_PASS){
+
+
+			return false
+		}
+		gPlayerPowers[id][0] = playerpowercount + 1
+		gPlayerPowers[id][playerpowercount + 1] = heroID
+
+		initHero(id, heroID, SH_HERO_ADD)
+		
+		if(Get_BitVar(gChangedHeroesMask, id)){
+			
+
+			static message[2048]
+			if ( !gSuperHeros[heroID][requiresKeys] ) {
+				formatex(message, charsmax(message), "(AUTOMATIC POWER) %s: %s^n",
+											gSuperHeros[heroID][superpower], gSuperHeros[heroID][help])
+			}
+			else {
+				formatex(message, charsmax(message), "BIND KEY TO ^"+POWER%d^": %s^n%s^n", gPlayerBinds[id][0]+1, gSuperHeros[heroID][superpower], gSuperHeros[heroID][help])
+			}
+
+			// Show the Hero Picked
+			set_hudmessage(100, 100, 0, -1.0, 0.2, 0, 1.0, 20.0, 0.1, 0.2, -1)
+			ShowSyncHudMsg(id, gHeroHudSync, "%s", message)
+
+			
+		}
+		return bool:Get_BitVar(gChangedHeroesMask, id);
+	}
+	return false
+}
+
 //----------------------------------------------------------------------------------------------
 menuSuperPowers(id, menuOffset)
 {
@@ -1632,14 +1811,14 @@ menuSuperPowers(id, menuOffset)
 	new keys = 0
 
 	//menuOffset Stuff
-	if ( menuOffset <= 0 || menuOffset > gPlayerMenuChoices[id][0] ) menuOffset = 1
+	if ( menuOffset < 1 || menuOffset > gPlayerMenuChoices[id][0] ) menuOffset = 1
 	gPlayerMenuOffset[id] = menuOffset
 
 	new total = min(gMaxPowers, playerLevel)
 	formatex(message, 68, "\ySelect Super Power:%-16s\r(You've Selected %d/%d)^n^n", " ", playerpowercount, total)
 
 	// OK Display the Menu
-	for ( new x = menuOffset; x < menuOffset + 8; x++ ) {
+	for ( new x = menuOffset; x < menuOffset + SH_MENU_SCROLL_SIZE; x++ ) {
 		// Only allow a selection from powers the player doesn't have
 		if ( x > gPlayerMenuChoices[id][0] ) {
 			add(message, charsmax(message), "^n")
@@ -1662,10 +1841,15 @@ menuSuperPowers(id, menuOffset)
 		add(message, charsmax(message), temp)
 	}
 
-	if ( gPlayerMenuChoices[id][0] > 8 ) {
+	if ( menuOffset > SH_MENU_SCROLL_SIZE ) {
+		// Can only Display 8 heroes at a time
+		add(message, charsmax(message), "\w^n8. Previous Heroes")
+		keys |= (1<<(SH_MENU_SCROLL_SIZE)) 
+	}
+	if ( gPlayerMenuChoices[id][0] > SH_MENU_SCROLL_SIZE ) {
 		// Can only Display 8 heroes at a time
 		add(message, charsmax(message), "\w^n9. More Heroes")
-		keys |= MENU_KEY_9
+		keys |= (1<<(SH_MENU_SCROLL_SIZE+1)) 
 	}
 	else {
 		add(message, charsmax(message), "^n")
@@ -1697,12 +1881,17 @@ public selectedSuperPower(id, key)
 	}
 
 	switch(key) {
-		case 8: {
+		case (SH_MENU_SCROLL_SIZE): {
+			menuSuperPowers(id, gPlayerMenuOffset[id] - SH_MENU_SCROLL_SIZE)
+			return PLUGIN_HANDLED
+		}
+		case (SH_MENU_SCROLL_SIZE+1): {
 			// Next and Previous Super Hero Menus
-			menuSuperPowers(id, gPlayerMenuOffset[id] + 8)
+			menuSuperPowers(id, gPlayerMenuOffset[id] + SH_MENU_SCROLL_SIZE)
 			return PLUGIN_HANDLED
 		}
 		case 9: {
+
 			// Cancel
 			gPlayerMenuOffset[id] = 0
 			return PLUGIN_HANDLED
@@ -4608,8 +4797,7 @@ public vip_UserEscape()
 	if ( get_playersnum() <= get_pcvar_num(sh_minplrsbhxp) ) return PLUGIN_CONTINUE
 
 	new XPtoGive = get_pcvar_num(sh_objectivexp)
-	new xp_fwd_ret_id:the_xp_return_value=XP_FWD_PASS
-	if (!ExecuteForward(fwd_ShXpPost, the_xp_return_value, id,XPtoGive,XP_VIP_ESCAPE_XP)){
+	if (!ExecuteForward(fwd_ShXpPost, fwdReturn, id,XPtoGive,XP_VIP_ESCAPE_XP)){
 		server_print("Sh xp forward execute error.");
 	}
 	localAddXP(id, XPtoGive)
@@ -4628,8 +4816,7 @@ public vip_Assassinated()
 	if ( get_playersnum() <= get_pcvar_num(sh_minplrsbhxp) ) return PLUGIN_CONTINUE
 
 	new XPtoGive = get_pcvar_num(sh_objectivexp)
-	new xp_fwd_ret_id:the_xp_return_value=XP_FWD_PASS
-	if (!ExecuteForward(fwd_ShXpPost, the_xp_return_value, attacker,XPtoGive,XP_VIP_ASSASSINATE_XP)){
+	if (!ExecuteForward(fwd_ShXpPost, fwdReturn, attacker,XPtoGive,XP_VIP_ASSASSINATE_XP)){
 		server_print("Sh xp forward execute error.");
 	}
 	localAddXP(attacker, XPtoGive)
@@ -4671,6 +4858,9 @@ public host_Killed()
 	if ( id < 1 || id > gServersMaxPlayers ) return
 
 	new XPtoTake = get_pcvar_num(sh_objectivexp)
+	if (!ExecuteForward(fwd_ShXpPost, fwdReturn, id,XPtoTake, XP_KILL_HOSTAGE_XP)){
+		server_print("Sh xp forward execute error.");
+	}	
 	localAddXP(id, -XPtoTake)
 	chatMessage(id, _, "You lost %d XP for killing a hostage", XPtoTake)
 }
@@ -4688,8 +4878,7 @@ public host_Rescued()
 	// Give at least 1 xp per hostage even if sh_objectivexp is really low
 	// gNumHostages should never be 0 if this is called so no need to check for div by 0
 	new XPtoGive = max(1, floatround(get_pcvar_float(sh_objectivexp) / gNumHostages))
-	new xp_fwd_ret_id:the_xp_return_value=XP_FWD_PASS
-	if (!ExecuteForward(fwd_ShXpPost, the_xp_return_value, id,XPtoGive,XP_HOSTAGE_RESCUED_XP)){
+	if (!ExecuteForward(fwd_ShXpPost, fwdReturn, id,XPtoGive,XP_HOSTAGE_RESCUED_XP)){
 		server_print("Sh xp forward execute error.");
 	}
 	localAddXP(id, XPtoGive)
@@ -4750,8 +4939,7 @@ public bomb_planted(planter)
 
 	new XPtoGive = get_pcvar_num(sh_objectivexp)
 	
-	new xp_fwd_ret_id:the_xp_return_value=XP_FWD_PASS
-	if (!ExecuteForward(fwd_ShXpPost, the_xp_return_value, planter,XPtoGive,XP_BOMB_PLANT_XP)){
+	if (!ExecuteForward(fwd_ShXpPost, fwdReturn, planter,XPtoGive,XP_BOMB_PLANT_XP)){
 		server_print("Sh xp forward execute error.");
 	}
 	localAddXP(planter, XPtoGive)
@@ -4785,8 +4973,7 @@ public bomb_defused(defuser)
 		chatMessage(ct, _, "Your team got %d XP for a successful bomb defusion", XPtoGive)
 	}
 
-	new xp_fwd_ret_id:the_xp_return_value=XP_FWD_PASS
-	if (!ExecuteForward(fwd_ShXpPost, the_xp_return_value, defuser,XPtoGive,XP_BOMB_DEFUSE_XP)){
+	if (!ExecuteForward(fwd_ShXpPost, fwdReturn, defuser,XPtoGive,XP_BOMB_DEFUSE_XP)){
 		server_print("Sh xp forward execute error.");
 	}
 	localAddXP(defuser, XPtoGive)
@@ -4818,8 +5005,7 @@ public bomb_explode(planter, defuser)
 		chatMessage(terrorist, _, "Your team got %d XP for a successful bomb explosion", XPtoGive)
 
 	}
-	new xp_fwd_ret_id:the_xp_return_value=XP_FWD_PASS
-	if (!ExecuteForward(fwd_ShXpPost, the_xp_return_value, planter,XPtoGive,XP_BOMB_PLANT_XP)){
+	if (!ExecuteForward(fwd_ShXpPost, fwdReturn, planter,XPtoGive,XP_BOMB_PLANT_XP)){
 		server_print("Sh xp forward execute error.");
 	}
 	localAddXP(planter, XPtoGive)

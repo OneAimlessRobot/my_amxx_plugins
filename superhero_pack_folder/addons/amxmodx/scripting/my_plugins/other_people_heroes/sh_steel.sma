@@ -49,7 +49,7 @@ public plugin_init()
 					dmg_source_name_log_super_steel_bullet,
 					0)
 					
-	RegisterHam(Ham_TraceAttack,"player","steel_damage",_,true)
+	RegisterHam(Ham_TakeDamage,"player","steel_damage",1,true)
 
 	// LOOP
 	set_task(0.1, "steel_loop", 0, "", 0, "b")
@@ -121,21 +121,25 @@ public steel_armorloop()
 		}
 	}
 }
-public steel_damage(id, attacker, Float:damage, Float:direction[3], traceresult, damagebits)
-{	
-	if(damage<=0.0){
+public steel_damage(id, idinflictor, attacker, Float:damage, damagebits)
+{
+	if(damage <= 0.0){
+
 		return HAM_IGNORED
 	}
-	
 	if( !sh_is_active() || !is_user_alive(id) || !is_user_connected(id)) return HAM_IGNORED;
 	if ( (attacker==id)||!is_user_connected(attacker)||!sh_get_user_has_hero(attacker,gHeroID) ) return HAM_IGNORED
 	
+	new weapon, my_hitpoint_enum:the_hitpoint
 
-	weapon_gating_macro_code_snippet(attacker,get_user_weapon(attacker),return,HAM_IGNORED)
+	get_user_attacker(id, weapon, _:the_hitpoint)
 	
-	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(traceresult,TR_Hitgroup)
+	pev(id, pev_dmg_take, damage)
 
-	new Float:extraDamage = damage * 2.0
+	weapon_gating_macro_code_snippet(attacker,weapon,return,HAM_IGNORED)
+
+	new Float:extraDamage = (damage * 2.0) - damage
+
 	if (g_hasSuit[attacker] ) {
 
 		sh_extra_damage(id, attacker,floatround( extraDamage ),

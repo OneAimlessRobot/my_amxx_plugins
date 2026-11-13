@@ -61,6 +61,8 @@ new gPlayersCurrHeroModelID[SH_MAXSLOTS+1]={-1, ...}
 new sh_array_of_player_model_structs[SH_MAX_PLAYER_MODELS+1][player_model_array_struct]
 
 
+new invert_glow_model_colors_mask = 0
+
 enum wpn_model_array_struct{
 
 	wpn_model_hero_id,
@@ -416,9 +418,10 @@ public show_weapon_model_menu_handler(id, menu, item)
 		weapon_id = item_string[0]
 		wpn_model_id = item_string[1]
 
-		(wpn_model_id>=SH_MAX_WPN_MODELS_PER_WPN)?(gPlayersCurrHeroWpnModelID[id][weapon_id]=-1)
-									:
-				weapon_model_pick_wrapper(id,weapon_id,wpn_model_id)
+		if(wpn_model_id<SH_MAX_WPN_MODELS_PER_WPN){
+			
+			weapon_model_pick_wrapper(id,weapon_id,wpn_model_id)
+		}
 	}
 
 	menu_destroy(menu)
@@ -541,19 +544,69 @@ public plugin_natives(){
 	register_native("sh_register_superheromod_weapon_model","_sh_register_superheromod_weapon_model")
 	register_native("sh_get_number_of_registered_player_models","_sh_get_number_of_registered_player_models")
 	register_native("sh_get_player_superhero_player_model" , "_sh_get_player_superhero_player_model")
+	register_native("sh_get_player_superhero_weapon_model" , "_sh_get_player_superhero_weapon_model")
 	register_native("sh_get_player_superhero_player_model_from_model_id" , "_sh_get_player_superhero_player_model_from_model_id")
+	register_native("sh_set_player_invert_teamglow_bit" , "_sh_set_player_invert_teamglow_bit")
+	register_native("sh_get_player_invert_teamglow_bit" , "_sh_get_player_invert_teamglow_bit")
 
 
 }
 
+public bool:_sh_get_player_invert_teamglow_bit(iPlugins, iParams){
+	new id = get_param(1)
 
+	if(!client_is_within_range(id)){
+
+		return false
+	}
+
+	return bool:Get_BitVar(invert_glow_model_colors_mask, id);
+
+}
+
+public _sh_set_player_invert_teamglow_bit(iPlugins, iParams){
+	new id = get_param(1)
+
+	if(!client_is_within_range(id)){
+
+		return
+	}
+	new bool:the_value_to_set = bool:get_param(2);
+
+
+	Assign_BitVar(invert_glow_model_colors_mask, id, the_value_to_set);
+
+}
 
 public _sh_get_number_of_registered_player_models(iPlugins, iParams){
 
 	return curr_num_models_logged
 }
 
-sh_get_player_superhero_player_model_from_model_id_aux(model_id=-1, hero_model_name_array[STRING_SIZE]=""){
+sh_get_player_superhero_weapon_model_from_weapon_model_id_aux(model_id=-1, wpnId, weapon_model_name_array[STRING_SIZE]="", bool:copy_to_buffer = true, bool:wants_v_model_or_p_model = false){
+
+
+
+	new result = -1;
+
+	if((model_id>=0)&&(model_id<curr_num_models_logged_on_wpn[wpnId])){
+
+		result = model_id;
+		if(copy_to_buffer){
+			copy(weapon_model_name_array,charsmax(weapon_model_name_array),sh_array_of_wpn_model_structs[wpnId][result][wants_v_model_or_p_model?wpn_model_v_model_string:wpn_model_p_model_string])
+		}
+
+	}
+	else {
+
+		weapon_model_name_array[0]=0
+
+	}
+
+	return result
+}
+
+sh_get_player_superhero_player_model_from_model_id_aux(model_id=-1, hero_model_name_array[STRING_SIZE]="", bool:copy_to_buffer = true){
 
 
 
@@ -562,9 +615,9 @@ sh_get_player_superhero_player_model_from_model_id_aux(model_id=-1, hero_model_n
 	if((model_id>=0)&&(model_id<SH_MAX_PLAYER_MODELS)){
 
 		result = model_id;
-		
-		copy(hero_model_name_array,charsmax(hero_model_name_array),sh_array_of_player_model_structs[result][player_model_morph_string])
-
+		if(copy_to_buffer){
+			copy(hero_model_name_array,charsmax(hero_model_name_array),sh_array_of_player_model_structs[result][player_model_morph_string])
+		}
 
 	}
 	else {
@@ -592,7 +645,41 @@ public _sh_get_player_superhero_player_model_from_model_id(iPlugins, iParams){
 
 	return result;
 }
+public _sh_get_player_superhero_weapon_model(iPlugins, iParams){
 
+	new id=get_param(1);
+
+	new result = -1;
+
+	if(!client_is_within_range(id)){
+
+		return result;
+	}
+	new wpnId = get_param(2)
+
+
+	if (!is_weaponid_valid(wpnId)){
+
+		return result
+	}
+	new bool:copy_to_buffer = false
+
+	new bool:wants_v_model_or_p_model = false
+
+	copy_to_buffer = bool:get_param(4)
+
+	wants_v_model_or_p_model = bool:get_param(5)
+
+	new weapon_mode_name_array[STRING_SIZE]
+	
+	result = sh_get_player_superhero_weapon_model_from_weapon_model_id_aux(gPlayersCurrHeroModelID[id], wpnId, weapon_mode_name_array, copy_to_buffer, wants_v_model_or_p_model)
+	if(copy_to_buffer){
+		set_string(3,weapon_mode_name_array,charsmax(weapon_mode_name_array))
+	}
+	return result;
+
+
+}
 public _sh_get_player_superhero_player_model(iPlugins, iParams){
 
 	new id=get_param(1);
@@ -603,12 +690,16 @@ public _sh_get_player_superhero_player_model(iPlugins, iParams){
 
 		return result;
 	}
+	new bool:copy_to_buffer = false
+
+	copy_to_buffer = bool:get_param(3)
+
 	new hero_mode_name_array[STRING_SIZE]
 	
-	result = sh_get_player_superhero_player_model_from_model_id_aux(gPlayersCurrHeroModelID[id], hero_mode_name_array)
-
-	set_string(2,hero_mode_name_array,charsmax(hero_mode_name_array))
-
+	result = sh_get_player_superhero_player_model_from_model_id_aux(gPlayersCurrHeroModelID[id], hero_mode_name_array, copy_to_buffer)
+	if(copy_to_buffer){
+		set_string(2,hero_mode_name_array,charsmax(hero_mode_name_array))
+	}
 	return result;
 
 
@@ -657,7 +748,9 @@ sh_player_unmorph_task(id,take_away_model=1)
 			superhero_protected_hud_message(superhero_hud_msg_sync,id, "%s",
 						sh_array_of_player_model_structs[gPlayersCurrHeroModelID[id]][player_model_unmorph_message])
 		}
-		cs_reset_user_model(id)
+		if(take_away_model){
+			cs_reset_user_model(id)
+		}
 		if(sh_get_player_cloak_pct(id)<=0){
 
 			remove_glow_user(id,PRIO_RENDER_PASSIVE,kRenderNormal)
@@ -797,7 +890,6 @@ public _prepare_shero_aux_lib_pt5(iPlugins, iParams){
 
 weapon_model_pick_wrapper(id, wpn_id, wpn_model_id){
 
-	gPlayersCurrHeroWpnModelID[id][wpn_id]=-1
 
 	if(!is_weaponid_valid(wpn_id)){
 		console_print(id,"Invalid weapon id %d!^nInput a wpn_id from 1 to %d!^n",
@@ -818,12 +910,15 @@ public sh_client_death(id)
 	if(!is_user_connected(id)) return
 
 	sh_player_unmorph_task(id,0)
+	
+	Assign_BitVar(invert_glow_model_colors_mask,id, false_for_macro)
 
 }
 public client_connect(id){
 
 	arrayset(gPlayersCurrHeroWpnModelID[id],-1,sizeof gPlayersCurrHeroWpnModelID[])
-	gPlayersCurrHeroModelID[id] = -1
+	gPlayersCurrHeroModelID[id] = -1;
+	Assign_BitVar(invert_glow_model_colors_mask,id, false_for_macro)
 
 }
 public sh_client_spawn(id){
@@ -847,15 +942,20 @@ teamglow_player(id){
 
 	curr_player_team=cs_get_user_team(id)
 
+	static bool:invert_render_team_here;
+
+	invert_render_team_here = bool:Get_BitVar(invert_glow_model_colors_mask,id);
+
+
 	switch(curr_player_team){
 		
 		case CS_TEAM_T:{
 
-			set_render_with_color_const(id,RED,1,16,_,0,_,GLOBAL_GLOW_TASK_LOOP_PERIOD,0,_,kRenderNormal,PRIO_RENDER_PASSIVE)
+			set_render_with_color_const(id,invert_render_team_here?BLUE:RED,1,16,_,0,_,GLOBAL_GLOW_TASK_LOOP_PERIOD,0,_,kRenderNormal,PRIO_RENDER_PASSIVE)
 		}
 		case CS_TEAM_CT:{
 
-			set_render_with_color_const(id,BLUE,1,16,_,0,_,GLOBAL_GLOW_TASK_LOOP_PERIOD,0,_,kRenderNormal,PRIO_RENDER_PASSIVE)
+			set_render_with_color_const(id,invert_render_team_here?RED:BLUE,1,16,_,0,_,GLOBAL_GLOW_TASK_LOOP_PERIOD,0,_,kRenderNormal,PRIO_RENDER_PASSIVE)
 
 		}
 

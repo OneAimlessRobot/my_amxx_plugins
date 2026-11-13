@@ -36,10 +36,11 @@ catwoman_minrounds 5		//Min rounds to wait until you can sneak, no matter your l
 
 */
 
-#include <amxmodx>
-#include <cstrike>
-#include <engine>
+#define I_WANT_CONSTANTS
+#define I_WANT_BASIC_MACROS
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 //ok happy now jtp? lol
 
 // GLOBAL VARIABLES
@@ -76,8 +77,17 @@ public sh_client_spawn(id)
 {
 	if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) && sh_is_active() )
 	{
-		if ( get_cvar_float("catwoman_change") > 0.0 )
-			cs_reset_user_model(id)
+		if ( get_cvar_float("catwoman_change") > 0.0 ){
+		
+			if(sh_get_player_superhero_player_model(id,_,false)>=0){
+
+				sh_set_player_invert_teamglow_bit(id,false)
+			}
+			else{
+				cs_reset_user_model(id)
+			}
+		
+		}
 
 		if ( get_cvar_num("catwoman_mode") == 1 )
 		{
@@ -165,19 +175,25 @@ public catwoman_sneak(id)
 	// Change clothes?
 	if ( changetime > 0.0 )
 	{
-		new newSkin[32]
-		new num = generate_int(0, 3)
+		if(sh_get_player_superhero_player_model(id,_,false)>=0){
 
-		switch(idTeam)
-		{
-			case CS_TEAM_CT:
-				copy(newSkin, 31, TSkins[num])
-			case CS_TEAM_T:
-				copy(newSkin, 31, CTSkins[num])
+			sh_set_player_invert_teamglow_bit(id,true)
+
 		}
+		else{
+			new newSkin[32]
+			new num = generate_int(0, 3)
 
-		cs_set_user_model(id, newSkin)
+			switch(idTeam)
+			{
+				case CS_TEAM_CT:
+					copy(newSkin, 31, TSkins[num])
+				case CS_TEAM_T:
+					copy(newSkin, 31, CTSkins[num])
+			}
 
+			cs_set_user_model(id, newSkin)
+		}
 		if ( changetime > 1.0 )
 			set_task(changetime, "catwoman_changeback", id)
 	}
@@ -254,9 +270,16 @@ public catwoman_changeback(id)
 	if ( !is_user_alive(id) )
 		return
 
-	cs_reset_user_model(id)
+	if(sh_get_player_superhero_player_model(id,_,false)>=0){
 
-	client_print(id, print_chat, "[SH](%s) You have taken off your sneaking outfit.", gHeroName)
+		sh_set_player_invert_teamglow_bit(id,false)
+		client_print(id, print_chat, "[SH](%s) You have taken off your sneaking glow.", gHeroName)
+	}
+	else{
+		cs_reset_user_model(id)
+		client_print(id, print_chat, "[SH](%s) You have taken off your sneaking outfit.", gHeroName)
+	}
+
 }
 //----------------------------------------------------------------------------------------------
 public client_connect(id)

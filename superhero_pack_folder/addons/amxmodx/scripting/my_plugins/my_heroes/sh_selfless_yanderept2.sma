@@ -127,10 +127,11 @@ public plugin_init()
 								"",
 								"")
 
-	RegisterHam(Ham_TraceAttack, "player", "yandere_damage",_,true)
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 
-	RegisterHam(Ham_TraceAttack,"player","Yandere_ham_trace_damage",_,true)
+	RegisterHam(Ham_TakeDamage, "player", "yandere_damage",1,true)
+
+	RegisterHam(Ham_TakeDamage,"player","Yandere_ham_knife_damage",1,true)
 
 	register_ham_hook_multiple(Ham_TraceAttack,
 						full_entity_array_for_trace_attack,
@@ -208,17 +209,24 @@ public yandere_angry_idle_checks(id, uc_handle){
 	return FMRES_IGNORED
 
 }
-public Yandere_ham_trace_damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
+public Yandere_ham_knife_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
-	if ( !sh_is_active() || !is_user_alive(Victim)||!is_user_alive(Attacker)){
+	if(damage <= 0.0){
+
+		return HAM_IGNORED
+	}	
+
+	if ( !sh_is_active() || !is_user_alive(id)||!is_user_alive(attacker)){
 
 		return HAM_IGNORED
 	}
 
-	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
+	new weapon, my_hitpoint_enum:the_hitpoint
+	get_user_attacker(id, weapon, _:the_hitpoint)
+	pev(id, pev_dmg_take, damage)
 
-	return do_bleed_knife_attack(Victim,Attacker,gHeroID,15,65,
-				sh_get_user_has_hero(Attacker,gHeroID) && Get_BitVar(gSuperAngryMask,Attacker),_,_,_,_,the_hitpoint)
+	return do_bleed_knife_attack(id,attacker,gHeroID,15,65,
+				sh_get_user_has_hero(attacker,gHeroID) && Get_BitVar(gSuperAngryMask,attacker),_,_,_,_,the_hitpoint)
 
 	
 }
@@ -513,10 +521,17 @@ public sh_client_spawn(id, bool:newRound)
 	}
 	
 }
-public yandere_damage(id, attacker, Float:damage, Float:Direction[3], Ptr, DamageBits){
+public yandere_damage(id, idinflictor, attacker, Float:damage, damagebits)
+{
+	if(damage <= 0.0){
 
+		return HAM_IGNORED
+	}
 	if ( !sh_is_active() || !is_user_alive(id) || !is_user_alive(attacker)) return HAM_IGNORED
 
+	if(sh_clients_are_same_team(id,attacker)||(id==attacker)){
+		return HAM_IGNORED
+	}
 	new bool:victim_has_hero = bool:sh_get_user_has_hero(id,gHeroID),
 	bool:attacker_has_hero = bool:sh_get_user_has_hero(attacker,gHeroID)
 
@@ -524,13 +539,12 @@ public yandere_damage(id, attacker, Float:damage, Float:Direction[3], Ptr, Damag
 
 	new return_result= HAM_IGNORED
 
-	new weapon=get_user_weapon(attacker)
+	new weapon, my_hitpoint_enum:the_hitpoint
 
-	new my_hitpoint_enum:the_hitpoint = my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
-	
-	if(sh_clients_are_same_team(id,attacker)||(id==attacker)){
-		return HAM_IGNORED
-	}
+	get_user_attacker(id, weapon,the_hitpoint)
+
+	pev(id, pev_dmg_take, damage)
+
 
 	static attacker_name[128],client_name[128]
 	get_user_name(attacker,attacker_name,127)

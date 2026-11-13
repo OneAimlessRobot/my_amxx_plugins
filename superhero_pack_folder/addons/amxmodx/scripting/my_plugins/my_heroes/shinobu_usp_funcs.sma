@@ -27,11 +27,14 @@ public plugin_init(){
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	register_forward(FM_CmdStart,"fw_Shut_Shinobu_Usp_Up")
-	RegisterHam(Ham_TraceAttack,"player","trace_shinobu_usp",_,true)
+	RegisterHam(Ham_TakeDamage, "player","damage_shinobu_usp",1,true)
+	RegisterHam(Ham_TraceAttack, "player","trace_shinobu_usp",_,true)
+
 	wlt_get_def_name(my_weapon_ids:SHINOBU_WEAPON_CLASSID,wpn_name_for_future_lookup,charsmax(wpn_name_for_future_lookup))
 	RegisterHam(Ham_Weapon_Reload, wpn_name_for_future_lookup, "track_shinobu_usp_ammo",_,true)
 	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
 	register_event("CurWeapon", "on_Usp_Weapon_Change", "be", "1=1")
+
 	
     
 	
@@ -163,48 +166,88 @@ public track_shinobu_usp_ammo(ent)
 	return HAM_HANDLED
 }
 
-public trace_shinobu_usp(this, idattacker, Float:damage, Float:direction[3], traceresult, damagebits)
+public damage_shinobu_usp(id, idinflictor, attacker, Float:damage, damagebits)
 {
-	if(damage<=0.0){
-		return HAM_IGNORED
-	}
-	if ( !sh_is_active()) return HAM_IGNORED
-	
-	if ( !is_user_alive(idattacker)) {
-		return HAM_IGNORED
-	}
-	if(!sh_get_user_has_hero(idattacker,gHeroID)){
+	if(damage <= 0.0){
 
 		return HAM_IGNORED
 	}
-	new CsTeams:att_team=cs_get_user_team(idattacker)
-	if((cs_get_user_team(this)==att_team)) return HAM_IGNORED
-	new ammo,weapon=get_user_weapon(idattacker,_,ammo)
+
+	if ( !sh_is_active()) return HAM_IGNORED
+	
+	if ( !is_user_alive(attacker)) {
+		return HAM_IGNORED
+	}
+	if(!sh_get_user_has_hero(attacker,gHeroID)){
+
+		return HAM_IGNORED
+	}
+	new weapon, my_hitpoint_enum:the_hitpoint
+
+	get_user_attacker(id, weapon, _:the_hitpoint)
+	
+	pev(id, pev_dmg_take, damage)
+
 	if(weapon==SHINOBU_WEAPON_CLASSID){
+		new ammo;
+		get_user_weapon(attacker,_,ammo)
 		static Float:speed,Float:stun_time;
-		new hitzone=get_tr2(traceresult,TR_Hitgroup)
-		new is_headshot=(hitzone==HIT_HEAD)
-		new target_is_marked_by_weapon_owner=(shinobu_get_user_tagged_player(idattacker)==this)
+		damage *= ((the_hitpoint == MY_HIT_HEAD)?4.0:1.0)
+		new is_headshot=(the_hitpoint==MY_HIT_HEAD)
+		new target_is_marked_by_weapon_owner=(shinobu_get_user_tagged_player(attacker)==id)
 		if(target_is_marked_by_weapon_owner){
 			
 			stun_time=(is_headshot?3.0:1.0)
 			speed=(is_headshot?40.0:220.0)
-			sh_set_stun(this,stun_time,speed)
+			sh_set_stun(id,stun_time,speed)
 			
 			damage*=(is_headshot?5.5:3.5)
 			ammo+=(is_headshot?5:3)
-			g_shinobu_curr_ammo[idattacker] = ammo
-			g_shinobu_curr_ammo[idattacker] = min(g_shinobu_curr_ammo[idattacker],MAX_AMMO)
-			cs_set_user_bpammo(idattacker,SHINOBU_WEAPON_CLASSID,g_shinobu_curr_ammo[idattacker])
+			g_shinobu_curr_ammo[attacker] = ammo
+			g_shinobu_curr_ammo[attacker] = min(g_shinobu_curr_ammo[attacker],MAX_AMMO)
+			cs_set_user_bpammo(attacker,SHINOBU_WEAPON_CLASSID,g_shinobu_curr_ammo[attacker])
 			
-			sh_extra_damage( this, idattacker, floatround(damage),
-								my_hitpoint_enum:hitzone,
+			sh_extra_damage( id, attacker, floatround(damage),
+								my_hitpoint_enum:the_hitpoint,
 								_,_,_,_,
 								SH_NEW_DMG_SUPER_BULLET,
 								custom_weapon_shinobu_pistol)
 			
 		}
 		else{
+			damage=0.0
+			SetHamParamFloat(3,damage)
+		}
+		return HAM_HANDLED
+	}
+	return HAM_IGNORED
+}
+public trace_shinobu_usp(this, attacker, Float:damage, Float:direction[3], Ptr, damagebits){
+
+	if(damage<=0.0){
+		return HAM_IGNORED
+	}
+	if ( !sh_is_active()) return HAM_IGNORED
+	
+	if ( !is_user_alive(attacker)) {
+		return HAM_IGNORED
+	}
+	if(!sh_get_user_has_hero(attacker,gHeroID)){
+
+		return HAM_IGNORED
+	}
+
+	new weapon, my_hitpoint_enum:the_hitpoint
+
+	attacker = get_user_attacker(this, weapon, _:the_hitpoint)
+	
+	pev(this, pev_dmg_take, damage)
+
+	if(weapon==SHINOBU_WEAPON_CLASSID){
+
+		new target_is_marked_by_weapon_owner=(shinobu_get_user_tagged_player(attacker)==this)
+		
+		if(!target_is_marked_by_weapon_owner){
 			damage=0.0
 			SetHamParamFloat(3,damage)
 		}

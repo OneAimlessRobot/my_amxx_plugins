@@ -107,7 +107,9 @@ public plugin_init(){
 	hook_drag_speed_pcvar=create_cvar("hook_drag_speed", "2.0")
 	hook_drag_time_pcvar=create_cvar("hook_drag_time", "3")
 	gutting_dmg_mult_pcvar=create_cvar("hook_gutting_dmg_mult", "3")
-	RegisterHam(Ham_TraceAttack,"player","Erica2_ham_trace_damage",_,true)
+
+	RegisterHam(Ham_TakeDamage,"player","Erica_ham_trace_damage",1,true)
+	
 	register_think(ERICA_HOOK_DUMMY_ENTITY_CLASSNAME,"hook_think")
 	register_forward(FM_CmdStart, "CmdStart")
 }
@@ -281,9 +283,6 @@ public CmdStart(attacker, uc_handle)
 		
 		return FMRES_IGNORED;
 	}
-	if(sh_get_id_bit(attacker,SH_USING_HOOK_ATTACK)){
-		return FMRES_IGNORED;
-	}
 	if(!is_user_alive(attacker)){
 
 		
@@ -298,8 +297,14 @@ public CmdStart(attacker, uc_handle)
 		return FMRES_IGNORED
 
 	}
-	if ( !sh_get_user_has_hero(attacker,gHeroID)||!Get_BitVar(hook_on_mask, attacker)||(g_hook_kills[attacker]<=0)) return FMRES_IGNORED;
+	if ( !sh_get_user_has_hero(attacker,gHeroID)||!Get_BitVar(hook_on_mask, attacker)||(g_hook_kills[attacker]<=0)){
+		return FMRES_IGNORED;
+	}
+	new bool:is_dragging = bool:is_valid_ent(g_player_hook[attacker])
+	if(sh_get_id_bit(attacker,SH_USING_HOOK_ATTACK)&&!is_dragging){
 
+		return FMRES_IGNORED;
+	}
 	
 	static button, prev_button = 0
 
@@ -318,7 +323,7 @@ public CmdStart(attacker, uc_handle)
 			if(!Get_BitVar(hook_button_pressed_mask,attacker)){
 				
 				Assign_BitVar(hook_button_pressed_mask,attacker, true_for_macro)
-				if((!is_valid_ent(g_player_hook[attacker]))){
+				if((!is_dragging)){
 					
 					
 					
@@ -387,7 +392,8 @@ public CmdStart(attacker, uc_handle)
 					}
 				}
 				else {
-					new target=pev(g_player_hook[attacker],pev_euser1)
+					
+					new target=entity_get_edict(g_player_hook[attacker],EV_ENT_euser1)
 					if(is_user_alive(target)){
 						stop_dragging(attacker,target)
 					}
@@ -403,8 +409,13 @@ public CmdStart(attacker, uc_handle)
 	
 	return FMRES_IGNORED;
 }
-public Erica2_ham_trace_damage(id, attacker, Float:damage, Float:Direction[3], Ptr, DamageBits)
+public Erica_ham_trace_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
+if(damage <= 0.0){
+
+	return HAM_IGNORED
+}
+
 if ( !sh_is_active() || !is_user_alive(id)||!is_user_alive(attacker)) return HAM_IGNORED
 
 new weapon=get_user_weapon(attacker)

@@ -417,7 +417,7 @@ public chorazy_II_toumpaeeeehm(pToucher, pTouched)
 			
 			if(sh_get_user_has_hero(oid,gHeroID)){
 
-				sh_effect_user_direct(oid,oid,gHeroID,COCAINE)
+				sh_effect_user_direct(oid,oid,5.0,gHeroID,COCAINE)
 			}
 			new CsArmorType:armor_type;
 			cs_get_user_armor(pTouched,armor_type);
@@ -451,7 +451,7 @@ public chorazy_II_toumpaeeeehm(pToucher, pTouched)
 			}
 
 		}
-		sh_sleep_user(pTouched,oid,gHeroID)
+		sh_sleep_user(pTouched,oid,3.0,gHeroID)
 
 	}
 	remove_entity(pToucher)

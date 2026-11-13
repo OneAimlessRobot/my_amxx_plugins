@@ -14,7 +14,8 @@
 #define ICON_SHOW 1
 
 new m_trail, white,g_msgFade,gSpriteLaser,gMsgID_Status_icon
-new gSpriteSmoke,  gSpriteBurning
+new gSpriteSmoke,  gSpriteBurning, gSpriteLightning
+
 
 new g_iFireSprite, g_iSmokeSprite[2];
 
@@ -107,8 +108,7 @@ public plugin_natives(){
 	register_native("create_fired_shot_disk","_create_fired_shot_disk");
 	register_native("draw_aim_vector","_draw_aim_vector");
 	register_native("big_gun_shot_decal","_big_gun_shot_decal")
-	
-
+	register_native("thunder_effects","_thunder_effects")
 	register_native("set_damage_icon","_set_damage_icon")
 
 }
@@ -144,6 +144,79 @@ public _ammo_hud(iPlugins, iParams){
 	}
 }
 
+//----------------------------------------------------------------------------------------------
+public _thunder_effects(iPlugins,iParams)
+{
+
+	new Float:fl_Origin[3]
+
+	get_array_f(1,fl_Origin,3)
+
+	new Float:fX = fl_Origin[0], Float:fY = fl_Origin[1], Float:fZ = fl_Origin[2]
+
+	// Thunder sound
+	emit_sound(0, CHAN_ITEM, THUNDER_CRACK_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+
+	// Beam effect between two points
+	engfunc(EngFunc_MessageBegin, MSG_BROADCAST, SVC_TEMPENTITY, fl_Origin, 0)
+	write_byte(TE_BEAMPOINTS)		// 0
+	engfunc(EngFunc_WriteCoord, fX + 150.0)	// start position
+	engfunc(EngFunc_WriteCoord, fY + 150.0)
+	engfunc(EngFunc_WriteCoord, fZ + 800.0)
+	engfunc(EngFunc_WriteCoord, fX)	// end position
+	engfunc(EngFunc_WriteCoord, fY)
+	engfunc(EngFunc_WriteCoord, fZ)
+	write_short(gSpriteLightning)	// sprite index
+	write_byte(1)					// starting frame
+	write_byte(15)					// frame rate in 0.1's
+	write_byte(10)					// life in 0.1's
+	write_byte(80)					// line width in 0.1's
+	write_byte(30)					// noise amplitude in 0.01's
+	write_byte(255)					// red
+	write_byte(255)					// green
+	write_byte(255)					// blue
+	write_byte(255)					// brightness
+	write_byte(200)					// scroll speed in 0.1's
+	message_end()
+
+	// Sparks
+	message_begin(MSG_PVS, SVC_TEMPENTITY)
+	write_byte(TE_SPARKS)			// 9
+	engfunc(EngFunc_WriteCoord, fX)	// position
+	engfunc(EngFunc_WriteCoord, fY)
+	engfunc(EngFunc_WriteCoord, fZ + 10.0)
+	message_end()
+
+	// Smoke
+	engfunc(EngFunc_MessageBegin, MSG_BROADCAST, SVC_TEMPENTITY, fl_Origin, 0)
+	write_byte(TE_SMOKE)			// 5
+	engfunc(EngFunc_WriteCoord, fX)	// position
+	engfunc(EngFunc_WriteCoord, fY)
+	engfunc(EngFunc_WriteCoord, fZ + 10.0)
+	write_short(gSpriteSmoke)		// sprite index
+	write_byte(10)					// scale in 0.1's
+	write_byte(10)					// framerate
+	message_end()
+	
+	// Blood
+	engfunc(EngFunc_MessageBegin, MSG_BROADCAST, SVC_TEMPENTITY, fl_Origin, 0)
+	write_byte(TE_LAVASPLASH)		// 10
+	engfunc(EngFunc_WriteCoord, fX)	// position
+	engfunc(EngFunc_WriteCoord, fY)
+	engfunc(EngFunc_WriteCoord, fZ + 12.0)
+	message_end()
+
+	// Burn decal
+	engfunc(EngFunc_MessageBegin, MSG_BROADCAST, SVC_TEMPENTITY, fl_Origin, 0)
+	write_byte(TE_GUNSHOTDECAL)		// 109
+	engfunc(EngFunc_WriteCoord, fX)	// position
+	engfunc(EngFunc_WriteCoord, fY)
+	engfunc(EngFunc_WriteCoord, fZ)
+	write_short(0)
+	write_byte(g_burnDecalBig[generate_int(0, 2)] )	// decal
+	message_end()
+}
+//----------------------------------------------------------------------------------------------
 prepare_shero_aux_lib_pt1(){
 
 	server_print("%s innited!^n",PLUGIN)
@@ -154,12 +227,15 @@ precache_native_fx_pt1(){
 	white = engfunc(EngFunc_PrecacheModel,"sprites/shockwave.spr")
 	m_trail = engfunc(EngFunc_PrecacheModel,"sprites/smoke.spr")
 	gSpriteSmoke = engfunc(EngFunc_PrecacheModel,"sprites/steam1.spr")
+	gSpriteLightning = engfunc(EngFunc_PrecacheModel,"sprites/lgtning.spr")
 	gSpriteBurning = engfunc(EngFunc_PrecacheModel,"sprites/xfire.spr")
 	g_iSmokeSprite[0] = engfunc(EngFunc_PrecacheModel,"sprites/black_smoke3.spr");
 	g_iSmokeSprite[1] = engfunc(EngFunc_PrecacheModel,"sprites/steam1.spr");
 	g_iFireSprite = engfunc(EngFunc_PrecacheModel,"sprites/flame.spr");
 	gSpriteLaser = engfunc(EngFunc_PrecacheModel,"sprites/laserbeam.spr")
 
+	engfunc(EngFunc_PrecacheSound, THUNDER_CRACK_SFX)
+	engfunc(EngFunc_PrecacheSound, THUNDER_CRACK_AZTEC_SFX)
 	engfunc(EngFunc_PrecacheSound, LASER_LINE_DEFAULT_SOUND)
 	engfunc(EngFunc_PrecacheSound, SUCK_IN_SOUND_FILE_NAME)
 

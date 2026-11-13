@@ -38,12 +38,12 @@ native bool:sh_register_superhero_map_restriction(heroID, bool:white_listed_or_b
   if white listed:
 
   true if the map string has a partial match
-  true otherwise
+  false otherwise
 
   if black listed:
 
   false if the map string has a partial match
-  false otherwise
+  true otherwise
 
   its like an "allow" check for the map without anything internal changing
 

@@ -62,6 +62,10 @@ public sh_client_spawn(id)
 }
 public psychosis_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
+if(damage <= 0.0){
+
+	return HAM_IGNORED
+}
 if ( !sh_is_active() || !is_user_alive(id)||!is_user_alive(attacker) ||(id==attacker)) return HAM_IGNORED
 new bool:clients_here_are_same_team=sh_clients_are_same_team(id,attacker)
 if(sh_get_user_has_hero(id,gHeroID)&&!(clients_here_are_same_team)&&yandere_get_is_super(id)&&

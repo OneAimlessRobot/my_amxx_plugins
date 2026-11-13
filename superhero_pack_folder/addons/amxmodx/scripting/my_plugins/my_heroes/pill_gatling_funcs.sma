@@ -661,7 +661,7 @@ public pilula_sexual_penetra_player(pToucher, pTouched)
 		//retrieve current pill fx num
 
 		new fx_id:fx_num=fx_id:entity_get_int(pToucher,EV_INT_iuser3)
-		make_effect(pTouched,id,gHeroID,fx_num,false)
+		make_effect(pTouched,id,5.0,gHeroID,fx_num,false)
 	}
 	remove_entity(pToucher)
 }

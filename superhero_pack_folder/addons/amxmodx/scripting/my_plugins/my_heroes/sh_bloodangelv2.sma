@@ -66,7 +66,7 @@ public plugin_init()
 	// EVENTS
 	
 	register_event("CurWeapon", "weapon_change", "be", "1=1")
-	RegisterHam(Ham_TraceAttack,"player","darkangel_damage",_,true)
+	RegisterHam(Ham_TakeDamage, "player", "darkangel_damage",1,true)
 	// Let Server know about the hero's variables
 	shSetShieldRestrict(HeroName)
 	shSetMaxHealth(HeroName, "darkangel_health")
@@ -159,7 +159,7 @@ public weapon_change(id)
 		sh_reload_ammo(id)
 	}
 }
-public darkangel_damage(id, attacker, Float:damage, Float:direction[3], traceresult, damagebits)
+public darkangel_damage(id, attacker, Float:damage, Float:direction[3], Ptr, damagebits)
 {	
 	if(damage<=0.0){
 		return HAM_IGNORED
@@ -170,7 +170,9 @@ public darkangel_damage(id, attacker, Float:damage, Float:direction[3], traceres
 	
 	new weapon = get_user_weapon(attacker)
 	
-	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(traceresult,TR_Hitgroup)
+	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
+
+	damage *= ((the_hitpoint == MY_HIT_HEAD)?4.0:1.0)
 
 	if ( weapon == CSW_M4A1)
 	{

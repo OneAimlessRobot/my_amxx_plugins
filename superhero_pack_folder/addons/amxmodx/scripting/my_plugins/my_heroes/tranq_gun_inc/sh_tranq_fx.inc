@@ -11,10 +11,13 @@
 
 #define SLEEP_PERIOD 0.25
 #define SLEEP_TIME 15.0
-#define SLEEP_TIMES floatround(floatdiv(SLEEP_TIME,SLEEP_PERIOD))
+#define SLEEP_TIMES floatround(floatdiv(the_time,SLEEP_PERIOD))
 
 
-native sh_sleep_user(id,attacker,gHeroID)
+forward sh_on_sleep_start_fwd(id, attacker, Float:the_time, heroID)
+forward sh_on_sleep_end_fwd(id, attacker, Float:the_time, heroID)
+
+native sh_sleep_user(id,attacker, Float:the_time = SLEEP_TIME,gHeroID)
 native sh_unsleep_user(id)
 
 

@@ -414,7 +414,7 @@ inline bool HeroArrays::get_hero_projectile_weapon_bit( const state_cell_type_t&
 		return false;
 	} 
 	
-	if( !the_weapon_id || (the_weapon_id > NUM_WEAPONS)){
+	if((the_weapon_id > NUM_WEAPONS)){
 		return false;
 	
 	}
@@ -427,7 +427,7 @@ inline void HeroArrays::assign_hero_projectile_weapon_bit( const state_cell_type
 		return;
 	}
 	
-	if( !the_weapon_id || (the_weapon_id > NUM_WEAPONS)){
+	if((the_weapon_id > NUM_WEAPONS)){
 		return;
 	
 	}

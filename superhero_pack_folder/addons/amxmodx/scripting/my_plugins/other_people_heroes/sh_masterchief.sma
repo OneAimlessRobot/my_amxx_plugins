@@ -44,7 +44,7 @@ public plugin_init()
 	custom_dmg_id_mjolnir_rifle=sh_log_custom_damage_source(gHeroID,
 				dmg_source_name_short_mjolnir_rifle,dmg_source_name_log_mjolnir_rifle,0)
 	
-	RegisterHam(Ham_TraceAttack,"player","masterchief_damage",_,true)
+	RegisterHam(Ham_TakeDamage,"player","masterchief_damage",1,true)
 
 
 	register_event("CurWeapon", "weapon_change", "be", "1=1")
@@ -109,18 +109,22 @@ public weapon_change(id)
 	}
 }
 
-public masterchief_damage(id, attacker, Float:damage, Float:direction[3], traceresult, damagebits)
-{	
-	if(damage<=0.0){
+public masterchief_damage(id, idinflictor, attacker, Float:damage, damagebits)
+{
+	if(damage <= 0.0){
+
 		return HAM_IGNORED
 	}
 	
 	if( !sh_is_active() || !is_user_alive(id) || !is_user_connected(id)) return HAM_IGNORED;
 	if ( (attacker==id)||!is_user_connected(attacker)||!sh_get_user_has_hero(attacker,gHeroID) ) return HAM_IGNORED
 	
-	new weapon = get_user_weapon(attacker)
+	new weapon, my_hitpoint_enum:the_hitpoint
+
+	get_user_attacker(id, weapon, _:the_hitpoint)
 	
-	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(traceresult,TR_Hitgroup)
+	pev(id, pev_dmg_take, damage)
+
 
 	if( weapon == CSW_P90 )
 	{

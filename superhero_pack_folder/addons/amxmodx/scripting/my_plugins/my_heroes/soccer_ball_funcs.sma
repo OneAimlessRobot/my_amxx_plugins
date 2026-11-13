@@ -132,7 +132,7 @@ public ball_touch_player(Ball, Player ) {
 				sh_extra_damage(Player,oid,damage,
 						the_hitpoint
 						,_,_,_,_,
-						SH_NEW_DMG_BLUNT_TRAUMA,
+						SH_NEW_DMG_BLUNT_FORCE_TRAUMA,
 						custom_dmg_id_free_kick)
 				
 				sh_set_stun(Player,3.0)

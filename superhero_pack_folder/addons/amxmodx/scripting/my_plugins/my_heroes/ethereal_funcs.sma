@@ -46,6 +46,7 @@ public plugin_init()
 	register_forward(FM_CheckVisibility, "fw_CheckVisibility")
 	
 	wlt_get_def_name(CSW_ETHEREAL,wpn_name_for_future_lookup,charsmax(wpn_name_for_future_lookup))
+	server_print("Obtained weapon name: %s", wpn_name_for_future_lookup)
 	RegisterHam(Ham_Weapon_WeaponIdle, wpn_name_for_future_lookup, "fw_Weapon_WeaponIdle_Post", 1,true)
 	RegisterHam(Ham_Weapon_PrimaryAttack, wpn_name_for_future_lookup, "fw_Weapon_PrimaryAttack",_,true)
 	RegisterHam(Ham_Weapon_PrimaryAttack, wpn_name_for_future_lookup, "fw_Weapon_PrimaryAttack_Post", 1,true)	

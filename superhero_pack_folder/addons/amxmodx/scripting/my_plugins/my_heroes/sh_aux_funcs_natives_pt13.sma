@@ -6,6 +6,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
+#include "shock_fx_inc/shock_fx.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 
 
@@ -21,6 +22,8 @@
 #define THE_BITSUM_TO_EXCLUDE ( single_wpn_bs( CSW_KNIFE ) | single_wpn_bs (CSW_C4 ) )
 #define ETHEREALS_CAN_USE_WPN(%1) (wpn_id_in_bs( (%1) , THE_BITSUM_TO_EXCLUDE ))
 
+
+#define DEFAULT_ELEMENTAL_PROBE_ENDEAVOUR_HP_CVAR_NAME "sh_elemental_probe_endeavour_hp"
 
 #define DEFAULT_ETHEREAL_GRAVITY_CVAR_NAME "sh_ethereal_heroes_gravity"
 
@@ -41,11 +44,13 @@
 
 
 
+
 stock REMOVE_WEAPONS_TASKID = -1
 
 stock DEMONIC_HEALING_TASKID = -1
 
-static default_elemental_probe_cvar_ptr = -1,
+static 	default_elemental_probe_endeavour_hp = -1,
+		default_elemental_probe_cvar_ptr = -1,
 		default_demonic_hero_prepackage_ap = -1,
 		default_demonic_hero_prepackage_hp = -1,
 		default_demonic_hero_prepackage_speed = -1,
@@ -57,6 +62,8 @@ public plugin_init(){
 
 
 	register_plugin(PLUGIN, VERSION, AUTHOR);
+
+	default_elemental_probe_endeavour_hp = create_cvar(DEFAULT_ELEMENTAL_PROBE_ENDEAVOUR_HP_CVAR_NAME, "1.0", _,"Default endeavour hp for elemental probe heroes",true, 1.0,true, 5.0)
 
 	default_elemental_probe_cvar_ptr = create_cvar(DEFAULT_ETHEREAL_GRAVITY_CVAR_NAME, "0.1", _,"Default gravity for registered ethereal heroes",true, 0.1,true, 0.5)
 
@@ -233,6 +240,18 @@ public ham_sh_damage_gating(this, inflictor, attacker, Float:damage, damagebits)
 		return HAM_SUPERCEDE
 	}
 
+	static user_hp = 100,
+		user_iHealthcap = 100,
+		Float:user_healthcap = 100.0;
+
+	user_hp = get_user_health(this);
+
+	user_healthcap = sh_get_player_healthcap(this)
+
+	user_iHealthcap = floatround(user_healthcap)
+
+
+
 	//ethereal players can ONLY be damaged by a very sparse selection of SH_NEW_DMG types
 	//AND hand grenades, unless they have the ANTI_GRENADES_HERO property active
 
@@ -246,15 +265,25 @@ public ham_sh_damage_gating(this, inflictor, attacker, Float:damage, damagebits)
 			return HAM_SUPERCEDE
 		
 		}
+		
+		if(sh_get_player_has_hero_prop(this,SH_ELEMENTAL_PROBE_HERO)&&(user_hp >= user_iHealthcap) && ( damage > user_healthcap) ){
+			
+			haramball_shield_react_primitive(this, attacker, damage)
+
+			SetHamParamFloat(4,0.0)
+			
+			return HAM_SUPERCEDE
+		}
+
 	}
-	
+
 	if(sh_get_player_has_hero_prop(this,SH_DEMONIC_HERO)){
 
 		SetHamParamFloat(4, damage - ( damage * cvar_val(float, default_demonic_hero_prepackage_resi) ) )
 		
 		return HAM_HANDLED
 	}
-	
+
 	return HAM_IGNORED
 }
 
@@ -278,8 +307,9 @@ public fw_HamPlayerTouchPre( iEntity, iPlayer ) {
 
 
 public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
-	if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
 	
+	if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
+
 		return DMG_FWD_PASS
 	}
 
@@ -305,24 +335,35 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_h
 
 
 			}
-			case SH_NEW_DMG_SUPER_BULLET,
-						SH_NEW_DMG_TR45H_GUN,
-						SH_NEW_DMG_SUFFOCATION,
-						SH_NEW_DMG_CLEANSE:{
-
-
-					the_return_value = DMG_FWD_BLOCK
-				
-					return the_return_value
-			}
-			default:{
-
-				the_return_value=DMG_FWD_PASS
-			}
-
-
-
 		}
+		if(CUSTOM_DMG_TYPE_IS_SPECIAL(new_dmg_type)){
+			return DMG_FWD_BLOCK
+		}
+	}
+
+
+	if(sh_get_player_has_hero_prop(victim,SH_ELEMENTAL_PROBE_HERO)){
+
+		new dmg_fwd_ret_id:the_return_value=DMG_FWD_PASS
+
+		static user_hp = 100,
+			user_iHealthcap = 100,
+			Float:user_healthcap = 100.0;
+
+		user_hp = get_user_health(victim);
+		
+		user_healthcap = sh_get_player_healthcap(victim)
+
+		user_iHealthcap = floatround(user_healthcap)
+
+		if((user_hp >= user_iHealthcap) && ( damage > user_healthcap) && (dmgMode!= SH_DMG_KILL)){
+				
+				haramball_shield_react_primitive(victim, attacker,float(damage))
+
+				the_return_value = DMG_FWD_BLOCK
+				return the_return_value
+		}
+
 	}
 	if(sh_get_player_has_hero_prop(victim,SH_DEMONIC_HERO)){
 
@@ -337,9 +378,6 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_h
 
 					
 			}
-
-
-
 		}
 	}
 
@@ -454,4 +492,16 @@ public fw_Ethereal_unnarmed(id, uc_handle)
 		
 	}
 	return (removed_attack?FMRES_SUPERCEDE:FMRES_IGNORED)
+}
+haramball_shield_react_primitive(id,attacker, Float:damage){
+
+            
+    set_user_health(id,floatround(cvar_val(float, default_elemental_probe_endeavour_hp)))
+
+    sh_chat_message(id,-1,"[SH Elemental probe]: We blocked an instant kill! The damage received would have been: %0.2f",damage)
+    
+    if(!sh_get_id_bit(id,SH_IS_SHOCKED)){
+        sh_shock_user(id,attacker)
+    }
+
 }

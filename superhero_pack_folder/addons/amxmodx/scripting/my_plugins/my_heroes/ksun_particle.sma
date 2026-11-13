@@ -481,7 +481,7 @@ stock entity_set_follow(entity, target,spore_owner)
 	if ( !is_valid_ent(entity) || !is_user_alive(target) ||!is_user_alive(spore_owner)) return -1
 
 
-	new Float:fl_Origin[3], Float:fl_EntOrigin[3], Float:entity_in_the_way_origin[3],
+	static Float:fl_Origin[3], Float:fl_EntOrigin[3], Float:entity_in_the_way_origin[3],
 	Float:in_the_way_vector[3]
 	entity_get_vector(target, EV_VEC_origin, fl_Origin)
 	entity_get_vector(entity, EV_VEC_origin, fl_EntOrigin)
@@ -489,17 +489,17 @@ stock entity_set_follow(entity, target,spore_owner)
 	
 	new Float:fl_InvTime = (cvar_val(float, pcvar_ksun_spore_speed) / distance)
 
-	new Float:fl_Distance[3]
+	static Float:fl_Distance[3]
 	fl_Distance[0] = fl_Origin[0] - fl_EntOrigin[0]
 	fl_Distance[1] = fl_Origin[1] - fl_EntOrigin[1]
 	fl_Distance[2] = fl_Origin[2] - fl_EntOrigin[2]
 
-	new Float:fl_Velocity[3]
+	static Float:fl_Velocity[3]
 	fl_Velocity[0] = fl_Distance[0] * fl_InvTime
 	fl_Velocity[1] = fl_Distance[1] * fl_InvTime
 	fl_Velocity[2] = fl_Distance[2] * fl_InvTime
 
-	new Float:fl_NewAngle[3]
+	static Float:fl_NewAngle[3]
 	vector_to_angle(fl_Velocity, fl_NewAngle)
 	fl_NewAngle[0]*=-1.0
 	entity_set_vector(entity, EV_VEC_angles, fl_NewAngle)
@@ -515,8 +515,9 @@ stock entity_set_follow(entity, target,spore_owner)
 	//and "WALLBUMP LENGTH AS WELL"
 	multiply_3d_vector_by_scalar(in_the_way_vector,(1.0/distance)*WALL_BUMP_LENGTH*7.0,in_the_way_vector)
 	add_3d_vectors(fl_EntOrigin,in_the_way_vector,entity_in_the_way_origin)
-	new Float:hit_end[3]
-	new Float:the_fraction=0.0
+	static Float:hit_end[3]
+	static Float:the_fraction;
+	the_fraction=0.0
 	new wall_in_the_way=is_wall_between_points(fl_EntOrigin, entity_in_the_way_origin, hit_end,the_fraction, entity)
 	if(wall_in_the_way&&bool:entity_get_int(entity,EV_INT_iuser1)){
 		return 0
@@ -545,7 +546,7 @@ new victim = pTouched
 new ffOn = get_cvar_num("mp_friendlyfire")
 if ( (get_user_team(victim) != get_user_team(killer)) || ffOn )
 {
-	new tger_name[128], vic_name[128]
+	static tger_name[128], vic_name[128]
 	get_user_name(victim,vic_name,127)
 	get_user_name(killer,tger_name,127)
 

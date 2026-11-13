@@ -3,6 +3,7 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_MATH_FUNCS
+#define AUX_STUFF_GIVE_HITPOINTS
 #define I_WANT_CUSTOM_COLORS
 #define I_WANT_BASIC_MACROS
 #define I_WANT_PDATA_ALIASES
@@ -18,6 +19,7 @@
 #include "../include/hamsandwich.inc"
 #include "my_include/randomx.inc"
 #include "my_include/auxiliar_stuff.inc"
+#include "my_include/superheromod.inc"
 #include "my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "task_allocator_inc/task_allocator_aux_stuff.inc"
@@ -56,7 +58,8 @@ enum main_menu_constants{
     SET_BOT_JOINED_TEAM,
     TOGGLE_BOT_FREEZE,
     TOGGLE_BOT_IGNORE_ENEMIES,
-    TOGGLE_BOT_IGNORE_OBJECTIVES
+    TOGGLE_BOT_IGNORE_OBJECTIVES,
+    GET_HERO_ID_FROM_NAME
 
 
 
@@ -183,7 +186,11 @@ public plugin_init(){
 
     register_concmd("set_quota", "set_quota", ADMIN_IMMUNITY, "Set number of bots to play with")
     register_concmd("set_bot_team", "set_bot_team", ADMIN_IMMUNITY, "Sets the team that bots are allowed to join")
+    register_concmd("pick_hero_on_player", "pick_hero_on_player", ADMIN_IMMUNITY, "Force-Pick hero on player by heroID")
+    register_concmd("drop_hero_off_of_player", "drop_hero_off_of_player", ADMIN_IMMUNITY, "Force-Drop hero on player by heroID")
     register_concmd("amx_countentities", "amx_countentities", ADMIN_IMMUNITY, "Search number of entities based on name")
+    register_concmd("amx_get_hero_id_from_name", "amx_get_hero_id_from_name", ADMIN_IMMUNITY, "Match part of a hero name and obtain FIRST hero id along with the full name that matches!")
+
     register_clcmd(CMD_NAME, "menu_display_inittializer", ADMIN_IMMUNITY, "My first menu")
     RegisterHam(Ham_Spawn, "player", "ham_PlayerSpawn_Post", 1, true)
 
@@ -265,6 +272,41 @@ public amx_countentities(id,level,cid){
     }
 
     client_print(id,print_chat, "We have found a total of %d entities with classname exactly equal to ^"%s^"",count,arg)
+
+    return PLUGIN_HANDLED
+
+
+}
+public amx_get_hero_id_from_name(id,level,cid){
+
+    if (!cmd_access(id,level,cid,1)){
+        return PLUGIN_HANDLED
+    }
+
+    static arg[MAX_HERO_NAME_LENGTH]
+    
+    static obtained_hero_name[MAX_HERO_NAME_LENGTH]
+
+
+    read_argv(1,arg,charsmax(arg))
+
+
+    copy(obtained_hero_name,sizeof(arg),arg)
+
+    
+    new heroID = sh_match_string_with_hero_name(id,obtained_hero_name)
+
+    //internal array indices only count to (SH_MAXHEROS-1)
+
+    if(heroID<0 || heroID >= SH_MAXHEROS){
+
+        client_print(id, print_chat, "No valid hero id or name was obtained!")
+        return PLUGIN_HANDLED
+        
+    }
+
+
+    client_print(id,print_chat, "The hero id obtained from the pattern ^"*%s*^" was %d! from hero named ^"%s^"",arg,heroID,obtained_hero_name)
 
     return PLUGIN_HANDLED
 
@@ -821,6 +863,7 @@ public menu_display_inittializer(id,level,cid){
     menu_additem(gMenuID,"Toggle bot freeze")
     menu_additem(gMenuID,"Toggle bot ignore enemies")
     menu_additem(gMenuID,"Toggle bot ignore objectives")
+    menu_additem(gMenuID,"Obtain hero id from part of name!")
 
 
     
@@ -887,6 +930,62 @@ public set_quota(id,level,cid){
     set_pcvar_num(pcvar_yb_quota,clamp_macro(the_quota_num,0,get_maxplayers()))
     return PLUGIN_HANDLED
 
+}
+public pick_hero_on_player(id,level,cid){
+
+    if (!cmd_access(id,level,cid,2)){
+        return PLUGIN_HANDLED
+    }
+    new arg1[128],arg2[8]
+
+    read_argv(1, arg1, charsmax(arg1))
+
+    new player = cmd_target(id,arg1,2)
+    
+    if (!player) return PLUGIN_HANDLED
+
+    read_argv(2, arg2, charsmax(arg2))
+
+    new heroID = str_to_num(arg2)
+
+    if(!sh_pick_hero_without_menu(player,heroID)){
+
+        console_print(id, "Unable to force pick hero with ID %d onto player %d!",heroID,player)
+    }
+    else{
+        console_print(id, "Operation successful!")
+
+
+    }
+    return PLUGIN_HANDLED
+}
+public drop_hero_off_of_player(id,level,cid){
+
+    if (!cmd_access(id,level,cid,2)){
+        return PLUGIN_HANDLED
+    }
+    new arg1[128],arg2[8]
+
+    read_argv(1, arg1, charsmax(arg1))
+
+    new player = cmd_target(id,arg1,2)
+    
+    if (!player) return PLUGIN_HANDLED
+
+    read_argv(2, arg2, charsmax(arg2))
+
+    new heroID = str_to_num(arg2)
+
+    if(!sh_remove_user_power_without_menu(player,heroID)){
+
+        console_print(id, "Unable to force drop hero with ID %d from player %d!",heroID,player)
+    }
+    else{
+        console_print(id, "Operation successful!")
+
+
+    }
+    return PLUGIN_HANDLED
 }
 public set_bot_team(id,level,cid){
 
@@ -1020,6 +1119,12 @@ public menu_function_example(id, menu, item)
             client_print(id, print_chat, "Bot ignore objectives %s",!bot_ignore_objectives?"Enabled!":"Disabled...")
             
         }
+        case GET_HERO_ID_FROM_NAME:{
+
+
+            client_cmd(id, "messagemode amx_get_hero_id_from_name")
+        }
+
         /*
             menu canceled!
         */

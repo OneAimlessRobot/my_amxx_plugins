@@ -67,7 +67,7 @@ public plugin_init()
 	
 	sh_assign_hero_bit(gHeroID,SH_HITBOX_MANIP_HERO, true)
 
-	RegisterHam(Ham_TraceAttack,"player","vash_damage",_,true)
+	RegisterHam(Ham_TakeDamage,"player","vash_damage",1,true)
 
 	// HITZONE CHANGING LOOP
 	set_task(1.0, "vash_hitzones", 0, "", 0, "b")
@@ -140,27 +140,30 @@ public vash_weapons(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
-public vash_damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
-{	
+public vash_damage(id, idinflictor, attacker, Float:damage, damagebits)
+{
+	if(damage <= 0.0){
 
-	if(Damage<=0.0){
 		return HAM_IGNORED
 	}
 
-	if ( !sh_is_active() || !is_user_alive(Victim) ) return HAM_IGNORED
+	if ( !sh_is_active() || !is_user_alive(id) ) return HAM_IGNORED
 
-	if ((Attacker==Victim)||!is_user_alive(Attacker)) return HAM_IGNORED
+	if ((attacker==id)||!is_user_alive(attacker)) return HAM_IGNORED
 
-	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
+	new weapon, my_hitpoint_enum:the_hitpoint
 
-	new weapon = get_user_weapon(Attacker)
-	new bool:has_hero= bool:sh_get_user_has_hero(Attacker,gHeroID)
+	get_user_attacker(id, weapon, _:the_hitpoint)
+	
+	pev(id, pev_dmg_take, damage)
+
+	new bool:has_hero= bool:sh_get_user_has_hero(attacker,gHeroID)
 
 	if ( has_hero&& weapon == CSW_DEAGLE ) {
 		// do extra damage
-		new Float:extraDamage =((Damage * get_cvar_float("vash_deaglemult")  ) - Damage)
+		new Float:extraDamage =((damage * get_cvar_float("vash_deaglemult")  ) - damage)
 		if ( extraDamage > 0.0 ){
-			sh_extra_damage( Victim, Attacker, floatround(extraDamage),
+			sh_extra_damage( id, attacker, floatround(extraDamage),
 								the_hitpoint,
 								_,_,_,_,
 								SH_NEW_DMG_SUPER_BULLET,

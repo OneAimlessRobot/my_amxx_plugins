@@ -15,7 +15,6 @@
 #include <xs>
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
-#include "shock_fx_inc/shock_fx.inc"
 #include "wet_fx_inc/wet_fx.inc"
 #include "sequoia_inc/sequoia.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
@@ -102,7 +101,6 @@ new pcvar_sequoia_gravity,
     pcvar_max_charge_rate,
     pcvar_sweep_min_radius,
     pcvar_sweep_max_radius,
-    pcvar_endeavour_hp,
     pcvar_post_attack_stun_time,
     pcvar_post_attack_stun_movespeed
 
@@ -121,8 +119,6 @@ public plugin_init(){
     create_cvar("sequoia_level", "14")
 
     pcvar_sequoia_gravity = create_cvar("sequoia_gravity", "0.25")
-
-    pcvar_endeavour_hp = create_cvar("sequoia_endeavour_hp", "3.00")
 
     pcvar_sequoia_base_cooldown = create_cvar("sequoia_base_cooldown", "10.0")
 
@@ -163,8 +159,6 @@ public plugin_init(){
 
     sh_register_elemental_probe_hero(gHeroID, SEQUOIA_HEALTHCAP, pcvar_sequoia_gravity)
 
-
-    RegisterHam(Ham_TakeDamage,"player","sequoia_no_instant_kill",_, true)
 
 
     sh_register_superheromod_model(gHeroID,
@@ -767,64 +761,6 @@ point_player_towards_other_player(handled_player, target_player){
 
 
 }
-sequoia_haramball_shield_react_primitive(id,attacker, Float:damage){
-
-            
-    set_user_health(id,floatround(cvar_val(float, pcvar_endeavour_hp)))
-
-    sh_chat_message(id,gHeroID,"We blocked an instant kill! The damage received would have been: %0.2f",damage)
-    
-    if(!sh_get_id_bit(id,SH_IS_SHOCKED)){
-        sh_shock_user(id,attacker)
-    }
-
-}
-//----------------------------------------------------------------------------------------------
-public sequoia_no_instant_kill(this, inflictor, attacker, Float:damage, damagebits)
-{   
-    //already ethereal. resists any conventional damage that isnt a grenade
-    //lets just take care of grenades.
-    //more details in sh_aux_funcs_natives_pt13.sma
-    //the hero (bit) property based damage gating module
-    //we can assume the damage is a grenade
-    //as the handle in the other plugin will take care of the rest
-    //sequoia cannot be insta killed AT full health.
-
-
-    if(!sh_is_active()||sh_is_freezetime() ||!is_user_alive(this)) return HAM_IGNORED
-
-    if(!is_valid_ent(inflictor)){
-
-        return HAM_IGNORED
-    }
-
-    if(!sh_get_user_has_hero(this,gHeroID)){
-
-        return FMRES_IGNORED
-    }
-
-    //alright FINE. lets check...
-
-    static inflictor_classname[64];
-
-    entity_get_string(inflictor,EV_SZ_classname,inflictor_classname,63)
-    static bool:it_was_a_grenade; it_was_a_grenade = bool:equal(inflictor_classname,"grenade")
-    static user_hp; user_hp = get_user_health(this);
-    if( it_was_a_grenade){
-
-        if((user_hp >= SEQUOIA_HEALTHCAP_INT_VERSION) && ( floatround(damage) > SEQUOIA_HEALTHCAP_INT_VERSION) ){
-            
-            sequoia_haramball_shield_react_primitive(this, attacker, damage)
-
-            SetHamParamFloat(4,0.0)
-            
-            return HAM_SUPERCEDE
-        }
-
-        
-    }
-    return HAM_IGNORED
-}
 
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, sh_init_mode:mode){
@@ -1224,32 +1160,4 @@ reset_sequoia(id,bool:reset_stamina=false, bool:reset_floating_mode=true, bool:s
     }
     stop_user_spam(id)
     sequoia_delete_charging_sound(id)
-}
-
-
-public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
-    if ( !sh_is_active() || !is_user_alive(victim)||(victim==attacker)){
-
-        return DMG_FWD_PASS
-    }
-
-    //ethereal players can ONLY be damaged by a very sparse selection of SH_NEW_DMG types
-    //AND hand grenades, unless they have the ANTI_GRENADES_HERO property active
-
-
-    if(!sh_get_user_has_hero(victim,gHeroID)){
-        return DMG_FWD_PASS
-    }
-    new dmg_fwd_ret_id:the_return_value=DMG_FWD_PASS
-
-    new user_hp = get_user_health(victim);
-
-    if((user_hp >= SEQUOIA_HEALTHCAP_INT_VERSION) && ( damage > SEQUOIA_HEALTHCAP_INT_VERSION) && (dmgMode!= SH_DMG_KILL)){
-            
-            sequoia_haramball_shield_react_primitive(victim, attacker,float(damage))
-
-            the_return_value = DMG_FWD_BLOCK
-    }
-
-    return the_return_value
 }

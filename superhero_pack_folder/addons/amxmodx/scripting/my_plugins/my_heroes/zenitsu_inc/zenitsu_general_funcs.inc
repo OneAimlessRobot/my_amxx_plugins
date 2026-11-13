@@ -5,4 +5,3 @@
 
 
 native zenitsu_get_hero_id()
-native zenitsu_get_charge_mode_engaged(id)

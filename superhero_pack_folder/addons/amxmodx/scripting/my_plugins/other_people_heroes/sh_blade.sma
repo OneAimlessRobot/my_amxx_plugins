@@ -103,7 +103,7 @@ public plugin_init()
 				0)
 
 
-	RegisterHam(Ham_TraceAttack,"player","blade_damage",_,true)
+	RegisterHam(Ham_TakeDamage,"player","blade_damage",1,true)
 
 	// Let Server know about the hero's varibles
 	shSetShieldRestrict(HeroName)
@@ -202,9 +202,10 @@ burndmgfunc(id, attacker, my_hitpoint_enum:the_hitpoint, Float:damage){
 
 	}
 }
-public blade_damage(id, attacker, Float:damage, Float:direction[3], traceresult, damagebits)
-{	
-	if(damage<=0.0){
+public blade_damage(id, idinflictor, attacker, Float:damage, damagebits)
+{
+	if(damage <= 0.0){
+
 		return HAM_IGNORED
 	}
 	
@@ -213,9 +214,11 @@ public blade_damage(id, attacker, Float:damage, Float:direction[3], traceresult,
 	
 	if(sh_clients_are_same_team(attacker, id)) return HAM_IGNORED
 
-	new weapon = get_user_weapon(attacker)
+	new weapon, my_hitpoint_enum:the_hitpoint
+
+	get_user_attacker(id, weapon, _:the_hitpoint)
 	
-	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(traceresult,TR_Hitgroup)
+	pev(id, pev_dmg_take, damage)
 
 	switch(weapon)
 		{

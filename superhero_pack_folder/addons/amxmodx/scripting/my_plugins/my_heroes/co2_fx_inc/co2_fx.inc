@@ -5,7 +5,7 @@
 
 #define CO2_TIME 30.0
 
-native sh_co2_user(id)
+native sh_co2_user(id, Float:the_time = CO2_TIME)
 native sh_unco2_user(id)
 
 

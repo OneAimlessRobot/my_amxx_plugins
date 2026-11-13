@@ -55,7 +55,7 @@ public plugin_init()
 	set_task(1.0,"riddick_loop",0,"",0,"b" )
 
 	// EXTRA KNIFE DAMAGE
-	RegisterHam(Ham_TraceAttack,"player","riddick_damage",_,true)
+	RegisterHam(Ham_TakeDamage,"player","riddick_damage",1,true)
 
 	// Let Server know about Woverines max knife speed
 	shSetMaxSpeed(gHeroName, "riddick_knifespeed", "[29]" )
@@ -74,24 +74,26 @@ public riddick_loop()
 		}
 	}
 }
-//RegisterHam(Ham_TraceAttack,"player","riddick_damage",_,true)
-public riddick_damage(id, attacker, Float:damage, Float:direction[3], traceresult, damagebits)
-{	
-	if(damage<=0.0){
+public riddick_damage(id, idinflictor, attacker, Float:damage, damagebits)
+{
+	if(damage <= 0.0){
+
 		return HAM_IGNORED
 	}
 	
 	if( !sh_is_active() || !is_user_alive(id) || !is_user_connected(id)) return HAM_IGNORED;
 	if ( (attacker==id)||!is_user_connected(attacker)||!sh_get_user_has_hero(attacker,gHeroID)) return HAM_IGNORED
 	
-	new weapon = get_user_weapon(attacker)
+	new weapon, my_hitpoint_enum:the_hitpoint
+
+	get_user_attacker(id, weapon, _:the_hitpoint)
+	
+	pev(id, pev_dmg_take, damage)
 	
 	if((weapon!=CSW_KNIFE)){
 
 		return HAM_IGNORED
 	}
-
-	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(traceresult,TR_Hitgroup)
 
 	new Float:extraDamage = damage * get_cvar_float("riddick_knifemult") - damage
 	

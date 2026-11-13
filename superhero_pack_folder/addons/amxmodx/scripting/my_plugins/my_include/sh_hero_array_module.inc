@@ -74,7 +74,9 @@ enum player_state_flags_id {
 	SH_NO_POWER_USAGE_ALLOWED,
 	SH_CONTROLLING_VEHICLE,
 	SH_USING_HOOK_ATTACK,
-	SH_USER_IS_FLYING
+	SH_USER_IS_FLYING,
+	SH_ZENITSU_CHARGE_IS_ON,
+	SH_ZENITSU_HAS_STRUCK
 };
 
 
@@ -92,7 +94,7 @@ enum sh_thrash_brat_dmg_type{
 	SH_NEW_DMG_DARK_ARTS,
 	SH_NEW_DMG_FIRE,
 	SH_NEW_DMG_RADIATION_POISON,
-	SH_NEW_DMG_BLUNT_TRAUMA,
+	SH_NEW_DMG_BLUNT_FORCE_TRAUMA,
 	SH_NEW_DMG_FREEZE,
 	SH_NEW_DMG_SUPER_MELEE,
 	SH_NEW_DMG_SUFFOCATION,
@@ -102,6 +104,28 @@ enum sh_thrash_brat_dmg_type{
 
 };
 
+#define CUSTOM_DMG_TYPE_IS_PHYSICAL(%1) (((%1) == SH_NEW_DMG_SUPER_BULLET) \
+													||  \
+										((%1) == SH_NEW_DMG_BLUNT_FORCE_TRAUMA) \
+													||  \
+										((%1) == SH_NEW_DMG_IVE_STUDIED_THE_BLADE) \
+												||  \
+										((%1) == SH_NEW_DMG_SUPER_MELEE) \
+												||  \
+										((%1) == SH_NEW_DMG_FRAG_BLAST) \
+												||  \
+										((%1) == SH_NEW_DMG_TR45H_GUN))
+
+#define CUSTOM_DMG_TYPE_IS_SPECIAL(%1) ( ((%1)> SH_NEW_DMG_NONE) && \
+										(!CUSTOM_DMG_TYPE_IS_PHYSICAL(%1)))
+
+
+#define CUSTOM_DMG_TYPE_IS_ELECTROSTATIC(%1) ( ((%1)> SH_NEW_DMG_NONE) && \
+												(((%1) == SH_NEW_DMG_ENERGY_BLADE) \
+														||  \
+												((%1) == SH_NEW_DMG_ENERGY_BLAST) \
+														||  \
+												((%1) == SH_NEW_DMG_SHOCK)))
 enum sh_custom_weapon_ids{
 
 	SH_ETHEREAL_RIFLE=0,
@@ -195,7 +219,7 @@ enum sh_thrash_brat_dmg_type{
 	SH_NEW_DMG_DARK_ARTS,
 	SH_NEW_DMG_FIRE,
 	SH_NEW_DMG_RADIATION_POISON,
-	SH_NEW_DMG_BLUNT_TRAUMA,
+	SH_NEW_DMG_BLUNT_FORCE_TRAUMA,
 	SH_NEW_DMG_FREEZE,
 	SH_NEW_DMG_SUPER_MELEE,
 	SH_NEW_DMG_SUFFOCATION,
@@ -227,7 +251,7 @@ enum sh_thrash_brat_dmg_type{
 	SH_NEW_DMG_DARK_ARTS,
 	SH_NEW_DMG_FIRE,
 	SH_NEW_DMG_RADIATION_POISON,
-	SH_NEW_DMG_BLUNT_TRAUMA,
+	SH_NEW_DMG_BLUNT_FORCE_TRAUMA,
 	SH_NEW_DMG_FREEZE,
 	SH_NEW_DMG_SUPER_MELEE,
 	SH_NEW_DMG_SUFFOCATION,

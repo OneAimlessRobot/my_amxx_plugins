@@ -54,7 +54,8 @@ public plugin_init()
 	pcvar_ksun_health_to_supply_ratio = create_cvar("ksun_health_to_supply_ratio","0.25")
 	pcvar_ksun_dmg_mult_super_weapon = create_cvar("ksun_dmg_mult_super_weapon","0.25")
 
-	RegisterHam(Ham_TraceAttack, "player", "ksun_trace_attack_damage_hook",_,true)
+	RegisterHam(Ham_TakeDamage, "player", "ksun_trace_attack_damage_hook_pre",_,true)
+	RegisterHam(Ham_TakeDamage, "player", "ksun_trace_attack_damage_hook_post",1,true)
 	
 	register_ham_hook_multiple(Ham_TraceAttack,
 						full_entity_array_for_trace_attack,
@@ -119,38 +120,65 @@ public fw_Weapon_Reload_Post(ent)
 	return HAM_HANDLED
 }
 
-public ksun_trace_attack_damage_hook(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
-{
-if ( !sh_is_active() || !is_user_alive(Victim) || !is_user_alive(Attacker)) return HAM_IGNORED
 
-new bool:victim_has_hero = bool:sh_get_user_has_hero(Victim,gHeroID),
-		bool:attacker_has_hero = bool:sh_get_user_has_hero(Attacker,gHeroID)
+public ksun_trace_attack_damage_hook_pre(id, idinflictor, attacker, Float:damage, damagebits)
+{
+if(damage <= 0.0){
+
+	return HAM_IGNORED
+}
+if ( !sh_is_active() || !is_user_alive(id) || !is_user_alive(attacker)) return HAM_IGNORED
+
+new bool:victim_has_hero = bool:sh_get_user_has_hero(id,gHeroID),
+		bool:attacker_has_hero = bool:sh_get_user_has_hero(attacker,gHeroID)
 
 if(!victim_has_hero&&!attacker_has_hero) return HAM_IGNORED
 
 new return_result= HAM_IGNORED
 
-new weapon=get_user_weapon(Attacker)
+if(victim_has_hero&&Get_BitVar(g_player_in_ultimate_mask, id)){
 
-new my_hitpoint_enum:the_hitpoint = my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
-
-if(victim_has_hero&&Get_BitVar(g_player_in_ultimate_mask, Victim)){
-
-	new Float:dmgSnatched= Damage* cvar_val(float, pcvar_ksun_dmg_absorption_index)
+	new Float:dmgSnatched= damage* cvar_val(float, pcvar_ksun_dmg_absorption_index)
 	
-	new Float:newDamage=Damage- dmgSnatched
+	new Float:newDamage=damage- dmgSnatched
 	SetHamParamFloat(3, newDamage);
 	
 	return_result=HAM_HANDLED
 
 }
-if(attacker_has_hero&&Get_BitVar(g_player_in_ultimate_mask, Attacker)){
+
+return return_result
+
+}	
+
+public ksun_trace_attack_damage_hook_post(id, idinflictor, attacker, Float:damage, damagebits)
+{
+if(damage <= 0.0){
+
+	return HAM_IGNORED
+}
+if ( !sh_is_active() || !is_user_alive(id) || !is_user_alive(attacker)) return HAM_IGNORED
+
+new bool:victim_has_hero = bool:sh_get_user_has_hero(id,gHeroID),
+		bool:attacker_has_hero = bool:sh_get_user_has_hero(attacker,gHeroID)
+
+if(!victim_has_hero&&!attacker_has_hero) return HAM_IGNORED
+
+new return_result= HAM_IGNORED
+
+new weapon,my_hitpoint_enum:the_hitpoint
+
+get_user_attacker(id, weapon, _:the_hitpoint)
+
+pev(id, pev_dmg_take, damage)
+
+if(attacker_has_hero&&Get_BitVar(g_player_in_ultimate_mask, attacker)){
 
 	
 	if(weapon==KSUN_WEAPON_ID){
-		new Float:dmgAdded= Damage*cvar_val(float, pcvar_ksun_dmg_mult_super_weapon)
-		new Float:newDamage=Damage+ dmgAdded
-		sh_extra_damage(Victim,Attacker,floatround(newDamage),
+		new Float:dmgAdded= damage*cvar_val(float, pcvar_ksun_dmg_mult_super_weapon)
+		new Float:newDamage=damage+ dmgAdded
+		sh_extra_damage(id,attacker,floatround(newDamage),
 			the_hitpoint,
 			_,_,_,_,
 			SH_NEW_DMG_DARK_ARTS,
@@ -352,15 +380,16 @@ public ksun_rifle_fast_shot(entity)
 
 public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart ,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,custom_weapon_id){
 	
-	if ( !sh_is_active() ||  !is_user_connected(victim)){
+	if ( !sh_is_active() ||  !is_user_alive(victim)){
 	
 		return DMG_FWD_PASS
 	}
 
-	if(sh_get_user_has_hero(victim,gHeroID)&&Get_BitVar(g_player_in_ultimate_mask, victim)&&(new_dmg_type!=SH_NEW_DMG_TR45H_GUN)){
+	if(sh_get_user_has_hero(victim,gHeroID)&&Get_BitVar(g_player_in_ultimate_mask, victim)&&CUSTOM_DMG_TYPE_IS_SPECIAL(new_dmg_type)){
 
-	
-		return DMG_FWD_BLOCK
+		new dmgSnatched= floatround( float(damage)* cvar_val(float, pcvar_ksun_dmg_absorption_index))
+		
+		damage -= dmgSnatched
 	}
 	
 	return DMG_FWD_PASS

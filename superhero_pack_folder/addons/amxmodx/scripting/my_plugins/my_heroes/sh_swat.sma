@@ -63,7 +63,8 @@ public plugin_init()
 	sh_register_superheromod_weapon_model(gHeroID,CSW_KNIFE,"models/shmod/swat_v_knife.mdl","models/shmod/swat_p_knife.mdl")
 	
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
-	RegisterHam(Ham_TraceAttack,"player","swat_damage",_,true)
+	RegisterHam(Ham_TakeDamage,"player","swat_damage",1,true)
+	RegisterHam(Ham_TraceAttack,"player","swat_trace_attack",_,true)
 
 	shSetMaxHealth(gHeroName, "swat_health")
 	shSetMaxArmor(gHeroName, "swat_armor")
@@ -119,42 +120,59 @@ public weaponChange(id)
 		sh_reload_ammo(id)
 	}
 }
-//----------------------------------------------------------------------------------------------
-public swat_damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
-{	
+public swat_trace_attack(this, attacker, Float:damage, Float:direction[3], Ptr, damagebits){
 
-	if(Damage<=0.0){
+	if(damage<=0.0){
 		return HAM_IGNORED
 	}
 
-	if ( !sh_is_active() || !is_user_alive(Victim) ) return HAM_IGNORED
+	if ( !sh_is_active() || !is_user_alive(this) ) return HAM_IGNORED
 
-	if ((Attacker==Victim)||!is_user_alive(Attacker)) return HAM_IGNORED
+	if ((attacker==this)||!is_user_alive(attacker)) return HAM_IGNORED
 
 	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
 
-	new weapon = get_user_weapon(Attacker)
-	new bool:has_hero= bool:sh_get_user_has_hero(Attacker,gHeroID) 
 
 
-
-	if(Get_BitVar(hit_region_not_head,_:the_hitpoint)&&sh_get_user_has_hero(Victim,gHeroID) ){
+	if(Get_BitVar(hit_region_not_head,_:the_hitpoint)&&sh_get_user_has_hero(this,gHeroID) ){
 
 		set_tr2(Ptr,TR_iHitgroup,_:MY_HIT_SHIELD)
 
 		SetHamParamTraceResult(5,Ptr)
 
-		Damage*=0.3		
-		SetHamParamFloat(3,Damage)
+		damage*=0.3		
+		SetHamParamFloat(3,damage)
 		the_hitpoint=MY_HIT_SHIELD
+
 	}
+	return HAM_IGNORED
+
+}
+//----------------------------------------------------------------------------------------------
+public swat_damage(id, idinflictor, attacker, Float:damage, damagebits)
+{
+	if(damage <= 0.0){
+
+		return HAM_IGNORED
+	}
+
+	if ( !sh_is_active() || !is_user_alive(id) ) return HAM_IGNORED
+
+	if ((attacker==id)||!is_user_alive(attacker)) return HAM_IGNORED
+
+	new weapon, my_hitpoint_enum:the_hitpoint
+	get_user_attacker(id, weapon, _:the_hitpoint)
+	pev(id, pev_dmg_take, damage)
+	
+	new bool:has_hero= bool:sh_get_user_has_hero(attacker,gHeroID) 
+
 
 	if ( has_hero&& weapon == CSW_M4A1 ) {
 		// do extra damage
-		new Float:extraDamage = Damage * get_cvar_float("swat_m4a1mult") - Damage
+		new Float:extraDamage = damage * get_cvar_float("swat_m4a1mult") - damage
 		if (extraDamage > 0.0){
 			
-			sh_extra_damage(Victim, Attacker, floatround(extraDamage),
+			sh_extra_damage(id, attacker, floatround(extraDamage),
 											the_hitpoint,
 											_,_,_,_,
 											SH_NEW_DMG_SUPER_BULLET,
@@ -163,9 +181,9 @@ public swat_damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, Dama
 	}
 
 	else if(has_hero && weapon == CSW_KNIFE){
-		new Float:extraDamage =  Damage *  get_cvar_float("swat_knifemult") - Damage
+		new Float:extraDamage =  damage *  get_cvar_float("swat_knifemult") - damage
 		if(extraDamage > 0.0){
-			sh_extra_damage(Victim, Attacker, floatround(extraDamage),
+			sh_extra_damage(id, attacker, floatround(extraDamage),
 											the_hitpoint,
 											_,_,_,_,
 											SH_NEW_DMG_BLEED,

@@ -75,7 +75,7 @@ public plugin_init()
 				dmg_source_name_short_the_pistols,
 				dmg_source_name_log_the_pistols,0)
 	
-	RegisterHam(Ham_TraceAttack,"player","SuperNoodle_damage",_,true)
+	RegisterHam(Ham_TakeDamage, "player", "SuperNoodle_damage",1,true)
 
 	// Let Server know about SuperNoodle's Variable
 	shSetMaxHealth(gHeroName, "SuperNoodle_health")
@@ -128,28 +128,24 @@ public SuperNoodle_weapons(id)
 		sh_give_weapon(id, CSW_ELITE)
 	}
 }
-//RegisterHam(Ham_TraceAttack,"player","SuperNoodle_damage",_,true)
 //----------------------------------------------------------------------------------------------
-public SuperNoodle_damage(id, attacker, Float:damage, Float:Direction[3], Ptr, DamageBits)
-{	
+public SuperNoodle_damage(id, idinflictor, attacker, Float:damage, damagebits)
+{
+	if(damage <= 0.0){
 
-	if(damage<=0.0){
 		return HAM_IGNORED
 	}
-
-	if ( !sh_is_active() || !is_user_alive(id) ) return HAM_IGNORED
-
-
-
-
-	if ((attacker==id)||!is_user_connected(attacker)||!sh_get_user_has_hero(attacker,gHeroID)) return HAM_IGNORED
-
-
-	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
-
-
-	new weapon = get_user_weapon(attacker)
 	
+	if( !sh_is_active() || !is_user_alive(id) || !is_user_connected(id)) return HAM_IGNORED;
+
+	if ( (attacker==id)||!is_user_connected(attacker)||!sh_get_user_has_hero(attacker,gHeroID) ) return HAM_IGNORED
+	
+	new weapon, my_hitpoint_enum:the_hitpoint
+
+	get_user_attacker(id, weapon, _:the_hitpoint)
+	
+	pev(id, pev_dmg_take, damage)
+
 	new extraDamage = 1
 	new custom_wpn_to_use = -1;
 

@@ -25,12 +25,12 @@ public plugin_init(){
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	FREEZE_TASK_ID=allocate_typed_task_id(player_task)
-	RegisterHam(Ham_TraceAttack, "player", "frozen_damage",_,true)
+	RegisterHam(Ham_TakeDamage, "player", "frozen_damage",1,true)
     
 	
 }
 public plugin_cfg(){
-	custom_dmg_source_blunt_trauma = get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_BLUNT_TRAUMA)
+	custom_dmg_source_blunt_trauma = get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_BLUNT_FORCE_TRAUMA)
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
@@ -50,14 +50,23 @@ public plugin_precache(){
 }
 
 
-public frozen_damage(id, attacker, Float:damage, Float:Direction[3], Ptr, DamageBits)
+public frozen_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
+	if(damage <= 0.0){
+
+		return HAM_IGNORED
+	}
 	if ( !sh_is_active() || !is_user_alive(id) || !is_user_alive(attacker)) return HAM_IGNORED
 
 
 	new return_result= HAM_IGNORED
 
-	new my_hitpoint_enum:the_hitpoint = my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
+	new weapon,my_hitpoint_enum:the_hitpoint
+
+	get_user_attacker(id, weapon, _:the_hitpoint)
+	
+	pev(id, pev_dmg_take, damage)
+	
 
 	if ( !is_user_connected(attacker)) return return_result
 	
@@ -68,7 +77,7 @@ public frozen_damage(id, attacker, Float:damage, Float:Direction[3], Ptr, Damage
 			sh_extra_damage(id, attacker, floatround(extraDamage),
 										the_hitpoint ,
 										_,_,_,_,
-										SH_NEW_DMG_BLUNT_TRAUMA,
+										SH_NEW_DMG_BLUNT_FORCE_TRAUMA,
 										custom_dmg_source_blunt_trauma)
 		}
 	}
@@ -80,15 +89,15 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_h
 		return DMG_FWD_PASS
 	}
 
-	if((new_dmg_type!=SH_NEW_DMG_SUPER_BULLET)&&(new_dmg_type!=SH_NEW_DMG_SUPER_MELEE)&&(new_dmg_type!=SH_NEW_DMG_FRAG_BLAST)){
+	if(!CUSTOM_DMG_TYPE_IS_PHYSICAL(new_dmg_type)){
 		return DMG_FWD_PASS
 	}
 	
 	if(sh_get_id_bit(victim, SH_IS_FROZEN)){
 		new Float:extraDamage = float(damage) * FREEZE_DAMAGE_MULTIPLIER + float(damage)
 		if (floatround(extraDamage)>0){
-			new_dmg_type=SH_NEW_DMG_BLUNT_TRAUMA
-			damage=floatround(extraDamage)
+			
+			damage+=floatround(extraDamage)
 		}	
 	}
 

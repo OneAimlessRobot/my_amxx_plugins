@@ -51,10 +51,11 @@ public plugin_natives(){
 public _sh_wet_user(iPlugin,iParams){
 	
 	new user=get_param(1),
-		attacker= get_param(2)
+		attacker= get_param(2),
+		Float:the_time = get_param_f(3)
 
 	if(!sh_get_id_bit(user, SH_IS_WET)){
-		wet_user(user,attacker)
+		wet_user(user,attacker, the_time)
 	}
 	
 	
@@ -75,7 +76,7 @@ public unwet_task(id){
 	unwet_user(id)
 
 }
-wet_user(id,attacker){
+wet_user(id,attacker, Float:the_time){
 	if(!sh_is_active()||!is_user_alive(id)||!is_user_connected(attacker)||sh_get_id_bit(id, SH_IS_WET)) return
 
 	
@@ -102,12 +103,12 @@ wet_user(id,attacker){
 	}
 
 
-	set_render_with_color_const(id,BABY_BLUE,1,50,50,1,_,WET_TIME,0,_,kRenderNormal,PRIO_RENDER_EFFECT_ACTIVE)
+	set_render_with_color_const(id,BABY_BLUE,1,50,50,1,_,the_time,0,_,kRenderNormal,PRIO_RENDER_EFFECT_ACTIVE)
 	sh_assign_id_bit(id, SH_IS_WET, true)
-	set_damage_icon(id,2,DMG_ICON_BATTERY,LineColors[BABY_BLUE],WET_TIME)
+	set_damage_icon(id,2,DMG_ICON_BATTERY,LineColors[BABY_BLUE],the_time)
 	
 	
-	set_task(WET_TIME,"unwet_task",id+UNWET_TASKID)
+	set_task(the_time,"unwet_task",id+UNWET_TASKID)
 	
 	
 	

@@ -68,7 +68,8 @@ public plugin_init()
 				dmg_source_name_short_ninja_m4,dmg_source_name_log_ninja_m4,0)
 	
 	register_event("CurWeapon", "weapon_change", "be", "1=1")
-	RegisterHam(Ham_TraceAttack,"player","Haloune_damage",_,true)
+	
+	RegisterHam(Ham_TakeDamage,"player","Haloune_damage",1,true)
 
 	// Let Server know about the hero's variables
 	shSetShieldRestrict(HeroName)
@@ -134,29 +135,32 @@ public weapon_change(id)
 		sh_reload_ammo(id)
 }
 //----------------------------------------------------------------------------------------------
-public Haloune_damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
-{	
+public Haloune_damage(id, idinflictor, attacker, Float:damage, damagebits)
+{
+	if(damage <= 0.0){
 
-	if(Damage<=0.0){
 		return HAM_IGNORED
 	}
 
-	if ( !sh_is_active() || !is_user_alive(Victim) ) return HAM_IGNORED
+	if ( !sh_is_active() || !is_user_alive(id) ) return HAM_IGNORED
 
-	if ((Attacker==Victim)||!is_user_alive(Attacker)) return HAM_IGNORED
+	if ((attacker==id)||!is_user_alive(attacker)) return HAM_IGNORED
 
-	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
+	new weapon, my_hitpoint_enum:the_hitpoint
 
-	new weapon = get_user_weapon(Attacker)
-	new bool:has_hero= bool:sh_get_user_has_hero(Attacker,gHeroID) 
+	get_user_attacker(id, weapon, _:the_hitpoint)
+	
+	pev(id, pev_dmg_take, damage)
 
-	if ((Attacker==Victim)||!is_user_connected(Attacker)) return HAM_IGNORED
+	new bool:has_hero= bool:sh_get_user_has_hero(attacker,gHeroID) 
+
+	if ((attacker==id)||!is_user_connected(attacker)) return HAM_IGNORED
 
 	if ( has_hero&& weapon == CSW_M4A1 ) {
 		// do extra damage
-		new Float:extraDamage =((Damage * get_pcvar_float(CvarM4A1DmgMult)) - Damage)
+		new Float:extraDamage =((damage * get_pcvar_float(CvarM4A1DmgMult)) - damage)
 		if ( extraDamage > 0.0 ){
-			sh_extra_damage( Victim, Attacker, floatround(extraDamage),
+			sh_extra_damage( id, attacker, floatround(extraDamage),
 								the_hitpoint,
 								_,_,_,_,
 								SH_NEW_DMG_SUPER_BULLET,

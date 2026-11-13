@@ -80,7 +80,7 @@ new pcvar_extra_lazadmg
 
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 
-	RegisterHam(Ham_TraceAttack,"player","CTrooper_damage",_,true)
+	RegisterHam(Ham_TakeDamage,"player","CTrooper_damage",1,true)
 	
 	// Let Server know about Master Chief's Variables
 	shSetShieldRestrict(gHeroName)
@@ -151,28 +151,31 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 	}
  }
 //----------------------------------------------------------------------------------------------
-public CTrooper_damage(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
-{	
+public CTrooper_damage(id, idinflictor, attacker, Float:damage, damagebits)
+{
+	if(damage <= 0.0){
 
-	if(Damage<=0.0){
 		return HAM_IGNORED
 	}
 
-	if ( !sh_is_active() || !is_user_alive(Victim) ) return HAM_IGNORED
+	if ( !sh_is_active() || !is_user_alive(id) ) return HAM_IGNORED
 
-	if ((Attacker==Victim)||!is_user_alive(Attacker)) return HAM_IGNORED
+	if ((attacker==id)||!is_user_alive(attacker)) return HAM_IGNORED
 
-	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
+	new weapon, my_hitpoint_enum:the_hitpoint
 
-	new weapon = get_user_weapon(Attacker)
-	new bool:has_hero= bool:sh_get_user_has_hero(Attacker,gHeroID) 
+	get_user_attacker(id, weapon, _:the_hitpoint)
+	
+	pev(id, pev_dmg_take, damage)
+
+	new bool:has_hero= bool:sh_get_user_has_hero(attacker,gHeroID) 
 
 
 	if ( has_hero&& weapon == CTROOPER_LASERGUN_CLASSID ) {
 		// do extra damage
-		new Float:extraDamage =((Damage *  cvar_val(float, pcvar_extra_lazadmg) ) - Damage)
+		new Float:extraDamage =((damage *  cvar_val(float, pcvar_extra_lazadmg) ) - damage)
 		if ( extraDamage > 0.0 ){
-			sh_extra_damage( Victim, Attacker, floatround(extraDamage),
+			sh_extra_damage( id, attacker, floatround(extraDamage),
 								the_hitpoint,
 								_,_,_,_,
 								SH_NEW_DMG_ENERGY_BLAST,

@@ -208,6 +208,10 @@ public plugin_natives(){
 }
 public Ester_DamageReflect(id, idinflictor, attacker, Float:damage, damagebits)
 {
+	if(damage <= 0.0){
+
+		return HAM_IGNORED
+	}
 	if ( !sh_is_active() || !is_user_alive(id)||!is_user_alive(attacker)||(id==attacker)) return HAM_IGNORED
 
 	if(cs_get_user_team(id)==cs_get_user_team(attacker)){
@@ -597,7 +601,8 @@ public BlowUp(param[1],id)
 			cvar_val(float,pcvar_ester_explosion_radius),
 			cvar_val(float,pcvar_ester_explosion_damage)
 			,_,
-			cvar_val(bool,pcvar_ester_explosion_ignore_user))
+			cvar_val(bool,pcvar_ester_explosion_ignore_user),
+			_,_,_,_,_,_,SH_NEW_DMG_ENERGY_BLAST)
 		set_task(ESTER_REBORN_EXPLOSION_PERIOD,"BlowUp",id+ESTER_REBORN_EXPLOSION_DELAY_TASKID,param,1)
 	}
 	else{
@@ -707,7 +712,9 @@ pev(pToucher, pev_velocity,killer_velocity)
 killer_speed=max_macro(1.0,vector_length(killer_velocity))
 
 explosion(gHeroID,pToucher,150.0,(0.2*killer_speed),
-		cvar_val(float, pcvar_ester_fly_knock_enemies_force),1)
+		cvar_val(float, pcvar_ester_fly_knock_enemies_force),1,
+			_,_,_,_,_,_,SH_NEW_DMG_ENERGY_BLAST)
+
 pev(pToucher, pev_velocity,killer_velocity)
 multiply_3d_vector_by_scalar(killer_velocity,0.5,killer_velocity)
 set_velocity_from_origin(pToucher,killer_origin,killer_speed)
