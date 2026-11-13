@@ -162,6 +162,7 @@ public plugin_precache(){
 public _sh_unsleep_user(iPlugin,iParams){
 
 	new user=get_param(1)
+	
 	unsleep_user(user)
 
 
@@ -187,7 +188,7 @@ public sleep_task(any:array[4],id){
 		set_task(SLEEP_PERIOD,"sleep_task",id+SLEEP_TASKID,array, sizeof(array))
 	}
 	else{
-		set_task(Float:array[1],"fully_wake_up_task",id+FULLY_WAKE_UP_TASKID,array,sizeof(array))
+		set_task(Float:array[2],"fully_wake_up_task",id+FULLY_WAKE_UP_TASKID,array,sizeof(array))
 	}
 
 
@@ -237,6 +238,10 @@ public fully_wake_up_task(any:array[4],id){
 unsleep_user(id){
 	if ( !sh_is_active() ||!is_user_connected(id)) return
 	
+	if(task_exists(id+FULLY_WAKE_UP_TASKID)){
+		remove_task(id+FULLY_WAKE_UP_TASKID)
+	}
+
 	if(sh_get_id_bit(id,SH_IS_SLEEPING)){
 		remove_glow_user(id,PRIO_RENDER_DELETE_ASLEEP,255,kRenderNormal)
 		sh_assign_id_bit(id,SH_IS_SLEEPING,false)
