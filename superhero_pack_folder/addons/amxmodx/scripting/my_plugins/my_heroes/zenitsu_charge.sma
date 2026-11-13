@@ -252,7 +252,12 @@ public _zenitsu_init_battery(iPlugin,iParams){
 
 }
 public sh_on_sleep_end_fwd(id,attacker,Float:the_time,heroID){
-
+	if(!is_user_alive(id)){
+		return
+	}
+	if(!sh_get_user_has_hero(id,gHeroID)){
+		return
+	}
 	new bool:self_started_sleep = (heroID==gHeroID)
 
 	zenitsu_init_battery_aux(id,self_started_sleep)
@@ -305,7 +310,7 @@ public zenitsu_charge(id, uc_handle, seed)
 		return FMRES_IGNORED
 	}
 	
-	if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)||sh_get_id_bit(id, SH_ZENITSU_HAS_STRUCK)||sh_get_stun(id)||!sh_get_id_bit(id, SH_ZENITSU_CHARGE_IS_ON)){
+	if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)||sh_get_id_bit(id, SH_ZENITSU_HAS_STRUCK)||!sh_get_id_bit(id, SH_ZENITSU_CHARGE_IS_ON)){
 			return FMRES_IGNORED;
 	}
 	if(sh_get_stun(id)||sh_get_id_bit(id, SH_CONTROLLING_VEHICLE)||((sh_get_id_bit(id,SH_USER_IS_FLYING))&&!Get_BitVar(g_zenitsu_is_charging_mask,id))){
