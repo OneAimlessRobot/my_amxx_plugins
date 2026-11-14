@@ -49,7 +49,8 @@ new pcvar_zenitsu_pct_electrostatic_dmg_fill_battery,
 	pcvar_zenitsu_init_battery,
 	pcvar_zenitsu_min_electrostatic_dmg_mult,
 	pcvar_zenitsu_max_electrostatic_dmg_mult,
-	pcvar_zenitsu_emboldened_inside
+	pcvar_zenitsu_emboldened_inside,
+	pcvar_battery_fill_mult
 
 new zenitsu_hud_msg_sync
 
@@ -70,6 +71,7 @@ public plugin_init(){
 	pcvar_zenitsu_min_electrostatic_dmg_mult = create_cvar("zenitsu_min_electrostatic_dmg_mult","1.1")
 	pcvar_zenitsu_max_electrostatic_dmg_mult = create_cvar("zenitsu_max_electrostatic_dmg_mult","3.0")
 	pcvar_zenitsu_emboldened_inside = create_cvar("zenitsu_emboldened_inside", "0")
+	pcvar_battery_fill_mult = create_cvar("zenitsu_battery_fill_mult", "20.0")
 
 	register_forward(FM_CmdStart, "zenitsu_charge")
 
@@ -494,7 +496,7 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_
 						sh_chat_message(victim,gHeroID,"Battery left calculated: %0.2f Last battery: %0.2f Damage to be absorbed: %d Damage before block: %d Damage after block: %d", battery_left,last_battery,blocked_damage,before_block_damage, damage)
 					
 					}
-					g_zenitsu_charge_ammount[victim] += float(blocked_damage)
+					g_zenitsu_charge_ammount[victim] += min_macro(battery_left,(float(blocked_damage) * cvar_val(float, pcvar_battery_fill_mult)))
 					if(!DEBUG){
 						show_points_to_player(victim)
 					}
