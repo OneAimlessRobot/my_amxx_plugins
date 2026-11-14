@@ -138,9 +138,10 @@ public bool:_generic_heal(iPlugins, iParms){
 		hud_alpha=get_param(7),
 		hud_will_glow=get_param(8),
 		make_sound=get_param(9),
+		bool:bypass_unhealable_hero_flag = bool:get_param(11),
 		Float: mate_health=float(get_user_health(id))
 
-	if(sh_get_player_has_hero_prop(id,SH_UNHEALABLE_HERO)){
+	if(sh_get_player_has_hero_prop(id,SH_UNHEALABLE_HERO)&&!bypass_unhealable_hero_flag){
 
 		
 		return false;
@@ -170,7 +171,7 @@ public bool:_generic_heal(iPlugins, iParms){
 	entity_set_float(id,EV_FL_health,new_health)
 	if((true_hp_to_add>0.0)){
 
-		if((user_will_glow>0)){
+		if((user_will_glow>0) || (hud_will_glow >0)){
 			set_render_with_color_const(id,color_const,user_will_glow,_,hud_alpha,hud_will_glow,_,glow_remove_timer,0,_,kRenderNormal,PRIO_RENDER_INFORMATIVE)
 		}
 		

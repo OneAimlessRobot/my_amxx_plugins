@@ -8,3 +8,7 @@
 stock const player_damage_recoveries_print[]="sh_print_player_hero_damage_recoveries"
 
 stock const hero_damage_recoveries_print[]="sh_print_hero_damage_recoveries"
+
+stock const player_unhealable_hero_skip_flags[]="sh_print_player_unhealable_hero_skip_flags"
+
+stock const hero_unhealable_hero_skip_flags[]="sh_print_hero_unhealable_hero_skip_flags"

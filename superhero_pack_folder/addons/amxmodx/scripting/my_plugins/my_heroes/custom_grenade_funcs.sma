@@ -1097,7 +1097,7 @@ gren_effect_user(grenade_ent,tg,attacker,sh_grenade_type:gren_type){
 			
 		}
 		case GREN_SHOCK:{
-			sh_shock_user(tg,attacker,3.0)
+			sh_shock_user(tg,attacker,3.0,_,_,250.0)
 		}
 		case GREN_FREEZE:{
 			
@@ -1118,7 +1118,7 @@ gren_effect_user(grenade_ent,tg,attacker,sh_grenade_type:gren_type){
 		}
 		case GREN_WET:{
 			
-			sh_wet_user(tg,attacker,25.0);
+			sh_wet_user(tg,attacker,90.0);
 		}
 		case GREN_RANDOM_FX:{
 			the_fx_num = fx_id:pev(grenade_ent, pev_iuser4)

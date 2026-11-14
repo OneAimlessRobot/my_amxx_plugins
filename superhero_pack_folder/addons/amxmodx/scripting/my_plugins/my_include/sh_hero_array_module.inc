@@ -49,7 +49,8 @@ enum hero_property_flags_id {
 	SH_ETHEREAL_HERO,
 	SH_ELEMENTAL_PROBE_HERO,
 	SH_DEMONIC_HERO,
-	SH_PASSIVE_INVISIBILITY_HERO
+	SH_PASSIVE_INVISIBILITY_HERO,
+	SH_LIGHTNING_ROD_HERO
 };
 
 
@@ -76,7 +77,8 @@ enum player_state_flags_id {
 	SH_USING_HOOK_ATTACK,
 	SH_USER_IS_FLYING,
 	SH_ZENITSU_CHARGE_IS_ON,
-	SH_ZENITSU_HAS_STRUCK
+	SH_ZENITSU_HAS_STRUCK,
+	SH_ZENITSU_HAS_BEEN_SLEEP_TRIGGERED
 };
 
 
@@ -100,7 +102,8 @@ enum sh_thrash_brat_dmg_type{
 	SH_NEW_DMG_SUFFOCATION,
 	SH_NEW_DMG_CLEANSE,
 	SH_NEW_DMG_TR45H_GUN,
-	SH_NEW_DMG_ENERGY_BLADE
+	SH_NEW_DMG_ENERGY_BLADE,
+	SH_NEW_DMG_HEALTH_SET
 
 };
 
@@ -117,7 +120,7 @@ enum sh_thrash_brat_dmg_type{
 										((%1) == SH_NEW_DMG_TR45H_GUN))
 
 #define CUSTOM_DMG_TYPE_IS_SPECIAL(%1) ( ((%1)> SH_NEW_DMG_NONE) && \
-										(!CUSTOM_DMG_TYPE_IS_PHYSICAL(%1)))
+										(!(CUSTOM_DMG_TYPE_IS_PHYSICAL(%1))))
 
 
 #define CUSTOM_DMG_TYPE_IS_ELECTROSTATIC(%1) ( ((%1)> SH_NEW_DMG_NONE) && \
@@ -126,6 +129,12 @@ enum sh_thrash_brat_dmg_type{
 												((%1) == SH_NEW_DMG_ENERGY_BLAST) \
 														||  \
 												((%1) == SH_NEW_DMG_SHOCK)))
+
+
+#define CUSTOM_DMG_TYPE_IS_DBZ(%1) ( ((%1)> SH_NEW_DMG_NONE) && \
+												(((%1) == SH_NEW_DMG_ENERGY_BLADE) \
+														||  \
+												((%1) == SH_NEW_DMG_ENERGY_BLAST)))
 enum sh_custom_weapon_ids{
 
 	SH_ETHEREAL_RIFLE=0,

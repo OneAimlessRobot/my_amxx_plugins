@@ -16,14 +16,18 @@
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt13.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt12.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt18.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 #include "../my_include/auxiliar_stuff.inc"
-
 
 #define THE_BITSUM_TO_EXCLUDE ( single_wpn_bs( CSW_KNIFE ) | single_wpn_bs (CSW_C4 ) )
 #define ETHEREALS_CAN_USE_WPN(%1) (wpn_id_in_bs( (%1) , THE_BITSUM_TO_EXCLUDE ))
 
 
 #define DEFAULT_ELEMENTAL_PROBE_ENDEAVOUR_HP_CVAR_NAME "sh_elemental_probe_endeavour_hp"
+
+
+#define sh_elemental_probe_hero_heal_pct_default_name "sh_elemental_probe_hero_heal_pct_default"
 
 #define DEFAULT_ETHEREAL_GRAVITY_CVAR_NAME "sh_ethereal_heroes_gravity"
 
@@ -41,10 +45,6 @@
 
 
 
-
-
-
-
 stock REMOVE_WEAPONS_TASKID = -1
 
 stock DEMONIC_HEALING_TASKID = -1
@@ -55,13 +55,19 @@ static 	default_elemental_probe_endeavour_hp = -1,
 		default_demonic_hero_prepackage_hp = -1,
 		default_demonic_hero_prepackage_speed = -1,
 		default_demonic_hero_prepackage_resi = -1,
-		default_demonic_hero_prepackage_regen = -1
+		default_demonic_hero_prepackage_regen = -1,
+		default_elemental_probe_hero_heal_pct_default = -1
 
+new dmg_source_name_short_haramball_trigger_dmg_source[SAFE_BUFFER_SIZE+1]="health_cut"
+new dmg_source_name_log_haramball_trigger_dmg_source[SAFE_BUFFER_SIZE+1]="health_cut"
+new custom_dmg_id_health_cut
 
 public plugin_init(){
 
 
 	register_plugin(PLUGIN, VERSION, AUTHOR);
+
+	default_elemental_probe_hero_heal_pct_default = create_cvar(sh_elemental_probe_hero_heal_pct_default_name, "0.1", _,"Healing from elemental probe heroes",true, 0.1,true, 0.99)
 
 	default_elemental_probe_endeavour_hp = create_cvar(DEFAULT_ELEMENTAL_PROBE_ENDEAVOUR_HP_CVAR_NAME, "1.0", _,"Default endeavour hp for elemental probe heroes",true, 1.0,true, 5.0)
 
@@ -77,6 +83,9 @@ public plugin_init(){
 
 	default_demonic_hero_prepackage_regen = create_cvar(DEFAULT_DEMONIC_PREPACKAGE_REGEN_AMOUNT, "0.2", _,"Default hp regen pct per second for registered demonic heroes",true, 0.05,true, 0.7)
 
+	custom_dmg_id_health_cut=sh_log_custom_damage_source(-1,
+					dmg_source_name_short_haramball_trigger_dmg_source,
+					dmg_source_name_log_haramball_trigger_dmg_source,0)
 
 	RegisterHam(Ham_TakeDamage,"player","ham_sh_damage_gating",_, true)
 	RegisterHam(Ham_TakeDamage, "player", "Player_TakeDamage_Post", 1,true)
@@ -156,6 +165,11 @@ public bool:_sh_register_elemental_probe_hero(iPlugins, iParams){
 
 	}
 
+	new Float:the_hero_heal_mult = get_param_f(4)
+
+	the_hero_heal_mult = ((the_hero_heal_mult<=0.0)?cvar_val(float, default_elemental_probe_hero_heal_pct_default):the_hero_heal_mult)
+
+
 	sh_set_hero_grav(heroID, (gravity_pcvar_given_here <= 0) ? default_elemental_probe_cvar_ptr : gravity_pcvar_given_here)
 
 	sh_assign_hero_bit(heroID, SH_UNHEALABLE_HERO, true)
@@ -164,6 +178,15 @@ public bool:_sh_register_elemental_probe_hero(iPlugins, iParams){
 
 	sh_assign_hero_bit(heroID, SH_ELEMENTAL_PROBE_HERO, true)
 
+	for(new sh_thrash_brat_dmg_type:i = enum_zero;i<sh_thrash_brat_dmg_type;i++){
+
+		if(CUSTOM_DMG_TYPE_IS_ELECTROSTATIC(i)){
+			sh_make_hero_ignore_unhealable_hero_flag_for_dmg_source(heroID,i,true)
+			sh_assign_hero_damage_bit(heroID,i,true)
+			sh_assign_hero_damage_heal_mult(heroID,i,the_hero_heal_mult)
+		}
+
+	}
 	return true
 
 }
@@ -268,7 +291,7 @@ public ham_sh_damage_gating(this, inflictor, attacker, Float:damage, damagebits)
 		
 		if(sh_get_player_has_hero_prop(this,SH_ELEMENTAL_PROBE_HERO)&&(user_hp >= user_iHealthcap) && ( damage > user_healthcap) ){
 			
-			haramball_shield_react_primitive(this, attacker, damage)
+			haramball_shield_react_primitive(this, attacker, damage, user_healthcap)
 
 			SetHamParamFloat(4,0.0)
 			
@@ -306,22 +329,23 @@ public fw_HamPlayerTouchPre( iEntity, iPlayer ) {
 }
 
 
-public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
+public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,const sh_thrash_brat_dmg_type:new_dmg_type,const custom_weapon_id){
 	
 	if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
 
 		return DMG_FWD_PASS
 	}
 
-	//ethereal players can ONLY be damaged by a very sparse selection of SH_NEW_DMG types
-	//AND hand grenades, unless they have the ANTI_GRENADES_HERO property active
 
 	new dmg_fwd_ret_id:the_return_value=DMG_FWD_PASS
 
 	if(sh_get_player_has_hero_prop(victim,SH_ETHEREAL_HERO)){
 		
-		switch(new_dmg_type){
+		if(!CUSTOM_DMG_TYPE_IS_SPECIAL(new_dmg_type)){
+			return DMG_FWD_BLOCK
+		}
 
+		switch(new_dmg_type){
 
 			case SH_NEW_DMG_BLEED,
 						SH_NEW_DMG_DRAIN:{
@@ -336,12 +360,10 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_h
 
 			}
 		}
-		if(CUSTOM_DMG_TYPE_IS_SPECIAL(new_dmg_type)){
-			return DMG_FWD_BLOCK
-		}
 	}
 
 
+    
 	if(sh_get_player_has_hero_prop(victim,SH_ELEMENTAL_PROBE_HERO)){
 
 		new dmg_fwd_ret_id:the_return_value=DMG_FWD_PASS
@@ -356,9 +378,9 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_h
 
 		user_iHealthcap = floatround(user_healthcap)
 
-		if((user_hp >= user_iHealthcap) && ( damage > user_healthcap) && (dmgMode!= SH_DMG_KILL)){
+		if((user_hp >= user_iHealthcap) && ( damage > user_iHealthcap) && (dmgMode!= SH_DMG_KILL)){
 				
-				haramball_shield_react_primitive(victim, attacker,float(damage))
+				haramball_shield_react_primitive(victim, attacker,float(damage),user_healthcap)
 
 				the_return_value = DMG_FWD_BLOCK
 				return the_return_value
@@ -376,7 +398,7 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_h
 					new blocked_damage = floatround(float(damage) * cvar_val(float, default_demonic_hero_prepackage_resi))
 					damage -= blocked_damage
 
-					
+					the_return_value = DMG_FWD_HANDLED
 			}
 		}
 	}
@@ -493,15 +515,23 @@ public fw_Ethereal_unnarmed(id, uc_handle)
 	}
 	return (removed_attack?FMRES_SUPERCEDE:FMRES_IGNORED)
 }
-haramball_shield_react_primitive(id,attacker, Float:damage){
+haramball_shield_react_primitive(id,attacker, Float:damage, Float:healthcap){
 
-            
-    set_user_health(id,floatround(cvar_val(float, default_elemental_probe_endeavour_hp)))
 
-    sh_chat_message(id,-1,"[SH Elemental probe]: We blocked an instant kill! The damage received would have been: %0.2f",damage)
-    
-    if(!sh_get_id_bit(id,SH_IS_SHOCKED)){
-        sh_shock_user(id,attacker)
-    }
+	new Float:damage_to_do = max_macro(0.0, (healthcap - cvar_val(float, default_elemental_probe_endeavour_hp)))
 
+	sh_chat_message(id,-1,"[SH Elemental probe]: We blocked an instant kill! The damage received would have been: %0.2f",damage)
+
+
+	if(!sh_get_id_bit(id,SH_CONTROLLING_VEHICLE)){
+
+		if(!sh_get_id_bit(id,SH_IS_SHOCKED)){
+			sh_shock_user(id,attacker,_,false,0.0)
+		}
+		set_user_godmode(id,0)
+		sh_extra_damage(id, attacker, floatround(damage_to_do),
+								_,_,_,_,_,
+								SH_NEW_DMG_HEALTH_SET,
+								custom_dmg_id_health_cut)
+	}
 }

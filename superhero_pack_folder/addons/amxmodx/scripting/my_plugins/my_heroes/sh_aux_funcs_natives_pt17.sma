@@ -175,6 +175,8 @@ public sh_check_map_hero_blacklisted_maps(id,level,cid){
 	}
 	
 	sh_get_hero_name_from_id(heroID,hero_name_to_use)
+
+	console_print(id, "Hero name obtained: %s", hero_name_to_use)
 	
 	sh_check_map_hero_blacklisted_maps_aux(id,heroID,hero_name_to_use)
 

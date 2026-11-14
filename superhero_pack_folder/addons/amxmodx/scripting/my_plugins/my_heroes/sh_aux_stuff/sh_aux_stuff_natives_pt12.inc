@@ -14,7 +14,8 @@ native bool:generic_heal(id,
 					hud_alpha=-1,
 					hud_will_glow=1,
 					make_sound=1,
-					const sound_sample_buff[128]=SPORE_HEAL_SFX)
+					const sound_sample_buff[128]=SPORE_HEAL_SFX,
+					bool:bypass_unhealable_hero_flag = false)
 
 
 native Float:sh_get_player_healthcap(player_id)

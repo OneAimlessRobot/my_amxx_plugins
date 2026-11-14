@@ -576,7 +576,7 @@ public sh_client_death(id, killer){
 	}
 	
 }
-public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart ,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
+public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart ,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,const sh_thrash_brat_dmg_type:new_dmg_type,const custom_weapon_id){
 	if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)|| (damage < 1)){
 	
 		return DMG_FWD_PASS
@@ -584,6 +584,8 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_
 	new bool:spored_someone_covert= false,
 		bool:spored_someone_overt= false
 	new bool:victim_has_hero=sh_get_user_has_hero(victim,gHeroID)
+		
+	new dmg_fwd_ret_id:return_result = DMG_FWD_PASS
 	if(victim_has_hero&&COVERT_ABUSE_ENABLED){
 
 	
@@ -595,6 +597,7 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_
 		new Float:flDamage=float(damage)
 		overt_spike_damage(attacker,flDamage,0,spored_someone_overt)
 		damage=floatround(flDamage)
+		return_result = DMG_FWD_HANDLED
 	}
 	
 
@@ -603,7 +606,7 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_
 		emit_sound(victim, CHAN_STATIC, SPORE_HEAL_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	}
 	
-	return DMG_FWD_PASS
+	return return_result
 }
 public plugin_precache(){
 

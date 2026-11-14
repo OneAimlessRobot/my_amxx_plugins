@@ -92,7 +92,7 @@ wet_user(id,attacker, Float:the_time){
 						generic_dmg_source_cleanse)
 		
 		if(!sh_get_id_bit(id,SH_IS_SHOCKED)){
-			sh_shock_user(id,attacker)
+			sh_shock_user(id,attacker,_,false,1.0)
 		}
 
 	}
@@ -133,14 +133,15 @@ public sh_client_death(id)
 	
 }
 
-public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart ,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,custom_weapon_id){
+public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart ,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,const sh_thrash_brat_dmg_type:new_dmg_type,custom_weapon_id){
 	if (!sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)|| (new_dmg_type!=SH_NEW_DMG_SHOCK)) return DMG_FWD_PASS
 
 	if(sh_get_id_bit(victim, SH_IS_WET)){
-		new Float:extraDamage = (float(damage) * WET_SHOCK_DMG_MULTIPLIER) + float(damage) + WET_SHOCK_DMG_ADD
+		new Float:extraDamage = ((float(damage) * WET_SHOCK_DMG_MULTIPLIER) - float(damage))
 		if (floatround(extraDamage)>0){
-			damage=floatround(extraDamage)
+			damage+=floatround(extraDamage)
 		}
+		return DMG_FWD_HANDLED
 	}
 
 	return DMG_FWD_PASS

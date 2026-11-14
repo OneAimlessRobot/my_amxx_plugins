@@ -55,8 +55,6 @@ public plugin_init(){
 
 	create_cvar("yakui_windup_time", "2.0")
 
-	
-	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
 	register_forward(FM_StartFrame, "fwd_StartFrame")
 	register_forward(FM_PlaybackEvent, "fwPlaybackEvent")
 	register_forward(FM_CmdStart, "CmdStart");
@@ -459,23 +457,6 @@ public fwPlaybackEvent(flags, invoker, eventid) {
 		return FMRES_IGNORED
 	}
 	return FMRES_HANDLED
-}
-
-public fm_UpdateClientDataPost(player, sendWeapons, cd)
-{
-	if(!client_is_hero_user(player, gHeroID)){
-		
-		return FMRES_IGNORED
-	}
-	if((get_user_weapon(player) != YAKUI_WEAPON_CLASSID)){
-		return FMRES_IGNORED
-	}
-	new pEntity = get_pdata_cbase(player, m_pActiveItem,XO_PLAYER)
-	if(pev_valid(pEntity)==PDATA_SAFE){
-		set_cd(cd, CD_flNextAttack, get_gametime()+1.0)
-		return FMRES_HANDLED
-	}
-	return FMRES_IGNORED
 }
 
 // in fire

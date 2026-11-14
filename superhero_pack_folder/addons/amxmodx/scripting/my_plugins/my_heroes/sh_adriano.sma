@@ -78,7 +78,8 @@ public plugin_init()
 	sh_assign_hero_bit(gHeroID,SH_HEALING_HERO, true)
 	
 	register_forward(FM_TraceLine,"fw_traceline",1);
-	RegisterHam(Ham_TakeDamage,"player", "ham_adriano", 1,true)
+	RegisterHam(Ham_TakeDamage,"player", "ham_adriano_damage", 1,true)
+	RegisterHam(Ham_TraceAttack,"player", "ham_adriano_trace", _,true)
 
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 
@@ -187,7 +188,24 @@ public heal_teamate(id,teamate){
 	}
 	
 }
-public ham_adriano(id, idinflictor, attacker, Float:damage, damagebits)
+public ham_adriano_trace(id, attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
+{
+
+	if( !sh_is_active() || !is_user_alive(id) || !is_user_connected(id)) return HAM_IGNORED;
+
+	if ( (attacker==id)||!is_user_connected(attacker)||!sh_get_user_has_hero(attacker,gHeroID) ) return HAM_IGNORED
+	
+	new weapon = get_user_weapon(attacker)
+
+	if(weapon == CSW_KNIFE){
+
+		heal_teamate(attacker,id)
+	
+	}
+
+	return HAM_IGNORED;
+}
+public ham_adriano_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
 	if(damage <= 0.0){
 
@@ -203,22 +221,17 @@ public ham_adriano(id, idinflictor, attacker, Float:damage, damagebits)
 	
 	pev(id, pev_dmg_take, damage)
 
-	switch(weapon){
-		case CSW_ETHEREAL:{
+	if(weapon == _:CSW_ETHEREAL){
 
-			new Float:extraDamage = damage * 2.0- damage
-			if (floatround(extraDamage)>0){
-				sh_extra_damage(id,attacker,floatround(extraDamage),
-							the_hitpoint,
-							_,_,_,_,
-							SH_NEW_DMG_SHOCK,
-							custom_dmg_id_ethereal)
-			}
+		new Float:extraDamage = damage * 2.0- damage
+		if (floatround(extraDamage)>0){
+			sh_extra_damage(id,attacker,floatround(extraDamage),
+						the_hitpoint,
+						_,_,_,_,
+						SH_NEW_DMG_SHOCK,
+						custom_dmg_id_ethereal)
 		}
-		case CSW_KNIFE:{
 
-			heal_teamate(attacker,id)
-		}
 	}
 
 	return HAM_IGNORED;

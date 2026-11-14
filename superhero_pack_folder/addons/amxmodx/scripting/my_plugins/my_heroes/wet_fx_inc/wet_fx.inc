@@ -8,9 +8,7 @@
 #define WET_SHOCK_DMG_MULTIPLIER 2.5
 
 
-#define WET_SHOCK_DMG_ADD 60.0
-
-#define CLEAN_THE_WITCH_BLEACH_HER_MELT_THE_SLUG_WITH_CLOROX 60.0
+#define CLEAN_THE_WITCH_BLEACH_HER_MELT_THE_SLUG_WITH_CLOROX 120.0
 
 native sh_wet_user(id,attacker, Float:the_time = WET_TIME)
 native sh_unwet_user(id)

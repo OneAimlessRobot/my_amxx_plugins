@@ -9,22 +9,22 @@
 
 enum init_fwd_ret_id{
 	INIT_FWD_PASS=0,
-	INIT_FWD_STOP,
-	INIT_FWD_BLOCK
+	INIT_FWD_BLOCK,
+	INIT_FWD_STOP
 
 
 }
 enum dmg_fwd_ret_id{
-	DMG_FWD_PASS=0,
-	DMG_FWD_STOP,
-	DMG_FWD_BLOCK
+	DMG_FWD_PASS=0, // no change to parameters is made
+	DMG_FWD_BLOCK, // the damage is blocked altogether
+	DMG_FWD_HANDLED, // parameters are changed!
 
 
 }
 enum xp_fwd_ret_id{
 	XP_FWD_PASS=0,
+	XP_FWD_BLOCK,
 	XP_FWD_STOP,
-	XP_FWD_BLOCK
 
 
 }

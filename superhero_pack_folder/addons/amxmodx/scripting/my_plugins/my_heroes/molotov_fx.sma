@@ -24,7 +24,10 @@
 
 stock MOLLY_FX_TASKID, BURN_TASKID_MAIN
 
-#define MOLLY_FX_TASK_PERIOD 1.0
+#define BURN_PERIOD 0.33
+#define BURN_DAMAGE_VULNERABILITY_COEFF 1.8
+#define BURN_TIMES floatround(floatdiv(the_time,BURN_PERIOD))
+#define MOLLY_FX_TASK_PERIOD 0.33
 
 
 enum burn_struct{
@@ -32,7 +35,11 @@ enum burn_struct{
 	burn_attacker,
 	burn_og_burner,
 	burn_times_left,
-	burn_is_tomie_user
+	burn_is_tomie_user,
+	bool:burn_should_spread,
+	Float:dmg_per_tick,
+	Float:spread_dist,
+	burn_custom_wpn_id
 
 
 }
@@ -85,10 +92,10 @@ public global_molly_fx_task(task_id){
 		}
 	
 		burn_structs[id][burn_times_left]--
-		if(!burn_structs[id][burn_is_tomie_user]){
+		if(burn_structs[id][burn_should_spread]&&!burn_structs[id][burn_is_tomie_user]){
 			static players[33];
 
-			new num_players=find_sphere_class(id,"player",MOLLY_PROPAGATE_RADIUS,players,sizeof(players)-1)
+			new num_players=find_sphere_class(id,"player",burn_structs[id][spread_dist],players,sizeof(players)-1)
 			for ( new j = 0; j < num_players; j++) {
 				new pid=players[j]
 
@@ -98,7 +105,11 @@ public global_molly_fx_task(task_id){
 				sh_molly_user_fast(pid,burn_structs[id][burn_og_burner],
 								burn_structs[id][burn_og_burner],
 								burn_structs[id][burn_times_left],
-								burn_structs[id][burn_is_tomie_user])
+								burn_structs[id][burn_is_tomie_user],
+								burn_structs[id][dmg_per_tick],
+								burn_structs[id][spread_dist],
+								burn_structs[id][burn_should_spread],
+								burn_structs[id][burn_custom_wpn_id])
 				
 			}
 		}
@@ -115,11 +126,14 @@ public global_molly_fx_task(task_id){
 			unburn_user(id)
 			continue
 		}
-		
-		sh_extra_damage(id,burn_structs[id][burn_og_burner],BURN_DAMAGE,
-				_,_,_,_,_,
-				SH_NEW_DMG_FIRE,
-				generic_dmg_source_fire)
+		new dmg_to_do = floatround(burn_structs[id][dmg_per_tick])
+
+		if(dmg_to_do > 0){
+			sh_extra_damage(id,burn_structs[id][burn_og_burner], dmg_to_do,
+					_,_,_,_,_,
+					SH_NEW_DMG_FIRE,
+					burn_structs[id][burn_custom_wpn_id] )
+		}
 
 	}
 
@@ -190,7 +204,7 @@ public molotov_damage_vulnerability(id, idinflictor, attacker, Float:damage, dam
 
 	
 }
-public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart ,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,custom_weapon_id){
+public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart ,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,const sh_thrash_brat_dmg_type:new_dmg_type,custom_weapon_id){
 	if (!sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)) return DMG_FWD_PASS
 
 	if(sh_get_id_bit(victim, SH_IS_BURNING) && CUSTOM_DMG_TYPE_IS_PHYSICAL(new_dmg_type)){
@@ -204,32 +218,38 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_h
 	
 
 	
-	return DMG_FWD_PASS
+	return DMG_FWD_HANDLED
 }
 public _sh_molly_user(iPlugin,iParams){
 	
 	new user=get_param(1)
 	new attacker=get_param(2)
 	new Float:the_time = get_param_f(3)
+	new Float:damage_per_tick = get_param_f(4)
+	new Float:spread_radius = get_param_f(5)
+	new bool:should_spread = bool:get_param(6)
+	new custom_wpn_id = get_param(7)
+
+	custom_wpn_id = ((custom_wpn_id<0)?generic_dmg_source_fire:custom_wpn_id)
 
 	new bool:is_tomie_user = sh_get_player_has_hero_prop(user, SH_FIRE_RETARDANT_HERO)
 	new times_to_count=floatround(float(BURN_TIMES) * (is_tomie_user?0.5:1.0),floatround_floor)
 	
 	
-	sh_molly_user_fast(user,attacker,attacker, times_to_count,is_tomie_user)
+	sh_molly_user_fast(user,attacker,attacker, times_to_count,is_tomie_user, damage_per_tick, spread_radius, should_spread, custom_wpn_id)
 	
 	
 }
-sh_molly_user_fast(user,attacker,og_burner, times,is_tomie_user){
+sh_molly_user_fast(user,attacker,og_burner, times,is_tomie_user, Float:damage_per_tick, Float:spread_radius, bool:should_spread, custom_wpn_id){
 
 	if(!sh_get_id_bit(user, SH_IS_CO2)&&!sh_get_id_bit(user, SH_IS_BURNING)){
 		if((user==attacker)){
 			if(CAN_SELF_MOLLY&&user){
-					burn_user(user,attacker,og_burner, times,is_tomie_user)
+					burn_user(user,attacker,og_burner, times,is_tomie_user, damage_per_tick, spread_radius, should_spread, custom_wpn_id)
 			}
 		}
 		else {
-			burn_user(user,attacker,og_burner, times,is_tomie_user)
+			burn_user(user,attacker,og_burner, times,is_tomie_user, damage_per_tick, spread_radius, should_spread, custom_wpn_id)
 		}
 	}
 }
@@ -246,7 +266,7 @@ public _sh_unmolly_user(iPlugin,iParams){
 	
 }
 
-burn_user(id,attacker,og_burner, times, is_tomie_user){
+burn_user(id,attacker,og_burner, times, is_tomie_user, Float:damage_per_tick, Float:spread_radius, bool:should_spread, custom_wpn_id){
 
 	if(sh_get_id_bit(id, SH_IS_BURNING)) return
 
@@ -270,6 +290,10 @@ burn_user(id,attacker,og_burner, times, is_tomie_user){
 	burn_structs[id][burn_og_burner] = og_burner
 	burn_structs[id][burn_times_left] = times
 	burn_structs[id][burn_is_tomie_user] = is_tomie_user
+	burn_structs[id][dmg_per_tick] = damage_per_tick
+	burn_structs[id][spread_dist] = spread_radius
+	burn_structs[id][burn_should_spread] = should_spread
+	burn_structs[id][burn_custom_wpn_id] = custom_wpn_id
 
 	sh_assign_id_bit(id, SH_IS_BURNING, true)
 	

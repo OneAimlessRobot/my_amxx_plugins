@@ -24,6 +24,10 @@ meteorix_shotmult 0.5		// Delay for multishots on holding key down.
 
 new gHeroName[]="Meteorix"
 
+new dmg_source_name_short_meteorix_bolt[SAFE_BUFFER_SIZE+1]="meteorix_bolt"
+new dmg_source_name_log_meteorix_bolt[SAFE_BUFFER_SIZE+1]="meteorix_bolt"
+new custom_dmg_id_meteorix_bolt
+
 new bool:MeteorixPowerUsed[SH_MAXSLOTS+1]
 new lightnings_shots[SH_MAXSLOTS+1]
 new gLastWeapon[SH_MAXSLOTS+1]
@@ -48,6 +52,9 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Blue lightnings", "You can throw blue lightnings on key down", true, "meteorix_level")
 
+	custom_dmg_id_meteorix_bolt=sh_log_custom_damage_source(gHeroID,
+					dmg_source_name_short_meteorix_bolt,
+					dmg_source_name_log_meteorix_bolt,0)
 
 
 }
@@ -297,8 +304,12 @@ public lightnings_shot(id)
 			case 7: damage = h6_dam
 		}
 
-		// Make damage to target
-		sh_extra_damage(tid, id, damage)
+		// Deal the damage...
+		sh_extra_damage(tid, id, damage,
+							my_hitpoint_enum:tbody,
+							_,_,_,_,
+							SH_NEW_DMG_ENERGY_BLAST,
+							custom_dmg_id_meteorix_bolt)
 	}
 	return PLUGIN_CONTINUE
 }

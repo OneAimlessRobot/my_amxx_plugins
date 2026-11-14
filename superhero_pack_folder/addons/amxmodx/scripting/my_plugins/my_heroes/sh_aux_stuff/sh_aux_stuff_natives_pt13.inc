@@ -9,14 +9,16 @@
 //the healthcap to give
 //if < 1.0 (the default) no healthcap will be given to this hero
 //ethereal heroes cannot:
-//- be healed
+//- be healed (except from electrostatic damage sources)
 //- be hit with most conventional damage
 //they have:
 //- less gravity (cvar ptr is passed (-1 for default ethereal gravity pcvar)
 //the name of it is "sh_ethereal_heroes_gravity"
+//how much should they heal from dealing electrostatic damage?
+//default is adding 10% to total healing
 
 
-native bool:sh_register_elemental_probe_hero(heroID, Float:health_cap = -1.0, cvar_ptr = -1)
+native bool:sh_register_elemental_probe_hero(heroID, Float:health_cap = -1.0, cvar_ptr = -1, Float:heal_pct_add = -1.0)
 
 //returns true if registration was successful. false otherwise
 //heroID to make into a demonic hero

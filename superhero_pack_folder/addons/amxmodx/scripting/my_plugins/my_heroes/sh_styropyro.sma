@@ -24,6 +24,10 @@ styropyro_multishot 0.1			//Delay for multishots on holding key down, set to -1 
 #define h6_dam 400	// leg
 
 
+new dmg_source_name_short_chinese_laser[SAFE_BUFFER_SIZE+1]="chinese_laser"
+new dmg_source_name_log_chinese_laser[SAFE_BUFFER_SIZE+1]="chinese_laser"
+new custom_dmg_id_chinese_laser
+
 // GLOBAL VARIABLES
 new gHeroName[]="styropyro"
 new bool:gLaserFired[SH_MAXSLOTS+1]
@@ -46,6 +50,9 @@ public plugin_init()
 	decal_id = g_burnDecal[generate_int(0,sizeof(g_burnDecal)-1)]
 	gHeroID=shCreateHero(gHeroName, "Stay safe n' happy lazing", "Press the +power key to fire your your 10 kJ C.R.L.C (crazy ruby laser cannon)", true, "styropyro_level")
 
+	custom_dmg_id_chinese_laser=sh_log_custom_damage_source(gHeroID,
+					dmg_source_name_short_chinese_laser,
+					dmg_source_name_log_chinese_laser,0)
 
 }
 //----------------------------------------------------------------------------------------------
@@ -188,7 +195,11 @@ public fire_laser(id)
 		}
 
 		// Deal the damage...
-		sh_extra_damage(tid, id, damage)
+		sh_extra_damage(tid, id, damage,
+							my_hitpoint_enum:tbody,
+							_,_,_,_,
+							SH_NEW_DMG_ENERGY_BLAST,
+							custom_dmg_id_chinese_laser)
 	}
 }
 //----------------------------------------------------------------------------------------------

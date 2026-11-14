@@ -36,17 +36,19 @@ stock const new_dmg_type_descriptions_arr[sh_thrash_brat_dmg_type][extra_dmg_des
 	{"SH_Dark_Arts", "Dirty tactics, employed by heroes that should not be trusted", false},
 	{"SH_Fire", "Self explanatory. Some heroes may have a resistance", false},
 
-	{"SH_Radiation_Poison", "Radiation sickness", false},
-	{"SH_Blunt_Trauma", "Blunt force trauma. Like getting bashed in the head", false},
-	{"SH_Freeze", "Frozen. Frostbite might make the user fragile", false},
+	{"SH_Radi8ion_Poison", "Radiation sickness", false},
+	{"SH_Blnt_4ce_trauma", "(Bl(u)nt (4)(Four)ce trauma). I needed to save chars", false},
+	{"SH_Freeze", "Frozen. Frostbite makes the user fragile", false},
 
 	{"SH_Super_Melee", "Incisive melee attacks", true},
-	{"SH_Suffocation", "Some heroes can self suffocate!", true},
+	{"SH_Suffoc8ion", "Some heroes can self suffocate!", true},
 	{"SH_Cleanse", "Heroes that commit plenty of sin are most susceptible", false},
 	
 	{"SH_Tr45H_Gun", "Damage from recycled weapons. Only a few heroes use this", false},
 
-	{"SH_Energy_Blade", "Damage from energy swords, disks, etc.", false}
+	{"SH_Energy_Blade", "Damage from energy swords, disks... (Melee version of energy blast)", false},
+
+	{"SH_Health_Set", "Damage source used to set the health of people to a value while still rewarding for damage", false}
 	
 
 }

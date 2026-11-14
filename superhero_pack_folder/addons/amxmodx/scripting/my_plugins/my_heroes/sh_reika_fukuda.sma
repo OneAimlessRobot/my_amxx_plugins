@@ -327,7 +327,7 @@ public plugin_precache(){
     engfunc(EngFunc_PrecacheSound, reika_parry_equip_sfx)
 
 }
-public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
+public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,const sh_thrash_brat_dmg_type:new_dmg_type,const custom_weapon_id){
 	
     if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
 
@@ -352,6 +352,8 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_
         }
     }
 
+    new dmg_fwd_ret_id:return_result = DMG_FWD_PASS
+
     if(sh_get_user_has_hero(victim,gHeroID)){
         
         if(Get_BitVar(reika_is_parrying_mask,victim)){
@@ -365,6 +367,8 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_
                 absorb_user(victim, float(blocked_damage), attacker)
 
                 unparry_user(victim)
+
+                return_result = DMG_FWD_HANDLED
                 
             }
         }
@@ -383,7 +387,9 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_
                             floatround(reika_stored_damage[attacker]))
 
             clear_retaliate(attacker)
+
+            return_result = DMG_FWD_HANDLED
         }
     }
-    return DMG_FWD_PASS
+    return return_result
 }

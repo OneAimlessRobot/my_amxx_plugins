@@ -15,7 +15,9 @@
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt11.inc"
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt12.inc"
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt17.inc"
+#include "sh_aux_stuff/sh_aux_fx_natives_const_pt15.inc"
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt18.inc"
+
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt6.inc"
 
 stock const extra_help_cmd[]="extra_help"
@@ -23,7 +25,7 @@ stock const general_help_cmd[]="general_help"
 stock help_files_directory[STRLEN_FOR_FILES+1]
 
 #define HELP_FILE_URL_BASE "http://lenasattic.ddns.net:11020/webcrookedstuff/cstrike_folder/addons/amxmodx/configs/shero_extra_help/"
-#define NUM_OF_EXTRA_HELP_FILES 2
+#define NUM_OF_EXTRA_HELP_FILES 3
 
 
 
@@ -44,7 +46,8 @@ enum help_file_disk_list_node{
 new help_file_structs_array[NUM_OF_EXTRA_HELP_FILES][help_file_disk_list_node] = {
 
 	{"sh_extra_help_motd.html", "", "createHelpMotdFile", -1, false},
-	{"sh_extra_help_motd_2.html", "", "createHelpMotdFilePt2", -1, false}
+	{"sh_extra_help_motd_2.html", "", "createHelpMotdFilePt2", -1, false},
+	{"sh_extra_help_motd_3.html", "", "createHelpMotdFilePt3", -1, false}
 
 
 
@@ -121,6 +124,26 @@ public createHelpMotdFilePt2(extraHelpFile){
 	fputs(extraHelpFile, "(console) ")
 	fputs(extraHelpFile, hero_damage_recoveries_print)
 	fputs(extraHelpFile, " - shows a list of damage types that a hero allows a user to recover from!^n^n")
+	
+}
+//----------------------------------------------------------------------------------------------
+public createHelpMotdFilePt3(extraHelpFile){
+	
+	fputs(extraHelpFile, "Part 3 of extra help file!^n^n^n")
+
+	fputs(extraHelpFile, "(console) ")
+	fputs(extraHelpFile, player_unhealable_hero_skip_flags)
+	fputs(extraHelpFile, " - Shows a list of damage types a player will heal from even if using unhealable heroes! Requires part of hero name^n^n^n")
+	fputs(extraHelpFile, "(console) ")
+	fputs(extraHelpFile, hero_unhealable_hero_skip_flags)
+	fputs(extraHelpFile, " - Shows a list of heroes that skip unhealable flags!^n^n^n")
+	fputs(extraHelpFile, "(console) ")
+	fputs(extraHelpFile, player_projectile_weapons_print)
+	fputs(extraHelpFile, " -  A list of projectile weapon flags that a player has due to equipped heroes^n^n^n")
+	fputs(extraHelpFile, "(console) ")
+	fputs(extraHelpFile, hero_projectile_weapons_print)
+	fputs(extraHelpFile, " - Shows a list of projectile weapons for a hero!^n^n^n")
+
 	
 }
 //----------------------------------------------------------------------------------------------

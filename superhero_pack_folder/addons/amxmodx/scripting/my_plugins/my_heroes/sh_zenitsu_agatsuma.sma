@@ -24,6 +24,8 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Thunder Hashira", "When all that is left is you...", true, "zenitsu_level" )
 
+	sh_assign_hero_bit(gHeroID, SH_LIGHTNING_ROD_HERO, true)
+
 }
 public plugin_natives(){
 	register_native("zenitsu_get_hero_id","_zenitsu_get_hero_id")

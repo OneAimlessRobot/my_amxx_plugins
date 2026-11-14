@@ -59,6 +59,10 @@ new dmg_source_name_short_ester_flight_drain[SAFE_BUFFER_SIZE+1]="ester_flight_d
 new dmg_source_name_log_ester_flight_drain[SAFE_BUFFER_SIZE+1]="ester_flight_drain"
 new ester_flight_drain_wpn_id
 
+new dmg_source_name_short_ester_rebirth[SAFE_BUFFER_SIZE+1]="ester_rebirth"
+new dmg_source_name_log_ester_rebirth[SAFE_BUFFER_SIZE+1]="ester_rebirth"
+new ester_rebirth_wpn_id
+
 new generic_dmg_source_shock = -1
 new ESTER_REBORN_CALCULATION_LOOP_TASKID,
 		ESTER_REBORN_GLOW_TASKID,
@@ -117,6 +121,13 @@ public plugin_cfg(){
 								dmg_source_name_short_ester_flight_drain,
 								dmg_source_name_log_ester_flight_drain,
 								0)
+
+	ester_rebirth_wpn_id=sh_log_custom_damage_source(
+								gHeroID,
+								dmg_source_name_short_ester_rebirth,
+								dmg_source_name_log_ester_rebirth,
+								0)
+
 	generic_dmg_source_shock = get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_SHOCK)
 }
 public ester_drain_loop(task_id){
@@ -602,7 +613,7 @@ public BlowUp(param[1],id)
 			cvar_val(float,pcvar_ester_explosion_damage)
 			,_,
 			cvar_val(bool,pcvar_ester_explosion_ignore_user),
-			_,_,_,_,_,_,SH_NEW_DMG_ENERGY_BLAST)
+			_,_,_,_,_,ester_rebirth_wpn_id,SH_NEW_DMG_ENERGY_BLAST)
 		set_task(ESTER_REBORN_EXPLOSION_PERIOD,"BlowUp",id+ESTER_REBORN_EXPLOSION_DELAY_TASKID,param,1)
 	}
 	else{

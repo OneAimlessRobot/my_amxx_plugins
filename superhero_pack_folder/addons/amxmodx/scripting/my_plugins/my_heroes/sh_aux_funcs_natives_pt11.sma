@@ -68,8 +68,9 @@ static const sh_hero_property_structs_array[hero_property_flags_id][hero_propert
 			
 			{"Demonic hero", "They all receive extra health and armor as well as no knockback from hitscan attacks", 25},
 			
-			{"Passive invisibility hero", "Heroes that grant passive, rapidly changing invisibility. Equipping many would get messy", 1}
+			{"Passive invisibility hero", "Heroes that grant passive, rapidly changing invisibility. Equipping many would get messy", 1},
 			
+			{"Lightning rod hero", "Upon getting shocked, these heroes wont let the current spread to teammates!",25}
 
 }
 

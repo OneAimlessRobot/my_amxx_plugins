@@ -39,7 +39,6 @@ public plugin_init(){
 	
 
 	register_forward(FM_CmdStart, "CmdStart");
-	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
 
 	wlt_get_def_name(my_weapon_ids:DART_GUN_WEAPON_CLASSID,wpn_name_for_future_lookup,charsmax(wpn_name_for_future_lookup))
 	RegisterHam(Ham_Item_Deploy,wpn_name_for_future_lookup, "fw_ItemDeployPre",_,true)
@@ -457,22 +456,6 @@ public chorazy_II_toumpaeeeehm(pToucher, pTouched)
 	remove_entity(pToucher)
 }
 
-public fm_UpdateClientDataPost(player, sendWeapons, cd)
-{
-	if(!client_is_hero_user(player, gHeroID)){
-		return FMRES_IGNORED
-	}
-	new weapon = get_user_weapon(player);
-	if(weapon!=DART_GUN_WEAPON_CLASSID){
-		return FMRES_IGNORED
-	}
-	new pEntity = get_pdata_cbase(player, m_pActiveItem,XO_PLAYER)
-	if(pev_valid(pEntity)==PDATA_SAFE){
-		set_cd(cd, CD_flNextAttack, get_gametime()+1.0)
-		return FMRES_HANDLED
-	}
-	return FMRES_IGNORED
-}
 public plugin_precache()
 {
 

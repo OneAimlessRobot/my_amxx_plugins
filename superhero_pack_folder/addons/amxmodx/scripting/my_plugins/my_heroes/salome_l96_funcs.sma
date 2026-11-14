@@ -45,7 +45,6 @@ public plugin_init(){
 	pcvar_xp_distance_mult = create_cvar("salome_xp_distance_mult","4")
 
 	register_forward(FM_CmdStart, "CmdStart");
-	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
 	
 	wlt_get_def_name(my_weapon_ids:SALOME_WEAPON_CLASSID,wpn_name_for_future_lookup,charsmax(wpn_name_for_future_lookup))
 	RegisterHam(Ham_Item_Deploy, wpn_name_for_future_lookup, "fw_ItemDeployPre",_,true)
@@ -389,22 +388,6 @@ entity_set_float( Ent, EV_FL_nextthink, floatadd(get_gametime( ) ,SALOME_PROJECT
 
 }
 
-public fm_UpdateClientDataPost(player, sendWeapons, cd)
-{
-	if(!client_is_hero_user(player, gHeroID)){
-		
-		return FMRES_IGNORED
-	}
-	if((get_user_weapon(player) != SALOME_WEAPON_CLASSID)){
-		return FMRES_IGNORED
-	}
-	new pEntity = get_pdata_cbase(player, m_pActiveItem,XO_PLAYER)
-	if(pev_valid(pEntity)==PDATA_SAFE){
-		set_cd(cd, CD_flNextAttack, get_gametime()+1.0)
-		return FMRES_HANDLED
-	}
-	return FMRES_IGNORED
-}
 public FwdTouchWorld( bull_et, World ) {
 
 	if(!is_valid_ent(bull_et)) return

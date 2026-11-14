@@ -11,7 +11,15 @@
 
 #define SHOCK_TIME 30.0
 
-native sh_shock_user(id,attacker, Float:the_time = SHOCK_TIME)
+#define SHOCK_DAMAGE_DEFAULT 30.0
+
+native sh_shock_user(id,attacker, Float:the_time = SHOCK_TIME,
+          bool:should_spread = true,
+          Float:damage_dealt = SHOCK_DAMAGE_DEFAULT,
+          Float:spread_radius = SHOCK_RADIUS,
+          custom_weapon_id = -1)
+
+
 native sh_unshock_user(id)
 
 

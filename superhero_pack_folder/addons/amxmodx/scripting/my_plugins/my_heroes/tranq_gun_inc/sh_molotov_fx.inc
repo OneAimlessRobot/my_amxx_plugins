@@ -13,15 +13,18 @@
 #define gSoundBurning "ambience/burning1.wav"
 #define gSoundScream "scientist/c1a0_sci_catscream.wav"
 
-
-#define BURN_PERIOD 0.33
-#define BURN_DAMAGE 6
-#define BURN_DAMAGE_VULNERABILITY_COEFF 1.8
-#define BURN_TIME 15.0
-#define BURN_TIMES floatround(floatdiv(the_time,BURN_PERIOD))
+#define BURN_DAMAGE 6.0
 #define MOLLY_PROPAGATE_RADIUS 100.0
+#define BURN_TIME 15.0
 
-native sh_molly_user(id,attacker, Float:the_time=BURN_TIME)
+
+native sh_molly_user(id,attacker,
+          Float:the_time=BURN_TIME,
+          Float:damage_per_tick = BURN_DAMAGE,
+          Float:propagate_radius = MOLLY_PROPAGATE_RADIUS,
+          bool:should_spread = true,
+          custom_wpn_id = -1)
+
 native sh_unmolly_user(id)
 
 

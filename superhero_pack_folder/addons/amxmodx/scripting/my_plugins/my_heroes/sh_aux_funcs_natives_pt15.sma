@@ -1,6 +1,7 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_CUSTOM_COLORS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_PDATA_ALIASES
 #define I_WANT_ENTITY_VECTORS
 #define I_WANT_RESOURCE_ALIASES
 #include <amxmisc>
@@ -15,7 +16,6 @@
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt15.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt15.inc"
 
-stock const player_projectile_weapons_print[]="sh_print_player_projectile_weapons"
 
 static sh_player_hero_projectile_weapon_tracker[SH_MAXSLOTS+1] = {0, ...};
 
@@ -26,11 +26,32 @@ public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
 	
-	register_concmd(player_projectile_weapons_print,"sh_print_player_projectile_weapons",ADMIN_IMMUNITY,"param 1: playername")
+	register_concmd(player_projectile_weapons_print,player_projectile_weapons_print,ADMIN_IMMUNITY,"param 1: playername")
+
+	register_concmd(hero_projectile_weapons_print,hero_projectile_weapons_print,ADMIN_IMMUNITY,"param 1: hero name")
 
 	register_ham_hook_multiple(Ham_TraceAttack,full_entity_array_for_trace_attack,sizeof(full_entity_array_for_trace_attack),
 						"Ham_TraceAttackProjectileWeapon",_,true)
 
+	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPostProjectileWeapons", 1)
+
+}
+
+public fm_UpdateClientDataPostProjectileWeapons(player, sendWeapons, cd)
+{
+	if(!is_user_alive(player)){
+		
+		return FMRES_IGNORED
+	}
+	if(!Get_BitVar(sh_player_hero_projectile_weapon_tracker[player], _:get_user_weapon(player))){
+		return FMRES_IGNORED
+	}
+	new pEntity = get_pdata_cbase(player, m_pActiveItem,XO_PLAYER)
+	if(pev_valid(pEntity)==PDATA_SAFE){
+		set_cd(cd, CD_flNextAttack, get_gametime()+1.0)
+		return FMRES_HANDLED
+	}
+	return FMRES_IGNORED
 }
 
 public Ham_TraceAttackProjectileWeapon(id, idattacker, Float:damage, Float:direction[3], ptr, damagebits)
@@ -76,6 +97,9 @@ stock print_player_hero_projectile_weapon_flags(id){
 	server_print("The state of hero projectile weapon flags for this player is:^n^n")
 	for(new my_weapon_ids:i=enum_zero;i<my_weapon_ids;i++){
 		
+		if(!is_weaponid_valid(_:i)){
+			continue
+		}
 		if(Get_BitVar(sh_player_hero_projectile_weapon_tracker[id], _:i)){
 			wlt_get_def_name(i,weapon_name_buff,charsmax(weapon_name_buff))
 																	
@@ -102,6 +126,62 @@ public sh_print_player_projectile_weapons(id,level,cid){
 
 	return PLUGIN_HANDLED
 }
+stock print_hero_projectile_weapon_flags(heroID){
+	static weapon_name_buff[50]
+	server_print("The projectile weapons flags for this hero are:^n^n")
+	for(new my_weapon_ids:i=enum_zero;i<my_weapon_ids;i++){
+		
+		if(!is_weaponid_valid(_:i)){
+			continue
+		}
+		if(sh_get_hero_projectile_weapon_bit(heroID,i)){
+			wlt_get_def_name(i,weapon_name_buff,charsmax(weapon_name_buff))
+																	
+			server_print("- %s^n",weapon_name_buff)
+		}
+
+	}
+
+}
+
+public sh_print_hero_projectile_weapons(id,level,cid){
+
+	static arg[MAX_HERO_NAME_LENGTH],
+			hero_name_to_use[MAX_HERO_NAME_LENGTH]
+
+	read_argv(1,arg,charsmax(arg))
+
+	static arg_strlen;
+
+	arg_strlen = strlen(arg)
+
+
+	if(!arg_strlen){
+		
+		console_print(id, "Part of hero name is required!")
+
+		return PLUGIN_HANDLED
+	}
+
+	static heroID;
+
+	if((heroID = sh_match_string_with_hero_name(id,arg)) < 0){
+
+
+		return PLUGIN_HANDLED
+
+
+	}
+	
+	sh_get_hero_name_from_id(heroID,hero_name_to_use)
+	
+	console_print(id, "Hero name obtained: %s", hero_name_to_use)
+	
+	print_hero_projectile_weapon_flags(heroID)
+	
+	return PLUGIN_HANDLED
+
+}
 public init_fwd_ret_id:sh_hero_init_pre(id,heroID, sh_init_mode:mode){
 	new init_fwd_ret_id:true_return_result = INIT_FWD_PASS
 	static weapon_name_buff[50]
@@ -120,6 +200,9 @@ public init_fwd_ret_id:sh_hero_init_pre(id,heroID, sh_init_mode:mode){
 	}
 	for(new my_weapon_ids:i=enum_zero;i<my_weapon_ids;i++){
 
+		if(!is_weaponid_valid(_:i)){
+			continue
+		}
 		if(sh_get_hero_projectile_weapon_bit(heroID,i)){
 			if(Get_BitVar(sh_player_hero_projectile_weapon_tracker[id], _:i)){
 			
@@ -148,6 +231,9 @@ public sh_hero_init(id,heroID, sh_init_mode:mode){
 	}
 	for(new my_weapon_ids:i=enum_zero;i<my_weapon_ids;i++){
 
+		if(!is_weaponid_valid(_:i)){
+			continue
+		}
 		if(sh_get_hero_projectile_weapon_bit(heroID,i)){
 			switch(mode){
 

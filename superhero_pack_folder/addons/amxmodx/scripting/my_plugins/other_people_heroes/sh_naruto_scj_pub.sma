@@ -172,6 +172,16 @@ new pCvarCooldown, pCvarGunCooldown
 new pCvarMaxChakra, pCvarRasenganCost
 new pCvarSFXRadius, pCvarHitChance
 
+
+new dmg_source_name_short_clone_minigun[SAFE_BUFFER_SIZE+1]="clone_minigun"
+new dmg_source_name_log_clone_minigun[SAFE_BUFFER_SIZE+1]="clone_minigun"
+new custom_dmg_id_clone_minigun
+
+
+new dmg_source_name_short_rasengan[SAFE_BUFFER_SIZE+1]="rasengan"
+new dmg_source_name_log_rasengan[SAFE_BUFFER_SIZE+1]="rasengan"
+new custom_dmg_id_rasengan
+
 public plugin_init()
 {
 	// Plugin Info
@@ -201,6 +211,17 @@ public plugin_init()
 		return
 	}
 	
+
+	custom_dmg_id_clone_minigun=sh_log_custom_damage_source(gHeroID,
+					dmg_source_name_short_clone_minigun,
+					dmg_source_name_log_clone_minigun,0)
+
+
+
+	custom_dmg_id_rasengan=sh_log_custom_damage_source(gHeroID,
+					dmg_source_name_short_rasengan,
+					dmg_source_name_log_rasengan,0)
+
 	sh_set_hero_bind(gHeroID)
 
 	precache_extra_models();
@@ -1021,11 +1042,20 @@ public tracer(Float:start[3], Float:end[3])
 
 public duplicate_damage(id,attacker_id)
 {
-	sh_extra_damage(id, attacker_id, get_pcvar_num(pCvardamage))
+	sh_extra_damage(id, attacker_id, get_pcvar_num(pCvardamage),
+						MY_HIT_GENERIC,
+						_,_,_,_,
+						SH_NEW_DMG_SUPER_BULLET,
+						custom_dmg_id_clone_minigun)
 }
 public rasengan_damage(id,attacker_id)
 {
-	sh_extra_damage(id, attacker_id, get_pcvar_num(pCvarrdamage))
+
+	sh_extra_damage(id, attacker_id, get_pcvar_num(pCvarrdamage),
+						MY_HIT_GENERIC,
+						_,_,_,_,
+						SH_NEW_DMG_ENERGY_BLAST,
+						custom_dmg_id_rasengan)
 }
 
 public summoning_ring_effects(id)

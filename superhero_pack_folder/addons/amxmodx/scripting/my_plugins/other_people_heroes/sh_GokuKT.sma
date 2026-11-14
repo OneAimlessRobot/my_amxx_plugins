@@ -66,16 +66,18 @@ new HeroName[] = "Saiyan Kaioken Technic"
 new GokuKTTimer[SH_MAXSLOTS+1]
 //reset variables
 new bool:reset_speed[SH_MAXSLOTS+1], bool:reset_health[SH_MAXSLOTS+1], bool:reset_armor[SH_MAXSLOTS+1]
+new goku_kt_dmg_boost_wpn_short_name[SAFE_BUFFER_SIZE+1]="goku_kt_dmg_boost"
+new goku_kt_dmg_boost_dmg_boost_wpn_log_name[SAFE_BUFFER_SIZE+1]="goku_kt_dmg_boost"
+new goku_kt_dmg_boost_wpn_id = -1
+
 //pcvar holders
 new goku_speed, goku_hp, goku_ap, goku_time, goku_cooldown
 
 //pcvar holders (floats)
 
-new goku_kt_dmg_boost_wpn_short_name[SAFE_BUFFER_SIZE+1]="goku_kt_dmg_boost"
-new goku_kt_dmg_boost_dmg_boost_wpn_log_name[SAFE_BUFFER_SIZE+1]="goku_kt_dmg_boost"
-new goku_kt_dmg_boost_wpn_id = -1
 
-new goku_kt_dmg_mult = -1
+new goku_kt_dmg_mult = -1,
+	goku_kt_dmg_res = -1
 
 new g_spritePowerUp
 //----------------------------------------------------------------------------------------------
@@ -91,6 +93,7 @@ public plugin_init()
 	goku_ap = create_cvar("gokukt_armor", "5000")
 	goku_hp = create_cvar("gokukt_health", "800")
 	goku_kt_dmg_mult = create_cvar("gokukt_dmg_mult", "5.0")
+	goku_kt_dmg_res = create_cvar("gokukt_dmg_res", "0.3")
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(HeroName, "Goku's Kaioken Technic", "Go into Kaiokenmode for X Seconds", true, "gokukt_level")
@@ -148,20 +151,26 @@ public Kaioken_Damage(id, idinflictor, attacker, Float:damage, damagebits){
 	
 }
 
-public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
+public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,const sh_thrash_brat_dmg_type:new_dmg_type,const custom_weapon_id){
 	if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
 	
 		return DMG_FWD_PASS
 	}
-	if( GokuKTTimer[attacker] <=0 ){
-		
-		return DMG_FWD_PASS 
-	}
+	new bool:attacker_is_kaioken= ((GokuKTTimer[attacker] >0 ) && sh_get_user_has_hero(attacker,gHeroID)) 
+	new bool:victim_is_kaioken= ((GokuKTTimer[victim] >0 ) && sh_get_user_has_hero(victim,gHeroID))
 
 	new dmg_fwd_ret_id:result= DMG_FWD_PASS
-	if((new_dmg_type==SH_NEW_DMG_ENERGY_BLAST)||(new_dmg_type==SH_NEW_DMG_ENERGY_BLADE)){
-		if(sh_get_user_has_hero(attacker,gHeroID) ){
+	if(CUSTOM_DMG_TYPE_IS_DBZ(new_dmg_type)){
+		if(attacker_is_kaioken ){
 			damage *= (floatround(cvar_val(float,goku_kt_dmg_mult)))
+			result = DMG_FWD_HANDLED
+		}
+	}
+	if(CUSTOM_DMG_TYPE_IS_PHYSICAL(new_dmg_type)){
+		if(victim_is_kaioken){
+			new dmg_to_subtract = (floatround(float(damage) * cvar_val(float,goku_kt_dmg_res)))
+			damage -= dmg_to_subtract
+			result = DMG_FWD_HANDLED
 		}
 	}
 	return result
@@ -191,6 +200,7 @@ public sh_client_spawn(id)
 	reset_speed[id] = false
 	reset_health[id] = false
 	reset_armor[id] = false
+	GokuKTTimer[id] = 0
 }
 
 //----------------------------------------------------------------------------------------------

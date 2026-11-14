@@ -58,7 +58,7 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Poison Hashira", "Be polite, be sneaky. And make them suffer", true, "shinobu_level")
 	
-	RegisterHam(Ham_TraceAttack, "player", "shinobuDamage",1,true)
+	RegisterHam(Ham_TakeDamage, "player", "shinobuDamage",1,true)
 	
 	
 	sh_register_hero_healthcap(gHeroID, 90.0)
@@ -163,21 +163,23 @@ shinobu_damage_interaction(attacker,victim,my_hitpoint_enum:hitpoint){
 		shinobu_burst_damage_task_bootstrap(attacker,victim,1)
 	}	
 }
-public shinobuDamage(id, attacker, Float:damage, Float:Direction[3], Ptr, DamageBits)
+public shinobuDamage(id, idinflictor, attacker, Float:damage, damagebits)
 {
 	if ( sh_is_freezetime() ||!sh_is_inround() ||  !sh_is_active() || !is_user_connected(id)) return HAM_IGNORED
 	
 	if ( !is_user_alive(attacker)||!attacker) return HAM_IGNORED
 	
-	new weapon = get_user_weapon(attacker)
+	new weapon, my_hitpoint_enum:the_hitpoint
 
-	new my_hitpoint_enum:bodypart = my_hitpoint_enum:get_tr2(Ptr, TR_iHitgroup)
+	get_user_attacker(id, weapon, _:the_hitpoint)
+	
+	pev(id, pev_dmg_take, damage)
 
 	if(sh_clients_are_same_team(id,attacker)||(id==attacker)){
 		return HAM_IGNORED
 	}	
 	if((weapon==CSW_KNIFE)){
-		shinobu_damage_interaction(attacker,id,my_hitpoint_enum:bodypart)
+		shinobu_damage_interaction(attacker,id, the_hitpoint)
 	}
 	return HAM_IGNORED
 }
@@ -368,7 +370,7 @@ public sh_client_death(id,killer)
 	}
 		
 }
-public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
+public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,const sh_thrash_brat_dmg_type:new_dmg_type,const custom_weapon_id){
 	if ( sh_is_freezetime() ||!sh_is_inround() || !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
 	
 		return DMG_FWD_PASS

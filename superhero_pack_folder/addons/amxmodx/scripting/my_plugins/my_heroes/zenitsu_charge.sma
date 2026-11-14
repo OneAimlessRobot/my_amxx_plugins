@@ -223,6 +223,8 @@ public sh_client_spawn(id)
 	if ( sh_get_user_has_hero(id,gHeroID)) {
 	
 		sh_assign_id_bit(id, SH_ZENITSU_HAS_STRUCK, false)
+		sh_assign_id_bit(id, SH_ZENITSU_CHARGE_IS_ON, false)
+		sh_assign_id_bit(id, SH_ZENITSU_HAS_BEEN_SLEEP_TRIGGERED, false)
 		g_zenitsu_charge_ammount[id] = 0.0;
 		Assign_BitVar(g_zenitsu_is_charging_mask, id, false_for_macro);
 	}
@@ -433,7 +435,7 @@ public zenitsu_ele_cuerte_de_la_spada(pToucher, pTouched) {
 	sh_extra_damage(pTouched,pToucher,floatround(damage_to_do),
 				MY_HIT_HEAD,
 				_,_,_,_,
-				SH_NEW_DMG_IVE_STUDIED_THE_BLADE,
+				SH_NEW_DMG_ENERGY_BLADE,
 				generic_super_emo)
 
 	if(!is_user_alive(pTouched)){
@@ -445,6 +447,7 @@ public zenitsu_ele_cuerte_de_la_spada(pToucher, pTouched) {
 	}
 	sh_assign_id_bit(pToucher, SH_ZENITSU_HAS_STRUCK, true)
 	sh_assign_id_bit(pToucher, SH_ZENITSU_CHARGE_IS_ON, false)
+	sh_assign_id_bit(pToucher, SH_ZENITSU_HAS_BEEN_SLEEP_TRIGGERED, false)
 	g_zenitsu_charge_ammount[pToucher] = 0.0 
 
 
@@ -457,6 +460,7 @@ public sh_client_death(id){
 		if(sh_get_user_has_hero(id,gHeroID)){
 
 			sh_assign_id_bit(id, SH_ZENITSU_CHARGE_IS_ON, false)
+			sh_assign_id_bit(id, SH_ZENITSU_HAS_BEEN_SLEEP_TRIGGERED, false)
 			g_zenitsu_charge_ammount[id] = 0.0 
 		}
 	}
@@ -464,7 +468,7 @@ public sh_client_death(id){
 }
 
 
-public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type, custom_weapon_id){
+public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,const sh_thrash_brat_dmg_type:new_dmg_type,const custom_weapon_id){
 	if ( !sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)){
 	
 		return DMG_FWD_PASS
@@ -496,12 +500,13 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_
 					}
 					
 
-					if(!sh_get_id_bit(victim, SH_ZENITSU_HAS_STRUCK)&&!sh_get_id_bit(victim, SH_ZENITSU_CHARGE_IS_ON)&&(g_zenitsu_charge_ammount[victim]>cvar_val(float, pcvar_zenitsu_init_battery))){
-					
-					
+					if(!sh_get_id_bit(victim, SH_IS_SLEEPING)&&!sh_get_id_bit(victim, SH_ZENITSU_HAS_BEEN_SLEEP_TRIGGERED)&&!sh_get_id_bit(victim, SH_ZENITSU_HAS_STRUCK)&&!sh_get_id_bit(victim, SH_ZENITSU_CHARGE_IS_ON)&&(g_zenitsu_charge_ammount[victim]>cvar_val(float, pcvar_zenitsu_init_battery))){
+						
+						sh_assign_id_bit(victim, SH_ZENITSU_HAS_BEEN_SLEEP_TRIGGERED, true)
 						sh_sleep_user(victim,attacker,5.0,-1)
 
 					}
+					result = DMG_FWD_HANDLED
 
 				}
 			}
@@ -518,6 +523,7 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_
 					if(!DEBUG){
 						show_points_to_player(attacker)
 					}
+					result = DMG_FWD_HANDLED
 				}
 			}
 		

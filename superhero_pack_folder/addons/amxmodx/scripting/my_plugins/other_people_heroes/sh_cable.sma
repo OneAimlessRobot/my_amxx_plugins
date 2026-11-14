@@ -24,6 +24,10 @@ cable_mulishot 0.02			//Delay for multishots on holding key down
 #define h4_dam 65  //arm
 #define h6_dam 65  //leg
 
+new dmg_source_name_short_cable_bullet[SAFE_BUFFER_SIZE+1]="cable_bullet"
+new dmg_source_name_log_cable_bullet[SAFE_BUFFER_SIZE+1]="cable_bullet"
+new custom_dmg_id_cable_bullet
+
 // GLOBAL VARIABLES
 new smoke, laser, laser_shots[SH_MAXSLOTS+1]
 new gLastWeapon[SH_MAXSLOTS+1]
@@ -44,10 +48,14 @@ public plugin_init()
 	create_cvar("cable_cooldown", "0.02" )
 	create_cvar("cable_mulishot", "0.02" ) //Delay for multishots on holding key down
 
-	decal_id = g_burnDecal[generate_int(0,sizeof(g_burnDecal)-1)]
+	decal_id = g_gunshot_decals_bulletholes[generate_int(0,sizeof(g_gunshot_decals_bulletholes)-1)]
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Laser Gun", "Fire your laser gun!", true, "cable_level" )
 
+
+	custom_dmg_id_cable_bullet=sh_log_custom_damage_source(gHeroID,
+					dmg_source_name_short_cable_bullet,
+					dmg_source_name_log_cable_bullet,0)
 }
 //----------------------------------------------------------------------------------------------
 public plugin_precache()
@@ -254,7 +262,11 @@ public fire_laser(id)
 		}
 
 		// Deal the damage...
-		sh_extra_damage(tid, id, damage)
+		sh_extra_damage(tid, id, damage,
+							my_hitpoint_enum:tbody,
+							_,_,_,_,
+							SH_NEW_DMG_ENERGY_BLAST,
+							custom_dmg_id_cable_bullet)
 	}
 	return PLUGIN_CONTINUE
 }

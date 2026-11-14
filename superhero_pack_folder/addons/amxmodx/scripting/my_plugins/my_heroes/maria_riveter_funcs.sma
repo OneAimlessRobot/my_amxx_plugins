@@ -39,7 +39,6 @@ public plugin_init(){
 	register_plugin(PLUGIN_NAME, PLUGIN_VER, AUTHOR);
 
 	register_forward(FM_CmdStart, "CmdStart");
-	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
 	
 	
 	wlt_get_def_name(my_weapon_ids:MARIA_WEAPON_CLASSID,wpn_name_for_future_lookup,charsmax(wpn_name_for_future_lookup))
@@ -391,23 +390,6 @@ trail(Ent,LTGREEN,3,5)
 entity_set_float( Ent, EV_FL_nextthink, floatadd(get_gametime( ) ,MARIA_PROJECTILE_PHYS_UPDATE_TIME));
 
 return PLUGIN_CONTINUE
-}
-
-public fm_UpdateClientDataPost(player, sendWeapons, cd)
-{
-	if(!client_is_hero_user(player, gHeroID)){
-		
-		return FMRES_IGNORED
-	}
-	if((get_user_weapon(player) != MARIA_WEAPON_CLASSID)){
-		return FMRES_IGNORED
-	}
-	new pEntity =  get_pdata_cbase(player, m_pActiveItem,XO_PLAYER)
-	if(pev_valid(pEntity)==PDATA_SAFE){
-		set_cd(cd, CD_flNextAttack, get_gametime()+1.0)
-		return FMRES_HANDLED
-	}
-	return FMRES_IGNORED
 }
 
 

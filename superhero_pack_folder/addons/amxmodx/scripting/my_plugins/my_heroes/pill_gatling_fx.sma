@@ -83,7 +83,7 @@ stock fx_task_parameters[fx_id][fx_task_parameter_id]={
 					
 					{0.5,30.0,-1,"poison_task","uneffect_task_generic","poison","Removed ur poisan!",1,DMG_ICON_POISON,PRIO_RENDER_EFFECT_ACTIVE, kRenderNormal,16},
 					
-					{9.0,40.0,-1,"task_cycle","uneffect_task_generic","stunner","Removed ur stun bro!",1,DMG_ICON_DROWN,PRIO_RENDER_EFFECT_ACTIVE, kRenderNormal,16},
+					{0.5,40.0,-1,"task_cycle","uneffect_task_generic","stunner","Removed ur stun bro!",1,DMG_ICON_DROWN,PRIO_RENDER_EFFECT_ACTIVE, kRenderNormal,16},
 					
 					{1.0,50.0,-1,"radioactive_task","","uranium","Removed ur chernobyl!",1,damage_icon_types:-1,PRIO_RENDER_DELETE_INVISIBILITY, kRenderNormal,0},
 					
@@ -269,7 +269,7 @@ public fx_damage(id, idinflictor, attacker, Float:damage, damagebits)
 	return return_result
 }
 
-public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart ,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,&sh_thrash_brat_dmg_type:new_dmg_type,custom_weapon_id){
+public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart ,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,const sh_thrash_brat_dmg_type:new_dmg_type,custom_weapon_id){
 	if (!sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker)) return DMG_FWD_PASS
 
 	new fx_id:fx_num_att=(gatling_get_fx_num(attacker)),
@@ -298,7 +298,7 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_h
 		
 		}
 	}
-	return DMG_FWD_PASS
+	return DMG_FWD_HANDLED
 }
 
 

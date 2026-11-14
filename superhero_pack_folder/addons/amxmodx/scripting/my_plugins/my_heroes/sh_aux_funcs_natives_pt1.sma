@@ -700,7 +700,7 @@ public _gun_shot_decal(iPlugins, iParams){
 
 	get_array_f(1,vec,3)
 
-	new decal_id =  decal_id = g_gunshot_decals_bulletholes[generate_int(0,sizeof(g_gunshot_decals_bulletholes)-1)]
+	new decal_id = g_gunshot_decals_bulletholes[generate_int(0,sizeof(g_gunshot_decals_bulletholes)-1)]
 	message_begin( MSG_BROADCAST,SVC_TEMPENTITY)
 	write_byte( TE_GUNSHOTDECAL ) // decal and ricochet sound
 	write_coord_f( vec[0] ) //pos
@@ -733,7 +733,7 @@ public _directed_spark(iPlugins, iParams){
 	write_byte( 8 )
 	write_short(init_id)				// start entity
 	write_short(end_id)				// entity
-	write_short(gSpriteLaser)		// model
+	write_short(gSpriteLightning)		// model
 	write_byte( 0 ) 				// starting frame
 	write_byte( 30 )  			// frame rate
 	write_byte( life)  			// life

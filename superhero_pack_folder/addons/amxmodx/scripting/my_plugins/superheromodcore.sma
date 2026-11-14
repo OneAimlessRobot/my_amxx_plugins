@@ -258,7 +258,7 @@ public plugin_init()
 	fwd_RoundEnd = CreateMultiForward("sh_round_end", ET_IGNORE)
 	
 	
-	fwd_ShDamagePre= CreateMultiForward("sh_extra_damage_fwd_pre",ET_STOP2 ,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_ARRAY,FP_VAL_BYREF,FP_VAL_BYREF,FP_CELL)
+	fwd_ShDamagePre= CreateMultiForward("sh_extra_damage_fwd_pre",ET_STOP2 ,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_ARRAY,FP_VAL_BYREF,FP_CELL,FP_CELL)
 	fwd_ShDamagePost= CreateMultiForward("sh_extra_damage_fwd_post",ET_IGNORE ,FP_CELL,FP_CELL,FP_CELL,FP_CELL,FP_CELL,FP_CELL,FP_ARRAY,FP_CELL,FP_CELL,FP_CELL)
 	fwd_ShXpPost= CreateMultiForward("sh_set_user_xp_fwd_post",ET_IGNORE ,FP_CELL,FP_CELL,FP_CELL)
 
@@ -2806,7 +2806,7 @@ public _sh_extra_damage()
 
 	new Float:flArmor = 0.0
 
-	new wpnDescription[32]
+	static wpnDescription[32]
 
 	new my_hitpoint_enum:bodypart = my_hitpoint_enum:get_param(4)
 	new sh_damage_mode:mode = sh_damage_mode:get_param(5)
@@ -2815,7 +2815,7 @@ public _sh_extra_damage()
 	new bool:dmgStun = bool:(sh_extra_dmg_flags & SH_EXTRA_DMG_FLAG_STUN),
 		bool:dmgFFmsg = bool:(sh_extra_dmg_flags & SH_EXTRA_DMG_FLAG_dmgFFmsg);
 
-	new Float:dmgOrigin[3]
+	static Float:dmgOrigin[3]
 	get_array_f(7, dmgOrigin, 3)
 	new dmg_type=get_param(8)
 	new sh_thrash_brat_dmg_type:thrashbrat_dmg_type=sh_thrash_brat_dmg_type:get_param(9)
@@ -2825,32 +2825,81 @@ public _sh_extra_damage()
 
 	xmod_get_wpnlogname(custom_wpn_id,wpnDescription,charsmax(wpnDescription))
 
+	
+	/*
+		this damage cannot be blocked!
+	*/
+	new passed_preparedWpnDmgOriginInt;
+	
+	if((thrashbrat_dmg_type != SH_NEW_DMG_HEALTH_SET)){
 
-	new preparedWpnDmgOriginInt=PrepareArray(_:dmgOrigin,3)
-
-	new dmg_fwd_ret_id:the_dmg_return_value=DMG_FWD_PASS
-	if (!ExecuteForward(fwd_ShDamagePre, 
-					the_dmg_return_value, 
-					victim,
-					attacker,
-					damage_after,
-					bodypart,
-					mode,
-					sh_extra_dmg_flags,
-					preparedWpnDmgOriginInt,
-					dmg_type,
-					thrashbrat_dmg_type,
-					custom_wpn_id)){
+		static passed_victim,
+			passed_attacker,
+			passed_damage_after,
+			my_hitpoint_enum:passed_bodypart,
+			sh_damage_mode:passed_mode,
+			sh_extra_damage_flags:passed_sh_extra_dmg_flags,
+			passed_dmg_type,
+			sh_thrash_brat_dmg_type:passed_thrashbrat_dmg_type,
+			passed_custom_wpn_id
+			
+		passed_victim = victim;
+		passed_attacker = attacker;
+		passed_damage_after = damage_after;
+		passed_bodypart = bodypart;
+		passed_mode = mode;
+		passed_sh_extra_dmg_flags = sh_extra_dmg_flags;
+		passed_dmg_type = dmg_type;
+		passed_thrashbrat_dmg_type= thrashbrat_dmg_type;
+		passed_custom_wpn_id = custom_wpn_id;
 		
-		server_print("Sh damage forward pre execute error.");
-	}
+		static Float:passed_dmgOrigin[3];
 
-	if(the_dmg_return_value==DMG_FWD_BLOCK){
-		return
-	}
-	else if(the_dmg_return_value==DMG_FWD_STOP){
+		passed_dmgOrigin[0] = dmgOrigin[0]
+		passed_dmgOrigin[1] = dmgOrigin[1]
+		passed_dmgOrigin[2] = dmgOrigin[2]
+		
 
-		server_print("They returned DMG_FWD_STOP!!!^n");
+
+		new passed_preparedWpnDmgOriginInt=PrepareArray(_:passed_dmgOrigin,3)
+
+		new dmg_fwd_ret_id:the_dmg_return_value=DMG_FWD_PASS
+
+
+		if (!ExecuteForward(fwd_ShDamagePre, 
+						the_dmg_return_value,
+						passed_victim,
+						passed_attacker,
+						passed_damage_after,
+						passed_bodypart,
+						passed_mode,
+						passed_sh_extra_dmg_flags,
+						passed_preparedWpnDmgOriginInt,
+						passed_dmg_type,
+						passed_thrashbrat_dmg_type,
+						passed_custom_wpn_id)){
+			
+			server_print("Sh damage forward pre execute error.");
+		}
+
+		if((the_dmg_return_value==DMG_FWD_BLOCK)){
+
+			return
+		}
+		else if(the_dmg_return_value==DMG_FWD_HANDLED){
+			
+			damage_after = passed_damage_after
+			victim = passed_victim;
+			attacker = passed_attacker;
+			bodypart = passed_bodypart;
+			mode = passed_mode;
+			sh_extra_dmg_flags = passed_sh_extra_dmg_flags;
+			dmg_type = passed_dmg_type;
+			dmgOrigin[0] = passed_dmgOrigin[0]
+			dmgOrigin[1] = passed_dmgOrigin[1]
+			dmgOrigin[2] = passed_dmgOrigin[2]
+
+		}
 	}
 	new health = get_user_health(victim)
 	new CsArmorType:armorType
@@ -3079,6 +3128,9 @@ public _sh_extra_damage()
 		engfunc(EngFunc_WriteCoord, dmgOrigin[2])	// damageOrigin.z
 		message_end()
 		
+		(thrashbrat_dmg_type != SH_NEW_DMG_HEALTH_SET)?
+
+		(
 		(!ExecuteForward(fwd_ShDamagePost, 
 						fwdReturn, 
 						victim,
@@ -3087,13 +3139,18 @@ public _sh_extra_damage()
 						bodypart,
 						mode,
 						sh_extra_dmg_flags,
-						preparedWpnDmgOriginInt,
+						passed_preparedWpnDmgOriginInt,
 						dmg_type,
 						thrashbrat_dmg_type,
 						custom_wpn_id))?
 						
 		(server_print("Sh damage forward post execute error.")):
-		logHit(attacker, victim, wpnDescription,damage_after, floatround(flArmor),bodypart,custom_wpn_id,thrashbrat_dmg_type)
+		logHit(attacker, victim, wpnDescription,damage_after, floatround(flArmor),bodypart,custom_wpn_id,thrashbrat_dmg_type))
+							:
+		(logHit(attacker, victim, wpnDescription,damage_after, floatround(flArmor),bodypart,custom_wpn_id,thrashbrat_dmg_type))
+
+	
+
 	}
 }
 

@@ -42,8 +42,8 @@ forward dmg_fwd_ret_id:sh_extra_damage_fwd_pre(
 			&sh_extra_damage_flags:sh_extra_dmg_flags,
 			const Float:dmgOrigin[3],
 			&dmg_type,
-			&sh_thrash_brat_dmg_type:new_dmg_type,
-			custom_wpn_id);
+			const const sh_thrash_brat_dmg_type:new_dmg_type,
+			const custom_wpn_id);
 /**
 //extra_damage_flags!
 enum sh_extra_damage_flags (<<= 1){
@@ -65,8 +65,8 @@ forward sh_extra_damage_fwd_post(
 			sh_extra_damage_flags:sh_extra_dmg_flags,
 			const Float:dmgOrigin[3],
 			dmg_type,
-			sh_thrash_brat_dmg_type:new_dmg_type,
-			custom_wpn_id);
+			const sh_thrash_brat_dmg_type:new_dmg_type,
+			const custom_wpn_id);
 
 forward sh_set_user_xp_fwd_post(id, xp, xp_type_bonus_id:xp_type);
 
@@ -474,7 +474,7 @@ native sh_extra_damage(victim,
 				sh_extra_damage_flags:sh_extra_damage_flags=SH_EXTRA_DMG_FLAG_NONE,
 				const Float:dmgOrigin[3] = {0.0,0.0,0.0},
 				dmg_type=DMG_GENERIC,
-				sh_thrash_brat_dmg_type:new_dmg_type=SH_NEW_DMG_NONE,
+				const sh_thrash_brat_dmg_type:new_dmg_type=SH_NEW_DMG_NONE,
 				custom_wpn_id=-1);
 
 /**

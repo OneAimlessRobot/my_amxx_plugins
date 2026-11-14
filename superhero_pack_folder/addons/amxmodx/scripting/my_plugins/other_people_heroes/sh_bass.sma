@@ -70,6 +70,11 @@ new BeamColors[8][3] = {
 	{255, 128, 0}		// Orange
 }
 
+new dmg_source_name_short_bass_energy_beam[SAFE_BUFFER_SIZE+1]="bass_energy_beam"
+new dmg_source_name_log_bass_energy_beam[SAFE_BUFFER_SIZE+1]="bass_energy_beam"
+new custom_dmg_id_bass_energy_beam
+
+
 // GLOBAL VARIABLES
 new gHeroName[]="Bass"
 new bool:gLaserFired[SH_MAXSLOTS+1]
@@ -98,6 +103,10 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Uber Energy Beam", "Press the +power key to fire your your beam cannon", true, "bass_level")
 
+
+	custom_dmg_id_bass_energy_beam=sh_log_custom_damage_source(gHeroID,
+					dmg_source_name_short_bass_energy_beam,
+					dmg_source_name_log_bass_energy_beam,0)
 
 	// Let Server know about Bass's Variables
 	shSetMaxHealth(gHeroName, "bass_health")
@@ -232,7 +241,11 @@ public fire_laser(id)
 		}
 
 		// Deal the damage...
-		sh_extra_damage(tid, id, damage)
+		sh_extra_damage(tid, id, damage,
+							my_hitpoint_enum:tbody,
+							_,_,_,_,
+							SH_NEW_DMG_ENERGY_BLAST,
+							custom_dmg_id_bass_energy_beam)
 	}
 }
 //----------------------------------------------------------------------------------------------

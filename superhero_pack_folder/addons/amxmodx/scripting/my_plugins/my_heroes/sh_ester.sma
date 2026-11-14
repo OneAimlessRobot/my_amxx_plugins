@@ -137,6 +137,7 @@ public plugin_init()
 	superheromod_help_link_hero(gHeroID, "Ester: Help file","ester_folder/","ester_help_file.html",hero_name_arr)
 	
 	RegisterHam(Ham_TakeDamage, "player", "fw_HamTakeDamage",1,true)
+	RegisterHam(Ham_TraceAttack, "player", "fw_HamTraceAttack",_,true)
 	
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 	register_ham_hook_multiple(Ham_TraceAttack,
@@ -255,9 +256,9 @@ stock count_enemies(id){
 	
 	new count=0;
 	if(((gTimesLeft[id]>0)||g_ester_attack_phase[id]!=FINISHED)&&is_user_alive(id)&&sh_get_user_has_hero(id,gHeroID) ){
-		new players[SH_MAXSLOTS]
-		new player_count
-		get_players(players,player_count)
+		static players[SH_MAXSLOTS]
+		static player_count
+		get_players(players,player_count, "ah")
 		new CsTeams:ester_user_team=cs_get_user_team(id);
 		for(new i=0;i<player_count;i++){
 			if(is_user_alive(players[i])){
@@ -506,7 +507,68 @@ public ester_moralizer_ray_laser(Victim, Attacker, Float:Damage, Float:Direction
 
 }
 
-public fw_HamTakeDamage(id, attacker, Float:damage, Float:Direction[3], Ptr, DamageBits)
+
+
+public fw_HamTraceAttack(id, attacker, Float:damage, Float:Direction[3], Ptr, DamageBits)
+{
+	
+	if(!is_user_alive(attacker)||!is_user_alive(id)){
+		return HAM_IGNORED
+	}
+
+	new bool:attacker_has_hero = bool:sh_get_user_has_hero(attacker,gHeroID)
+
+	static attacker_name[128],client_name[128]
+
+	get_user_name(attacker,attacker_name,127)
+	get_user_name(id,client_name,127)
+	
+	new weapon = get_user_weapon(attacker)
+	
+	new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_tr2(Ptr,TR_Hitgroup)
+
+	new headshot=(the_hitpoint==enum_one)
+	new mult=(headshot?cvar_val(num,pcvar_moralizing_headshot_xp_mult):1);
+	new CsTeams:att_team=CS_TEAM_UNASSIGNED,CsTeams:vic_team=CS_TEAM_UNASSIGNED;
+	att_team=cs_get_user_team(attacker)
+	vic_team=cs_get_user_team(id)
+	new fx_id:the_fx_id = sh_get_user_effect(id)
+	new bool:fx_is_appliable_here = (FX_ID_IS_APPLIABLE(the_fx_id))
+	new is_teamate=(vic_team==att_team)
+
+	if(attacker_has_hero){
+		if((weapon==CSW_KNIFE)||(weapon==MORALIZER_WEAPON_ID)){
+			if(is_teamate){
+				
+				if(gBuiltUpXp[attacker]>(weapon==MORALIZER_WEAPON_ID?cvar_val(num,pcvar_moralizing_tmp_xp_give):cvar_val(num,pcvar_moralizing_pan_xp_give))){
+					
+					if(!(fx_is_appliable_here)){
+						sh_effect_user_direct(id,attacker,3.0,gHeroID,METYLPHENIDATE);
+						
+						if(!is_user_bot(attacker)){
+							sh_chat_message(attacker,gHeroID,(weapon==MORALIZER_WEAPON_ID?"%s: AYO CHILL, %s!":"%s: OW! What was that for, Ester? (%s)?"),client_name,attacker_name)
+						}
+						if(!is_user_bot(id)){
+							sh_chat_message(id,gHeroID,(weapon==MORALIZER_WEAPON_ID?"%s: HEY! LOCK! IN, %s!":"%s: Shut up, %s."),attacker_name,client_name)
+						}
+						new unextra_moralizing_xp=min(mult*(weapon==MORALIZER_WEAPON_ID?cvar_val(num,pcvar_moralizing_tmp_xp_give):cvar_val(num,pcvar_moralizing_pan_xp_give)),gBuiltUpXp[attacker])
+						if(unextra_moralizing_xp){
+							
+							if(!is_user_bot(attacker)){
+								sh_chat_message(attacker,gHeroID,ESTER_SAVED_THE_DAY_STRING,client_name,unextra_moralizing_xp)
+							}
+							sh_set_user_xp(id,unextra_moralizing_xp,true);
+						}
+						gBuiltUpXp[attacker]-=unextra_moralizing_xp
+					}
+				}
+			}
+		}
+	}
+	return HAM_IGNORED
+}
+
+public fw_HamTakeDamage(id, idinflictor, attacker, Float:damage, damagebits)
 {	
 	if(damage<=0.0){
 		return HAM_IGNORED
@@ -540,67 +602,38 @@ public fw_HamTakeDamage(id, attacker, Float:damage, Float:Direction[3], Ptr, Dam
 	new is_teamate=(vic_team==att_team)
 
 	if(attacker_has_hero){
-
-
 		if((weapon==CSW_KNIFE)||(weapon==MORALIZER_WEAPON_ID)){
-			switch(is_teamate){
-				case 0:{
-					if(!(fx_is_appliable_here)){
-						sh_effect_user_direct(id,attacker,3.0,gHeroID,STUN);
-						if(!is_user_bot(attacker)){
-							sh_chat_message(attacker,gHeroID,(weapon==MORALIZER_WEAPON_ID?"%s: AYO CHILL, %s!":"%s: OW! What was that for, Ester? (%s)?"),client_name,attacker_name)
-						}
-						if(!is_user_bot(id)){
-							sh_chat_message(id,gHeroID,(weapon==MORALIZER_WEAPON_ID?"%s: HEY! LOCK! IN, %s!":"%s: Shut up, %s."),attacker_name,client_name)
-						}
-						new Float:extraDamage = (weapon==MORALIZER_WEAPON_ID?(floatmul(damage,
-											cvar_val(float,pcvar_tmp_dmg_mult)+1.0)):floatadd(damage,cvar_val(float,pcvar_pan_dmg)))
-						if (extraDamage>0){
-						
-							sh_extra_damage(id,attacker,floatround(extraDamage),
-										the_hitpoint,
-										_,_,_,_,_,
-										(weapon==MORALIZER_WEAPON_ID)?moralizing_ray_wpn_id:adulting_pan_wpn_id)
-							
-
-							new extra_moralizing_xp=max(0,min((weapon==MORALIZER_WEAPON_ID?cvar_val(num,pcvar_moralizing_tmp_xp_get_mult):cvar_val(num,pcvar_moralizing_pan_xp_get_mult))*
-										mult*floatround(extraDamage+damage),
-										cvar_val(num,pcvar_max_moralizing_xp)-gBuiltUpXp[attacker]))
-							if(extra_moralizing_xp){
-								
-								
-								if(!is_user_bot(attacker)){
-									client_print(attacker,print_center,ESTER_JUST_SHUT_UP_STRING,gHeroName,extra_moralizing_xp)
-									sh_chat_message(attacker,gHeroID,"wow, %s that was such a nice... %s from your.... ^"Moralizing^"...",gHeroName,headshot?"headshot":"(wow... not even headshot)")
-								}
-							}
-							gBuiltUpXp[attacker]+=extra_moralizing_xp
-						}
+			if(!is_teamate){
+				if(!(fx_is_appliable_here)){
+					sh_effect_user_direct(id,attacker,3.0,gHeroID,STUN);
+					if(!is_user_bot(attacker)){
+						sh_chat_message(attacker,gHeroID,(weapon==MORALIZER_WEAPON_ID?"%s: AYO CHILL, %s!":"%s: OW! What was that for, Ester? (%s)?"),client_name,attacker_name)
 					}
+					if(!is_user_bot(id)){
+						sh_chat_message(id,gHeroID,(weapon==MORALIZER_WEAPON_ID?"%s: HEY! LOCK! IN, %s!":"%s: Shut up, %s."),attacker_name,client_name)
+					}
+					new Float:extraDamage = (weapon==MORALIZER_WEAPON_ID?(floatmul(damage,
+										cvar_val(float,pcvar_tmp_dmg_mult)+1.0)):floatadd(damage,cvar_val(float,pcvar_pan_dmg)))
+					if (extraDamage>0){
+					
+						sh_extra_damage(id,attacker,floatround(extraDamage),
+									the_hitpoint,
+									_,_,_,_,_,
+									(weapon==MORALIZER_WEAPON_ID)?moralizing_ray_wpn_id:adulting_pan_wpn_id)
 						
-				}
-				case 1:{
-					if(gBuiltUpXp[attacker]>(weapon==MORALIZER_WEAPON_ID?cvar_val(num,pcvar_moralizing_tmp_xp_give):cvar_val(num,pcvar_moralizing_pan_xp_give))){
-						
-						if(!(fx_is_appliable_here)){
-							sh_effect_user_direct(id,attacker,3.0,gHeroID,METYLPHENIDATE);
+
+						new extra_moralizing_xp=max(0,min((weapon==MORALIZER_WEAPON_ID?cvar_val(num,pcvar_moralizing_tmp_xp_get_mult):cvar_val(num,pcvar_moralizing_pan_xp_get_mult))*
+									mult*floatround(extraDamage+damage),
+									cvar_val(num,pcvar_max_moralizing_xp)-gBuiltUpXp[attacker]))
+						if(extra_moralizing_xp){
+							
 							
 							if(!is_user_bot(attacker)){
-								sh_chat_message(attacker,gHeroID,(weapon==MORALIZER_WEAPON_ID?"%s: AYO CHILL, %s!":"%s: OW! What was that for, Ester? (%s)?"),client_name,attacker_name)
+								client_print(attacker,print_center,ESTER_JUST_SHUT_UP_STRING,gHeroName,extra_moralizing_xp)
+								sh_chat_message(attacker,gHeroID,"wow, %s that was such a nice... %s from your.... ^"Moralizing^"...",gHeroName,headshot?"headshot":"(wow... not even headshot)")
 							}
-							if(!is_user_bot(id)){
-								sh_chat_message(id,gHeroID,(weapon==MORALIZER_WEAPON_ID?"%s: HEY! LOCK! IN, %s!":"%s: Shut up, %s."),attacker_name,client_name)
-							}
-							new unextra_moralizing_xp=min(mult*(weapon==MORALIZER_WEAPON_ID?cvar_val(num,pcvar_moralizing_tmp_xp_give):cvar_val(num,pcvar_moralizing_pan_xp_give)),gBuiltUpXp[attacker])
-							if(unextra_moralizing_xp){
-								
-								if(!is_user_bot(attacker)){
-									sh_chat_message(attacker,gHeroID,ESTER_SAVED_THE_DAY_STRING,client_name,unextra_moralizing_xp)
-								}
-								sh_set_user_xp(id,unextra_moralizing_xp,true);
-							}
-							gBuiltUpXp[attacker]-=unextra_moralizing_xp
 						}
+						gBuiltUpXp[attacker]+=extra_moralizing_xp
 					}
 				}
 			}
@@ -610,11 +643,14 @@ public fw_HamTakeDamage(id, attacker, Float:damage, Float:Direction[3], Ptr, Dam
 		static origin[3], origin2[3]
 		get_user_origin(id,origin)
 		get_user_origin(attacker,origin2)
-		if((g_ester_attack_phase[id] <= UNLOADING)&&gTimesLeft[id]&&(damage_to_do[id]>0)){
-			
-			Set_BitVar(g_ester_enemies_masks[id],attacker);
-			if((g_ester_attack_phase[id] == PEDAL_FLOORED)){
-				
+		if((g_ester_attack_phase[id] <= UNLOADING)&&(gTimesLeft[id]>0)){
+			if(!Get_BitVar(g_ester_enemies_masks[id],attacker)){
+				Set_BitVar(g_ester_enemies_masks[id],attacker);
+				sh_chat_message(attacker,gHeroID, "%s: %s! Hey you! You just made the list!",client_name,attacker_name)
+			}
+			if((damage_to_do[id]>0)&&(g_ester_attack_phase[id] == PEDAL_FLOORED)){
+
+					
 				sh_extra_damage(attacker, id,
 								1+ floatround(floatmul(floatdiv(damage,float(damage_to_do[id])),float(gEsterDmg[id])),floatround_ceil),
 								the_hitpoint,
