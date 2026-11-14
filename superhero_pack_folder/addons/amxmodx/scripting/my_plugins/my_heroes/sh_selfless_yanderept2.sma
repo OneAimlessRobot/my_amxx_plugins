@@ -499,7 +499,8 @@ public sh_round_start(){
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id, bool:newRound)
-{	if(is_user_alive(id) && sh_is_active()){
+{	
+	if(is_user_alive(id) && sh_is_active()){
 		g_is_cursed_masks[id]=0
 		if ( sh_get_user_has_hero(id,gHeroID) ) {
 			

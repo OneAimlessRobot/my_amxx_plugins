@@ -546,10 +546,6 @@ loadConfig()
 
 		//Force the server to flush the exec buffer
 		server_exec()
-
-		//Note: I do not believe this is an issue anymore disabling until known otherwise - vittu
-		//Exec the config again due to issues with it not loading all the time
-		//server_cmd("exec %s", gSHConfig)
 	}
 	else {
 		debugMsg(0, 0, "**WARNING** SuperHero Config File not found, correct location: %s", gSHConfig)

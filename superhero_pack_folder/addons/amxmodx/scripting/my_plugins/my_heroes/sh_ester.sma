@@ -639,7 +639,7 @@ public fw_HamTakeDamage(id, idinflictor, attacker, Float:damage, damagebits)
 			}
 		}
 	}
-	if(victim_has_hero ){
+	if(victim_has_hero && (attacker!=id)){
 		static origin[3], origin2[3]
 		get_user_origin(id,origin)
 		get_user_origin(attacker,origin2)
