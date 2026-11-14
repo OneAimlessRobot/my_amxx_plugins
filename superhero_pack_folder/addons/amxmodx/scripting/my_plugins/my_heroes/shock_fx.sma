@@ -51,13 +51,14 @@ public _sh_shock_user(iPlugin,iParams){
 		bool:should_spread = bool:get_param(4),
 		Float:shock_damage_to_do = get_param_f(5),
 		Float:spread_radius = get_param_f(6),
-		custom_weapon_id = get_param(7)
+		bool:spread_to_og_shocker = bool:get_param(7),
+		custom_weapon_id = get_param(8)
 
 	custom_weapon_id = ((custom_weapon_id<0)?generic_dmg_source_shock:custom_weapon_id)
 
 
 	if(!sh_get_id_bit(user,SH_IS_SHOCKED)){
-		shock_user(user,attacker,the_time,should_spread,shock_damage_to_do, spread_radius,custom_weapon_id)
+		shock_user(user,attacker,the_time,should_spread,shock_damage_to_do, spread_radius, spread_to_og_shocker,custom_weapon_id)
 	}
 
 	
@@ -82,7 +83,7 @@ public unshock_task(id){
 	unshock_user(id)
 	
 }
-shock_user(id,attacker, Float:the_time, bool:should_spread, Float:damage_to_do, Float:spread_radius, custom_weapon_id, bool:played_sound = false ){
+shock_user(id,attacker, Float:the_time, bool:should_spread, Float:damage_to_do, Float:spread_radius, bool:spread_to_og_shocker, custom_weapon_id, bool:played_sound = false ){
 	
 	if(!sh_is_active()||!is_user_alive(id)||sh_get_id_bit(id,SH_IS_SHOCKED)||!is_user_connected(attacker)) return
 
@@ -127,10 +128,13 @@ shock_user(id,attacker, Float:the_time, bool:should_spread, Float:damage_to_do, 
 			new pid = entlist[i];
 			
 			if( !is_user_alive(pid) ) continue
+
+			if( (pid == attacker) && !spread_to_og_shocker) continue
 			
 			if( sh_get_id_bit(pid,SH_IS_SHOCKED)) continue
+
 			directed_spark(id, pid,clamp_macro(floatround(damage_to_do),23,two_fifty_five),60,200,50,LTBLUE,24,0)
-			shock_user(pid,attacker,the_time,should_spread,damage_to_do,spread_radius, custom_weapon_id, played_sound)
+			shock_user(pid,attacker,the_time,should_spread,damage_to_do,spread_radius, spread_to_og_shocker, custom_weapon_id, played_sound)
 		}
 	}
 

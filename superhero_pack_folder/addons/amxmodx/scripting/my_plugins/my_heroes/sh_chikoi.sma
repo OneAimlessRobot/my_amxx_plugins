@@ -125,7 +125,7 @@ public chikoi_physical_body(id, attacker, Float:damage, Float:direction[3], trac
 	return HAM_IGNORED;
 }
 
-public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,const sh_thrash_brat_dmg_type:new_dmg_type,custom_weapon_id){
+public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,const sh_thrash_brat_dmg_type:new_dmg_type,const custom_weapon_id){
 	if ( !sh_is_active() ||  !is_user_connected(victim)||!is_user_connected(attacker)){
 	
 		return DMG_FWD_PASS
@@ -142,7 +142,6 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_
 			set_user_godmode(victim,0)
 			damage=get_user_health(victim)+1;
 			dmgMode=SH_DMG_KILL
-			new_dmg_type=SH_NEW_DMG_SQUASHED
 			dmg_message(victim,attacker)
 			return DMG_FWD_HANDLED
 		}

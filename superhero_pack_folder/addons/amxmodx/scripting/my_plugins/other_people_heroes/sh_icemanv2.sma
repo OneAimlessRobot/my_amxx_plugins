@@ -114,7 +114,8 @@ public iceman2_loop(id)
 	if ( gUseFuel != 0 && gFuelCost > userArmor && g_jetPackRunning[id] == 1 ) {
 		sh_sound_deny(id)
 		g_jetPackRunning[id] = 0
-		set_user_info(id,"JETPACK_RUN","0")
+		sh_assign_id_bit(id, SH_JETPACK_RUNNING, false)
+		
 		client_print(id, print_center, "You ran out of energy.")
 		removeMark(id)
 		return PLUGIN_HANDLED
@@ -189,11 +190,11 @@ public iceman2_kd(id)
 	{
 		sh_sound_deny(id)
 		g_jetPackRunning[id] = 0
-		set_user_info(id,"JETPACK_RUN","0")
+		sh_assign_id_bit(id, SH_JETPACK_RUNNING, false)
 		return PLUGIN_HANDLED 
 	}
 	g_jetPackRunning[id] = 1
-	set_user_info(id,"JETPACK_RUN","1")
+	sh_assign_id_bit(id, SH_JETPACK_RUNNING, true)
 
 	//Reload CVARS to make sure the variables are current
 	loadCVARS()
@@ -206,7 +207,7 @@ public sh_client_death(id)
 	if ( id < 0 || id > SH_MAXSLOTS ) return
 
 	g_jetPackRunning[id] = 0
-	set_user_info(id,"JETPACK_RUN","0")
+	sh_assign_id_bit(id, SH_JETPACK_RUNNING, false)
 	removeMark(id)
 	
 }
@@ -218,7 +219,7 @@ public iceman2_ku(id)
 	if (g_jetPackRunning[id] != 1) return
 
 	g_jetPackRunning[id] = 0
-	set_user_info(id,"JETPACK_RUN","0")
+	sh_assign_id_bit(id, SH_JETPACK_RUNNING, false)
 	
 	removeMark(id)
 }
@@ -229,7 +230,7 @@ public client_disconnected(id)
 	if ( id <=0 || id > SH_MAXSLOTS ) return
 
 	g_jetPackRunning[id] = 0
-	set_user_info(id,"JETPACK_RUN","0")
+	sh_assign_id_bit(id, SH_JETPACK_RUNNING, false)
 
 	// Yeah don't want any left over residuals
 	removeMark(id)
@@ -242,7 +243,7 @@ public client_connect(id)
 	if ( id <=0 || id > SH_MAXSLOTS ) return
 
 	g_jetPackRunning[id] = 0
-	set_user_info(id,"JETPACK_RUN","0")
+	sh_assign_id_bit(id, SH_JETPACK_RUNNING, false)
 
 	// Yeah don't want any left over residuals
 	removeMark(id)
@@ -344,7 +345,7 @@ public sh_client_spawn(id)
 		remove_entity(ice[id])
 		ice[id] = 0
 		g_jetPackRunning[id] = 0
-		set_user_info(id,"JETPACK_RUN","0")
+		sh_assign_id_bit(id, SH_JETPACK_RUNNING, false)
   }
   return PLUGIN_CONTINUE
 }

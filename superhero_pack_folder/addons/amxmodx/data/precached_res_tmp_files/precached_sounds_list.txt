@@ -150,6 +150,8 @@ shmod/naruto/rasengan2.wav
 shmod/naruto/rasenganexp.wav
 shmod/naruto/narutoclonesd.wav
 shmod/naruto/narutoclone.wav
+ambience/rocketflame1.wav
+debris/beamstart11.wav
 shmod/yakui/hw_shoot1.wav
 shmod/yakui/hw_spin.wav
 shmod/yakui/hw_spinup.wav

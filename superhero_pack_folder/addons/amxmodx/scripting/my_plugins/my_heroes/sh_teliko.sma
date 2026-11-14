@@ -311,6 +311,8 @@ public Teliko_damage(id, idinflictor, attacker, Float:damage, damagebits)
 		return HAM_IGNORED
 	}	
 
+	if(attacker == id) return HAM_IGNORED 
+
 	if ( !sh_is_active() || !is_user_alive(id) || !is_user_alive(attacker)) return HAM_IGNORED
 
 	new bool:victim_has_hero = bool:sh_get_user_has_hero(id,gHeroID),
@@ -327,7 +329,7 @@ public Teliko_damage(id, idinflictor, attacker, Float:damage, damagebits)
 	pev(id, pev_dmg_take, damage)
 
 	new bool:headshot = (the_hitpoint == MY_HIT_HEAD)
-	if(sh_clients_are_same_team(id,attacker)||(id==attacker)){
+	if(sh_clients_are_same_team(id,attacker)){
 		return HAM_IGNORED
 	}
 

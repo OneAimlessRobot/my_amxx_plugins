@@ -17,6 +17,7 @@ native sh_shock_user(id,attacker, Float:the_time = SHOCK_TIME,
           bool:should_spread = true,
           Float:damage_dealt = SHOCK_DAMAGE_DEFAULT,
           Float:spread_radius = SHOCK_RADIUS,
+          bool:spread_to_og_shocker = true,
           custom_weapon_id = -1)
 
 

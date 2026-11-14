@@ -97,7 +97,7 @@ public sh_hero_key(id, heroID, sh_key_mode:key)
 
 			gHooked[id] = true
 
-			set_user_info(id, "ROPE", "1")
+			sh_assign_id_bit(id, SH_USING_ROPE, true)
 
 			new parm[2], user_origin[3]
 			parm[0] = id
@@ -255,7 +255,7 @@ spiderman_hook_off(id)
 {
 	gHooked[id] = false
 
-	set_user_info(id, "ROPE", "0")
+	sh_assign_id_bit(id, SH_USING_ROPE, false)
 
 	killbeam(id)
 

@@ -97,6 +97,9 @@ public Ham_Needle(id, idinflictor, attacker, Float:damage, damagebits)
 
 		return HAM_IGNORED
 	}
+
+	if(attacker == id) return HAM_IGNORED 
+	
 	if ( !sh_is_active()) return HAM_IGNORED
 	
 	if ( !is_user_alive(attacker)) {

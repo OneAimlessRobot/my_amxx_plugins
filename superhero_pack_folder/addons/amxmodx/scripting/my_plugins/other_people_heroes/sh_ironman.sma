@@ -57,20 +57,6 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,gSoundJpStop)
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, sh_init_mode:mode)
-{
-	if ( gHeroID != heroID ) return
-	
-	// Clear out any stale tasks
-	remove_task(id)
-	
-	if ( mode == SH_HERO_ADD ) {
-		set_task(get_pcvar_float(pCvarTimer), "ironman_loop", id, _, _, "b")
-	}
-	
-	sh_debug_message(id, 1, "%s %s", gHeroName, mode ? "ADDED" : "DROPPED")
-}
-//----------------------------------------------------------------------------------------------
 public plugin_cfg()
 {
 	loadCVARS()
@@ -82,6 +68,8 @@ gThrust = get_pcvar_float(pCvarThrust)
 gMaxSpeed = get_pcvar_float(pCvarMaxSpeed)
 gMultiplier = get_pcvar_float(pCvarXyMult)
 gFuelCost = get_pcvar_num(pCvarFuelCost)
+
+set_task(get_pcvar_float(pCvarTimer), "ironman_loop", _, _, _, "b")
 }
 //----------------------------------------------------------------------------------------------
 jetpack_fire_effect(location[3])
@@ -97,9 +85,19 @@ write_byte(125)
 message_end()
 }
 //----------------------------------------------------------------------------------------------
-public ironman_loop(id)
+public ironman_loop(task_id)
 {
-		if ( !sh_is_active() || !is_user_alive(id) || !gRegenAllowed[id] ) return
+	if ( !sh_is_active() || sh_is_freezetime() ) return
+	
+	static the_players[SH_MAXSLOTS], pnum, id
+	get_players(the_players, pnum, "ah")
+
+
+	for(new i=0;i< pnum;i++){
+
+		id = the_players[i]
+		
+		if ( !gRegenAllowed[id]  ||!sh_get_user_has_hero(id,gHeroID) ) continue
 
 		static CsArmorType:armorType
 		static userArmor
@@ -107,65 +105,64 @@ public ironman_loop(id)
 		if ( userArmor == 0 ) armorType = CS_ARMOR_VESTHELM
 
 		switch(gJetPackRunning[id]) {
-		case false: {
-			// Regen armor even if armor is not used for JP fuel
-			if ( userArmor < sh_get_max_ap(id) ) {
-				cs_set_user_armor(id, userArmor + 1, armorType)
+			case false: {
+				// Regen armor even if armor is not used for JP fuel
+				if ( userArmor < sh_get_max_ap(id) ) {
+					cs_set_user_armor(id, userArmor + 1, armorType)
+				}
 			}
-		}
-		
-		case true: {
-			// Is armor/fuel being used to run JP?
-			if ( gFuelCost > 0 ) {
-			// If no fuel is available stop JP
-			if ( userArmor < gFuelCost ) {
-				sh_sound_deny(id)
-				gJetPackRunning[id] = false
+			
+			case true: {
+				// Is armor/fuel being used to run JP?
+				if ( gFuelCost > 0 ) {
+				// If no fuel is available stop JP
+				if ( userArmor < gFuelCost ) {
+					sh_sound_deny(id)
+					gJetPackRunning[id] = false
+					
+					sh_assign_id_bit(id, SH_JETPACK_RUNNING, false)
+					emit_sound(id, CHAN_WEAPON, gSoundJpStop, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+					client_print(id, print_center, "You ran out of Jetpack Fuel")
+					continue
+				}
 				
-				// This needs to change to a forward check
-				set_user_info(id, "JP", "0")
+				// Decrement fuel when JP in use
+				cs_set_user_armor(id, userArmor - gFuelCost, armorType)
+				}
 				
-				emit_sound(id, CHAN_WEAPON, gSoundJpStop, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-				client_print(id, print_center, "You ran out of Jetpack Fuel")
-				return
-			}
+				static Float:velocity[3], origin[3]
+				
+				pev(id, pev_velocity, velocity)
+				
+				// Remove the need to jump to use, give them a small upward lift
+				if ( pev(id, pev_flags) & FL_ONGROUND ) {
+					velocity[2] += 100.0
+					set_pev(id, pev_velocity, velocity)
+				}
+				
+				velocity[0] = velocity[0] * gMultiplier
+				velocity[1] = velocity[1] * gMultiplier
+				velocity[2] += gThrust
 			
-			// Decrement fuel when JP in use
-			cs_set_user_armor(id, userArmor - gFuelCost, armorType)
-			}
-			
-			static Float:velocity[3], origin[3]
-			
-			pev(id, pev_velocity, velocity)
-			
-			// Remove the need to jump to use, give them a small upward lift
-			if ( pev(id, pev_flags) & FL_ONGROUND ) {
-				velocity[2] += 100.0
+				if ( velocity[0] > gMaxSpeed )		
+					velocity[0] = gMaxSpeed
+				else if ( velocity[0] < (gMaxSpeed * -1.0) )	
+					velocity[0] = gMaxSpeed * -1.0
+				if ( velocity[1] > gMaxSpeed )		
+					velocity[1] = gMaxSpeed
+				else if ( velocity[1] < (gMaxSpeed * -1.0) )	
+					velocity[1] = gMaxSpeed * -1.0
+				if ( velocity[2] > gThrust * 2.0 )	
+					velocity[2] = gThrust * 2.0
+					
 				set_pev(id, pev_velocity, velocity)
-			}
-			
-			velocity[0] = velocity[0] * gMultiplier
-			velocity[1] = velocity[1] * gMultiplier
-			velocity[2] += gThrust
-		
-			if ( velocity[0] > gMaxSpeed )		
-				velocity[0] = gMaxSpeed
-			else if ( velocity[0] < (gMaxSpeed * -1.0) )	
-				velocity[0] = gMaxSpeed * -1.0
-			if ( velocity[1] > gMaxSpeed )		
-				velocity[1] = gMaxSpeed
-			else if ( velocity[1] < (gMaxSpeed * -1.0) )	
-				velocity[1] = gMaxSpeed * -1.0
-			if ( velocity[2] > gThrust * 2.0 )	
-				velocity[2] = gThrust * 2.0
 				
-			set_pev(id, pev_velocity, velocity)
-			
-			get_user_origin(id, origin)
-			
-			jetpack_fire_effect(origin)
-			
-			emit_sound(id, CHAN_WEAPON, gSoundJetpack, VOL_NORM, ATTN_NORM, 0, PITCH_LOW)
+				get_user_origin(id, origin)
+				
+				jetpack_fire_effect(origin)
+				
+				emit_sound(id, CHAN_WEAPON, gSoundJetpack, VOL_NORM, ATTN_NORM, 0, PITCH_LOW)
+			}
 		}
 	}
 }
@@ -181,8 +178,7 @@ public sh_hero_key(id, heroID, sh_key_mode:key)
 			
 			gJetPackRunning[id] = true
 			
-			// This needs to change to a forward check
-			set_user_info(id, "JP", "1")
+			sh_assign_id_bit(id, SH_JETPACK_RUNNING, true)
 			
 			//Reload CVARS to make sure the variables are current
 			loadCVARS()
@@ -193,8 +189,7 @@ public sh_hero_key(id, heroID, sh_key_mode:key)
 			
 			gJetPackRunning[id] = false
 			
-			// This needs to change to a forward check
-			set_user_info(id, "JP", "0")
+			sh_assign_id_bit(id, SH_JETPACK_RUNNING, false)
 			
 			emit_sound(id, CHAN_WEAPON, gSoundJpStop, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		}
@@ -205,8 +200,7 @@ public sh_client_death(victim)
 {
 	gJetPackRunning[victim] = false
 	
-	// This needs to change to a forward check
-	set_user_info(victim, "JP", "0")
+	sh_assign_id_bit(victim, SH_JETPACK_RUNNING, false)
 	
 	gRegenAllowed[victim] = false
 }
@@ -233,13 +227,10 @@ public client_disconnected(id)
 	
 	gJetPackRunning[id] = false
 	
-	// This needs to change to a forward check
-	set_user_info(id, "JP", "0")
+	sh_assign_id_bit(id, SH_JETPACK_RUNNING, false)
 	
 	gRegenAllowed[id] = false
 	
-	// Yeah don't want any left over residuals
-	remove_task(id)
 }
 //----------------------------------------------------------------------------------------------
 public client_connect(id)
@@ -249,13 +240,10 @@ public client_connect(id)
 	
 	gJetPackRunning[id] = false
 	
-	// This needs to change to a forward check
-	set_user_info(id, "JP", "0")
+	sh_assign_id_bit(id, SH_JETPACK_RUNNING, false)
 	
 	gRegenAllowed[id] = false
 	
-	// Yeah don't want any left over residuals
-	remove_task(id)
 }
 //----------------------------------------------------------------------------------------------
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE

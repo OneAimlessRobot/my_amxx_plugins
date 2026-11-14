@@ -68,6 +68,8 @@ bazooka_spawndelay 0
 
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt17.inc"
+
 #define DT 0.1
 
 
@@ -86,6 +88,10 @@ new radar_batt[SH_MAXSLOTS+1]
 
 new gHeroName[]="Bazooka"
 
+
+new dmg_source_name_short_bazooka_warhead[SAFE_BUFFER_SIZE+1]="bazooka_shot"
+new dmg_source_name_log_bazooka_warhead[SAFE_BUFFER_SIZE+1]="bazooka_shot"
+new custom_dmg_id_bazooka_warhead
 
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -129,6 +135,21 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Rocket-Laucher", "Fire Many Different Types of Rockets", true, "bazooka_level" )
 
+	new bool:can_play_here = sh_register_superhero_map_restriction(gHeroID,true,"starwars","This hero only really works on big maps")
+
+	can_play_here = sh_register_superhero_map_restriction(gHeroID,true,"cs_assault","This hero only really works on big maps") || can_play_here 
+
+	
+	if(!can_play_here){
+
+		return
+	}
+
+	custom_dmg_id_bazooka_warhead=sh_log_custom_damage_source(gHeroID,
+					dmg_source_name_short_bazooka_warhead,
+					dmg_source_name_log_bazooka_warhead,
+					0)
+					
 
 	register_entity_as_wall_touchable("bazooka_missile_ent","bazooka_missile_touch")
 	register_touch( "bazooka_missile_ent", "bazooka_missile_ent", "bazooka_missile_touch");
@@ -262,7 +283,10 @@ public bazooka_missile_touch(pToucher, pTouched) {
 			dRatio = floatdiv(float(dist),float(damradius))
 			damage = maxdamage - floatround( maxdamage * dRatio)
 
-			sh_extra_damage(i, id, damage)
+			sh_extra_damage(i, id, damage,
+									_,_,_,_,_,
+									SH_NEW_DMG_FRAG_BLAST,
+									custom_dmg_id_bazooka_warhead)
 
 		}
 	}
@@ -536,11 +560,12 @@ make_rocket(id,icmd,iarg1,antimissile)
 		for(new i = 0 ;i < inum ;++i){
 			if(players[i] == id) continue
 
-			new soutput[8],output
-			get_user_info(players[i],"JP",soutput,7)
-			output = str_to_num(soutput)
+			if(sh_get_id_bit(players[i], SH_USER_IS_FLYING)
+							||
+						sh_get_id_bit(players[i], SH_ELECTROBOOM_TESLA_COIL_RUNNING)
+							||
+						sh_get_id_bit(players[i], SH_JETPACK_RUNNING)){
 
-			if(output == 1){
 				new temp[3]
 				get_user_origin(players[i],temp)
 				dist1 = get_distance(temp,aimvec)
@@ -580,10 +605,11 @@ make_rocket(id,icmd,iarg1,antimissile)
 		for(new i = 0 ;i < inum ;++i){
 			if(players[i] == id) continue
 
-			new soutput[8],output
-			get_user_info(players[i],"ROPE",soutput,7)
-			output = str_to_num(soutput)
-			if(output == 1){
+			if(sh_get_id_bit(players[i], SH_USING_HOOK_ATTACK)
+							||
+						sh_get_id_bit(players[i], SH_USING_ROPE)
+							||
+						sh_get_id_bit(players[i], SH_JETPACK_RUNNING)){
 				new temp[3]
 				get_user_origin(players[i],temp)
 				dist1 = get_distance(temp,aimvec)
@@ -897,11 +923,10 @@ public guide_rocket_het(args[])
 	origin[1] = floatround(fl_origin[1])
 	origin[2] = floatround(fl_origin[2])
 
-	new soutput[8],output
-	get_user_info(args[6],"JP",soutput,7)
-	output = str_to_num(soutput)
+	new bool:output = (sh_get_id_bit(args[6], SH_USER_IS_FLYING) || sh_get_id_bit(args[6], SH_ELECTROBOOM_TESLA_COIL_RUNNING) || sh_get_id_bit(args[6], SH_JETPACK_RUNNING))
 
-	if((output == 1) || (args[7] < 5)){
+
+	if(output || (args[7] < 5)){
 		if(is_user_alive(args[6]) == 1){
 			get_user_origin(args[6],aimvec)
 			dist = get_distance(aimvec,origin)
@@ -909,7 +934,7 @@ public guide_rocket_het(args[])
 		else {
 			args[7] = 100
 		}
-		if(output == 1)
+		if(output)
 			args[7] = 0
 	}
 	else {
@@ -917,11 +942,13 @@ public guide_rocket_het(args[])
 		get_players(players,inum,"a")
 		for(new i = 0 ;i < inum ;++i){
 			if(players[i] != id){
-				setc(soutput,8,0)
-				get_user_info(players[i],"JP",soutput,7)
-				output = str_to_num(soutput)
+				
+				
+				output = (sh_get_id_bit(args[6], SH_USER_IS_FLYING) || sh_get_id_bit(args[6], SH_ELECTROBOOM_TESLA_COIL_RUNNING) || sh_get_id_bit(args[6], SH_JETPACK_RUNNING))
 
+				
 				if(output){
+
 					new temp[3]
 					get_user_origin(players[i],temp)
 					t_aimvec[t_jp][0] = temp[0]
@@ -1073,11 +1100,10 @@ public guide_rocket_rope(args[])
 	origin[1] = floatround(fl_origin[1])
 	origin[2] = floatround(fl_origin[2])
 
-	new soutput[8],output
-	get_user_info(args[6],"ROPE",soutput,7)
-	output = str_to_num(soutput)
+	new bool:output = (sh_get_id_bit(args[6], SH_USING_HOOK_ATTACK) || sh_get_id_bit(args[6], SH_USING_ROPE))
 
-	if((output == 1) || (args[7] < 31)){
+	
+	if(output|| (args[7] < 31)){
 		if(is_user_alive(args[6]) == 1){
 			get_user_origin(args[6],aimvec)
 			dist = get_distance(aimvec,origin)
@@ -1085,7 +1111,7 @@ public guide_rocket_rope(args[])
 		else {
 			args[7] = 100
 		}
-		if(output == 1)
+		if(output)
 			args[7] = 0
 	}
 	else {
@@ -1093,9 +1119,7 @@ public guide_rocket_rope(args[])
 		get_players(players,inum,"a")
 		for(new i = 0 ;i < inum ;++i){
 			if(players[i] != id){
-				setc(soutput,8,0)
-				get_user_info(players[i],"ROPE",soutput,7)
-				output = str_to_num(soutput)
+				output = (sh_get_id_bit(args[6], SH_USING_HOOK_ATTACK) || sh_get_id_bit(args[6], SH_USING_ROPE))
 
 				if(output){
 					new temp[3]

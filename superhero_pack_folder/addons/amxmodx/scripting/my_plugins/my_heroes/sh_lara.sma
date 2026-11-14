@@ -118,6 +118,8 @@ public Lara_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 		return HAM_IGNORED
 	}
 
+	if(attacker == id) return HAM_IGNORED 
+
 	new weapon, my_hitpoint_enum:the_hitpoint
 	get_user_attacker(id, weapon, _:the_hitpoint)
 	pev(id, pev_dmg_take, damage)

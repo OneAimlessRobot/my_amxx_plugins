@@ -119,7 +119,7 @@ thor_thunder_damage(attacker, tg){
 								SH_NEW_DMG_ENERGY_BLAST,
 								thors_hammer_wpn_id)
 
-	sh_shock_user(tg,attacker,_,_,(cvar_val(float, pcvar_damage) /2.0)+1.0,250.0,thors_hammer_wpn_id)
+	sh_shock_user(tg,attacker,_,_,(cvar_val(float, pcvar_damage) /2.0)+1.0,250.0,false,thors_hammer_wpn_id)
 
 	UnSet_BitVar(gIsSearchingMask,attacker)
 

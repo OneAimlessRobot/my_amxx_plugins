@@ -5,6 +5,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
+#include "shock_fx_inc/shock_fx.inc"
 
 
 // VARIABLES
@@ -50,18 +51,6 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,gTeslaCoilOff)
 }
 //----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, sh_init_mode:mode)
-{
-	if ( gHeroID != heroID ) return
-	if(!sh_get_user_has_hero(id,gHeroID)) return
-	remove_task(id)
-	
-	if ( mode == SH_HERO_ADD ) {
-		set_task(get_pcvar_float(pCvarPeriod), "ElectroB00M_loop", id, _, _, "b")
-	}
-	sh_debug_message(id, 1, "%s %s", gHeroName, mode ? "ADDED" : "DROPPED")
-}
-//----------------------------------------------------------------------------------------------
 public plugin_cfg()
 {
 	loadCVARS()
@@ -71,72 +60,85 @@ loadCVARS()
 {
 gPowerCost = get_pcvar_num(pCvarPowerCost)
 generic_dmg_shock = get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_SHOCK)
+
+set_task(get_pcvar_float(pCvarPeriod), "ElectroB00M_loop", _, _, _, "b")
 }
 //----------------------------------------------------------------------------------------------   
-public ElectroB00M_loop(id)
+public ElectroB00M_loop(task_id)
 {
-
-if ( !sh_is_active() || !is_user_alive(id) || !gRechargeAllowed[id] ||!sh_get_user_has_hero(id,gHeroID) ) return
-static CsArmorType:armorType
-static userArmor
-userArmor = cs_get_user_armor(id, armorType)
-if ( userArmor == 0 ) armorType = CS_ARMOR_VESTHELM
-
-switch(g_teslacoilRunning[id]) {
-	case false: {
-		// Recharge armor even if armor is not used for JP fuel
-		if ( userArmor < sh_get_max_ap(id) ) {
-			cs_set_user_armor(id, userArmor + 1, armorType)
-
-		}
-		emit_sound(id, CHAN_WEAPON,gTeslaCoilRevvingSound, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-
-		
-	}
+	if ( !sh_is_active() || sh_is_freezetime() ) return
 	
-	case true: {
-		if ( gPowerCost > 0 )
-		{
-			if ( userArmor < gPowerCost ) {
-				sh_sound_deny(id)
-				g_teslacoilRunning[id] = false
-				
-				set_user_info(id, "TC", "0")
+	static the_players_attacked[SH_MAXSLOTS], pnum_attacked, x_attacked,
+			the_players[SH_MAXSLOTS], pnum, id
+	get_players(the_players, pnum, "ah")
+
+
+	for(new i=0;i< pnum;i++){
+
+		id = the_players[i]
+
+
+		if ( !gRechargeAllowed[id] ||!sh_get_user_has_hero(id,gHeroID) ) continue
+
+		static CsArmorType:armorType
+		static userArmor
+		userArmor = cs_get_user_armor(id, armorType)
+		if ( userArmor == 0 ) armorType = CS_ARMOR_VESTHELM
+
+		switch(g_teslacoilRunning[id]) {
+			case false: {
+				// Recharge armor even if armor is not used for JP fuel
+				if ( userArmor < sh_get_max_ap(id) ) {
+					cs_set_user_armor(id, userArmor + 1, armorType)
+
+				}
 				emit_sound(id, CHAN_WEAPON,gTeslaCoilRevvingSound, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-				emit_sound(id, CHAN_WEAPON,gTeslaCoilOff, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+
 				
-				if(!is_user_bot(id)){
-					client_print(id, print_center, "[SH]ElectroB00M :You ran out of Power")
-				}
-				return
 			}
-			cs_set_user_armor(id, userArmor - gPowerCost, armorType)
-		}
-		new uOrigin[3]
-		new vOrigin[3]
-		new dBetween
-		new Float:TimeToStun = get_pcvar_float(pcvarTimeToStun)
-		new Float:ElectroB00MStunSpeed = get_pcvar_float(pcvarElectroB00MStunSpeed)
-		new ElectroB00MRadius = get_pcvar_num(pCvarElectroB00MRadius)
-		
-		get_user_origin(id,uOrigin)
-		for ( new x=1; x< sh_maxplayers()+1; x++) 
-		{
-			if ( (is_user_alive(x) && get_user_team(id)!=get_user_team(x)) && x!=id )
-			{
-				get_user_origin(x,vOrigin)
-				dBetween = get_distance(uOrigin, vOrigin )
-				if ( dBetween < ElectroB00MRadius )
+			
+			case true: {
+				if ( gPowerCost > 0 )
 				{
-					ElectroB00M_instant(x, id)
-					sh_set_stun(x, TimeToStun, ElectroB00MStunSpeed)
+					if ( userArmor < gPowerCost ) {
+						sh_sound_deny(id)
+						g_teslacoilRunning[id] = false
+						
+						sh_assign_id_bit(id, SH_ELECTROBOOM_TESLA_COIL_RUNNING, false)
+						emit_sound(id, CHAN_WEAPON,gTeslaCoilRevvingSound, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
+						emit_sound(id, CHAN_WEAPON,gTeslaCoilOff, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+						
+						if(!is_user_bot(id)){
+							client_print(id, print_center, "[SH]ElectroB00M :You ran out of Power")
+						}
+						continue
+					}
+					cs_set_user_armor(id, userArmor - gPowerCost, armorType)
 				}
+
+				new Float:TimeToStun = get_pcvar_float(pcvarTimeToStun)
+				new Float:ElectroB00MStunSpeed = get_pcvar_float(pcvarElectroB00MStunSpeed)
+				new ElectroB00MRadius = get_pcvar_num(pCvarElectroB00MRadius)
+
+				new ElectroB00MDamage=get_pcvar_num(pCvarElectroB00MDamage)
+				pnum_attacked=find_sphere_class(id,"player",float(ElectroB00MRadius),the_players_attacked,sizeof(the_players_attacked))
+				for ( new j = 0; j < pnum_attacked; j++) {
+					
+					x_attacked = the_players_attacked[j]
+
+					if ( (is_user_alive(x_attacked) && get_user_team(id)!=get_user_team(x_attacked)) && x_attacked!=id )
+					{
+						
+						ElectroB00M_instant(x_attacked, id, (ElectroB00MDamage/2)+1)
+						sh_set_stun(x_attacked, TimeToStun, ElectroB00MStunSpeed)
+						sh_shock_user(x_attacked,id,TimeToStun, _, float((ElectroB00MDamage/2)+1),float(ElectroB00MRadius)/2, false)
+					}
+				}
+				
+				emit_sound(id, CHAN_WEAPON, gTeslaCoilRevvingSound, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 			}
 		}
-		
-		emit_sound(id, CHAN_WEAPON, gTeslaCoilRevvingSound, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	}
-}
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_key(id, heroID, sh_key_mode:key)
@@ -150,8 +152,7 @@ switch(key)
 		
 		g_teslacoilRunning[id] = true
 		
-		// This needs to change to a forward check
-		set_user_info(id, "TC", "1")
+		sh_assign_id_bit(id, SH_ELECTROBOOM_TESLA_COIL_RUNNING, true)
 		if(!is_user_bot(id)){
 			client_print(id, print_center, "[SH]ElectroB00M :Tesla coil on")
 		}
@@ -164,8 +165,7 @@ switch(key)
 		
 		g_teslacoilRunning[id] = false
 		
-		// This needs to change to a forward check
-		set_user_info(id, "TC", "0")
+		sh_assign_id_bit(id, SH_ELECTROBOOM_TESLA_COIL_RUNNING, false)
 		emit_sound(id, CHAN_WEAPON,gTeslaCoilOff, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		if(!is_user_bot(id)){
 			client_print(id, print_center, "[SH]ElectroB00M :Tesla coil off")
@@ -179,8 +179,7 @@ public sh_client_death(victim)
 {
 g_teslacoilRunning[victim] = false
 
-// This needs to change to a forward check
-set_user_info(victim, "TC", "0")
+sh_assign_id_bit(victim, SH_ELECTROBOOM_TESLA_COIL_RUNNING, false)
 
 emit_sound(victim, CHAN_WEAPON, gTeslaCoilRevvingSound, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 gRechargeAllowed[victim] = false
@@ -225,12 +224,11 @@ write_byte( 8 )				// scroll speed
 message_end()
 }
 //
-public ElectroB00M_instant(x, id)
+public ElectroB00M_instant(x, id, damage)
 {
-new ElectroB00MDamage=get_pcvar_num(pCvarElectroB00MDamage)
 lightning_effect(id, x)
 emit_sound(x, CHAN_ITEM, "weapons/xbow_hitbod2.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
-sh_extra_damage( x, id, ElectroB00MDamage,
+sh_extra_damage( x, id, damage,
 						_,_,_,_,_,
 						SH_NEW_DMG_SHOCK,
 						generic_dmg_shock)
@@ -259,13 +257,10 @@ if ( id < 1 || id > sh_maxplayers() ) return
 
 g_teslacoilRunning[id] = false
 
-// This needs to change to a forward check
-set_user_info(id, "TC", "0")
+sh_assign_id_bit(id, SH_ELECTROBOOM_TESLA_COIL_RUNNING, false)
 
 gRechargeAllowed[id] = false
 
-// Yeah don't want any left over residuals
-remove_task(id)
 }
 //----------------------------------------------------------------------------------------------
 public client_connected(id)
@@ -275,12 +270,9 @@ if ( id < 1 || id > sh_maxplayers() ) return
 
 g_teslacoilRunning[id] = false
 
-// This needs to change to a forward check
-set_user_info(id, "TC", "0")
+sh_assign_id_bit(id, SH_ELECTROBOOM_TESLA_COIL_RUNNING, false)
 
 gRechargeAllowed[id] = false
 
-// Yeah don't want any left over residuals
-remove_task(id)
 }
 //

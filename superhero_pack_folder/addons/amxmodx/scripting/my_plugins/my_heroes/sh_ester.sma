@@ -84,6 +84,8 @@ new dmg_source_name_short_neuroblast[SAFE_BUFFER_SIZE+1]="neuroblast"
 new dmg_source_name_log_neuroblast[SAFE_BUFFER_SIZE+1]="neuroblast"
 
 
+#define ESTER_HAS_ENEMIES(%1)  ((g_ester_enemies_masks[%1]>0))
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -339,58 +341,62 @@ public loadCVARS()
 	set_task(period, "Ester_revenge_loop", _, _, _, "b")
 
 }
-public Ester_revenge_loop(id)
+public Ester_revenge_loop(taskid)
 {
 	if ( !sh_is_active() || sh_is_freezetime() ) return
 	
-	static the_players[SH_MAXSLOTS], pnum, x
-	for(new i=1;i< sh_maxplayers()+1;i++){
-		if ( !is_user_connected(i)) continue
+	static the_players_attacked[SH_MAXSLOTS], pnum_attacked, x_attacked,
+			the_players[SH_MAXSLOTS], pnum, id
+	get_players(the_players, pnum, "h")
+
+	for(new j=0;j< pnum;j++){
+
+		id = the_players[j]
 		
-		if ( !sh_get_user_has_hero(i,gHeroID)){
+		if ( !sh_get_user_has_hero(id,gHeroID)){
 			
 			continue
 
 		}
 
-		if ( sh_get_id_bit(i,SH_IS_REBORN)){
+		if ( sh_get_id_bit(id,SH_IS_REBORN)){
 			
 			continue
 		}
-		if( is_user_alive(i)){
-			if (get_user_weapon(i) == MORALIZER_WEAPON_ID) {
-				entity_set_int(i, EV_INT_flTimeStepSound, 2000)
+		if( is_user_alive(id)){
+			if (get_user_weapon(id) == MORALIZER_WEAPON_ID) {
+				entity_set_int(id, EV_INT_flTimeStepSound, 2000)
 			}
 		}
 		
-		if(g_ester_attack_phase[i]<=NONE) continue
+		if(g_ester_attack_phase[id]<=NONE) continue
 
 
-		if( !is_user_alive(i)){
+		if( !is_user_alive(id)){
 
-			sh_chat_message(i,gHeroID,"You died during revenge loop.");
-			reset_status(i)
+			sh_chat_message(id,gHeroID,"You died during revenge loop.");
+			reset_status(id)
 			continue
 		}
 		static enemy_count;
-		enemy_count=count_enemies(i)
+		enemy_count=count_enemies(id)
 		static CsArmorType:armorType
 		static userArmor,user_health
-		user_health=get_user_health(i)
-		userArmor = cs_get_user_armor(i, armorType)
+		user_health=get_user_health(id)
+		userArmor = cs_get_user_armor(id, armorType)
 		if ( userArmor == 0 ) armorType = CS_ARMOR_VESTHELM
 		
-		if(g_ester_attack_phase[i] == PEDAL_FLOORED){
+		if(g_ester_attack_phase[id] == PEDAL_FLOORED){
 			
 			if (cvar_val(num,pcvar_power_cost) > 0 )
 			{
 				if(enemy_count>0){
 					if ( (userArmor < cvar_val(num,pcvar_power_cost))) {
 						if ( user_health< cvar_val(num,pcvar_power_cost) ) {
-							if(!is_user_bot(i)){
-								sh_chat_message(i,gHeroID,"You ran out of both vitality and stamina. Now you will die.");
+							if(!is_user_bot(id)){
+								sh_chat_message(id,gHeroID,"You ran out of both vitality and stamina. Now you will die.");
 							}
-							sh_extra_damage(i,i,1,
+							sh_extra_damage(id,id,1,
 											MY_HIT_HEAD,
 											SH_DMG_KILL,
 											_,_,_,
@@ -398,68 +404,68 @@ public Ester_revenge_loop(id)
 											neuroblast_wpn_id)
 							continue;
 						}
-						sh_extra_damage(i,i,cvar_val(num,pcvar_power_cost),
+						sh_extra_damage(id,id,cvar_val(num,pcvar_power_cost),
 										MY_HIT_HEAD,
 										_,_,_,_,
 										SH_NEW_DMG_ENERGY_BLAST,
 										neuroblast_wpn_id)
-						user_health=get_user_health(i)
+						user_health=get_user_health(id)
 					}
 					else{
 						
-						cs_set_user_armor(i, userArmor - cvar_val(num,pcvar_power_cost), armorType)
-						if( cs_get_user_armor(i, armorType)<cvar_val(num,pcvar_power_cost)){
-							if(!is_user_bot(i)){
-								sh_chat_message(i,gHeroID,"You ran out stamina. Now you will now lose health.");
+						cs_set_user_armor(id, userArmor - cvar_val(num,pcvar_power_cost), armorType)
+						if( cs_get_user_armor(id, armorType)<cvar_val(num,pcvar_power_cost)){
+							if(!is_user_bot(id)){
+								sh_chat_message(id,gHeroID,"You ran out stamina. Now you will now lose health.");
 							}
 						}
 					}
 				}
 				else{
 				
-					if(!is_user_bot(i)){
-						sh_chat_message(i,gHeroID,"No enemies detected as you charged! Aborting!");
-						sh_sound_deny(i)
+					if(!is_user_bot(id)){
+						sh_chat_message(id,gHeroID,"No enemies detected as you charged! Aborting!");
+						sh_sound_deny(id)
 					}
-					reset_status(i)
+					reset_status(id)
 					continue
 				
 				}
 			}
 			
-			aura(i,{100,100,255});
-			damage_to_do[i]+=gEsterDmg[i]
+			aura(id,{100,100,255});
+			damage_to_do[id]+=gEsterDmg[id]
 		}
-		else if(g_ester_attack_phase[i] == UNLOADING){
+		else if(g_ester_attack_phase[id] == UNLOADING){
 			if(enemy_count>0){
 						
-				get_players(the_players, pnum, "ah")
-				for (new k = 0; k < pnum; k++) {
+				get_players(the_players_attacked, pnum_attacked, "ah")
+				for (new k = 0; k < pnum_attacked; k++) {
 					
-					x = the_players[k]
+					x_attacked = the_players_attacked[k]
 
-					if ( is_user_alive(x) && (get_user_team(i)!=get_user_team(x)) && x!=i &&(Get_BitVar(g_ester_enemies_masks[i],x)))
+					if ( is_user_alive(x_attacked) && (get_user_team(id)!=get_user_team(x_attacked)) && x_attacked!=id &&(Get_BitVar(g_ester_enemies_masks[id],x_attacked)))
 					{
 						
-						Ester_instant(x, i)
-						sh_set_stun(x,cvar_val(float,pcvar_stun_time_at_it), cvar_val(float,pcvar_stun_speed_at_it))
+						Ester_instant(x_attacked, id)
+						sh_set_stun(x_attacked,cvar_val(float,pcvar_stun_time_at_it), cvar_val(float,pcvar_stun_speed_at_it))
 					}
 				}
-				damage_to_do[i]-=min(cvar_val(num,pcvar_power_cost),damage_to_do[i])
-				if(!damage_to_do[i]){
+				damage_to_do[id]-=min(cvar_val(num,pcvar_power_cost),damage_to_do[id])
+				if(!damage_to_do[id]){
 					
-					if(!is_user_bot(i)){
-						sh_chat_message(i,gHeroID,"There.... hah.... hah.... hah...");
+					if(!is_user_bot(id)){
+						sh_chat_message(id,gHeroID,"There.... hah.... hah.... hah...");
 					}
-					ester_collapse(i)
+					ester_collapse(id)
 					continue
 				}
 			}
 			else{
-				if(!is_user_bot(i)){
-					sh_chat_message(i,gHeroID,"No enemies detected as you unloaded. Youre done here.");
+				if(!is_user_bot(id)){
+					sh_chat_message(id,gHeroID,"No enemies detected as you unloaded. Youre done here.");
 				}
-				ester_collapse(i)
+				ester_collapse(id)
 				continue
 				
 			}
@@ -785,8 +791,6 @@ public ester_kd(id)
 		return PLUGIN_HANDLED
 		
 	}
-	new client_name[128];
-	get_user_name(id,client_name,127)
 	emit_sound(id, CHAN_ITEM, NEUROBLAST_CHARGE, 1.0, ATTN_NORM, 0, PITCH_NORM)
 	g_ester_attack_phase[id] = PEDAL_FLOORED
 	
@@ -800,8 +804,6 @@ public ester_ku(id)
 	}
 	g_ester_attack_phase[id] = NONE
 	stop_sounds(id)
-	new client_name[128]
-	get_user_name(id,client_name,127)
 	if(damage_to_do[id]<cvar_val(num,pcvar_min_damage_to_do)){
 		
 		if(!is_user_bot(id)){

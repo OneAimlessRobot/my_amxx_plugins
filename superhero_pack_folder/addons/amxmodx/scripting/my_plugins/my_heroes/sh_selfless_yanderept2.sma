@@ -216,6 +216,8 @@ public Yandere_ham_knife_damage(id, idinflictor, attacker, Float:damage, damageb
 		return HAM_IGNORED
 	}	
 
+	if(attacker == id) return HAM_IGNORED 
+	
 	if ( !sh_is_active() || !is_user_alive(id)||!is_user_alive(attacker)){
 
 		return HAM_IGNORED

@@ -111,8 +111,8 @@ public batgirl_kd(id)
 		}
 
 		gHooked[id] = true
-
-		set_user_info(id, "ROPE", "1")
+		
+		sh_assign_id_bit(id, SH_USING_ROPE, true)
 
 		new parm[2], user_origin[3]
 		parm[0] = id
@@ -292,7 +292,7 @@ batgirl_hook_off(id)
 {
 	gHooked[id] = false
 
-	set_user_info(id, "ROPE", "0")
+	sh_assign_id_bit(id, SH_USING_ROPE, false)
 
 	killbeam(id)
 

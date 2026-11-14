@@ -171,7 +171,7 @@ if(!sh_is_active()||sh_is_freezetime()) return HAM_IGNORED
 
 if ( !is_user_alive(id) ) return HAM_IGNORED
 
-if (!is_user_connected(attacker)) return HAM_IGNORED
+if (!is_user_connected(attacker) || (id == attacker)) return HAM_IGNORED
 
 if(sh_get_user_has_hero(id,gHeroID) && Get_BitVar(g_yowai_mode_mask,id) && !sh_get_id_bit(id, SH_CONTROLLING_VEHICLE)){
 	

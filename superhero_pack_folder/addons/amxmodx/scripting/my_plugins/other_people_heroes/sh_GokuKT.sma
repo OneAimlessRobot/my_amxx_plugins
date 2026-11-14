@@ -119,7 +119,7 @@ public Kaioken_Damage(id, idinflictor, attacker, Float:damage, damagebits){
 	if ( !sh_is_active() || !is_user_alive(id) ) return HAM_IGNORED
 
 
-	if (!is_user_connected(attacker)) return HAM_IGNORED
+	if (!is_user_connected(attacker) || (id == attacker)) return HAM_IGNORED
 
 
 	new weapon, my_hitpoint_enum:the_hitpoint

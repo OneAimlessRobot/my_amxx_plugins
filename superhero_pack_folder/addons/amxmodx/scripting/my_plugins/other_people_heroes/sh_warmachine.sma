@@ -44,6 +44,12 @@ new gSpriteFire
 // BECAUSE THIS LOOP IS CALLED SO MUCH - INSTEAD OF READING CVARS OVER AND OVER
 // I'LL KEEP IN GLOBAL - FOR ANTI-LAG HOPEFULLY
 new Float:gThrust, Float:gMaxSpeed, gUseFuel, gFuelCost, Float:gMultiplier, gWarMachineArmor
+
+
+new dmg_source_name_short_warmachine_boost[SAFE_BUFFER_SIZE+1]="warmachine_boost"
+new dmg_source_name_log_warmachine_boost[SAFE_BUFFER_SIZE+1]="warmachine_boost"
+new custom_dmg_id_warmachine_boost
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -64,7 +70,12 @@ public plugin_init()
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Jet-Boots/Damage", "Rocket Jet Boots, jump and rocket to take off! Heavy Weaponry, Extra Damage for all weapons.", true, "warmachine_level")
 
-	register_event("Damage", "warmachine_damage", "b", "2!0")
+	custom_dmg_id_warmachine_boost=sh_log_custom_damage_source(gHeroID,
+					dmg_source_name_short_warmachine_boost,
+					dmg_source_name_log_warmachine_boost,
+					0)
+					
+	RegisterHam(Ham_TakeDamage,"player","warmachine_damage",1,true)
 
 	// Let Server know about War Machine's varibles
 	shSetMaxArmor(gHeroName, "warmachine_armor")
@@ -75,17 +86,6 @@ public plugin_precache()
 	gSpriteFire = engfunc(EngFunc_PrecacheModel,"sprites/fire.spr")
 	engfunc(EngFunc_PrecacheSound,"ambience/rocketflame1.wav")
 	engfunc(EngFunc_PrecacheSound,"debris/beamstart11.wav")
-}
-//----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, sh_init_mode:mode){
-	if(heroID!=gHeroID) return
-
-	// Clear out any stale tasks
-	remove_task(id)
-
-	if ( sh_get_user_has_hero(id,gHeroID)) {
-		set_task(get_cvar_float("warmachine_timer"), "warmachine_loop", id, "", 0, "b")
-	}
 }
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()
@@ -101,6 +101,7 @@ public loadCVARS()
 	gUseFuel = get_cvar_num("warmachine_armorfuel")
 	gFuelCost = get_cvar_num("warmachine_fuelcost")
 	gWarMachineArmor = get_cvar_num("warmachine_armor")
+	set_task(get_cvar_float("warmachine_timer"), "warmachine_loop", _, _, _, "b")
 }
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
@@ -138,7 +139,7 @@ public warmachine_kd(id)
 	if ( !is_user_alive(id) || sh_is_freezetime() ) return
 
 	gJetPackRunning[id] = true
-	set_user_info(id, "JP", "1")
+	sh_assign_id_bit(id, SH_JETPACK_RUNNING, true)
 
 	//Reload CVARS to make sure the variables are current
 	loadCVARS()
@@ -151,66 +152,76 @@ public warmachine_ku(id)
 	if ( !gJetPackRunning[id] ) return
 
 	gJetPackRunning[id] = false
-	set_user_info(id, "JP", "0")
+	sh_assign_id_bit(id, SH_JETPACK_RUNNING, false)
 
 	emit_sound(id, CHAN_WEAPON, "debris/beamstart11.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
 }
 //----------------------------------------------------------------------------------------------
-public warmachine_loop(id)
+public warmachine_loop(task_id)
 {
+	if ( !sh_is_active() || sh_is_freezetime() ) return
+	
+	static the_players[SH_MAXSLOTS], pnum, id
+	get_players(the_players, pnum, "ah")
+
 	new Float:velocity[3]
 	new origin[3], userArmor
 
-	if ( !is_user_alive(id) || !gRegenAllowed[id] ) return
+	for(new i=0;i< pnum;i++){
 
-	// Increase armor for this guy
-	userArmor = get_user_armor(id)
-	if ( userArmor < gWarMachineArmor && !gJetPackRunning[id] ) {
+		id = the_players[i]
+		
+		if ( !sh_get_user_has_hero(id,gHeroID) || !gRegenAllowed[id] ) continue
 
-		//Give the armor item first so CS knows the player has armor
-		if (userArmor <= 0) give_item(id, "item_assaultsuit")
+		// Increase armor for this guy
+		userArmor = get_user_armor(id)
+		if ( userArmor < gWarMachineArmor && !gJetPackRunning[id] ) {
 
-		//Set the armor to what we want it to be
-		set_user_armor(id, userArmor + 1)
-		return
-	}
+			//Give the armor item first so CS knows the player has armor
+			if (userArmor <= 0) give_item(id, "item_assaultsuit")
 
-	// OK - We'll make this armor based - but also add armor
-	// So you can run out of fuel, but get it back too
-	if ( gUseFuel != 0 && gFuelCost > userArmor && gJetPackRunning[id] ) {
-		sh_sound_deny(id)
-		gJetPackRunning[id] = false
-		set_user_info(id, "JP", "0")
-		emit_sound(id, CHAN_WEAPON, "debris/beamstart11.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
-		client_print(id, print_center, "[SH](War Machine) You ran out of Jet-Boot Fuel")
-		return
-	}
-
-	if ( gJetPackRunning[id] ) {
-
-		// Decrement Fuel
-		if ( gUseFuel != 0 ) {
-			set_user_armor(id, userArmor - gFuelCost)
+			//Set the armor to what we want it to be
+			set_user_armor(id, userArmor + 1)
+			continue
 		}
 
-		entity_get_vector(id, EV_VEC_velocity, velocity)
+		// OK - We'll make this armor based - but also add armor
+		// So you can run out of fuel, but get it back too
+		if ( gUseFuel != 0 && gFuelCost > userArmor && gJetPackRunning[id] ) {
+			sh_sound_deny(id)
+			gJetPackRunning[id] = false
+			sh_assign_id_bit(id, SH_JETPACK_RUNNING, false)
+			emit_sound(id, CHAN_WEAPON, "debris/beamstart11.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
+			client_print(id, print_center, "[SH](War Machine) You ran out of Jet-Boot Fuel")
+			continue
+		}
 
-		velocity[0] = velocity[0] * gMultiplier
-		velocity[1] = velocity[1] * gMultiplier
-		velocity[2] += gThrust
+		if ( gJetPackRunning[id] ) {
 
-		if ( velocity[0] > gMaxSpeed ) 		velocity[0] = gMaxSpeed
-		if ( velocity[0] < (gMaxSpeed * -1) )	velocity[0] = gMaxSpeed * -1
-		if ( velocity[1] > gMaxSpeed )		velocity[1] = gMaxSpeed
-		if ( velocity[1] < (gMaxSpeed * -1) )	velocity[1] = gMaxSpeed * -1
-		if ( velocity[2] > (gThrust * 2) )		velocity[2] = gThrust * 2
+			// Decrement Fuel
+			if ( gUseFuel != 0 ) {
+				set_user_armor(id, userArmor - gFuelCost)
+			}
 
-		entity_set_vector(id, EV_VEC_velocity, velocity)
+			entity_get_vector(id, EV_VEC_velocity, velocity)
 
-		get_user_origin(id, origin)
-		origin[2] -= 30
-		jetPackFireEffect(origin)
-		emit_sound(id, CHAN_WEAPON, "ambience/rocketflame1.wav", 0.6, ATTN_NORM, 0, PITCH_LOW)
+			velocity[0] = velocity[0] * gMultiplier
+			velocity[1] = velocity[1] * gMultiplier
+			velocity[2] += gThrust
+
+			if ( velocity[0] > gMaxSpeed ) 		velocity[0] = gMaxSpeed
+			if ( velocity[0] < (gMaxSpeed * -1) )	velocity[0] = gMaxSpeed * -1
+			if ( velocity[1] > gMaxSpeed )		velocity[1] = gMaxSpeed
+			if ( velocity[1] < (gMaxSpeed * -1) )	velocity[1] = gMaxSpeed * -1
+			if ( velocity[2] > (gThrust * 2) )		velocity[2] = gThrust * 2
+
+			entity_set_vector(id, EV_VEC_velocity, velocity)
+
+			get_user_origin(id, origin)
+			origin[2] -= 30
+			jetPackFireEffect(origin)
+			emit_sound(id, CHAN_WEAPON, "ambience/rocketflame1.wav", 0.6, ATTN_NORM, 0, PITCH_LOW)
+		}
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -233,7 +244,7 @@ public sh_client_death(id)
 	if ( id <= 0 || id > SH_MAXSLOTS ) return
 
 	gJetPackRunning[id] = false
-	set_user_info(id, "JP", "0")
+	sh_assign_id_bit(id, SH_JETPACK_RUNNING, false)
 	gRegenAllowed[id] = false
 }
 //----------------------------------------------------------------------------------------------
@@ -243,11 +254,9 @@ public client_disconnected(id)
 	if ( id <= 0 || id > SH_MAXSLOTS ) return
 
 	gJetPackRunning[id] = false
-	set_user_info(id, "JP", "0")
+	sh_assign_id_bit(id, SH_JETPACK_RUNNING, false)
 	gRegenAllowed[id] = false
 
-	// Yeah don't want any left over residuals
-	remove_task(id)
 }
 //----------------------------------------------------------------------------------------------
 public client_connect(id)
@@ -256,36 +265,50 @@ public client_connect(id)
 	if ( id <= 0 || id > SH_MAXSLOTS ) return
 
 	gJetPackRunning[id] = false
-	set_user_info(id, "JP", "0")
+	sh_assign_id_bit(id, SH_JETPACK_RUNNING, false)
 	gRegenAllowed[id] = false
 
-	// Yeah don't want any left over residuals
-	remove_task(id)
 }
 //----------------------------------------------------------------------------------------------
-public warmachine_damage(id)
-{
-	if ( !sh_is_active() || !is_user_alive(id) ) return
+public warmachine_damage(id, idinflictor, attacker, Float:damage, damagebits)
+{	
+	if(damage<=0.0){
+		return HAM_IGNORED
+	}
+	
+	if(!is_user_alive(attacker)||!is_user_alive(id)){
+		return HAM_IGNORED
+	}
 
-	new damage = read_data(2)
-	new weaponid, bodypart, attacker = get_user_attacker(id, weaponid, bodypart)
 
-	if ( attacker <= 0 || attacker > SH_MAXSLOTS ||attacker == id ) return
+	new weapon, my_hitpoint_enum:the_hitpoint
+
+	get_user_attacker(id, weapon, _:the_hitpoint)
+	
 
 
-	weapon_gating_macro_code_snippet(attacker,weaponid,return,)
+	weapon_gating_macro_code_snippet(attacker,weapon,return,HAM_IGNORED)
+
+
+	pev(id, pev_dmg_take, damage)
 
 	if ( sh_get_user_has_hero(attacker,gHeroID) && is_user_alive(id) && id != attacker ) {
 		new weaponName[32]
-		get_weaponname(weaponid, weaponName, 31)
+		get_weaponname(weapon, weaponName, 31)
 		replace(weaponName, 31, "weapon_", "")
 
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("warmachine_dmgmult") - damage)
 		if (extraDamage > 0){
-			sh_extra_damage(id, attacker, extraDamage, my_hitpoint_enum:bodypart )
+
+			sh_extra_damage(id, attacker, extraDamage,
+								the_hitpoint
+								,_,_,_,_,
+								SH_NEW_DMG_SUPER_BULLET,
+								custom_dmg_id_warmachine_boost)
 		}
 	}
+	return HAM_IGNORED
 }
 //----------------------------------------------------------------------------------------------
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
