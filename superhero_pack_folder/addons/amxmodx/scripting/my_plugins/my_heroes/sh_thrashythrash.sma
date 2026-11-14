@@ -14,6 +14,7 @@
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_BASIC_MACROS
 #define I_WANT_ENTITY_VECTORS
+#define I_WANT_PDATA_ALIASES
 #define I_WANT_CUSTOM_COLORS
 #define I_WANT_RESOURCE_ALIASES
 #include "../my_include/superheromod.inc"
@@ -304,9 +305,9 @@ public thrashy_damage(id, idinflictor, attacker, Float:damage, damagebits)
 		return HAM_IGNORED
 	}
 
-	new weapon, my_hitpoint_enum:the_hitpoint
-
-	get_user_attacker(id, weapon, _:the_hitpoint)
+	new weapon, my_hitpoint_enum:the_hitpoint = my_hitpoint_enum:get_pdata_int(id, m_iLastHitGroup, XO_PLAYER)
+	
+	weapon = get_user_weapon(attacker)
 	
 	pev(id, pev_dmg_take, damage)
 

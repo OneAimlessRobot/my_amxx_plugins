@@ -24,9 +24,6 @@
         "Any number of alphanumeric characters here. turn it into a token"
 
 
-
-
-
 */
 
 
@@ -41,6 +38,23 @@
     lara
     jvnko
 
+
+
+*/
+
+/*
+
+
+
+([\s]*)get_user_attacker\(id,([\s]*)weapon,([\s]*)_:the_hitpoint\)
+([\s]*)weapon([\s]*)=([\s]*)get_user_weapon\(attacker\)
+([\s]*)pev\(id,([\s]*)pev_dmg_take,([\s]*)damage\)
+
+
+
+in this,
+
+([\s]*) > matches with a token corresponding to any consecutive white space characters
 
 
 */

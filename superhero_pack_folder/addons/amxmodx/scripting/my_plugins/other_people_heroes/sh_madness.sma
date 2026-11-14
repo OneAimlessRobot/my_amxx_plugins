@@ -20,6 +20,7 @@ madness_m3mult 2.0		//Damage multiplyer for his M3
 #define I_WANT_CONSTANTS
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_BASIC_MACROS
+#define I_WANT_PDATA_ALIASES
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
@@ -130,9 +131,9 @@ public madness_damage(id, idinflictor, attacker, Float:damage, damagebits)
 	if(sh_clients_are_same_team(attacker, id)){
 		return HAM_IGNORED
 	}
-	new weapon, my_hitpoint_enum:the_hitpoint
-
-	get_user_attacker(id, weapon, _:the_hitpoint)
+	new weapon, my_hitpoint_enum:the_hitpoint = my_hitpoint_enum:get_pdata_int(id, m_iLastHitGroup, XO_PLAYER)
+	
+	weapon = get_user_weapon(attacker)
 	
 	pev(id, pev_dmg_take, damage)
 

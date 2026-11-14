@@ -19,6 +19,8 @@
 #include "../my_include/my_author_header.inc"
 
 
+#define KSUN_ULTIMATE_LOOP_PERIOD 0.4
+#define KSUN_ULTIMATE_LOOP_DEC 30
 
 new pcvar_ksun_supply_capacity;
 new pcvar_ksun_health_to_supply_ratio
@@ -30,7 +32,8 @@ new pcvar_ksun_dmg_mult_super_weapon
 
 
 new g_played_sound_mask = 0
-new g_player_in_ultimate_mask = 0
+//sh_get_id_bit(id, SH_KSUN_IN_ULTIMATE)
+//sh_assign_id_bit(id, SH_KSUN_IN_ULTIMATE, true)
 
 new dmg_source_name_short_r5[SAFE_BUFFER_SIZE+1]="r5_rifle"
 new dmg_source_name_log_r5[SAFE_BUFFER_SIZE+1]="r5_rifle"
@@ -54,8 +57,8 @@ public plugin_init()
 	pcvar_ksun_health_to_supply_ratio = create_cvar("ksun_health_to_supply_ratio","0.25")
 	pcvar_ksun_dmg_mult_super_weapon = create_cvar("ksun_dmg_mult_super_weapon","0.25")
 
-	RegisterHam(Ham_TakeDamage, "player", "ksun_trace_attack_damage_hook_pre",_,true)
-	RegisterHam(Ham_TakeDamage, "player", "ksun_trace_attack_damage_hook_post",1,true)
+	RegisterHam(Ham_TakeDamage, "player", "ksun_damage_pre",_,true)
+	RegisterHam(Ham_TakeDamage, "player", "ksun_damage_post",1,true)
 	
 	register_ham_hook_multiple(Ham_TraceAttack,
 						full_entity_array_for_trace_attack,
@@ -65,12 +68,49 @@ public plugin_init()
 						true)
 	register_ham_for_weapon_bitsum(Ham_Weapon_PrimaryAttack,(1<<KSUN_WEAPON_ID),"ksun_rifle_fast_shot",_, true, true)
 
-	KSUN_ULTIMATE_TASKID=allocate_typed_task_id(player_task)
-	
 	
 	register_ham_for_weapon_bitsum(Ham_Weapon_Reload,(1<<KSUN_WEAPON_ID),"fw_Weapon_Reload_Post",1, true, true)
+
+	KSUN_ULTIMATE_TASKID=allocate_typed_task_id(generic_task)
+
+	set_task(KSUN_ULTIMATE_LOOP_PERIOD,"ksun_ultimate_task",KSUN_ULTIMATE_TASKID,_,_,"b")
 }
 
+public ksun_ultimate_task(task_id){
+
+	if ( !sh_is_active() || sh_is_freezetime() ) return
+	
+	static the_players[SH_MAXSLOTS], pnum, id		
+	get_players(the_players, pnum, "ah")
+	for (new i = 0; i < pnum; i++) {
+		
+		id = the_players[i]
+		
+		if(!sh_get_id_bit(id, SH_KSUN_IN_ULTIMATE)||!sh_get_user_has_hero(id,gHeroID)) continue
+		static hud_msg[128];
+		g_player_supply_amount[id]= max(0,g_player_supply_amount[id]-KSUN_ULTIMATE_LOOP_DEC)
+		ksun_glisten(id)
+		
+		if(!is_user_bot(id)){
+			formatex(hud_msg,127,"[SH](ksun): Curr charge: %0.2f^n",
+			100.0*(floatdiv(float(g_player_supply_amount[id]),
+					float(cvar_val(num, pcvar_ksun_supply_capacity))))
+			);
+			client_print(id,print_center,"%s",hud_msg)
+
+		}
+		if(g_player_supply_amount[id]<=0){
+
+			unultimate_user(id,1)
+
+		}
+
+
+
+	}
+
+
+}
 public plugin_natives(){
 	
 	
@@ -81,8 +121,6 @@ public plugin_natives(){
 	
 	register_native("ksun_dec_player_supply_points","_ksun_dec_player_supply_points")
 	register_native("ksun_inc_player_supply_points","_ksun_inc_player_supply_points")
-	
-	register_native("ksun_player_is_in_ultimate","_ksun_player_is_in_ultimate")
 	
 	
 	register_native("ksun_player_is_ultimate_ready","_ksun_player_is_ultimate_ready")
@@ -110,7 +148,7 @@ public fw_Weapon_Reload_Post(ent)
 	if(!is_user_alive(id)){
 		return HAM_IGNORED
 	}
-	if (!sh_is_active()||!sh_get_user_has_hero(id,gHeroID)||!Get_BitVar(g_player_in_ultimate_mask, id)){
+	if (!sh_is_active()||!sh_get_user_has_hero(id,gHeroID)||!sh_get_id_bit(id, SH_KSUN_IN_ULTIMATE)){
 		return HAM_IGNORED
 	}
 
@@ -121,7 +159,7 @@ public fw_Weapon_Reload_Post(ent)
 }
 
 
-public ksun_trace_attack_damage_hook_pre(id, idinflictor, attacker, Float:damage, damagebits)
+public ksun_damage_pre(id, idinflictor, attacker, Float:damage, damagebits)
 {
 if(damage <= 0.0){
 
@@ -129,19 +167,21 @@ if(damage <= 0.0){
 }
 if ( !sh_is_active() || !is_user_alive(id) || !is_user_alive(attacker)) return HAM_IGNORED
 
-new bool:victim_has_hero = bool:sh_get_user_has_hero(id,gHeroID),
-		bool:attacker_has_hero = bool:sh_get_user_has_hero(attacker,gHeroID)
+new bool:victim_has_hero = bool:sh_get_user_has_hero(id,gHeroID)
 
-if(!victim_has_hero&&!attacker_has_hero) return HAM_IGNORED
+if(!victim_has_hero) return HAM_IGNORED
+
+
+if(!sh_get_id_bit(id, SH_KSUN_IN_ULTIMATE)) return HAM_IGNORED
 
 new return_result= HAM_IGNORED
 
-if(victim_has_hero&&Get_BitVar(g_player_in_ultimate_mask, id)){
+if(victim_has_hero){
 
 	new Float:dmgSnatched= damage* cvar_val(float, pcvar_ksun_dmg_absorption_index)
 	
 	new Float:newDamage=damage- dmgSnatched
-	SetHamParamFloat(3, newDamage);
+	SetHamParamFloat(4, newDamage);
 	
 	return_result=HAM_HANDLED
 
@@ -151,7 +191,7 @@ return return_result
 
 }	
 
-public ksun_trace_attack_damage_hook_post(id, idinflictor, attacker, Float:damage, damagebits)
+public ksun_damage_post(id, idinflictor, attacker, Float:damage, damagebits)
 {
 if(damage <= 0.0){
 
@@ -159,32 +199,32 @@ if(damage <= 0.0){
 }
 if ( !sh_is_active() || !is_user_alive(id) || !is_user_alive(attacker)) return HAM_IGNORED
 
-new bool:victim_has_hero = bool:sh_get_user_has_hero(id,gHeroID),
-		bool:attacker_has_hero = bool:sh_get_user_has_hero(attacker,gHeroID)
+new bool:attacker_has_hero = bool:sh_get_user_has_hero(attacker,gHeroID)
 
-if(!victim_has_hero&&!attacker_has_hero) return HAM_IGNORED
+if(!attacker_has_hero) return HAM_IGNORED
+
+if(!sh_get_id_bit(attacker, SH_KSUN_IN_ULTIMATE)) return HAM_IGNORED
 
 new return_result= HAM_IGNORED
 
-new weapon,my_hitpoint_enum:the_hitpoint
+new weapon, my_hitpoint_enum:the_hitpoint = my_hitpoint_enum:get_pdata_int(id, m_iLastHitGroup, XO_PLAYER)
 
-get_user_attacker(id, weapon, _:the_hitpoint)
+weapon = get_user_weapon(attacker)
 
 pev(id, pev_dmg_take, damage)
 
-if(attacker_has_hero&&Get_BitVar(g_player_in_ultimate_mask, attacker)){
 
-	
-	if(weapon==KSUN_WEAPON_ID){
-		new Float:dmgAdded= damage*cvar_val(float, pcvar_ksun_dmg_mult_super_weapon)
-		new Float:newDamage=damage+ dmgAdded
-		sh_extra_damage(id,attacker,floatround(newDamage),
+if(weapon==KSUN_WEAPON_ID){
+	new Float:newDamage= damage*cvar_val(float, pcvar_ksun_dmg_mult_super_weapon)
+	new Float:dmgAdded= newDamage-damage
+	if (floatround(dmgAdded) > 0){
+		sh_extra_damage(id,attacker,floatround(dmgAdded),
 			the_hitpoint,
 			_,_,_,_,
 			SH_NEW_DMG_DARK_ARTS,
 			custom_dmg_id_r5)
-			
 	}
+		
 }
 return return_result
 
@@ -200,10 +240,6 @@ sound_fiscalization(id){
 				client_print(id,print_center,"The ultimate is ready.")
 			}
 			emit_sound(id,CHAN_WEAPON,"shmod/frostnova.wav",VOL_NORM,ATTN_NORM,0,PITCH_NORM)
-		
-			emit_sound(id,CHAN_ITEM,"shmod/frostnova.wav",VOL_NORM,ATTN_NORM,0,PITCH_NORM)
-		
-			emit_sound(id,CHAN_BODY,"shmod/frostnova.wav",VOL_NORM,ATTN_NORM,0,PITCH_NORM)
 		
 			Assign_BitVar(g_played_sound_mask, id, true_for_macro)
 		}
@@ -251,8 +287,6 @@ public _ksun_inc_player_supply_points(iPlugins, iParams){
 
 public plugin_precache()
 {
-	engfunc(EngFunc_PrecacheSound, KSUN_ULTIMATE_READY_SOUND)
-	engfunc(EngFunc_PrecacheSound, KSUN_ULTIMATE_DRONE_SOUND)
 	engfunc(EngFunc_PrecacheSound, KSUN_ULTIMATE_SOUND)
 	engfunc(EngFunc_PrecacheSound, "shmod/frostnova.wav")
 }
@@ -264,13 +298,6 @@ public _ksun_get_player_supply_points(iPlugins, iParams){
 	return g_player_supply_amount[id]
 	
 }
-public _ksun_player_is_in_ultimate(iPlugins, iParams){
-	
-	new id= get_param(1)
-	return Get_BitVar(g_player_in_ultimate_mask, id)
-	
-	
-}
 
 public _ksun_player_engage_ultimate(iPlugins, iParams){
 	
@@ -278,40 +305,9 @@ public _ksun_player_engage_ultimate(iPlugins, iParams){
 	
 	if(!is_user_alive(id)) return
 	if(!sh_get_user_has_hero(id,gHeroID)) return
-	
-	Assign_BitVar(g_player_in_ultimate_mask, id, true_for_macro);
+	sh_assign_id_bit(id, SH_KSUN_IN_ULTIMATE, true)
+
 	emit_sound(id, CHAN_AUTO, KSUN_ULTIMATE_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	ultimate_task(id+KSUN_ULTIMATE_TASKID)
-}
-
-
-public ultimate_task(id){
-	id-=KSUN_ULTIMATE_TASKID
-	if(!is_user_alive(id)) return
-	
-	if(!Get_BitVar(g_player_in_ultimate_mask, id)||!sh_get_user_has_hero(id,gHeroID)) return
-	static hud_msg[128];
-	g_player_supply_amount[id]= max(0,g_player_supply_amount[id]-KSUN_ULTIMATE_LOOP_DEC)
-	ksun_glisten(id)
-	
-	if(!is_user_bot(id)){
-		formatex(hud_msg,127,"[SH](ksun): Curr charge: %0.2f^n",
-		100.0*(floatdiv(float(g_player_supply_amount[id]),
-				float(cvar_val(num, pcvar_ksun_supply_capacity))))
-		);
-		client_print(id,print_center,"%s",hud_msg)
-
-	}
-	if(g_player_supply_amount[id]>0){
-		set_task(KSUN_ULTIMATE_LOOP_PERIOD,"ultimate_task",id+KSUN_ULTIMATE_TASKID)
-	}
-	else{
-		unultimate_user(id,1)
-
-	}
-	
-	
-	
 }
 public _ksun_unultimate_user(iPlugin,iParams){
 	new id=get_param(1)
@@ -324,10 +320,8 @@ public _ksun_unultimate_user(iPlugin,iParams){
 }
 unultimate_user(id,take_away_supply=1){
 	emit_sound(id, CHAN_AUTO, KSUN_ULTIMATE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-	emit_sound(id, CHAN_STATIC, KSUN_ULTIMATE_DRONE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-	emit_sound(id, CHAN_WEAPON, KSUN_ULTIMATE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 	
-	Assign_BitVar(g_player_in_ultimate_mask, id, false_for_macro);
+	sh_assign_id_bit(id, SH_KSUN_IN_ULTIMATE, false)
 	Assign_BitVar(g_played_sound_mask, id, false_for_macro);
 	g_player_supply_amount[id]=take_away_supply?0:g_player_supply_amount[id]
 	
@@ -350,7 +344,7 @@ public ksun_rifle_laser(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr,
 		return
 	}
 	
-	new bool:the_bool_to_use=bool:Get_BitVar(g_player_in_ultimate_mask, Attacker);
+	new bool:the_bool_to_use=bool:sh_get_id_bit(Attacker, SH_KSUN_IN_ULTIMATE)
 		
 	generic_weapon_tracer_logic(Attacker,the_bool_to_use,KSUN_WEAPON_ID,gHeroID,sh_custom_color:{PURPLE,PURPLE,PURPLE},tracer_sfx_show_laser_line|tracer_sfx_show_glow_aura)
 
@@ -367,7 +361,7 @@ public ksun_rifle_fast_shot(entity)
 	if(!client_is_hero_user(id, gHeroID)){
 		return HAM_IGNORED
 	}
-	if(!Get_BitVar(g_player_in_ultimate_mask, id)){
+	if(!sh_get_id_bit(id, SH_KSUN_IN_ULTIMATE)){
 		return HAM_IGNORED
 	}
 	if(sh_get_player_has_hero_projectile_weapon(id,my_weapon_ids:KSUN_WEAPON_ID)){
@@ -385,7 +379,7 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_h
 		return DMG_FWD_PASS
 	}
 
-	if(sh_get_user_has_hero(victim,gHeroID)&&Get_BitVar(g_player_in_ultimate_mask, victim)&&CUSTOM_DMG_TYPE_IS_SPECIAL(new_dmg_type)){
+	if(sh_get_user_has_hero(victim,gHeroID)&&sh_get_id_bit(victim, SH_KSUN_IN_ULTIMATE)&&CUSTOM_DMG_TYPE_IS_SPECIAL(new_dmg_type)){
 
 		new dmgSnatched= floatround( float(damage)* cvar_val(float, pcvar_ksun_dmg_absorption_index))
 		

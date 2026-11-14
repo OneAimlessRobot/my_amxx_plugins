@@ -21,6 +21,7 @@ Haloune_M4A1mult 2		//Damage multiplyer for his M4A1 Default 2x
 sv_maxspeed 500
 */
 #define I_WANT_CONSTANTS
+#define I_WANT_PDATA_ALIASES
 #define I_WANT_BASIC_MACROS
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
@@ -146,9 +147,9 @@ public Haloune_damage(id, idinflictor, attacker, Float:damage, damagebits)
 
 	if ((attacker==id)||!is_user_alive(attacker)) return HAM_IGNORED
 
-	new weapon, my_hitpoint_enum:the_hitpoint
-
-	get_user_attacker(id, weapon, _:the_hitpoint)
+	new weapon, my_hitpoint_enum:the_hitpoint = my_hitpoint_enum:get_pdata_int(id, m_iLastHitGroup, XO_PLAYER)
+	
+	weapon = get_user_weapon(attacker)
 	
 	pev(id, pev_dmg_take, damage)
 

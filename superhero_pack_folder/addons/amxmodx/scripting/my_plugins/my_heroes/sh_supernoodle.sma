@@ -10,8 +10,10 @@ supernoodle_elitemult 2.5 //damage for his elites
 supernoodle_g3sg1mult 2.5 //damage for his precision rifle
 
 */
-
+#define I_WANT_CONSTANTS
+#define I_WANT_PDATA_ALIASES
 #include "../my_include/superheromod.inc"
+#include "sh_aux_stuff/sh_aux_inc.inc"
 #include "q_barrel_inc/sh_q_barrel.inc"
 #include "h_rifle_inc/sh_h_rifle.inc"
 #include "arifle_inc/sh_arifle.inc"
@@ -140,9 +142,9 @@ public SuperNoodle_damage(id, idinflictor, attacker, Float:damage, damagebits)
 
 	if ( (attacker==id)||!is_user_connected(attacker)||!sh_get_user_has_hero(attacker,gHeroID) ) return HAM_IGNORED
 	
-	new weapon, my_hitpoint_enum:the_hitpoint
-
-	get_user_attacker(id, weapon, _:the_hitpoint)
+	new weapon, my_hitpoint_enum:the_hitpoint = my_hitpoint_enum:get_pdata_int(id, m_iLastHitGroup, XO_PLAYER)
+	
+	weapon = get_user_weapon(attacker)
 	
 	pev(id, pev_dmg_take, damage)
 

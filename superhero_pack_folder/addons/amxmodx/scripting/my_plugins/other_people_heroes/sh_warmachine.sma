@@ -30,8 +30,10 @@ warmachine_armor 150		//How much armor does war machine start with/regen to
 *
 *   Based Iron Man, which was based on Jetpack by Lazy / Modifications by OLO
 */
-
+#define I_WANT_CONSTANTS
+#define I_WANT_PDATA_ALIASES
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt15.inc"
 
 // GLOBAL VARIABLES
@@ -281,9 +283,7 @@ public warmachine_damage(id, idinflictor, attacker, Float:damage, damagebits)
 	}
 
 
-	new weapon, my_hitpoint_enum:the_hitpoint
-
-	get_user_attacker(id, weapon, _:the_hitpoint)
+	new weapon, my_hitpoint_enum:the_hitpoint = my_hitpoint_enum:get_pdata_int(id, m_iLastHitGroup, XO_PLAYER)
 	
 
 
@@ -293,9 +293,6 @@ public warmachine_damage(id, idinflictor, attacker, Float:damage, damagebits)
 	pev(id, pev_dmg_take, damage)
 
 	if ( sh_get_user_has_hero(attacker,gHeroID) && is_user_alive(id) && id != attacker ) {
-		new weaponName[32]
-		get_weaponname(weapon, weaponName, 31)
-		replace(weaponName, 31, "weapon_", "")
 
 		// do extra damage
 		new extraDamage = floatround(damage * get_cvar_float("warmachine_dmgmult") - damage)

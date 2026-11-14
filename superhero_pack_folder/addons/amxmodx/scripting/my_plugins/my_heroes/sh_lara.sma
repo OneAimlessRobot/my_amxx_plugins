@@ -1,5 +1,6 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_BASIC_MACROS
+#define I_WANT_PDATA_ALIASES
 #include "../my_include/superheromod.inc"
 #include "lara_spear_inc/sh_lara_get_set.inc"
 #include "lara_spear_inc/sh_spear_funcs.inc"
@@ -120,8 +121,8 @@ public Lara_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 
 	if(attacker == id) return HAM_IGNORED 
 
-	new weapon, my_hitpoint_enum:the_hitpoint
-	get_user_attacker(id, weapon, _:the_hitpoint)
+	new my_hitpoint_enum:the_hitpoint = my_hitpoint_enum:get_pdata_int(id, m_iLastHitGroup, XO_PLAYER)
+	
 	pev(id, pev_dmg_take, damage)
 
 	return do_bleed_knife_attack(id,attacker,gHeroID,SPEAR_SLASH_DAMAGE,SPEAR_STAB_DAMAGE,

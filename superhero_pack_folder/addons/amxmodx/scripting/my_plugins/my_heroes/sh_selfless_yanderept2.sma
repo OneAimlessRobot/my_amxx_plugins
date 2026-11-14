@@ -3,6 +3,7 @@
 #define I_WANT_MISC_FUNCS
 #define I_WANT_MISC_FUNCS_2
 #define I_WANT_BASIC_MACROS
+#define I_WANT_PDATA_ALIASES
 #define I_WANT_RESOURCE_ALIASES
 #define I_WANT_CUSTOM_COLORS
 #define I_WANT_ENTITY_VECTORS
@@ -223,8 +224,8 @@ public Yandere_ham_knife_damage(id, idinflictor, attacker, Float:damage, damageb
 		return HAM_IGNORED
 	}
 
-	new weapon, my_hitpoint_enum:the_hitpoint
-	get_user_attacker(id, weapon, _:the_hitpoint)
+	new my_hitpoint_enum:the_hitpoint = my_hitpoint_enum:get_pdata_int(id, m_iLastHitGroup, XO_PLAYER)
+	
 	pev(id, pev_dmg_take, damage)
 
 	return do_bleed_knife_attack(id,attacker,gHeroID,15,65,
@@ -542,9 +543,9 @@ public yandere_damage(id, idinflictor, attacker, Float:damage, damagebits)
 
 	new return_result= HAM_IGNORED
 
-	new weapon, my_hitpoint_enum:the_hitpoint
+	new my_hitpoint_enum:the_hitpoint = my_hitpoint_enum:get_pdata_int(id, m_iLastHitGroup, XO_PLAYER)
 
-	get_user_attacker(id, weapon,the_hitpoint)
+	new weapon = get_user_weapon(attacker)
 
 	pev(id, pev_dmg_take, damage)
 

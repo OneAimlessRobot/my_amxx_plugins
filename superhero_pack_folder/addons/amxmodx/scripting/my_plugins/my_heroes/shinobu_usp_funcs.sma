@@ -184,9 +184,9 @@ public damage_shinobu_usp(id, idinflictor, attacker, Float:damage, damagebits)
 
 		return HAM_IGNORED
 	}
-	new weapon, my_hitpoint_enum:the_hitpoint
-
-	get_user_attacker(id, weapon, _:the_hitpoint)
+	new weapon, my_hitpoint_enum:the_hitpoint = my_hitpoint_enum:get_pdata_int(id, m_iLastHitGroup, XO_PLAYER)
+	
+	weapon = get_user_weapon(attacker)
 	
 	pev(id, pev_dmg_take, damage)
 
@@ -218,7 +218,7 @@ public damage_shinobu_usp(id, idinflictor, attacker, Float:damage, damagebits)
 		}
 		else{
 			damage=0.0
-			SetHamParamFloat(3,damage)
+			SetHamParamFloat(4,damage)
 		}
 		return HAM_HANDLED
 	}
@@ -251,7 +251,7 @@ public trace_shinobu_usp(this, attacker, Float:damage, Float:direction[3], Ptr, 
 		
 		if(!target_is_marked_by_weapon_owner){
 			damage=0.0
-			SetHamParamFloat(3,damage)
+			SetHamParamFloat(4,damage)
 		}
 		return HAM_HANDLED
 	}

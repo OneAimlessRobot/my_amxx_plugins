@@ -192,6 +192,10 @@ stock overt_spike_damage(attacker,&Float:damage,is_in_ham_hook=1, &bool:spored_s
 
 			continue
 		}
+
+		if(sh_get_id_bit(collector, SH_KSUN_IN_ULTIMATE)){
+			continue
+		}
 		
 		new CsTeams:collector_team=cs_get_user_team(collector)
 		if(att_team==collector_team){
@@ -231,7 +235,9 @@ public ksun_damage_debt(id, idinflictor, attacker, Float:damage, damagebits)
 	new bool:spored_someone_covert = false,
 		bool:spored_someone_overt = false,
 		bool:vic_has_hero = sh_get_user_has_hero(id,gHeroID),
-		bool:att_has_hero = sh_get_user_has_hero(attacker,gHeroID)
+		bool:att_has_hero = sh_get_user_has_hero(attacker,gHeroID),
+		bool:vic_is_in_ultimate = sh_get_id_bit(id, SH_KSUN_IN_ULTIMATE),
+		bool:att_is_in_ultimate = sh_get_id_bit(attacker, SH_KSUN_IN_ULTIMATE)
 
 	new weapon=get_user_weapon(attacker)
 	
@@ -243,7 +249,7 @@ public ksun_damage_debt(id, idinflictor, attacker, Float:damage, damagebits)
 	{
 		gWeaponPlayerKilledPlayerWith[attacker][id] = weapon;
 	}
-	if(vic_has_hero &&COVERT_ABUSE_ENABLED){
+	if(vic_has_hero &&COVERT_ABUSE_ENABLED && !vic_is_in_ultimate ){
 
 		covert_spike_damage(id, spored_someone_covert)
 
@@ -258,18 +264,16 @@ public ksun_damage_debt(id, idinflictor, attacker, Float:damage, damagebits)
 	}
 	if(att_has_hero){
 		if(weapon==KSUN_WEAPON_ID){
-			if(sh_get_id_bit(id, SH_IS_SLEEPING)){
+			if(sh_get_id_bit(id, SH_IS_SLEEPING) && !att_is_in_ultimate){
 			
-				static tger_name[128], vic_name[128]
-				get_user_name(attacker,vic_name,127)
-				get_user_name(id,tger_name,127)
 				ksun_heal(attacker,damage)
 				new CsTeams:payer_team=cs_get_user_team(id)
 				new CsTeams:att_team=cs_get_user_team(attacker)
 				if(att_team!=payer_team){
-					ksun_inc_player_supply_points(attacker,floatround(damage))
+
+					ksun_inc_player_supply_points(attacker,floatround(damage*0.5))
 					if(vic_has_hero && (ksun_get_player_supply_points(id)>0)){
-						ksun_dec_player_supply_points(id,floatround(damage))
+						ksun_dec_player_supply_points(id,floatround(damage*0.5))
 					}
 				}
 			}
@@ -453,11 +457,11 @@ public ksun_kd(id)
 		}
 		return PLUGIN_HANDLED
 	}
-	else if(spores_busy(id)||ksun_player_is_in_ultimate(id)){
+	else if(spores_busy(id)||sh_get_id_bit(id, SH_KSUN_IN_ULTIMATE)){
 		
 		if(!is_user_bot(id)){
 			sh_sound_deny(id)
-			if(!ksun_player_is_in_ultimate(id)){
+			if(!sh_get_id_bit(id, SH_KSUN_IN_ULTIMATE)){
 				sh_chat_message(id,gHeroID,"Some launched spores still busy!");
 			}
 			else if(!spores_busy(id)){
@@ -553,7 +557,7 @@ public sh_client_death(id, killer){
 	
 	ksun_death_handler(id)
 	if(is_user_alive(killer)&&is_user_connected(id)){
-		if(sh_get_user_has_hero(killer,gHeroID) &&!ksun_player_is_in_ultimate(killer)){
+		if(sh_get_user_has_hero(killer,gHeroID) &&!sh_get_id_bit(killer, SH_KSUN_IN_ULTIMATE)){
 			if(cvar_val(num, pcvar_ksun_kill_type_broadness_level)<=1){
 				if(gWeaponPlayerKilledPlayerWith[killer][id]==KSUN_WEAPON_ID){
 

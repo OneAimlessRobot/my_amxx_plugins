@@ -14,6 +14,7 @@ riddick_knifemult 1.8			//Multiplier for knife damage
 */
 
 #define I_WANT_CONSTANTS
+#define I_WANT_PDATA_ALIASES
 #define I_WANT_BASIC_MACROS
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
@@ -84,9 +85,9 @@ public riddick_damage(id, idinflictor, attacker, Float:damage, damagebits)
 	if( !sh_is_active() || !is_user_alive(id) || !is_user_connected(id)) return HAM_IGNORED;
 	if ( (attacker==id)||!is_user_connected(attacker)||!sh_get_user_has_hero(attacker,gHeroID)) return HAM_IGNORED
 	
-	new weapon, my_hitpoint_enum:the_hitpoint
-
-	get_user_attacker(id, weapon, _:the_hitpoint)
+	new weapon, my_hitpoint_enum:the_hitpoint = my_hitpoint_enum:get_pdata_int(id, m_iLastHitGroup, XO_PLAYER)
+	
+	weapon = get_user_weapon(attacker)
 	
 	pev(id, pev_dmg_take, damage)
 	

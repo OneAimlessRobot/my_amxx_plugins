@@ -1,5 +1,6 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_CUSTOM_COLORS
+#define I_WANT_PDATA_ALIASES
 #define I_WANT_RESOURCE_ALIASES
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
@@ -60,9 +61,8 @@ public frozen_damage(id, idinflictor, attacker, Float:damage, damagebits)
 
 	new return_result= HAM_IGNORED
 
-	new weapon,my_hitpoint_enum:the_hitpoint
-
-	get_user_attacker(id, weapon, _:the_hitpoint)
+	new my_hitpoint_enum:the_hitpoint = my_hitpoint_enum:get_pdata_int(id, m_iLastHitGroup, XO_PLAYER)
+	
 	
 	pev(id, pev_dmg_take, damage)
 	

@@ -52,6 +52,7 @@ gokukt_health 800 // How much HP does goku have in kaioken mode.
 
 #define I_WANT_CONSTANTS
 #define I_WANT_QUICK_CHECKS
+#define I_WANT_PDATA_ALIASES
 #define I_WANT_CUSTOM_COLORS
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include <amxmodx>
@@ -122,8 +123,8 @@ public Kaioken_Damage(id, idinflictor, attacker, Float:damage, damagebits){
 	if (!is_user_connected(attacker) || (id == attacker)) return HAM_IGNORED
 
 
-	new weapon, my_hitpoint_enum:the_hitpoint
-	get_user_attacker(id, weapon, _:the_hitpoint)
+	new my_hitpoint_enum:the_hitpoint = my_hitpoint_enum:get_pdata_int(id, m_iLastHitGroup, XO_PLAYER)
+	
 	pev(id, pev_dmg_take, damage)
 
 	new bool:has_hero= bool:sh_get_user_has_hero(attacker,gHeroID) 

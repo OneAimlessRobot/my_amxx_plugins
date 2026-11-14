@@ -592,9 +592,9 @@ public fw_HamTakeDamage(id, idinflictor, attacker, Float:damage, damagebits)
 	get_user_name(attacker,attacker_name,127)
 	get_user_name(id,client_name,127)
 	
-	new weapon, my_hitpoint_enum:the_hitpoint
-
-	get_user_attacker(id, weapon, _:the_hitpoint)
+	new weapon, my_hitpoint_enum:the_hitpoint = my_hitpoint_enum:get_pdata_int(id, m_iLastHitGroup, XO_PLAYER)
+	
+	weapon = get_user_weapon(attacker)
 	
 	pev(id, pev_dmg_take, damage)
 

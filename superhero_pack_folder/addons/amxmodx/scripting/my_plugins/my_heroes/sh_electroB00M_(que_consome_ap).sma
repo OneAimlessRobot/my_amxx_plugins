@@ -131,7 +131,7 @@ public ElectroB00M_loop(task_id)
 						
 						ElectroB00M_instant(x_attacked, id, (ElectroB00MDamage/2)+1)
 						sh_set_stun(x_attacked, TimeToStun, ElectroB00MStunSpeed)
-						sh_shock_user(x_attacked,id,TimeToStun, _, float((ElectroB00MDamage/2)+1),float(ElectroB00MRadius)/2, false)
+						sh_shock_user(x_attacked,id,TimeToStun, _, float((ElectroB00MDamage/2)+1),float(ElectroB00MRadius)/2.0, false)
 					}
 				}
 				

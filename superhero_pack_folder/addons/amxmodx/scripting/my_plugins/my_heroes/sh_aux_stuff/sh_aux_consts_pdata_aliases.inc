@@ -56,6 +56,8 @@
 													//this is also multiplied by 4
 													//as it is byte sized. (its a string)
 
+	#define m_iLastHitGroup 75    // last hitgroup that a user got hit on
+
 	// weapons offsets
 
 	#define XO_WEAPON  4 						//linux offset to be used on pdatas with weapon/item entities
