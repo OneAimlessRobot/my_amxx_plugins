@@ -237,6 +237,13 @@ return PLUGIN_HANDLED
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
+
+emit_sound(id, CHAN_WEAPON, gTeslaCoilRevvingSound, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+
+g_teslacoilRunning[id] = false
+
+sh_assign_id_bit(id, SH_ELECTROBOOM_TESLA_COIL_RUNNING, false)
+
 gRechargeAllowed[id] = false
 
 set_task(1.0, "spawn_delay", id)

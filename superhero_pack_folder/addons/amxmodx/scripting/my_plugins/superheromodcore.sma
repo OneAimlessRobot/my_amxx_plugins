@@ -1830,7 +1830,7 @@ menuSuperPowers(id, menuOffset)
 		add(message, charsmax(message), "\w^n8. Previous Heroes")
 		keys |= (1<<(SH_MENU_SCROLL_SIZE)) 
 	}
-	if ( gPlayerMenuChoices[id][0] > SH_MENU_SCROLL_SIZE ) {
+	if ( gPlayerMenuChoices[id][0] - menuOffset > SH_MENU_SCROLL_SIZE ) {
 		// Can only Display 8 heroes at a time
 		add(message, charsmax(message), "\w^n9. More Heroes")
 		keys |= (1<<(SH_MENU_SCROLL_SIZE+1)) 

@@ -31,6 +31,7 @@ warmachine_armor 150		//How much armor does war machine start with/regen to
 *   Based Iron Man, which was based on Jetpack by Lazy / Modifications by OLO
 */
 #define I_WANT_CONSTANTS
+#define I_WANT_RESOURCE_ALIASES
 #define I_WANT_PDATA_ALIASES
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
@@ -108,8 +109,12 @@ public loadCVARS()
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {
+	emit_sound(id, CHAN_WEAPON, NULL_SOUND, 0.6, ATTN_NORM, 0, PITCH_LOW)
 	gRegenAllowed[id] = false
+	gJetPackRunning[id] = false
+	sh_assign_id_bit(id, SH_JETPACK_RUNNING, false)
 	set_task(1.0, "spawnDelay", id)
+
 }
 //----------------------------------------------------------------------------------------------
 public spawnDelay(id)
@@ -245,6 +250,7 @@ public sh_client_death(id)
 
 	if ( id <= 0 || id > SH_MAXSLOTS ) return
 
+	emit_sound(id, CHAN_WEAPON, NULL_SOUND, 0.6, ATTN_NORM, 0, PITCH_LOW)
 	gJetPackRunning[id] = false
 	sh_assign_id_bit(id, SH_JETPACK_RUNNING, false)
 	gRegenAllowed[id] = false
