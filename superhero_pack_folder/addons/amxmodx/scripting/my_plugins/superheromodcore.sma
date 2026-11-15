@@ -1621,9 +1621,30 @@ bool:pickPowerWithoutMenu(id, heroID){
 	// Now decrement the level powers that they've picked
 	new heroLevel = getHeroLevel(heroID)
 
+	new MaxBinds = min(get_pcvar_num(sh_maxbinds), SH_MAXBINDPOWERS)
+
+	if (playerLevel < heroLevel
+		|| gMaxPowersLeft[id][heroLevel] <= 0
+		|| (gPlayerBinds[id][0] >= MaxBinds && gSuperHeros[heroID][requiresKeys])) {
+		return false
+	}
+
+	new init_fwd_ret_id:fwd_result=INIT_FWD_PASS
+	if(!ExecuteForward(fwd_HeroInit_Pre, fwd_result, id, heroID, SH_HERO_ADD)){
+
+		server_print("Hero init pre forward execution error!!!")
+		return false
+	}
+	if(fwd_result!=INIT_FWD_PASS){
+
+
+		return false
+	}
+
 	for ( new y = heroLevel; y >= 0; y-- ) {
-		if ( --gMaxPowersLeft[id][y] < 0 ) gMaxPowersLeft[id][y] = 0
-		//If none left on this level, there should be none left on any higher levels
+		if ( --gMaxPowersLeft[id][y] < 0 ){
+			gMaxPowersLeft[id][y] = 0
+		}
 		if ( gMaxPowersLeft[id][y] <= 0 && y < SH_MAXLEVELS ) {
 			if ( gMaxPowersLeft[id][y+1] != 0 ) {
 				for ( new z = y; z <= gNumLevels; z++ ) {
@@ -1632,64 +1653,31 @@ bool:pickPowerWithoutMenu(id, heroID){
 			}
 		}
 	}
-	// OK BUILD A LIST OF HEROES THIS PERSON CAN PICK FROM
-	gPlayerMenuChoices[id][0] = 0  // <- 0 choices so far
-	new MaxBinds = min(get_pcvar_num(sh_maxbinds), SH_MAXBINDPOWERS)
-	new bool:thisEnabled
-
-	thisEnabled = false
-	if ( playerLevel >= heroLevel && 
 	
-					gMaxPowersLeft[id][heroLevel] > 0
-								&&
-			!(gPlayerBinds[id][0] >= MaxBinds && gSuperHeros[heroID][requiresKeys])) {
+	gPlayerPowers[id][0] = playerpowercount + 1
+	gPlayerPowers[id][playerpowercount + 1] = heroID
+
+	initHero(id, heroID, SH_HERO_ADD)
+	
+	if(Get_BitVar(gChangedHeroesMask, id)){
 		
-		thisEnabled = true
-	}
-	else{
 
-		return false
-	}
-
-	if ( thisEnabled ) {
-
-		new init_fwd_ret_id:fwd_result=INIT_FWD_PASS
-		if(!ExecuteForward(fwd_HeroInit_Pre, fwd_result, id, heroID, SH_HERO_ADD)){
-
-			server_print("Hero init pre forward execution error!!!")
-			return false
+		static message[2048]
+		if ( !gSuperHeros[heroID][requiresKeys] ) {
+			formatex(message, charsmax(message), "(AUTOMATIC POWER) %s: %s^n",
+										gSuperHeros[heroID][superpower], gSuperHeros[heroID][help])
 		}
-		if(fwd_result!=INIT_FWD_PASS){
-
-
-			return false
+		else {
+			formatex(message, charsmax(message), "BIND KEY TO ^"+POWER%d^": %s^n%s^n", gPlayerBinds[id][0]+1, gSuperHeros[heroID][superpower], gSuperHeros[heroID][help])
 		}
-		gPlayerPowers[id][0] = playerpowercount + 1
-		gPlayerPowers[id][playerpowercount + 1] = heroID
 
-		initHero(id, heroID, SH_HERO_ADD)
+		// Show the Hero Picked
+		set_hudmessage(100, 100, 0, -1.0, 0.2, 0, 1.0, 20.0, 0.1, 0.2, -1)
+		ShowSyncHudMsg(id, gHeroHudSync, "%s", message)
+
 		
-		if(Get_BitVar(gChangedHeroesMask, id)){
-			
-
-			static message[2048]
-			if ( !gSuperHeros[heroID][requiresKeys] ) {
-				formatex(message, charsmax(message), "(AUTOMATIC POWER) %s: %s^n",
-											gSuperHeros[heroID][superpower], gSuperHeros[heroID][help])
-			}
-			else {
-				formatex(message, charsmax(message), "BIND KEY TO ^"+POWER%d^": %s^n%s^n", gPlayerBinds[id][0]+1, gSuperHeros[heroID][superpower], gSuperHeros[heroID][help])
-			}
-
-			// Show the Hero Picked
-			set_hudmessage(100, 100, 0, -1.0, 0.2, 0, 1.0, 20.0, 0.1, 0.2, -1)
-			ShowSyncHudMsg(id, gHeroHudSync, "%s", message)
-
-			
-		}
-		return bool:Get_BitVar(gChangedHeroesMask, id);
 	}
-	return false
+	return bool:Get_BitVar(gChangedHeroesMask, id);
 }
 
 //----------------------------------------------------------------------------------------------
@@ -1908,48 +1896,46 @@ public selectedSuperPower(id, key)
 		server_print("Hero init pre forward execution error!!!")
 		return PLUGIN_HANDLED
 	}
-	if(fwd_result!=INIT_FWD_PASS){
+	if(fwd_result==INIT_FWD_PASS){
 
+		new heroLevel = getHeroLevel(heroIndex)
+		new MaxBinds = get_pcvar_num(sh_maxbinds)
+		
+		if ((gPlayerBinds[id][0] >= MaxBinds && gSuperHeros[heroIndex][requiresKeys])) {
+			chatMessage(id, _, "You cannot choose more than %d heroes that require binds", MaxBinds)
+			menuSuperPowers(id, gPlayerMenuOffset[id])
+			return PLUGIN_HANDLED
+		}
+		else if ( gMaxPowersLeft[id][heroLevel] <= 0 ) {
+			chatMessage(id, _, "You cannot pick any more heroes from that level")
+			menuSuperPowers(id, gPlayerMenuOffset[id])
+			return PLUGIN_HANDLED
+		}
 
-		return PLUGIN_HANDLED
+		static message[2048]
+		if ( !gSuperHeros[heroIndex][requiresKeys] ) {
+			formatex(message, charsmax(message), "(AUTOMATIC POWER) %s: %s^n",
+										gSuperHeros[heroIndex][superpower], gSuperHeros[heroIndex][help])
+		}
+		else {
+			formatex(message, charsmax(message), "BIND KEY TO ^"+POWER%d^": %s^n%s^n", gPlayerBinds[id][0]+1, gSuperHeros[heroIndex][superpower], gSuperHeros[heroIndex][help])
+		}
+
+		// Show the Hero Picked
+		set_hudmessage(100, 100, 0, -1.0, 0.2, 0, 1.0, 20.0, 0.1, 0.2, -1)
+		ShowSyncHudMsg(id, gHeroHudSync, "%s", message)
+
+		// Bind Keys / Set Powers
+		gPlayerPowers[id][0] = playerpowercount + 1
+		gPlayerPowers[id][playerpowercount + 1] = heroIndex
+
+		//Init This Hero!
+		initHero(id, heroIndex, SH_HERO_ADD)
+		
+		displayPowers(id, true)
+
+		// Show the Menu Again if they don't have enough skills yet!
 	}
-	new heroLevel = getHeroLevel(heroIndex)
-	new MaxBinds = get_pcvar_num(sh_maxbinds)
-	
-	if ((gPlayerBinds[id][0] >= MaxBinds && gSuperHeros[heroIndex][requiresKeys])) {
-		chatMessage(id, _, "You cannot choose more than %d heroes that require binds", MaxBinds)
-		menuSuperPowers(id, gPlayerMenuOffset[id])
-		return PLUGIN_HANDLED
-	}
-	else if ( gMaxPowersLeft[id][heroLevel] <= 0 ) {
-		chatMessage(id, _, "You cannot pick any more heroes from that level")
-		menuSuperPowers(id, gPlayerMenuOffset[id])
-		return PLUGIN_HANDLED
-	}
-
-	static message[2048]
-	if ( !gSuperHeros[heroIndex][requiresKeys] ) {
-		formatex(message, charsmax(message), "(AUTOMATIC POWER) %s: %s^n",
-									gSuperHeros[heroIndex][superpower], gSuperHeros[heroIndex][help])
-	}
-	else {
-		formatex(message, charsmax(message), "BIND KEY TO ^"+POWER%d^": %s^n%s^n", gPlayerBinds[id][0]+1, gSuperHeros[heroIndex][superpower], gSuperHeros[heroIndex][help])
-	}
-
-	// Show the Hero Picked
-	set_hudmessage(100, 100, 0, -1.0, 0.2, 0, 1.0, 20.0, 0.1, 0.2, -1)
-	ShowSyncHudMsg(id, gHeroHudSync, "%s", message)
-
-	// Bind Keys / Set Powers
-	gPlayerPowers[id][0] = playerpowercount + 1
-	gPlayerPowers[id][playerpowercount + 1] = heroIndex
-
-	//Init This Hero!
-	initHero(id, heroIndex, SH_HERO_ADD)
-	
-	displayPowers(id, true)
-
-	// Show the Menu Again if they don't have enough skills yet!
 	menuSuperPowers(id, gPlayerMenuOffset[id])
 
 	return PLUGIN_HANDLED
