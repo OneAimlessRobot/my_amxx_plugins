@@ -7,6 +7,46 @@ check pawn include for interface
 #ifndef __SH_HERO_ARRAY_H__
 #define __SH_HERO_ARRAY_H__
 
+typedef enum {
+	
+	CSW_NONE = 0,			//0
+	CSW_P228,				//1
+	CSW_GLOCK,				//2
+	CSW_SCOUT,				//3
+	CSW_HEGRENADE,			//4
+	CSW_XM1014,				//5
+	CSW_C4,					//6
+	CSW_MAC10,				//7
+	CSW_AUG,				//8
+	CSW_SMOKEGRENADE,		//9
+	CSW_ELITE,				//10
+	CSW_FIVESEVEN,			//11
+	CSW_UMP45,				//12
+	CSW_SG550,				//13
+	CSW_GALIL,				//14
+	CSW_FAMAS,				//15
+	CSW_USP,				//16
+	CSW_GLOCK18,			//17
+	CSW_AWP,				//18
+	CSW_MP5NAVY,			//19
+	CSW_M249,				//20
+	CSW_M3,					//21
+	CSW_M4A1,				//22
+	CSW_TMP,				//23
+	CSW_G3SG1,				//24
+	CSW_FLASHBANG,			//25
+	CSW_DEAGLE,				//26
+	CSW_SG552,				//27
+	CSW_AK47,				//28
+	CSW_KNIFE,				//29
+	CSW_P90					//30
+
+}my_weapon_ids;
+
+#define CSW_LAST_WEAPON     CSW_P90
+
+#define is_valid_cs_weapon(a) ((a > CSW_NONE) && (a != CSW_GLOCK) && (a <= CSW_LAST_WEAPON))
+
 
 typedef uint32_t state_cell_type_t;
 
@@ -14,7 +54,7 @@ typedef uint32_t state_cell_type_t;
 
 #define bucket_size (sizeof(state_cell_type_t)*BITS_PER_BYTE)
 
-#define NUM_WEAPONS (bucket_size-1) //Bucket size is equal to 32
+#define NUM_WEAPONS 50 //Bucket size is equal to 32
 
 //We currently support 640 properties
 
@@ -35,11 +75,11 @@ typedef uint32_t state_cell_type_t;
 #define min(a,b) ((a < b)? a: b)
 #define max(a,b) ((a > b)? a: b)
 
-#define Get_BitVar(a,b) (a & ((state_cell_type_t)1 << (b & (bucket_size-1))))
+#define Get_BitVar(a,b) (a & (1u << (b & (bucket_size-1))))
 
-#define Set_BitVar(a,b) (a |= ((state_cell_type_t)1 << (b & (bucket_size-1))))
+#define Set_BitVar(a,b) (a |= (1u << (b & (bucket_size-1))))
 
-#define UnSet_BitVar(a,b) (a &= ~((state_cell_type_t)1 << (b & (bucket_size-1))))
+#define UnSet_BitVar(a,b) (a &= ~(1u << (b & (bucket_size-1))))
 
 
 #define Assign_BitVar(a,b,c) ((c) ? Set_BitVar(a,b) : UnSet_BitVar(a,b))
@@ -216,20 +256,20 @@ inline void HeroArrays::zero_it_out(void){
 inline void HeroArrays::zero_out_hero_props(void){
 	
 	printf("Hero flags array have been zeroed out!\n");
-	memset(this->the_hero_flags,0, sizeof(this->the_hero_flags));
+	memset(this->the_hero_flags,0, sizeof(the_hero_flags));
 
 }
 inline void HeroArrays::zero_out_hero_damage_flags(void){
 	
 	printf("Hero damage flags array has been zeroed out!\n");
-	memset(this->the_hero_damage_flags,0, sizeof(this->the_hero_damage_flags));
-	memset(this->the_hero_damage_mults,1.0f, sizeof(this->the_hero_damage_mults));
+	memset(this->the_hero_damage_flags,0, sizeof(the_hero_damage_flags));
+	memset(this->the_hero_damage_mults,1.0f, sizeof(the_hero_damage_mults));
 
 }
 inline void HeroArrays::zero_out_id_hero_cooldown_masks(void){
 	
 	printf("Id hero cooldown flags array has been zeroed out!\n");
-	memset(this->cooldown_memory,0, sizeof(this->cooldown_memory));
+	memset(this->cooldown_memory,0, sizeof(cooldown_memory));
 
 }
 
@@ -237,27 +277,27 @@ inline void HeroArrays::zero_out_hero_projectile_weapon_masks(void){
 	
 	
 	printf("Hero projectile weapon flags have been zeroed out!\n");
-	memset(this->the_hero_projectile_weapons,0, sizeof(this->the_hero_projectile_weapons));
+	memset(this->the_hero_projectile_weapons,0, sizeof(the_hero_projectile_weapons));
 	
 }
 
 inline void HeroArrays::zero_out_player_masks(void){
 	
 	printf("The player masks have been zeroed out!\n");
-	memset(this->the_player_masks,0, sizeof(this->the_player_masks));
+	memset(this->the_player_masks,0, sizeof(the_player_masks));
 		
 }
 
 inline void HeroArrays::zero_out_hero_ownership(void){
 	
 	printf("Hero array has been zeroed out!\n");
-	memset(this->ownership_memory,0, sizeof(this->ownership_memory));
+	memset(this->ownership_memory,0, sizeof(ownership_memory));
 		
 }
 inline void HeroArrays::zero_out_custom_weapon_bit_masks(void){
 	
 	printf("SH custom weapon possessions array has been zeroed out!\n");
-	memset(this->the_custom_weapon_masks,0, sizeof(this->the_custom_weapon_masks));
+	memset(this->the_custom_weapon_masks,0, sizeof(the_custom_weapon_masks));
 		
 }
 inline state_cell_type_t HeroArrays::get_max_hero_props(void){
@@ -414,7 +454,7 @@ inline bool HeroArrays::get_hero_projectile_weapon_bit( const state_cell_type_t&
 		return false;
 	} 
 	
-	if((the_weapon_id > NUM_WEAPONS)){
+	if(!is_valid_cs_weapon(the_weapon_id)){
 		return false;
 	
 	}
@@ -427,7 +467,7 @@ inline void HeroArrays::assign_hero_projectile_weapon_bit( const state_cell_type
 		return;
 	}
 	
-	if((the_weapon_id > NUM_WEAPONS)){
+	if(!is_valid_cs_weapon(the_weapon_id)){
 		return;
 	
 	}

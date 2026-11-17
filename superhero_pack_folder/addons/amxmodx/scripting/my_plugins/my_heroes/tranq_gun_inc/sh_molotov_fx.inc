@@ -8,7 +8,7 @@
 
 #define EXTINGUISH_FIRE_SOUND "shmod/custom_grenades/co2_grenade.wav"
 
-#define MOLLY_FIRE_SFX "shmod/erica/molotov/molotov_fire.wav"
+#define MOLLY_FIRE_SFX "shmod/larissa/molotov/molotov_fire.wav"
 
 #define gSoundBurning "ambience/burning1.wav"
 #define gSoundScream "scientist/c1a0_sci_catscream.wav"

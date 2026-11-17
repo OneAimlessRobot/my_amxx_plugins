@@ -29,8 +29,6 @@
 
 
 
-// GLOBAL VARIABLES
-new gNumChaffs[SH_MAXSLOTS+1]
 new g_counter_bullets[SH_MAXSLOTS+1]
 new g_max_counter_bullets[SH_MAXSLOTS+1]
 new g_num_mega_counters_enemy[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
@@ -110,26 +108,6 @@ public _teliko_get_hero_id(iPlugin,iParams){
 	return gHeroID
 }
 
-public _teliko_set_num_chaffs(iPlugin,iParams){
-	new id= get_param(1)
-	new value_to_set=get_param(2)
-	gNumChaffs[id]=value_to_set;
-}
-public _teliko_get_num_chaffs(iPlugin,iParams){
-
-
-	new id= get_param(1)
-	return gNumChaffs[id]
-
-}
-
-public _teliko_dec_num_chaffs(iPlugin,iParams){
-
-
-	new id= get_param(1)
-	gNumChaffs[id]-= (gNumChaffs[id]>0)? 1:0
-
-}
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
@@ -152,7 +130,6 @@ public reset_teliko_user(id){
 	g_teliko_enemies_masks[id]=0
 	arrayset(g_num_mega_counters_enemy[id],0,SH_MAXSLOTS+1)
 	g_counter_bullets[id]=0;
-	gNumChaffs[id]=cvar_val(num, pcvar_num_chaffs)
 	
 	
 	

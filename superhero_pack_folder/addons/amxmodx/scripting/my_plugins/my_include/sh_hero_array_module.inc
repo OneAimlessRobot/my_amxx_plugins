@@ -57,7 +57,7 @@ enum hero_property_flags_id {
 //up to 64 states can be added in the current version of the library
 enum player_state_flags_id {
 	
-	SH_IS_COOLDOWN = 52,
+	SH_IS_COOLDOWN = 0,
 	SH_IS_SLEEPING,
 	SH_IS_CHAFFED,
 	SH_IS_BURNING,
@@ -146,7 +146,12 @@ enum sh_custom_weapon_ids{
 	SH_ASSAULT_RIFLE,
 	SH_HUNTING_RIFLE,
 	SH_DOUBLE_BARREL_SHOTGUN,
-	SH_QUAD_BARREL_SHOTGUN
+	SH_QUAD_BARREL_SHOTGUN,
+	SH_TRANQ_DART_GUN,
+	SH_RIVETER,
+	SH_L96A1,
+	SH_PILLGATLING,
+	SH_LARALEL_HARPOON_SPEAR
 
 
 };

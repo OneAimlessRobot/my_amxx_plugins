@@ -51,6 +51,13 @@ enum{
 #define DART_PISTOL_RECOIL 1.0
 #define DART_PISTOL_CLIP_SIZE 2
 
+
+native tranq_set_user_tranq(id, bool:value, start_ammo = 100)
+
+native tranq_set_num_darts(id,value_to_set)
+native tranq_get_num_darts(id)
+native tranq_dec_num_darts(id)
+
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
 *{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
 */

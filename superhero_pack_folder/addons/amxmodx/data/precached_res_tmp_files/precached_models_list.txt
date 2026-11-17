@@ -39,7 +39,6 @@ models/shmod/jaqueo/shield/shield.mdl
 models/shmod/camman/camera/camera.mdl
 models/shmod/v_scythe.mdl
 sprites/zbeam4.spr
-models/shmod/lara/spear/v_nospear.mdl
 models/shmod/predgun/preddisc.mdl
 sprites/shmod/esf_ki_blast.spr
 sprites/shmod/esf_kamehameha_blue.spr
@@ -105,7 +104,8 @@ models/shmod/adriano/shard_cannon/p_shard_cannon.mdl
 models/shmod/adriano/shard_cannon/w_shard_cannon.mdl
 sprites/wall_puff1.spr
 models/shmod/yakui/v_knife.mdl
-models/shmod/lara/spear/w_spear.mdl
+models/shmod/laralel/spear/w_spear.mdl
+models/shmod/laralel/spear/v_nospear.mdl
 models/shmod/supernoodle/hrifle/v_mosin.mdl
 models/shmod/supernoodle/hrifle/p_mosin.mdl
 models/shmod/supernoodle/hrifle/w_mosin.mdl
@@ -266,9 +266,6 @@ sprites/rifle_smoke2.spr
 sprites/rifle_smoke3.spr
 models/hgibs.mdl
 models/agibs.mdl
-models/metalplategibs_green.mdl
-models/woodgibs.mdl
-models/glassgibs.mdl
 models/w_squeak.mdl
 models/shmod/ksun/ksun_rifle/v_r5rifle.mdl
 models/shmod/ksun/ksun_rifle/p_r5rifle.mdl
@@ -288,12 +285,12 @@ models/shmod/swatm4/p_m4a1.mdl
 models/shmod/swat_v_knife.mdl
 models/shmod/swat_p_knife.mdl
 models/shmod/morpheus_mp5.mdl
-models/shmod/erica/knife/v_combat_knife.mdl
-models/shmod/erica/knife/p_combat_knife.mdl
-models/shmod/erica/pistols/v_elite.mdl
-models/shmod/erica/pistols/p_elite.mdl
-models/shmod/lara/spear/v_spear.mdl
-models/shmod/lara/spear/p_spear.mdl
+models/shmod/larissa/knife/v_combat_knife.mdl
+models/shmod/larissa/knife/p_combat_knife.mdl
+models/shmod/larissa/pistols/v_elite.mdl
+models/shmod/larissa/pistols/p_elite.mdl
+models/shmod/laralel/spear/v_spear.mdl
+models/shmod/laralel/spear/p_spear.mdl
 models/shmod/predgun/predawp.mdl
 models/shmod/predgun/v_predgun.mdl
 models/shmod/predgun/p_predgun.mdl
@@ -318,6 +315,7 @@ models/player/ester/ester.mdl
 models/player/thrash/thrash.mdl
 models/player/jaqueo/jaqueo.mdl
 models/player/haloune/haloune.mdl
+models/player/graciete/graciete.mdl
 models/player/L96/L96.mdl
 models/player/swat/swat.mdl
 models/player/sh_darkpredator/sh_darkpredator.mdl

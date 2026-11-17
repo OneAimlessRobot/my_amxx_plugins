@@ -4,9 +4,9 @@
 #define sh_aux_consts_resource_aliases
 
 
-#define THROWABLE_LAUNCH_SFX "shmod/lara/spear/spear_throw.wav"
+#define THROWABLE_LAUNCH_SFX "shmod/laralel/spear/spear_throw.wav"
 #define SMOKE_EXPLODE_SOUND "shmod/yakui/rocket.wav"
-#define GLASS_VIAL_BREAK "shmod/erica/molotov/molotov_crack.wav"
+#define GLASS_VIAL_BREAK "shmod/larissa/molotov/molotov_crack.wav"
 #define GLASS_BREAK_SFX "shmod/Teliko/counter.wav"
 #define THUNDER_CRACK_SFX "shmod/zeus_lightningbolt.wav"
 #define THUNDER_CRACK_AZTEC_SFX "ambience/thunder_clap.wav"

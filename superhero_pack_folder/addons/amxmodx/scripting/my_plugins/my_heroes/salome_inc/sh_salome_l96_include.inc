@@ -42,34 +42,7 @@
 
 #define SALOME_L96_CLIP_SIZE 4
 
-/*
-enum
-{
-    CS_RESET_ZOOM = 0,      // Reset any zoom blocking (mode has no effect)
-    CS_SET_NO_ZOOM,         // Disable any sort of zoom
-    CS_SET_FIRST_ZOOM,      // Set first zoom level (AWP style)
-    CS_SET_SECOND_ZOOM,     // Set second zoom level (AWP style)
-    CS_SET_AUGSG552_ZOOM,   // Set AUG/SG552 zoom style
-};
-*/
-
-enum{
-	SALOME_NO_ZOOM=0,
-	SALOME_FIRST_ZOOM=1,
-	SALOME_SECOND_ZOOM=2,
-	SALOME_MAX_ZOOM=3
-}
-enum{
-	SEQ_IDLE1=0,
- 	SEQ_SHOOT1=1,
-	SEQ_SHOOT2=2,
-	SEQ_SHOOT3=3,
-	SEQ_RELOAD=4,
-	SEQ_DRAW=5
-}
-native salome_get_hero_id();
-native salome_l96_set_num_bullets(id,value_to_set)
-native salome_l96_get_num_bullets(id)
-native salome_l96_dec_num_bullets(id)
+native l96_set_user_l96(id, bool:value_to_set, start_ammo = 100)
+native l96_set_num_bullets(id,value_to_set)
 
 

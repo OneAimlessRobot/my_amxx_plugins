@@ -262,7 +262,15 @@ public sh_on_sleep_end_fwd(id,attacker,Float:the_time,heroID){
 	if(!sh_get_user_has_hero(id,gHeroID)){
 		return
 	}
-	new bool:self_started_sleep = (heroID==gHeroID)
+	if(sh_get_id_bit(id,SH_ZENITSU_CHARGE_IS_ON)){
+
+		return
+	}
+	if(sh_get_id_bit(id,SH_ZENITSU_HAS_STRUCK)){
+
+		return
+	}
+	new bool:self_started_sleep = (id == attacker)
 
 	zenitsu_init_battery_aux(id,self_started_sleep)
 

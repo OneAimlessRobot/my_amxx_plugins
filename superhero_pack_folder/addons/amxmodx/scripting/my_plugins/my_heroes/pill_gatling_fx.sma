@@ -169,7 +169,6 @@ RegisterHam(Ham_TakeDamage, "player", "Player_TakeDamage_Post", 1,true)
 register_event("CurWeapon", "weaponChange", "be", "1=1")
 
 }
-
 public plugin_cfg(){
 	generic_dmg_poison_id = get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_DRUG_POISON)
 }

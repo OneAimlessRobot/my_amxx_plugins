@@ -147,7 +147,7 @@ add_speed_points(id,Float:damage,is_up){
 }
 public get_speed_dmg_in_radius(id,Float:damage){
 
-	new the_players[SH_MAXSLOTS], pnum, i		
+	static the_players[SH_MAXSLOTS], pnum, i		
 	get_players(the_players, pnum, "ah")
 	for (new k = 0; k < pnum; k++) {
 		

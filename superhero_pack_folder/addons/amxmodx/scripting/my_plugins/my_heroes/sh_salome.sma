@@ -14,9 +14,8 @@
 #define PLUGIN_NAME "SUPERHERO Salomé Freitas"
 
 // GLOBAL VARIABLES
-new gHeroName[] = "Salomé"
+new gHeroName[] = "Salomeh"
 
-new gNumBullets[SH_MAXSLOTS+1]
 new salome_max_bullets
 
 //----------------------------------------------------------------------------------------------
@@ -36,8 +35,8 @@ public plugin_init()
 								"models/player/L96/L96.mdl",
 								"models/player/L96/L96T.mdl",
 								"L96",
-								"S- SOU A S'OMÉ!",
-								"D'culpa...")
+								"S- SOU A S_OME!",
+								"D_culpa...")
 	
 	sh_assign_hero_projectile_weapon_bit(gHeroID,my_weapon_ids:SALOME_WEAPON_CLASSID,true)
 	sh_assign_hero_bit(gHeroID, SH_RADIO_DETECTOR_HERO,true)
@@ -45,9 +44,6 @@ public plugin_init()
 }
 public plugin_natives(){
 
-	register_native("salome_l96_dec_num_bullets","_salome_l96_dec_num_bullets");
-	register_native("salome_l96_get_num_bullets","_salome_l96_get_num_bullets");
-	register_native("salome_l96_set_num_bullets","_salome_l96_set_num_bullets");
 	
 	register_native("salome_get_hero_id","_salome_get_hero_id");
 	
@@ -70,34 +66,9 @@ public loadCVARS()
 	salome_max_bullets=get_cvar_num("salome_num_bullets")
 }
 
-public _salome_l96_set_num_bullets(iPlugin,iParams){
-	new id= get_param(1)
-	new value_to_set=get_param(2)
-	gNumBullets[id]=value_to_set;
-}
 public _salome_get_hero_id(iPlugin,iParams){
 	
 	return gHeroID
-}
-public _salome_l96_get_num_bullets(iPlugin,iParams){
-
-
-	new id= get_param(1)
-	return gNumBullets[id]
-
-}
-
-public _salome_l96_dec_num_bullets(iPlugin,iParams){
-
-
-	new id= get_param(1)
-	gNumBullets[id]-= (gNumBullets[id]>0)? 1:0
-
-}
-public sh_round_end(){
-
-	remove_entity_name(SALOME_PROJECTILE_CLASSNAME)
-
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, sh_init_mode:mode){
@@ -109,7 +80,7 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 	}
 	else 
 	{
-		sh_drop_weapon(id,SALOME_WEAPON_CLASSID,true);
+		l96_set_user_l96(id,false,0)
 	}
 }
 public sh_client_spawn(id)
@@ -121,15 +92,9 @@ public sh_client_spawn(id)
 salome_weapons(id)
 {
 	if ( sh_is_active() && is_user_alive(id) && sh_get_user_has_hero(id,gHeroID) ) {
-		gNumBullets[id]=salome_max_bullets
-		sh_give_weapon(id, SALOME_WEAPON_CLASSID,true)
+		
+		l96_set_user_l96(id,true, salome_max_bullets)
 		give_custom_grenades(id,GREN_MARKER,6)
-		new weapon_id=get_weapon_ent_of_player(id,SALOME_WEAPON_CLASSID)
-		if(is_valid_ent(weapon_id)){
-
-			set_pdata_int(weapon_id, m_iClip, SALOME_L96_CLIP_SIZE, XO_WEAPON);
-			cs_set_user_bpammo(id, SALOME_WEAPON_CLASSID,gNumBullets[id]-SALOME_L96_CLIP_SIZE);
-		}
 	}
 }
 

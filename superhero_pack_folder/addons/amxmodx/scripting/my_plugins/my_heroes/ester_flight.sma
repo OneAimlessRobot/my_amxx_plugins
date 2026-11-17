@@ -139,7 +139,7 @@ public ester_drain_loop(task_id){
 			max_hp_to_use,
 			Float:curr_hp_ratio
 	
-	new the_players[SH_MAXSLOTS], pnum, id		
+	static the_players[SH_MAXSLOTS], pnum, id		
 	get_players(the_players, pnum, "ah")
 	for (new i = 0; i < pnum; i++) {
 		id = the_players[i]

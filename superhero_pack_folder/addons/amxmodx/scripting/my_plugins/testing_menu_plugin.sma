@@ -34,7 +34,7 @@
 #define PLAYER_MENU_NAME "Available players:"
 #define PLAYER_SUBMENU_NAME "What to do:"
 #define BOT_DIFFICULTY_MENU_NAME "Bot difficulty menu name"
-
+#define BOT_CFG_FILENAME "addons/yapb/conf/yapb.cfg"
 #define CMD_NAME "test_menu"
 
 #define MARK_TASK_PERIOD 0.44
@@ -59,7 +59,8 @@ enum main_menu_constants{
     TOGGLE_BOT_FREEZE,
     TOGGLE_BOT_IGNORE_ENEMIES,
     TOGGLE_BOT_IGNORE_OBJECTIVES,
-    GET_HERO_ID_FROM_NAME
+    GET_HERO_ID_FROM_NAME,
+    RELOAD_BOT_CFG
 
 
 
@@ -864,6 +865,7 @@ public menu_display_inittializer(id,level,cid){
     menu_additem(gMenuID,"Toggle bot ignore enemies")
     menu_additem(gMenuID,"Toggle bot ignore objectives")
     menu_additem(gMenuID,"Obtain hero id from part of name!")
+    menu_additem(gMenuID,"Reload bot cfg!")
 
 
     
@@ -1123,6 +1125,11 @@ public menu_function_example(id, menu, item)
 
 
             client_cmd(id, "messagemode amx_get_hero_id_from_name")
+        }
+        case RELOAD_BOT_CFG:{
+
+            server_cmd("exec %s", BOT_CFG_FILENAME)
+            server_exec()
         }
 
         /*

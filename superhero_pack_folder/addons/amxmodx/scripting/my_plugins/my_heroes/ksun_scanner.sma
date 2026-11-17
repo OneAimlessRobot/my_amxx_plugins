@@ -327,7 +327,7 @@ show_targets(id){
 		if(!is_user_bot(id)){
 			client_print(id,print_chat,"[SH] (ksun):Targets are:")
 			
-			new the_players[SH_MAXSLOTS], pnum, i		
+			static the_players[SH_MAXSLOTS], pnum, i		
 			get_players(the_players, pnum, "ah")
 			for (new k = 0; k < pnum; k++) {
 				

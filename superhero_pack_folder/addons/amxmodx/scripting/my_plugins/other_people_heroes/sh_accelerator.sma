@@ -26,7 +26,7 @@ public acc_loop()
 {
 	if ( !sh_is_active() || sh_is_freezetime() ) return
 
-	new the_players[SH_MAXSLOTS], pnum, id		
+	static the_players[SH_MAXSLOTS], pnum, id		
 	get_players(the_players, pnum, "ah")
 	for (new k = 0; k < pnum; k++) {
 		

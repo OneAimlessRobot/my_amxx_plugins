@@ -3,6 +3,7 @@
 #define I_WANT_MATH_FUNCS
 #define I_WANT_PDATA_ALIASES
 #define I_WANT_ENTITY_VECTORS
+#define I_WANT_QUICK_CHECKS
 #define I_WANT_CUSTOM_COLORS
 #define I_WANT_RESOURCE_ALIASES
 #define I_WANT_BASIC_MACROS
@@ -14,6 +15,7 @@
 #include "maria_riveter_inc/maria_general_funcs.inc"
 #include "maria_riveter_inc/maria_riveter_funcs.inc"
 #include "../my_include/my_author_header.inc"
+#include "sh_aux_stuff/sh_pokemon_dmg_framework.inc"
 
 #define PLUGIN_VER "1.0"
 #define PLUGIN_NAME "SUPERHERO Maria's riveter"
@@ -30,9 +32,26 @@ new wpn_name_for_future_lookup[50]
 new maria_riveter_wpn_id
 new dmg_source_name_short_riveter[SAFE_BUFFER_SIZE+1]="riveter"
 new dmg_source_name_log_riveter[SAFE_BUFFER_SIZE+1]="riveter"
+new gNumRivets[SH_MAXSLOTS+1]
 
 new bool:is_hostage_map = false
 
+enum {
+	MARIA_NO_ZOOM=0,
+	MARIA_FIRST_ZOOM=1,
+	MARIA_SECOND_ZOOM=2,
+	MARIA_MAX_ZOOM=3
+}
+
+enum maria_riveter_anims
+{
+	maria_riveter_anim_idle = 0,
+	maria_riveter_anim_reload,
+	maria_riveter_anim_draw,
+	maria_riveter_anim_shoot1,
+	maria_riveter_anim_shoot2,
+	maria_riveter_anim_shoot3
+}
 public plugin_init(){
 	
 
@@ -41,7 +60,7 @@ public plugin_init(){
 	register_forward(FM_CmdStart, "CmdStart");
 	
 	
-	wlt_get_def_name(my_weapon_ids:MARIA_WEAPON_CLASSID,wpn_name_for_future_lookup,charsmax(wpn_name_for_future_lookup))
+	wlt_get_def_name(MARIA_WEAPON_CLASSID,wpn_name_for_future_lookup,charsmax(wpn_name_for_future_lookup))
 	RegisterHam(Ham_Item_Deploy, wpn_name_for_future_lookup, "fw_ItemDeployPre",_,true)
 	RegisterHam(Ham_Weapon_PrimaryAttack, wpn_name_for_future_lookup, "fw_WeaponPrimaryAttackPre",_,true)
 	RegisterHam(Ham_Weapon_PrimaryAttack, wpn_name_for_future_lookup, "fw_Weapon_PrimaryAttack_Post", 1,true)	
@@ -67,13 +86,56 @@ public plugin_init(){
 
 
 }
+public plugin_natives(){
+
+	register_native("riveter_set_num_rivets","_riveter_set_num_rivets");
+	register_native("riveter_set_user_riveter","_riveter_set_user_riveter");
+	
+}
+
+public _riveter_set_user_riveter(iPlugin,iParams){
+	
+	new id = get_param(1),
+		bool:value = bool:get_param(2),
+		start_ammo = get_param(3)
+	
+	gNumRivets[id] = 0
+	sh_assign_id_custom_weapon_bit(id, SH_RIVETER, value);
+	if(value){
+		gNumRivets[id] = max_macro(1,start_ammo)
+		sh_give_weapon(id, MARIA_WEAPON_CLASSID,true)
+		new weapon_id=get_weapon_ent_of_player(id,MARIA_WEAPON_CLASSID)
+		if(is_valid_ent(weapon_id)){
+			
+			set_pdata_int(weapon_id, m_iClip, RIVETER_CLIP_SIZE, XO_WEAPON);
+			cs_set_user_bpammo(id, MARIA_WEAPON_CLASSID,gNumRivets[id]-RIVETER_CLIP_SIZE);
+		}
+	}
+	else{
+		if ( is_user_alive(id) ) {
+			sh_drop_weapon(id,MARIA_WEAPON_CLASSID,true);
+		}
+	}
+
+}
+public _riveter_set_num_rivets(iPlugin,iParams){
+	new id= get_param(1)
+	new value_to_set=get_param(2)
+	gNumRivets[id]=value_to_set;
+}
+
+public sh_round_end(){
+
+	remove_entity_name(MARIA_PROJECTILE_CLASSNAME)
+
+}
 public plugin_cfg(){
 
 
 	gHeroID = maria_get_hero_id()
 	
 	maria_riveter_wpn_id=sh_log_custom_damage_source(
-								gHeroID,
+								-1,
 								dmg_source_name_short_riveter,
 								dmg_source_name_log_riveter,
 								0)
@@ -115,7 +177,7 @@ public CmdStart(id, uc_handle)
 		return FMRES_IGNORED
 	}
 
-	if(!client_is_hero_user(id, gHeroID)){
+	if(!client_is_weapon_user(id, SH_RIVETER)){
 		
 		return FMRES_IGNORED
 	}
@@ -133,11 +195,11 @@ public CmdStart(id, uc_handle)
 	Assign_BitVar(trigger_is_down_mask, id,(button & IN_ATTACK));
 	
 	new  weapon = get_user_weapon(id);
-	if((weapon==MARIA_WEAPON_CLASSID)){
+	if((weapon==_:MARIA_WEAPON_CLASSID)){
 		
 		if(Get_BitVar(trigger_is_down_mask, id))
 		{	
-			new bool:cant_shoot = ((maria_riveter_get_num_rivets(id)<=0)) ||
+			new bool:cant_shoot = ((gNumRivets[id]<=0)) ||
 					(Get_BitVar(semi_automatic_mode_mask,id)?(bool:Get_BitVar(trigger_was_down_mask, id)):false)
 			
 			button &= ~IN_ATTACK;
@@ -172,7 +234,7 @@ public fw_Item_PostFrame(ent)
 		return HAM_IGNORED
 	}
 	static id; id = get_pdata_cbase(ent, m_pPlayer,XO_WEAPON)
-	if(!client_is_hero_user(id, gHeroID)){
+	if(!client_is_weapon_user(id, SH_RIVETER)){
 		
 		return HAM_IGNORED
 	}
@@ -204,12 +266,12 @@ public fw_WeaponReloadPre(entity)
 	
 	static pPlayer; pPlayer = get_pdata_cbase(entity, m_pPlayer,XO_WEAPON)
 	
-	if(!client_is_hero_user(pPlayer, gHeroID)){
+	if(!client_is_weapon_user(pPlayer, SH_RIVETER)){
 		
 		return HAM_IGNORED
 	}
 	g_Riveter_clip[pPlayer] = -1
-	static BPAmmo; BPAmmo = cs_get_user_bpammo(pPlayer, MARIA_WEAPON_CLASSID)
+	static BPAmmo; BPAmmo = cs_get_user_bpammo(pPlayer, _:MARIA_WEAPON_CLASSID)
 	static iClip; iClip = get_pdata_int(entity, m_iClip, XO_WEAPON)
 	
 	if(BPAmmo <= 0){
@@ -227,7 +289,7 @@ public fw_Weapon_Reload_Post(ent)
 		return HAM_IGNORED
 		
 	static id; id =  get_pdata_cbase(ent, m_pPlayer,XO_WEAPON)
-	if(!client_is_hero_user(id, gHeroID)){
+	if(!client_is_weapon_user(id, SH_RIVETER)){
 		
 		return HAM_IGNORED
 	}
@@ -249,7 +311,7 @@ public fw_ItemDeployPre(entity)
 		
 	static pPlayer; pPlayer = get_pdata_cbase(entity, m_pPlayer, XO_WEAPON)
 	
-	if(!client_is_hero_user(pPlayer, gHeroID)){
+	if(!client_is_weapon_user(pPlayer, SH_RIVETER)){
 		return HAM_IGNORED
 	}
 	ExecuteHam(Ham_Item_Deploy, entity)
@@ -270,7 +332,7 @@ public fw_WeaponPrimaryAttackPre(entity)
 
 	static pPlayer; pPlayer = get_pdata_cbase(entity, m_pPlayer, XO_WEAPON)
 	
-	if(!client_is_hero_user(pPlayer, gHeroID)){
+	if(!client_is_weapon_user(pPlayer, SH_RIVETER)){
 		return HAM_IGNORED
 	}
 
@@ -305,7 +367,7 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 		return
 		
 	static id; id = get_pdata_cbase(Ent, m_pPlayer, XO_WEAPON)
-	if(!client_is_hero_user(id, gHeroID)){
+	if(!client_is_weapon_user(id, SH_RIVETER)){
 		return
 	}
 
@@ -326,7 +388,7 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 launch_rivet(id)
 {
 
-if(!client_is_hero_user(id, gHeroID)){
+if(!client_is_weapon_user(id, SH_RIVETER)){
 		
 	return PLUGIN_CONTINUE
 }
@@ -373,7 +435,7 @@ if(!Get_BitVar(semi_automatic_mode_mask, id)){
 }
 
 entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
-maria_riveter_dec_num_rivets(id)
+gNumRivets[id]-= (gNumRivets[id]>0)? 1:0
 
 //rivet launch pos
 entity_set_vector(Ent,EV_VEC_vuser1,Origin)
@@ -408,6 +470,8 @@ public rrrrroovvetoooo_touque_playor(pToucher, pTouched)
 		is_air_shot= bool:!(FL_ONGROUND & entity_get_int(pTouched, EV_INT_flags));
 
 	}
+	new owner = entity_get_edict(pToucher,EV_ENT_owner);
+
 	new Float:rivet_launch_pos[3]
 	entity_get_vector(pToucher,EV_VEC_vuser1,rivet_launch_pos)
 	new Float:distance=vector_distance(origin,rivet_launch_pos);
@@ -436,6 +500,12 @@ public rrrrroovvetoooo_touque_playor(pToucher, pTouched)
 										explosion_sfx_show_nothing)
 	}
 	remove_entity(pToucher)
+
+	if(is_user_connected(owner)&&is_user_alive(pTouched)&&!sh_clients_are_same_team(pTouched,owner)){
+		sh_apply_staged_stat_boost(pTouched,owner,STAT_DEFENSE_MULT,_:(is_direct_hit)+_:(is_air_shot),false)
+		
+		sh_apply_staged_stat_boost(owner,owner,STAT_DEFENSE_MULT,_:(is_direct_hit)+_:(is_air_shot),true)
+	}
 }
 public plugin_precache()
 {

@@ -56,7 +56,7 @@ public plugin_natives(){
 
 public plugin_cfg(){
 
-	gHeroID = gatling_get_hero_id()
+	gHeroID = yakui_get_hero_id()
 }
 public _gatling_get_rockets(iPlugin,iParams){
 	new id=get_param(1)
@@ -80,8 +80,10 @@ public _gatling_set_num_rockets(iPlugin,iParams){
 	gNumRockets[id]=value_to_set;
 
 }
+public sh_round_end(){
+	remove_entity_name(ROCKET_CLASSNAME)
 
-public _gatling_get_num_rockets(iPlugin,iParams){
+}public _gatling_get_num_rockets(iPlugin,iParams){
 
 
 	new id= get_param(1)
@@ -110,7 +112,7 @@ public CmdStart(id, uc_handle)
 	if(!sh_is_active()||sh_is_freezetime()){
 		return FMRES_IGNORED
 	}
-	if ( sh_is_freezetime()||!client_is_hero_user(id, gHeroID)) return FMRES_IGNORED;
+	if ( sh_is_freezetime()||!client_is_weapon_user(id, SH_PILLGATLING)) return FMRES_IGNORED;
 	
 	new button = get_uc(uc_handle, UC_Buttons);
 	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);

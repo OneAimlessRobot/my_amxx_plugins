@@ -7,7 +7,7 @@
 #include <float>
 #include <xs>
 #include "../my_include/superheromod.inc"
-#include "tranq_gun_inc/sh_erica_get_set.inc"
+#include "tranq_gun_inc/sh_larissa_get_set.inc"
 #include "tranq_gun_inc/sh_man_hook_funcs.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
@@ -15,11 +15,11 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 
 
-#define PLUGIN "Superhero erica hook"
+#define PLUGIN "Superhero larissa hook"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-#define ERICA_HOOK_DUMMY_ENTITY_CLASSNAME "erica_hook"
+#define LARISSA_HOOK_DUMMY_ENTITY_CLASSNAME "larissa_hook"
 
 stock hook_on_mask = 0
 
@@ -39,7 +39,7 @@ stock g_player_hook[SH_MAXSLOTS+1]
 stock Float:g_prev_max_speed[SH_MAXSLOTS+1] = { 0.0, ...}
 stock g_hook_kills[SH_MAXSLOTS+1] = { 0 , ...}
 #define NUM_SENTENCES 5
-stock const erica_sentences[NUM_SENTENCES][]={
+stock const larissa_sentences[NUM_SENTENCES][]={
 	
 	"TAKE THIS! Wow... this think really went deep... Ok gotta get it off... HMMFFPPH!",
 	"Ahhh its too stuck! its between the guys ribs...",
@@ -63,7 +63,7 @@ new custom_dmg_id_gutting
 new hook_button_pressed_mask = 0
 
 //stock HOOK_TASKID
-spawn_erica_hook(id,target){
+spawn_larissa_hook(id,target){
 
 	if(!sh_is_active()) return
 
@@ -74,26 +74,26 @@ spawn_erica_hook(id,target){
 	if(is_valid_ent(g_player_hook[id])){
 		return
 	}
-	new erica_hook_to_be_spawned= create_entity("info_target")
-	if(!erica_hook_to_be_spawned){
+	new larissa_hook_to_be_spawned= create_entity("info_target")
+	if(!larissa_hook_to_be_spawned){
 
 		return
 	}
-	g_player_hook[id]=erica_hook_to_be_spawned
-	entity_set_string(erica_hook_to_be_spawned, EV_SZ_classname, ERICA_HOOK_DUMMY_ENTITY_CLASSNAME)
+	g_player_hook[id]=larissa_hook_to_be_spawned
+	entity_set_string(larissa_hook_to_be_spawned, EV_SZ_classname, LARISSA_HOOK_DUMMY_ENTITY_CLASSNAME)
 
-	entity_set_edict(erica_hook_to_be_spawned, EV_ENT_owner, id)
+	entity_set_edict(larissa_hook_to_be_spawned, EV_ENT_owner, id)
 
 	//the target
-	entity_set_edict(erica_hook_to_be_spawned,EV_ENT_euser1,target)
+	entity_set_edict(larissa_hook_to_be_spawned,EV_ENT_euser1,target)
 
 	//the times
-	entity_set_int(erica_hook_to_be_spawned, EV_INT_iuser1,floatround(HOOK_DRAG_THINK_TIMES))
+	entity_set_int(larissa_hook_to_be_spawned, EV_INT_iuser1,floatround(HOOK_DRAG_THINK_TIMES))
 
 
 	sh_assign_id_bit(id,SH_USING_HOOK_ATTACK, true)
 
-	entity_set_float(erica_hook_to_be_spawned, EV_FL_nextthink,
+	entity_set_float(larissa_hook_to_be_spawned, EV_FL_nextthink,
 				get_gametime()+HOOK_DRAG_THINK_PERIOD)
 }
 
@@ -108,15 +108,15 @@ public plugin_init(){
 	hook_drag_time_pcvar=create_cvar("hook_drag_time", "3")
 	gutting_dmg_mult_pcvar=create_cvar("hook_gutting_dmg_mult", "3")
 
-	RegisterHam(Ham_TakeDamage,"player","Erica_ham_trace_damage",1,true)
+	RegisterHam(Ham_TakeDamage,"player","larissa_ham_trace_damage",1,true)
 	
-	register_think(ERICA_HOOK_DUMMY_ENTITY_CLASSNAME,"hook_think")
+	register_think(LARISSA_HOOK_DUMMY_ENTITY_CLASSNAME,"hook_think")
 	register_forward(FM_CmdStart, "CmdStart")
 }
 public plugin_cfg(){
 
 
-	gHeroID=tranq_get_hero_id()
+	gHeroID=larissa_get_hero_id()
 
 	custom_dmg_id_gutting=sh_log_custom_damage_source(gHeroID,
 					dmg_source_name_short_gutting,
@@ -140,13 +140,13 @@ public sh_round_end()
 	}
 	for(new i=1;i< sh_maxplayers()+1;i++){
 
-		erica_new_spawn_hooks(i)
+		larissa_new_spawn_hooks(i)
 	}
 
-	remove_entity_name(ERICA_HOOK_DUMMY_ENTITY_CLASSNAME)
+	remove_entity_name(LARISSA_HOOK_DUMMY_ENTITY_CLASSNAME)
 }
 
-erica_new_spawn_hooks(id){
+larissa_new_spawn_hooks(id){
 
 if (  sh_is_active() && is_user_alive(id)&& sh_get_user_has_hero(id,gHeroID)) {
 	g_hook_kills[id]=cvar_val(num,max_hook_kills_per_life_pcvar);
@@ -264,8 +264,8 @@ public hook_think(ent)
 
 	if(!(times_left%SENTENCE_TICKS)){
 		new random_number=generate_int(0,NUM_SENTENCES-1);
-		sh_chat_message(id,gHeroID,"%s",erica_sentences[random_number]);
-		sh_chat_message(vic,gHeroID,"%s",erica_sentences[random_number]);
+		sh_chat_message(id,gHeroID,"%s",larissa_sentences[random_number]);
+		sh_chat_message(vic,gHeroID,"%s",larissa_sentences[random_number]);
 	}
 	times_left--;
 	entity_set_int(ent,EV_INT_iuser1,times_left)
@@ -380,7 +380,7 @@ public CmdStart(attacker, uc_handle)
 						entity_set_vector(attacker, EV_VEC_velocity, Float:{0.01,0.01,0.01})
 						g_prev_max_speed[attacker]=get_user_maxspeed(attacker)
 						set_user_maxspeed(attacker,0.1)
-						spawn_erica_hook(attacker,id)
+						spawn_larissa_hook(attacker,id)
 						get_user_name(attacker,att_name,127)
 						get_user_name(id,vic_name,127)
 						if(!is_user_bot(attacker)){
@@ -409,7 +409,7 @@ public CmdStart(attacker, uc_handle)
 	
 	return FMRES_IGNORED;
 }
-public Erica_ham_trace_damage(id, idinflictor, attacker, Float:damage, damagebits)
+public larissa_ham_trace_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
 if(damage <= 0.0){
 
@@ -471,10 +471,10 @@ if(sh_get_user_has_hero(attacker,gHeroID)&&!(cs_get_user_team(id)==att_team)&&is
 					new random_number=generate_int(0,NUM_SENTENCES-1);
 					
 					if(!is_user_bot(target)){
-						sh_chat_message(target,gHeroID,"%s",erica_sentences[random_number]);
+						sh_chat_message(target,gHeroID,"%s",larissa_sentences[random_number]);
 					}
 					if(!is_user_bot(attacker)){
-						sh_chat_message(attacker,gHeroID,"%s",erica_sentences[random_number]);
+						sh_chat_message(attacker,gHeroID,"%s",larissa_sentences[random_number]);
 					}
 					sh_bleed_user(target,attacker,BLEED_ULTRA,gHeroID)
 					static Float:tg_origin[3],

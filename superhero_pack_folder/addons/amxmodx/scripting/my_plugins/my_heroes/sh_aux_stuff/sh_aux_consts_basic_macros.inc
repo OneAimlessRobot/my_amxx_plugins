@@ -36,3 +36,5 @@
 	Or sh_create_hero
  */
 #define client_is_hero_user(%1,%2) (is_user_alive(%1)&&sh_get_user_has_hero(%1,%2))
+
+#define client_is_weapon_user(%1,%2) (is_user_alive(%1)&&sh_get_id_custom_weapon_bit(%1,%2))

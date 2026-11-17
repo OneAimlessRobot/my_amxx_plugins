@@ -112,7 +112,7 @@ new gMenuID = 0
 new gNumHostages = 0
 new gXpBounsC4ID = -1
 
-new gHelpHudSync, gHeroHudSync, gMsgSync1, gMsgSync2
+new gHelpHudSync, gHeroHudSync, gMsgSync1, gMsgSync2, gStatusMessageHudSyncMsg
 
 new bool:gMapBlockWeapons[31]	//1-30 CSW_ constants
 new bool:gXrtaDmgClientKill
@@ -155,6 +155,28 @@ new fwd_ShDamagePost
 new fwd_ShXpPost
 
 
+/*
+
+	to disable set it to zero or lower
+
+*/
+new const HUDSYNC_MODE = 1
+
+/*
+
+	Used only if in HUDSYNC_MODE!
+
+
+*/
+
+static const sh_custom_color:the_color_const_to_use_main = GREEN,
+		sh_custom_color:the_color_const_to_use_fx = FX_NONE,
+		Float:the_hud_sync_mode_fx_time = 0.0,
+		Float:the_hud_sync_mode_xpos = 0.0,
+		Float:the_hud_sync_mode_ypos = 0.89,
+		the_hud_sync_mode_fx_type = 0,
+		the_hud_sync_mode_alpha = 200
+
 
 //Level up sound
 new const gSoundLevel[] = "plats/elevbell1.wav"
@@ -166,7 +188,7 @@ new const gTeamName[4][] =  {
 	"CT",
 	"SPECTATOR"
 }
-
+#define MAIN_TIMER_PERIOD 1.0
 //==============================================================================================
 // XP Saving Method, do not modify this here, please see the top of the file.
 #if SAVE_METHOD == 1
@@ -189,7 +211,7 @@ public plugin_init()
 		set_fail_state("You can only load the ^"SuperHero Core^" once, please check your plugins-shero.ini")
 	}
 
-	sh_init_hero_array_lib(SH_MAXHEROS,_,_,sh_thrash_brat_dmg_type,sh_custom_weapon_ids)
+	sh_init_hero_array_lib(SH_MAXHEROS)
 
 	server_print("We currently support: %d client states in total!^n",sh_max_client_states())
 
@@ -339,6 +361,9 @@ public plugin_init()
 	gMsgSync1 = CreateHudSyncObj()
 	gMsgSync2 = CreateHudSyncObj()
 
+	if(HUDSYNC_MODE){
+		gStatusMessageHudSyncMsg = CreateHudSyncObj()
+	}
 	// Count number of hostages for sh_objectivexp
 	// This should have a better method of counting, maybe check when keyvalue is set
 	new ent = -1
@@ -494,7 +519,7 @@ public plugin_cfg()
 	buildHelpHud()
 
 	// Tasks
-	set_task(1.0, "loopMain", _, _, _, "b")
+	set_task(MAIN_TIMER_PERIOD, "loopMain", _, _, _, "b")
 	set_task(3.0, "setHeroLevels")
 	set_task(5.0, "setSvMaxspeed")
 	set_task(5.0, "cvarCheck")
@@ -2555,11 +2580,43 @@ writeStatusMessage(id, const message[256])
 	if ( !is_user_connected(id)) return
 	// Message is a max of 64 characters including null terminator
 	// Place in unreliable stream, not a necessary message
-	message_begin(MSG_ONE_UNRELIABLE, gmsgStatusText, _, id)
-	write_byte(0)
-	write_string(message)
-	message_end()
+	if(HUDSYNC_MODE<=0){
+		message_begin(MSG_ONE_UNRELIABLE, gmsgStatusText, _, id)
+		write_byte(0)
+		write_string(message)
+		message_end()
+		return
+	}
+	show_powers_hud_sync_mode(id, message)
 	
+
+}
+show_powers_hud_sync_mode(id, const message[256]){
+
+	static the_color_for_fx[4]
+
+
+	
+	for(new i=0; i< ((sizeof the_color_for_fx)-1); i++){
+
+		the_color_for_fx[i] = LineColors[the_color_const_to_use_fx][i]
+	}
+	the_color_for_fx[3] = 100
+
+	set_hudmessage(LineColors[the_color_const_to_use_main][0],
+					LineColors[the_color_const_to_use_main][1],
+					LineColors[the_color_const_to_use_main][2],
+					the_hud_sync_mode_xpos,
+					the_hud_sync_mode_ypos,
+					the_hud_sync_mode_fx_type,
+					the_hud_sync_mode_fx_time,
+					MAIN_TIMER_PERIOD,
+					_,_,_,
+					the_hud_sync_mode_alpha,
+					the_color_for_fx)
+
+	ShowSyncHudMsg(id,gStatusMessageHudSyncMsg,"%s",message)
+
 }
 //----------------------------------------------------------------------------------------------
 displayPowers(id, bool:setThePowers)
@@ -2583,8 +2640,8 @@ displayPowers(id, bool:setThePowers)
 	// OK Test What Level this Fool is
 	testLevel(id)
 
-	new message[256], temp[256]
-	new heroIndex, MaxBinds, bind_count, playerLevel, playerpowercount
+	static message[256], temp[256]
+	static heroIndex, MaxBinds, bind_count, playerLevel, playerpowercount
 	new menuid, mkeys
 
 	bind_count = 0

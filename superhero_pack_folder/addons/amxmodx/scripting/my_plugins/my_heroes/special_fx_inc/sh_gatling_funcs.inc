@@ -48,6 +48,12 @@ enum fire_mode_enum{
 }
 #define GAT_WINDUP_PERIOD 0.2
 
+native gatling_set_user_pillgatling(id, bool:value, start_ammo = 100)
+
+native gatling_set_num_pills(id,value_to_set)
+native gatling_get_num_pills(id)
+native gatling_dec_num_pills(id)
+
 native gatling_set_pillgatling(id,value_to_set)
 native gatling_get_pillgatling(id)
 

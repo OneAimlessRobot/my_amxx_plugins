@@ -38,7 +38,7 @@ stock const yandere_sentences[5][]={
 	"I want... all your blood. All of it.... and water the graves of my family with it."
 }
 
-
+static const DEBUG = 0
 
 stock hud_sync
 new Float:degen_iter_period
@@ -254,7 +254,7 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 public get_first_alive(){
 
 
-new the_players[SH_MAXSLOTS], pnum	
+static the_players[SH_MAXSLOTS], pnum	
 get_players(the_players, pnum, "ah")
 for (new k = 0; k < pnum; k++) {
 	//will immediatly return valid value if pnum is >0
@@ -326,12 +326,14 @@ notify_single_yandere_about_team_life(yandere_id,life_id=-1,disconnected=0){
 	if(can_transform && !Get_BitVar(gSuperAngryMask,yandere_id) && sh_is_inround() &&!sh_is_freezetime()){
 
 		Set_BitVar(gTransTimerStartedMask,yandere_id)
-
+		
 	}
 	else{
 
 		UnSet_BitVar(gTransTimerStartedMask,yandere_id)
-
+		if(DEBUG){
+			sh_chat_message(yandere_id,gHeroID,"Timer interrupted?")
+		}
 	}
 	
 	update_stats(yandere_id)
@@ -360,22 +362,22 @@ notify_yanderes_about_team_life(id=-1,disconnected=0){
 
 
 }
-public yandere_loop(id){
+public yandere_loop(task_id){
 	if ( !sh_is_active() || sh_is_freezetime() ) return
 
-	new the_players[SH_MAXSLOTS], pnum, i		
+	static the_players[SH_MAXSLOTS], pnum, id	
 	get_players(the_players, pnum, "ah")
 	for (new k = 0; k < pnum; k++) {
 		
-		i = the_players[k]
+		id = the_players[k]
 
-		if(!sh_get_user_has_hero(i,gHeroID)){
+		if(!sh_get_user_has_hero(id,gHeroID)){
 			continue
 		}
-		if(!is_user_bot(i)&&Get_BitVar(gTransTimerStartedMask,i)){
-			client_print(i,print_center,"All teamates died! Grief will take over in... %0.2fs^n",gTransTimer[i])
+		if(!is_user_bot(id)&&Get_BitVar(gTransTimerStartedMask,id)){
+			client_print(id,print_center,"All teamates died! Grief will take over in... %0.2fs^n",gTransTimer[id])
 		}
-		yandere_timer_transform(i)
+		yandere_timer_transform(id)
 	}
 }
 
@@ -520,8 +522,11 @@ public sh_client_spawn(id, bool:newRound)
 			if(!newRound&&(get_user_maxspeed(id)<gBaseSpeed[id])){
 				set_user_maxspeed(id,gBaseSpeed[id])
 			}
+			
 		}
-		
+		if(!newRound){
+			notify_yanderes_about_team_life(id)
+		}
 	}
 	
 }

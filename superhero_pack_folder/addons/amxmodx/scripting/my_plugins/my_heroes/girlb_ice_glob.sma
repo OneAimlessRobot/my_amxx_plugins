@@ -145,7 +145,7 @@ public player_on_ice_glob_checks(task_id){
 	if(!sh_is_active()||sh_is_freezetime()) return
 
 
-	new the_players[SH_MAXSLOTS], pnum, id		
+	static the_players[SH_MAXSLOTS], pnum, id		
 	get_players(the_players, pnum, "ah")
 	for (new i = 0; i < pnum; i++) {
 		

@@ -27,7 +27,6 @@ new Float:gHealthDrainValveTimer[SH_MAXSLOTS+1]
 new g_maria_points[SH_MAXSLOTS+1]
 new Float:g_base_radius[SH_MAXSLOTS+1]
 new Float:g_normal_radius[SH_MAXSLOTS+1]
-new gNumRivets[SH_MAXSLOTS+1]
 
 new Float:heal_period
 
@@ -76,7 +75,7 @@ public plugin_init()
 	pcvar_dmg_points_pct = create_cvar("maria_dmg_points_pct", "0.1")
 	pcvar_selfless_index = create_cvar("maria_selfless_index", "0.9")
 	pcvar_points_heal_coeff = create_cvar("maria_points_heal_coeff", "4")
-	gHeroID=shCreateHero(gHeroName, "Maria", "Martyr! Heal nearby teamates & become transparent", false, "maria_level")
+	gHeroID=shCreateHero(gHeroName, "Maria", "Martyr! Heal nearby teamates! become transparent", false, "maria_level")
 	
 
 	sh_assign_hero_bit(gHeroID,SH_EXPLOSION_POWERS, true)
@@ -86,14 +85,10 @@ public plugin_init()
 	register_forward(FM_TraceLine,"fw_traceline",1);
 	RegisterHam(Ham_TakeDamage,"player", "maria_damage", 1, true)
 
-	sh_assign_hero_projectile_weapon_bit(gHeroID,my_weapon_ids:MARIA_WEAPON_CLASSID,true)
+	sh_assign_hero_projectile_weapon_bit(gHeroID, MARIA_WEAPON_CLASSID,true)
 }
 public plugin_natives(){
 
-	register_native("maria_riveter_dec_num_rivets","_maria_riveter_dec_num_rivets");
-	register_native("maria_riveter_get_num_rivets","_maria_riveter_get_num_rivets");
-	register_native("maria_riveter_set_num_rivets","_maria_riveter_set_num_rivets");
-	
 	
 	register_native("maria_get_hero_id","_maria_get_hero_id");
 	
@@ -102,34 +97,9 @@ public plugin_natives(){
 
 }
 
-public _maria_riveter_set_num_rivets(iPlugin,iParams){
-	new id= get_param(1)
-	new value_to_set=get_param(2)
-	gNumRivets[id]=value_to_set;
-}
 public _maria_get_hero_id(iPlugin,iParams){
 	
 	return gHeroID
-}
-public _maria_riveter_get_num_rivets(iPlugin,iParams){
-
-
-	new id= get_param(1)
-	return gNumRivets[id]
-
-}
-
-public _maria_riveter_dec_num_rivets(iPlugin,iParams){
-
-
-	new id= get_param(1)
-	gNumRivets[id]-= (gNumRivets[id]>0)? 1:0
-
-}
-public sh_round_end(){
-
-	remove_entity_name(MARIA_PROJECTILE_CLASSNAME)
-
 }
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()
@@ -159,6 +129,7 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 
 	if(sh_get_user_has_hero(id, gHeroID)){
 		
+		maria_weapons(id)
 		
 
 		UnSet_BitVar(gHealthDrainValveMask,id);
@@ -166,14 +137,14 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 
 		g_maria_points[id]=cvar_val(num, pcvar_base_points);
 		g_base_radius[id]=cvar_val(float, pcvar_base_radius);
-		gNumRivets[id]=cvar_val(num, pcvar_maria_max_rivets);
 		gHealthDrainValveTimer[id]=cvar_val(float, pcvar_begin_open_valve_timer);
+		
 
 		
-		maria_weapons(id)
 	}
 	else{
-		sh_drop_weapon(id,MARIA_WEAPON_CLASSID,true);
+		
+		riveter_set_user_riveter(id,false,0)
 		g_maria_points[id]=0;
 		g_base_radius[id]=0.0
 	}
@@ -185,13 +156,8 @@ maria_weapons(id)
 {
 	if ( sh_is_active() && is_user_alive(id)&&sh_get_user_has_hero(id,gHeroID) ) {
 		give_custom_grenades(id,GREN_CO2,5)
-		sh_give_weapon(id, MARIA_WEAPON_CLASSID,true)
-		new weapon_id=get_weapon_ent_of_player(id,MARIA_WEAPON_CLASSID)
-		if(is_valid_ent(weapon_id)){
-			
-			set_pdata_int(weapon_id, m_iClip, RIVETER_CLIP_SIZE, XO_WEAPON);
-			cs_set_user_bpammo(id, MARIA_WEAPON_CLASSID,gNumRivets[id]-RIVETER_CLIP_SIZE);
-		}
+		riveter_set_user_riveter(id,true,cvar_val(num, pcvar_maria_max_rivets))
+		
 	}
 }
 add_points(id,Float:damage){
@@ -344,7 +310,7 @@ public fw_traceline(Float:v1[3],Float:v2[3],noMonsters,id,  trace)
 public maria_loop(id){
 
 	if ( !sh_is_active()) return
-	new the_players[SH_MAXSLOTS], pnum, i
+	static the_players[SH_MAXSLOTS], pnum, i
 
 	get_players(the_players, pnum, "ah")
 	for (new k = 0; k < pnum; k++) {
@@ -397,7 +363,6 @@ public sh_client_spawn(id)
 	if(is_user_alive(id) && sh_is_active()){
 		if ( sh_get_user_has_hero(id,gHeroID) ) {
 
-			gNumRivets[id]=cvar_val(num, pcvar_maria_max_rivets)
 			UnSet_BitVar(gHealthDrainValveMask,id);
 			gHealthDrainValveTimer[id]=cvar_val(float, pcvar_begin_open_valve_timer)
 			Set_BitVar(gHealthDrainValveTimerStartedMask,id);

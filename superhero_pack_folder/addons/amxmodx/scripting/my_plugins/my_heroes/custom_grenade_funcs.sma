@@ -86,7 +86,7 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 	
 	{"molotov_cocktail",
 					"models/shmod/custom_nades_hackaround/w_hegrenade.mdl",
-					"shmod/erica/molotov/molotov_crack.wav",
+					"shmod/larissa/molotov/molotov_crack.wav",
 					"",
 					MY_CSW_HEGRENADE,
 					PINK,

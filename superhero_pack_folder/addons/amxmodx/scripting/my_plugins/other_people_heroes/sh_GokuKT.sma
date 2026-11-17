@@ -55,16 +55,29 @@ gokukt_health 800 // How much HP does goku have in kaioken mode.
 #define I_WANT_PDATA_ALIASES
 #define I_WANT_CUSTOM_COLORS
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include <amxmodx>
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
-#include "../my_heroes/bleed_knife_inc/sh_bknife_fx.inc"
+#include "../my_heroes/sh_aux_stuff/sh_pokemon_dmg_framework.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 
 // GLOBAL VARIABLES
 new HeroName[] = "Saiyan Kaioken Technic"
 
-new GokuKTTimer[SH_MAXSLOTS+1]
+#define KAIOKEN_FX_TASK_PERIOD 0.333
+
+#define POWERUP_GLOBAL_TASK_PERIOD 1.0
+/*
+	first slot means time
+	second slot means: "Did we apply defense boost during last activation?"
+*/
+enum goku_timer_enum{
+
+	the_time,
+	bool:boost_succeeded
+}
+new GokuKTTimer[SH_MAXSLOTS+1][goku_timer_enum]
 //reset variables
 new bool:reset_speed[SH_MAXSLOTS+1], bool:reset_health[SH_MAXSLOTS+1], bool:reset_armor[SH_MAXSLOTS+1]
 new goku_kt_dmg_boost_wpn_short_name[SAFE_BUFFER_SIZE+1]="goku_kt_dmg_boost"
@@ -76,6 +89,9 @@ new goku_speed, goku_hp, goku_ap, goku_time, goku_cooldown
 
 //pcvar holders (floats)
 
+
+stock GOKUKT_SPECIAL_FX_TASKID = -1,
+		GOKUKT_LOOP_TASKID = -1
 
 new goku_kt_dmg_mult = -1,
 	goku_kt_dmg_res = -1
@@ -107,8 +123,10 @@ public plugin_init()
 	
 	RegisterHam(Ham_TakeDamage,"player","Kaioken_Damage",1,true)
 
+	GOKUKT_LOOP_TASKID = allocate_typed_task_id(generic_task)
+	GOKUKT_SPECIAL_FX_TASKID = allocate_typed_task_id(player_task)
 	// LOOP
-	set_task(1.0, "gokukt_loop", 0, "", 0, "b") //forever loop
+	set_task(POWERUP_GLOBAL_TASK_PERIOD, "gokukt_loop", GOKUKT_LOOP_TASKID,_,_, "b") //forever loop
 	 
 }
 public Kaioken_Damage(id, idinflictor, attacker, Float:damage, damagebits){
@@ -130,7 +148,7 @@ public Kaioken_Damage(id, idinflictor, attacker, Float:damage, damagebits){
 	new bool:has_hero= bool:sh_get_user_has_hero(attacker,gHeroID) 
 
 	//I had to tell her not to bleed her teammates
-	if ( has_hero && ( GokuKTTimer[attacker] >0 ) &&  !sh_clients_are_same_team(attacker,id)) {
+	if ( has_hero && ( GokuKTTimer[attacker][the_time] > 0 ) &&  !sh_clients_are_same_team(attacker,id)) {
 		
 		
 		new rounded_dmg = floatround(damage)
@@ -157,8 +175,8 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_
 	
 		return DMG_FWD_PASS
 	}
-	new bool:attacker_is_kaioken= ((GokuKTTimer[attacker] >0 ) && sh_get_user_has_hero(attacker,gHeroID)) 
-	new bool:victim_is_kaioken= ((GokuKTTimer[victim] >0 ) && sh_get_user_has_hero(victim,gHeroID))
+	new bool:attacker_is_kaioken= ((GokuKTTimer[attacker][the_time] > 0 ) && sh_get_user_has_hero(attacker,gHeroID)) 
+	new bool:victim_is_kaioken= ((GokuKTTimer[victim][the_time] > 0 ) && sh_get_user_has_hero(victim,gHeroID))
 
 	new dmg_fwd_ret_id:result= DMG_FWD_PASS
 	if(CUSTOM_DMG_TYPE_IS_DBZ(new_dmg_type)){
@@ -191,7 +209,8 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(!sh_get_user_has_hero(id,gHeroID))
 	{
 		if ( is_user_connected(id)) {
-			GokuKTTimer[id] = 0
+			GokuKTTimer[id][the_time] = 0
+			GokuKTTimer[id][boost_succeeded] = false
 		}
 	}
 }
@@ -201,7 +220,8 @@ public sh_client_spawn(id)
 	reset_speed[id] = false
 	reset_health[id] = false
 	reset_armor[id] = false
-	GokuKTTimer[id] = 0
+	GokuKTTimer[id][the_time] = 0
+	GokuKTTimer[id][boost_succeeded] = false
 }
 
 //----------------------------------------------------------------------------------------------
@@ -220,7 +240,7 @@ switch(key)
 // RESPOND TO KEYDOWN
 public gokukt_kd(id)
 {
-	if ( sh_is_freezetime() ) return;
+	if ( sh_is_freezetime() || !sh_is_inround() ) return;
 	
 	if ( !is_user_alive(id) ) return;
 	
@@ -230,28 +250,32 @@ public gokukt_kd(id)
 		return
 	}
 	// Make sure they're not in the middle of Kaioken already
-	if ( GokuKTTimer[id] > 0 ) return;
+	if ( GokuKTTimer[id][the_time] > 0 ) return;
 	
-	GokuKTTimer[id] = get_pcvar_num(goku_time) + 1
+	GokuKTTimer[id][the_time] = get_pcvar_num(goku_time) + 1
 	gokukt_kaiokenmode(id)
 	sh_set_cooldown(id, get_pcvar_float(goku_cooldown))
 }
 //----------------------------------------------------------------------------------------------
-public gokukt_loop()
+public gokukt_loop(taskid)
 {
-	for ( new id = 1; id < sh_maxplayers()+1; id++ ) {
-		if (sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) && GokuKTTimer[id] >= 0 ) {
-			if ( GokuKTTimer[id] > 0 ) {
-				GokuKTTimer[id]--
+	static the_players[SH_MAXSLOTS], pnum, id		
+	get_players(the_players, pnum, "h")
+	for (new i = 0; i < pnum; i++) {
+		
+		id = the_players[i]
+		if (sh_get_user_has_hero(id,gHeroID) && GokuKTTimer[id][the_time] >= 0 ) {
+			if ( GokuKTTimer[id][the_time] > 0 ) {
+				GokuKTTimer[id][the_time]--
 				set_render_with_color_const(id,RED,1,255,
 						_,
 						0,_,
 						1.0,0,_,kRenderNormal,PRIO_RENDER_POWERUP,gHeroID)
 				set_hudmessage(255, 0, 0, -1.0, 0.3, 0, 1.0, 1.0, 0.0, 0.0)
-				show_hudmessage(id, "%d seconds left of Kaioken Mode", GokuKTTimer[id])
+				show_hudmessage(id, "%d seconds left of Kaioken Mode", GokuKTTimer[id][the_time])
 			}
-			else if ( GokuKTTimer[id] == 0 ) {
-				GokuKTTimer[id] = -1
+			else if ( GokuKTTimer[id][the_time]  <= 0 ) {
+				GokuKTTimer[id][the_time] = -1
 				end_kaioken(id)
 			}
 		}
@@ -275,14 +299,26 @@ public end_kaioken(id)
 		sh_set_hp(id, set_health)
 
 		reset_health[id] = false
+		
+		if(GokuKTTimer[id][boost_succeeded]){
 
-		sh_bleed_user(id,id,BLEED_MINI,gHeroID,0,MY_HIT_GENERIC)
+			/*
+				
+				yes I know they can get lowered during kaioken too idc
+			
+			*/
+			sh_apply_staged_stat_boost(id,id,STAT_DEFENSE_MULT,2,false)
+
+			
+		}
+
 		
 	}
 	if ( reset_armor[id] ) {
 		set_user_armor(id, set_armor)
 		reset_armor[id] = false
 	}
+	GokuKTTimer[id][boost_succeeded] = false
 }
 //----------------------------------------------------------------------------------------------
 public gokukt_kaiokenmode(id)
@@ -310,22 +346,27 @@ public gokukt_kaiokenmode(id)
 		set_hudmessage(255, 0, 0, -1.0, 0.3, 0, 0.25, 1.0, 0.0, 0.0)
 		show_hudmessage(id, "5 Times x Kaioken! Haaaa!")
 		emit_sound(0, CHAN_AUTO, "shmod/kaiokenbonini.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-		powerup_effect(parm)
-		set_task(0.1, "powerup_effect", 0, parm, 2, "a", 85)
+		GokuKTTimer[id][boost_succeeded] = sh_apply_staged_stat_boost(id, id, STAT_SPECIAL_ATTACK_MULT,2,true)
+		powerup_effect(parm,id+GOKUKT_SPECIAL_FX_TASKID)
 	}
 }
 
-public powerup_effect(parm[])
-{
+public powerup_effect(parm[2], taskid)
+{	
 	if ( !sh_is_active()) return
 
+	taskid-=GOKUKT_SPECIAL_FX_TASKID
+	
 	new id = parm[0]
 
 	if ( !is_user_alive(id) ) return
 
+	if ( !sh_get_user_has_hero(id,gHeroID) || (GokuKTTimer[id][the_time]  <= 0) ) {
+		return
+	}
 	new Size = parm[1]
-	new players[SH_MAXSLOTS], pnum
-	new idOthers, Origin[3]
+	static players[SH_MAXSLOTS], pnum
+	static idOthers, Origin[3]
 
 	get_players(players, pnum, "ah")
 
@@ -391,5 +432,7 @@ public powerup_effect(parm[])
 		write_byte(50)			// brightness
 		message_end()
 	}
+
+	set_task(KAIOKEN_FX_TASK_PERIOD, "powerup_effect", taskid+GOKUKT_SPECIAL_FX_TASKID, parm, sizeof(parm))
 }
 //------------------------------------------------------------------------------------

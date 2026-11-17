@@ -3,7 +3,7 @@
 #endif
 #define sh_maria_riveter_funcs
 
-#define MARIA_WEAPON_CLASSID CSW_UMP45
+#define MARIA_WEAPON_CLASSID MY_CSW_UMP45
 #define MARIA_PROJECTILE_CLASSNAME "maria_rivet"
 
 
@@ -47,25 +47,8 @@
 
 #define RIVETER_CLIP_SIZE 117
 
-enum {
-	MARIA_NO_ZOOM=0,
-	MARIA_FIRST_ZOOM=1,
-	MARIA_SECOND_ZOOM=2,
-	MARIA_MAX_ZOOM=3
-}
 
-enum maria_riveter_anims
-{
-	maria_riveter_anim_idle = 0,
-	maria_riveter_anim_reload,
-	maria_riveter_anim_draw,
-	maria_riveter_anim_shoot1,
-	maria_riveter_anim_shoot2,
-	maria_riveter_anim_shoot3
-}
-
-native maria_riveter_set_num_rivets(id,value_to_set)
-native maria_riveter_get_num_rivets(id)
-native maria_riveter_dec_num_rivets(id)
+native riveter_set_user_riveter(id, bool:value, start_ammo = 100)
+native riveter_set_num_rivets(id,value_to_set)
 
 

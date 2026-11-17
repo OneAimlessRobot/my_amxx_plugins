@@ -201,3 +201,5 @@ stock print_all_poems_debug(){
 		send_poem_function(0,poem_idx:i)
 	}
 }
+
+native salome_get_hero_id();

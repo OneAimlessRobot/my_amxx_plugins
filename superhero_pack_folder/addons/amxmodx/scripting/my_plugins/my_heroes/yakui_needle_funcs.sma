@@ -18,6 +18,7 @@
 new fx_id:curr_needle_fx[SH_MAXSLOTS+1]
 new needle_on_mask = 0
 
+new mode_change_button_pressed_mask = 0;
 
 public plugin_init(){
 	
@@ -27,6 +28,7 @@ public plugin_init(){
 	RegisterHam(Ham_TakeDamage, "player", "Ham_Needle",_,true)
 	RegisterHam(Ham_Weapon_SecondaryAttack, "weapon_knife", "Ham_Needle_Swing",1,true)
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
+	register_forward(FM_CmdStart, "player_prethink_yakui_weapon");
 }
 
 public plugin_natives(){
@@ -37,6 +39,38 @@ public plugin_natives(){
 	register_native( "gatling_get_needle_fx","_gatling_get_needle_fx")
 	register_native( "gatling_needle_cycle_fx","_gatling_needle_cycle_fx")
 
+}//----------------------------------------------------------------------------------------------
+public player_prethink_yakui_weapon(id, uc_handle)
+{
+
+
+	if(!sh_is_active()||sh_is_freezetime()){
+		return FMRES_IGNORED
+	}
+	if ( !is_user_alive(id) ||!sh_get_user_has_hero(id, gHeroID) ) return FMRES_IGNORED;
+
+	if(sh_get_id_bit(id, SH_CONTROLLING_VEHICLE)) return FMRES_IGNORED
+
+	static button;
+	button= get_uc(uc_handle, UC_Buttons);
+	new wpnid=get_user_weapon(id)
+	if(button & IN_ALT1){
+
+		button &= ~IN_ALT1
+		set_uc(uc_handle, UC_Buttons, button)
+		if(!Get_BitVar(mode_change_button_pressed_mask, id)){
+			if(wpnid==CSW_KNIFE){
+				Set_BitVar(mode_change_button_pressed_mask, id);
+				new has_needle=gatling_get_needle(id)
+				gatling_set_needle(id,!has_needle)
+			}
+		}
+	}
+	else{
+
+		UnSet_BitVar(mode_change_button_pressed_mask, id);
+	}
+	return FMRES_IGNORED;
 }
 public weaponChange(id)
 {
@@ -151,7 +185,7 @@ public playertrail(pid)
 //----------------------------------------------------------------------------------------------
 public plugin_cfg()
 {
-	gHeroID = gatling_get_hero_id()
+	gHeroID = yakui_get_hero_id()
 	
 }
 public _gatling_get_needle(iPlugin,iParams){

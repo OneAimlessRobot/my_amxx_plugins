@@ -21,7 +21,6 @@
 
 new const gHeroName[] = "Yakui Mk2"
 
-new mode_change_button_pressed_mask = 0
 
 new pcvar_max_pills
 new pcvar_max_rockets
@@ -55,65 +54,19 @@ public plugin_init()
 								"Ready for a trip?",
 								"Hmpf...")
 
-	register_forward(FM_CmdStart, "player_prethink_yakui_weapon");
 
 
 	sh_assign_hero_projectile_weapon_bit(gHeroID,my_weapon_ids:YAKUI_WEAPON_CLASSID,true)
 
-	register_event("CurWeapon", "weaponChange","be","1=1")
 
 }
 public plugin_natives(){
-	register_native("gatling_get_hero_id","_gatling_get_hero_id");
+	register_native("yakui_get_hero_id","_yakui_get_hero_id");
 }
 
-public _gatling_get_hero_id(iPlugin,iParams){
+public _yakui_get_hero_id(iPlugin,iParams){
 	return gHeroID
 }
-
-//----------------------------------------------------------------------------------------------
-public player_prethink_yakui_weapon(id, uc_handle)
-{
-
-
-	if(!sh_is_active()||sh_is_freezetime()){
-		return FMRES_IGNORED
-	}
-	if ( !is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID) ) return FMRES_IGNORED;
-
-	if(sh_get_id_bit(id, SH_CONTROLLING_VEHICLE)) return FMRES_IGNORED
-
-	static button;
-	button= get_uc(uc_handle, UC_Buttons);
-	new wpnid=get_user_weapon(id)
-	if(button & IN_ALT1){
-
-		button &= ~IN_ALT1
-		set_uc(uc_handle, UC_Buttons, button)
-		if(!Get_BitVar(mode_change_button_pressed_mask, id)){
-			if(wpnid==YAKUI_WEAPON_CLASSID){
-				Set_BitVar(mode_change_button_pressed_mask, id);
-				new has_rockets=gatling_get_rockets(id)
-				new has_pgatling=gatling_get_pillgatling(id)
-				gatling_set_pillgatling(id,!has_pgatling)
-				gatling_set_rockets(id,!has_rockets)
-				sh_chat_message(id,gHeroID,"Engaged %s mode! %s",!has_rockets?"Rocket propelled syringe":"Pill shooting gatling",!has_rockets?"MOUSE1 attacks are disabled!":"")
-			}
-		
-			else if(wpnid==CSW_KNIFE){
-				Set_BitVar(mode_change_button_pressed_mask, id);
-				new has_needle=gatling_get_needle(id)
-				gatling_set_needle(id,!has_needle)
-			}
-		}
-	}
-	else{
-
-		UnSet_BitVar(mode_change_button_pressed_mask, id);
-	}
-	return FMRES_IGNORED;
-}
-
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
@@ -125,13 +78,13 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 	else{
 	
 		clear_yakui(id)
+		gatling_set_user_pillgatling(id,false)
 	}
 	
 }
 
 init_yakui(id){
 
-	gatling_set_num_pills(id,cvar_val(num, pcvar_max_pills))
 	gatling_set_num_rockets(id,cvar_val(num, pcvar_max_rockets))
 	gatling_set_pillgatling(id,1)
 	gatling_set_rockets(id,0)
@@ -145,8 +98,6 @@ reset_yakui(id){
 
 	if(!sh_is_active()||!sh_get_user_has_hero(id,gHeroID)) return;
 	
-	UnSet_BitVar(mode_change_button_pressed_mask, id);
-	gatling_set_num_pills(id,cvar_val(num, pcvar_max_pills))
 	gatling_set_num_rockets(id,cvar_val(num, pcvar_max_rockets))
 	yakui_weapons(id)
 
@@ -155,10 +106,8 @@ reset_yakui(id){
 }
 clear_yakui(id){
 
-	gatling_set_num_pills(id,0)
 	gatling_set_num_rockets(id,0)
-	sh_drop_weapon(id, YAKUI_WEAPON_CLASSID, true)
-	remove_entity_name(ROCKET_CLASSNAME)
+	gatling_set_user_pillgatling(id,true,0)
 
 
 
@@ -166,14 +115,8 @@ clear_yakui(id){
 public yakui_weapons(id){
 
 if ( sh_is_active() && is_user_alive(id) && sh_get_user_has_hero(id,gHeroID) ) {
-	sh_give_weapon(id, YAKUI_WEAPON_CLASSID,true)
-	new weapon_id=get_weapon_ent_of_player(id,YAKUI_WEAPON_CLASSID)
-	if(is_valid_ent(weapon_id)){
-		set_pdata_int(weapon_id, m_iClip, PILLGATLING_CLIP_SIZE, XO_WEAPON);
-		cs_set_user_bpammo(id, YAKUI_WEAPON_CLASSID,gatling_get_num_pills(id)-PILLGATLING_CLIP_SIZE);
-		give_custom_grenades(id,GREN_RANDOM_FX,10)
-		
-	}
+	gatling_set_user_pillgatling(id,true,cvar_val(num, pcvar_max_pills))
+	give_custom_grenades(id,GREN_RANDOM_FX,10)
 }
 
 }
@@ -192,28 +135,6 @@ public sh_client_spawn(id)
 	
 }
 
-//----------------------------------------------------------------------------------------------
-public switchmodel(id)
-{
-	if ( !is_user_alive(id) || !sh_get_user_has_hero(id,gHeroID) ) return
-	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
-	if (wpnid == YAKUI_WEAPON_CLASSID) {
-		// Weapon Model change thanks to [CCC]Taz-Devil
-		entity_set_string(id, EV_SZ_viewmodel, GATLING_V_MODEL)
-		entity_set_string(id, EV_SZ_weaponmodel, GATLING_P_MODEL)
-	}
-}
-//----------------------------------------------------------------------------------------------
-public weaponChange(id)
-{
-	if ( !sh_get_user_has_hero(id,gHeroID) || !sh_is_active() ) return
-
-	new wpnid = read_data(2)
-
-	if ( wpnid != YAKUI_WEAPON_CLASSID && (!gatling_get_pillgatling(id) ||!gatling_get_rockets(id)) ) return
-
-	switchmodel(id)
-}
 
 //----------------------------------------------------------------------------------------------
 public sh_hero_key(id, heroID, sh_key_mode:key)

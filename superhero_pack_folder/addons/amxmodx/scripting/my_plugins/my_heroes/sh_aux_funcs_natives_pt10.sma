@@ -78,7 +78,7 @@ public plugin_cfg(){
 
 	gHeroID_SuperNoodle = supernoodle_get_hero_id()
 
-	gHeroID_Yakui = gatling_get_hero_id()
+	gHeroID_Yakui = yakui_get_hero_id()
 
 	gHeroID_ksun = spores_ksun_hero_id()
 

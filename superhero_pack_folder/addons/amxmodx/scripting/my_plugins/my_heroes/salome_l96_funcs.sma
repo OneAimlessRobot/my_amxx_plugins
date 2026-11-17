@@ -16,16 +16,43 @@
 #include "special_fx_inc/sh_yakui_get_set.inc"
 #include "salome_inc/sh_salome_l96_include.inc"
 #include "salome_inc/sh_salome_general_include.inc"
+#include "sh_aux_stuff/sh_pokemon_dmg_framework.inc"
 #include "../my_include/my_author_header.inc"
 #include "../my_include/auxiliar_stuff.inc"
 
 #define PLUGIN_VER "1.0"
 #define PLUGIN_NAME "SUPERHERO Salomé Freitas: L96 weapon_thingie"
 
+/*
+enum
+{
+    CS_RESET_ZOOM = 0,      // Reset any zoom blocking (mode has no effect)
+    CS_SET_NO_ZOOM,         // Disable any sort of zoom
+    CS_SET_FIRST_ZOOM,      // Set first zoom level (AWP style)
+    CS_SET_SECOND_ZOOM,     // Set second zoom level (AWP style)
+    CS_SET_AUGSG552_ZOOM,   // Set AUG/SG552 zoom style
+};
+*/
+
+enum{
+	SALOME_NO_ZOOM=0,
+	SALOME_FIRST_ZOOM=1,
+	SALOME_SECOND_ZOOM=2,
+	SALOME_MAX_ZOOM=3
+}
+enum{
+	SEQ_IDLE1=0,
+ 	SEQ_SHOOT1=1,
+	SEQ_SHOOT2=2,
+	SEQ_SHOOT3=3,
+	SEQ_RELOAD=4,
+	SEQ_DRAW=5
+}
 
 new trigger_is_down_mask = 0
 new trigger_was_down_mask = 0
 new Float:g_Recoil[SH_MAXSLOTS+1][3]
+new gNumBullets[SH_MAXSLOTS+1]
 new g_L96_clip[SH_MAXSLOTS+1]
 new pcvar_dmg_headshot_mult,
 	pcvar_xp_distance_mult;
@@ -74,10 +101,56 @@ public plugin_init(){
 	init_poem_delims()
 
 }
+public plugin_natives(){
+	
+	register_native("l96_set_user_l96","_l96_set_user_l96");
+	register_native("l96_set_num_bullets","_l96_set_num_bullets");
+}
+public sh_round_end(){
+
+	remove_entity_name(SALOME_PROJECTILE_CLASSNAME)
+
+}
+
+public _l96_set_user_l96(iPlugin,iParams){
+	
+	new id = get_param(1),
+		bool:value = bool:get_param(2),
+		start_ammo = get_param(3)
+
+
+	gNumBullets[id] = 0
+	
+	sh_assign_id_custom_weapon_bit(id, SH_L96A1, value);
+	if(value){
+
+		gNumBullets[id] = max_macro(1,start_ammo)
+		sh_give_weapon(id, SALOME_WEAPON_CLASSID,true)
+		
+		new weapon_id=get_weapon_ent_of_player(id,SALOME_WEAPON_CLASSID)
+		if(is_valid_ent(weapon_id)){
+
+			set_pdata_int(weapon_id, m_iClip, SALOME_L96_CLIP_SIZE, XO_WEAPON);
+			cs_set_user_bpammo(id, SALOME_WEAPON_CLASSID,gNumBullets[id]-SALOME_L96_CLIP_SIZE);
+		}
+	}
+	else{
+		if ( is_user_alive(id) ) {
+			sh_drop_weapon(id, SALOME_WEAPON_CLASSID, true)
+		}
+	}
+
+}
+		
+public _l96_set_num_bullets(iPlugin,iParams){
+	new id= get_param(1)
+	new value_to_set=get_param(2)
+	gNumBullets[id]=value_to_set;
+}
 public plugin_cfg(){
 
 	gHeroID = salome_get_hero_id()
-	custom_dmg_id_l96=sh_log_custom_damage_source(gHeroID,dmg_source_name_short_l96,dmg_source_name_log_l96,0)
+	custom_dmg_id_l96=sh_log_custom_damage_source(-1,dmg_source_name_short_l96,dmg_source_name_log_l96,0)
 
 }
 public bulette_thinque(ent){
@@ -127,7 +200,7 @@ public CmdStart(id, uc_handle)
 	if(!sh_is_active()||sh_is_freezetime()){
 		return FMRES_IGNORED
 	}
-	if(!client_is_hero_user(id, gHeroID)){
+	if(!client_is_weapon_user(id, SH_L96A1)){
 		
 		return FMRES_IGNORED
 	}
@@ -146,7 +219,7 @@ public CmdStart(id, uc_handle)
 		{
 
 			button &= ~IN_ATTACK;
-			if(Get_BitVar(trigger_was_down_mask, id)||(salome_l96_get_num_bullets(id)<=0)){
+			if(Get_BitVar(trigger_was_down_mask, id)||(gNumBullets[id]<=0)){
 				set_uc(uc_handle, UC_Buttons, button);
 				return FMRES_SUPERCEDE
 			}
@@ -161,7 +234,7 @@ public fw_Item_PostFrame(ent)
 		return HAM_IGNORED
 	}
 	static id; id = get_pdata_cbase(ent, m_pPlayer,XO_WEAPON)
-	if(!client_is_hero_user(id, gHeroID)){
+	if(!client_is_weapon_user(id, SH_L96A1)){
 		
 		return HAM_IGNORED
 	}
@@ -194,7 +267,7 @@ public fw_WeaponReloadPre(entity)
 	
 	static pPlayer; pPlayer = get_pdata_cbase(entity, m_pPlayer,XO_WEAPON)
 	
-	if(!client_is_hero_user(pPlayer, gHeroID)){
+	if(!client_is_weapon_user(pPlayer, SH_L96A1)){
 		
 		return HAM_IGNORED
 	}
@@ -217,7 +290,7 @@ public fw_Weapon_Reload_Post(ent)
 		return HAM_IGNORED
 		
 	static id; id = get_pdata_cbase(ent, m_pPlayer,XO_WEAPON)
-	if(!client_is_hero_user(id, gHeroID)){
+	if(!client_is_weapon_user(id, SH_L96A1)){
 		
 		return HAM_IGNORED
 	}
@@ -239,7 +312,7 @@ public fw_ItemDeployPre(entity)
 		
 	static pPlayer; pPlayer = get_pdata_cbase(entity, m_pPlayer,XO_WEAPON)
 	
-	if(!client_is_hero_user(pPlayer, gHeroID)){
+	if(!client_is_weapon_user(pPlayer, SH_L96A1)){
 		
 		return HAM_IGNORED
 	}
@@ -294,7 +367,7 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 		return
 		
 	static id; id = get_pdata_cbase(Ent, m_pPlayer,XO_WEAPON)
-	if(!client_is_hero_user(id, gHeroID)){
+	if(!client_is_weapon_user(id, SH_L96A1)){
 		
 		return
 	}
@@ -315,7 +388,7 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 launch_bullet(id)
 {
 
-if(!client_is_hero_user(id, gHeroID)){
+if(!client_is_weapon_user(id, SH_L96A1)){
 		
 	return
 }
@@ -368,7 +441,7 @@ randomize_vector_with_coeff(coeff_to_multiply_with,Velocity)
 
 entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
 
-salome_l96_dec_num_bullets(id)
+gNumBullets[id]-= (gNumBullets[id]>0)? 1:0
 
 //bullet launch pos
 entity_set_vector(Ent,EV_VEC_vuser1,Origin)
@@ -485,6 +558,11 @@ public bulletina_touque_playor(pToucher, pTouched)
 			DMG_BULLET,
 			SH_NEW_DMG_SUPER_BULLET,
 			custom_dmg_id_l96);
+
+
+		sh_apply_staged_stat_boost(pTouched,owner,STAT_EVASIVENESS_MULT,1,false)
+		
+		sh_apply_staged_stat_boost(owner,owner,STAT_EVASIVENESS_MULT,1,true)
 
 		sh_screen_shake(pTouched,14.5,the_time/3.0,20.0)
 

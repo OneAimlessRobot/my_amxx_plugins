@@ -8,19 +8,11 @@
 #define GATLING_P_MODEL "models/shmod/yakui/p_minigun.mdl"
 
 
-native gatling_set_num_pills(id,value_to_set)
-native gatling_get_num_pills(id)
-
-native gatling_set_num_rockets(id,value_to_set)
-native gatling_get_num_rockets(id)
-
 native gatling_set_fx_num(id,fx_id:value_to_set)
 native fx_id:gatling_get_fx_num(id)
 
-native gatling_dec_num_pills(id)
-native gatling_dec_num_rockets(id)
 
-native gatling_get_hero_id()
+native yakui_get_hero_id()
 
 
 native sh_get_pill_color(fx_id:fx_num,attacker,color[3])

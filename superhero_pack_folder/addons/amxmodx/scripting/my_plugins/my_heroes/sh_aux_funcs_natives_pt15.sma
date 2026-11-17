@@ -17,7 +17,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt15.inc"
 
 
-static sh_player_hero_projectile_weapon_tracker[SH_MAXSLOTS+1] = {0, ...};
+static sh_player_hero_projectile_weapon_tracker[SH_MAXSLOTS+1];
 
 
 public plugin_init(){

@@ -27,24 +27,10 @@
 
 
 
-#define SPEAR_CHARGE_PERIOD 0.1
-#define SPEAR_CHARGE_TIMES floatround(floatdiv(max_charge_time,SPEAR_CHARGE_PERIOD))
+native spear_set_user_spear(id, bool:value, start_ammo = 100)
 
-enum spear_mode{
-	spear_mode_off=0,
-	spear_mode_launch=1,
-	spear_mode_blast=2,
-  spear_mode_max=3
-};
+native spear_set_num_spears(id,value_to_set)
 
-stock const spear_mode_names[spear_mode_max][]={
-        "No mode",
-        "Launch",
-        "Blast"
-};
-
-native spear_uncharge_spear(id)
-native spear_mode:spear_get_user_spear_mode(id)
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
 *{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang2070\\ f0\\ fs16 \n\\ par }
 */

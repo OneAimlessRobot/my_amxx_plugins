@@ -11,6 +11,7 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
+#include "special_fx_inc/sh_rpsyringe_funcs.inc"
 #include "special_fx_inc/sh_gatling_funcs.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
@@ -27,7 +28,7 @@ new Float:g_nextSound[SH_MAXSLOTS+1]
 
 new Float:user_last_maxspeed[SH_MAXSLOTS+1]
 
-
+new mode_change_button_pressed_mask = 0
 
 new Float:g_recoil_pillgatling[SH_MAXSLOTS+1][3]
 
@@ -77,9 +78,73 @@ public plugin_init(){
 	YAKUI_CHARGING_SPEED_TASKID=allocate_typed_task_id(generic_task)
 	set_task(YAKUI_CHARGING_SPEED_TASK_PERIOD,"yakui_speed_task",YAKUI_CHARGING_SPEED_TASKID,_,_,"b")
     
+	register_forward(FM_CmdStart, "player_prethink_yakui_weapon");
 
 	unregister_forward(FM_PrecacheEvent, g_fwid, 1)
+	
+	register_event("CurWeapon", "weaponChange","be","1=1")
 
+
+}
+
+//----------------------------------------------------------------------------------------------
+public switchmodel(id)
+{
+	if ( !is_user_alive(id) || !client_is_weapon_user(id, SH_PILLGATLING) ) return
+	new clip, ammo, wpnid = get_user_weapon(id,clip,ammo)
+	if (wpnid == YAKUI_WEAPON_CLASSID) {
+		// Weapon Model change thanks to [CCC]Taz-Devil
+		entity_set_string(id, EV_SZ_viewmodel, GATLING_V_MODEL)
+		entity_set_string(id, EV_SZ_weaponmodel, GATLING_P_MODEL)
+	}
+}
+
+//----------------------------------------------------------------------------------------------
+public weaponChange(id)
+{
+	if ( !client_is_weapon_user(id, SH_PILLGATLING) || !sh_is_active() ) return
+
+	new wpnid = read_data(2)
+
+	if ( wpnid != YAKUI_WEAPON_CLASSID && client_is_weapon_user(id, SH_PILLGATLING)) return
+
+	switchmodel(id)
+}
+//----------------------------------------------------------------------------------------------
+public player_prethink_yakui_weapon(id, uc_handle)
+{
+
+
+	if(!sh_is_active()||sh_is_freezetime()){
+		return FMRES_IGNORED
+	}
+	if ( !is_user_alive(id) ||!client_is_weapon_user(id, SH_PILLGATLING) ) return FMRES_IGNORED;
+
+	if(sh_get_id_bit(id, SH_CONTROLLING_VEHICLE)) return FMRES_IGNORED
+
+	static button;
+	button= get_uc(uc_handle, UC_Buttons);
+	new wpnid=get_user_weapon(id)
+	if(button & IN_ALT1){
+
+		button &= ~IN_ALT1
+		set_uc(uc_handle, UC_Buttons, button)
+		if(!Get_BitVar(mode_change_button_pressed_mask, id)){
+			if(wpnid==YAKUI_WEAPON_CLASSID){
+				Set_BitVar(mode_change_button_pressed_mask, id);
+				new has_rockets=gatling_get_rockets(id)
+				new has_pgatling=gatling_get_pillgatling(id)
+				gatling_set_pillgatling(id,!has_pgatling)
+				gatling_set_rockets(id,!has_rockets)
+				sh_chat_message(id,gHeroID,"Engaged %s mode! %s",!has_rockets?"Rocket propelled syringe":"Pill shooting gatling",!has_rockets?"MOUSE1 attacks are disabled!":"")
+			}
+		}
+	}
+	else{
+
+		UnSet_BitVar(mode_change_button_pressed_mask, id);
+	}
+	return FMRES_IGNORED;
 }
 
 public FwdTouchWorld( pilula_sexualllllee, World ) {
@@ -107,7 +172,7 @@ public fw_WeaponPrimaryAttackPre(entity)
 
 	static pPlayer; pPlayer = get_pdata_cbase(entity, m_pPlayer, XO_WEAPON)
 	
-	if(!client_is_hero_user(pPlayer, gHeroID)){
+	if(!client_is_weapon_user(pPlayer, SH_PILLGATLING)){
 		return HAM_IGNORED
 	}
 
@@ -148,7 +213,7 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 		return
 		
 	static id; id = get_pdata_cbase(Ent, m_pPlayer, XO_WEAPON)
-	if(!client_is_hero_user(id, gHeroID)){
+	if(!client_is_weapon_user(id, SH_PILLGATLING)){
 		return
 	}
 
@@ -183,7 +248,7 @@ public Item_PostFrame_Post(iEnt)
 	}
 	static id; id = get_pdata_cbase(iEnt, m_pPlayer,XO_WEAPON)
 	
-	if(!client_is_hero_user(id, gHeroID)||!Get_BitVar(gPillGatlingEngaged_mask,id)){
+	if(!client_is_weapon_user(id, SH_PILLGATLING)||!Get_BitVar(gPillGatlingEngaged_mask,id)){
 		
 		return
 	}
@@ -242,10 +307,35 @@ public plugin_natives(){
 	register_native("gatling_set_num_pills","_gatling_set_num_pills");
 	register_native("gatling_get_num_pills","_gatling_get_num_pills");
 	register_native("gatling_dec_num_pills","_gatling_dec_num_pills");
-
+	register_native("gatling_set_user_pillgatling","_gatling_set_user_pillgatling")
 	register_native("gatling_set_pillgatling","_gatling_set_pillgatling");
 	register_native("gatling_get_pillgatling","_gatling_get_pillgatling");
 
+
+}
+public _gatling_set_user_pillgatling(iPlugin,iParams){
+	
+	new id = get_param(1),
+		bool:value = bool:get_param(2),
+		start_ammo = get_param(3)
+	
+	gNumPills[id] = 0
+	sh_assign_id_custom_weapon_bit(id, SH_PILLGATLING, value);
+	if(value){
+		gNumPills[id] = max_macro(1,start_ammo)
+		sh_give_weapon(id, YAKUI_WEAPON_CLASSID,true)
+		new weapon_id=get_weapon_ent_of_player(id,YAKUI_WEAPON_CLASSID)
+		if(is_valid_ent(weapon_id)){
+			set_pdata_int(weapon_id, m_iClip, PILLGATLING_CLIP_SIZE, XO_WEAPON);
+			cs_set_user_bpammo(id, YAKUI_WEAPON_CLASSID,gNumPills[id]-PILLGATLING_CLIP_SIZE);
+			
+		}
+	}
+	else{
+		if ( is_user_alive(id) ) {
+			sh_drop_weapon(id,YAKUI_WEAPON_CLASSID,true);
+		}
+	}
 
 }
 public _gatling_get_pillgatling(iPlugin,iParams){
@@ -281,6 +371,10 @@ public _gatling_get_num_pills(iPlugin,iParams){
 	return gNumPills[id]
 
 }
+public sh_round_end(){
+
+	remove_entity_name(PILL_CLASSNAME)
+}
 
 public _gatling_dec_num_pills(iPlugin,iParams){
 
@@ -310,7 +404,7 @@ public yakui_speed_task(task_id){
 		
 		id = the_players[i]
 
-		if ( !client_is_hero_user(id, gHeroID)){
+		if ( !client_is_weapon_user(id, SH_PILLGATLING)){
 			
 			continue;
 		}
@@ -340,7 +434,7 @@ public CmdStart(id, uc_handle)
 		return FMRES_IGNORED
 	}
 	
-	if ( !client_is_hero_user(id, gHeroID)){
+	if ( !client_is_weapon_user(id, SH_PILLGATLING)){
 		
 		return FMRES_IGNORED;
 	}
@@ -400,7 +494,7 @@ public plugin_cfg()
 public loadCVARS()
 {
 
-	gHeroID = gatling_get_hero_id()
+	gHeroID = yakui_get_hero_id()
 	windup_time=get_cvar_float("yakui_windup_time")
 }
 public delayanim(id){
@@ -413,7 +507,7 @@ public fw_WeaponReloadPre(entity)
 	
 	static pPlayer; pPlayer = get_pdata_cbase(entity, m_pPlayer,XO_WEAPON)
 	
-	if(!client_is_hero_user(pPlayer, gHeroID)||!Get_BitVar(gPillGatlingEngaged_mask,pPlayer)){
+	if(!client_is_weapon_user(pPlayer, SH_PILLGATLING)||!Get_BitVar(gPillGatlingEngaged_mask,pPlayer)){
 		
 		return HAM_IGNORED
 	}
@@ -436,7 +530,7 @@ public fw_Weapon_Reload_Post(ent)
 		return HAM_IGNORED
 		
 	static id; id = get_pdata_cbase(ent, m_pPlayer,XO_WEAPON)
-	if(!client_is_hero_user(id, gHeroID)||!Get_BitVar(gPillGatlingEngaged_mask,id)){
+	if(!client_is_weapon_user(id, SH_PILLGATLING)||!Get_BitVar(gPillGatlingEngaged_mask,id)){
 		
 		return HAM_IGNORED
 	}
@@ -453,7 +547,7 @@ public fw_Weapon_Reload_Post(ent)
 
 
 public fwPlaybackEvent(flags, invoker, eventid) {
-	if (!(g_guns_eventids_bitsum & (1<<eventid)) || !client_is_hero_user(invoker, gHeroID)||!Get_BitVar(gPillGatlingEngaged_mask, invoker)){
+	if (!(g_guns_eventids_bitsum & (1<<eventid)) || !client_is_weapon_user(invoker, SH_PILLGATLING)||!Get_BitVar(gPillGatlingEngaged_mask, invoker)){
 		return FMRES_IGNORED
 	}
 	return FMRES_HANDLED
@@ -573,7 +667,7 @@ public pill_think(ent)
 	}
 	
 	new id=entity_get_edict(ent,EV_ENT_owner)
-	if (!client_is_hero_user(id, gHeroID)) {
+	if (!client_is_weapon_user(id, SH_PILLGATLING)) {
 		remove_entity(ent)
 		return
 	}
@@ -609,7 +703,7 @@ public fw_ItemDeployPre(entity)
 		
 	static pPlayer; pPlayer = get_pdata_cbase(entity, m_pPlayer,XO_WEAPON)
 	
-	if(!client_is_hero_user(pPlayer, gHeroID)||!Get_BitVar(gPillGatlingEngaged_mask, pPlayer)){
+	if(!client_is_weapon_user(pPlayer, SH_PILLGATLING)||!Get_BitVar(gPillGatlingEngaged_mask, pPlayer)){
 		
 		return HAM_IGNORED
 	}
@@ -625,7 +719,7 @@ public fw_ItemDeployPre(entity)
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {	
-	if(sh_is_active()&&!client_is_hero_user(id, gHeroID)){
+	if(sh_is_active()&&!client_is_weapon_user(id, SH_PILLGATLING)){
 		
 		Assign_BitVar(can_fire_mask,id,false_for_macro);
 		g_plAction[id]=act_none;

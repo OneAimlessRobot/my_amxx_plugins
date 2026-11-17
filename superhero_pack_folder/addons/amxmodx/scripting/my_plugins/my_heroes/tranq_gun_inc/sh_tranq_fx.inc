@@ -7,7 +7,7 @@
 #define CAN_SELF_SLEEP 1
 
 
-#define SLEEP_SFX "shmod/erica/sleep/snore.wav"
+#define SLEEP_SFX "shmod/larissa/sleep/snore.wav"
 
 #define SLEEP_PERIOD 0.25
 #define SLEEP_TIME 15.0

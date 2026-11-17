@@ -8,20 +8,22 @@
 #define I_WANT_CUSTOM_COLORS
 #define I_WANT_BASIC_MACROS
 #include "../my_include/superheromod.inc"
-#include "tranq_gun_inc/sh_erica_get_set.inc"
+#include "tranq_gun_inc/sh_larissa_get_set.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
+#include "sh_aux_stuff/sh_pokemon_dmg_framework.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "tranq_gun_inc/sh_tranq_funcs.inc"
 #include "../my_include/auxiliar_stuff.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 
 
-#define PLUGIN "Superhero erica tranq funcs"
+#define PLUGIN "Superhero larissa tranq funcs"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
+new gNumDarts[SH_MAXSLOTS+1]
 new Float:g_Recoil[SH_MAXSLOTS+1][3]
 new trigger_is_down_mask = 0
 new trigger_was_down_mask = 0
@@ -59,11 +61,74 @@ public plugin_init(){
 
 
 }
+public plugin_natives(){
+
+	register_native("tranq_dec_num_darts","_tranq_dec_num_darts");
+	register_native("tranq_get_num_darts","_tranq_get_num_darts");
+	register_native("tranq_set_num_darts","_tranq_set_num_darts");
+	register_native("tranq_set_user_tranq","_tranq_set_user_tranq");
+
+
+}
+public _tranq_set_user_tranq(iPlugin,iParams){
+	
+	new id = get_param(1),
+		bool:value = bool:get_param(2),
+		start_ammo = get_param(3)
+
+	gNumDarts[id] = 0
+	sh_assign_id_custom_weapon_bit(id, SH_TRANQ_DART_GUN, value);
+	if(value){
+
+		gNumDarts[id] = max_macro(1,start_ammo)
+		sh_give_weapon(id, CSW_ELITE,true)
+	
+		new weapon_id=get_weapon_ent_of_player(id,CSW_ELITE)
+		if(is_valid_ent(weapon_id)){
+			
+			set_pdata_int(weapon_id, m_iClip, DART_PISTOL_CLIP_SIZE, XO_WEAPON);
+			cs_set_user_bpammo(id, CSW_ELITE,gNumDarts[id]-DART_PISTOL_CLIP_SIZE);
+		}
+	}
+	else{
+		if ( is_user_alive(id) ) {
+			sh_drop_weapon(id, CSW_ELITE, true)
+		}
+	}
+
+}
+
+public sh_round_end(){
+
+	remove_entity_name(DART_CLASSNAME)
+}
+
+public client_disconnected(id){
+
+	gNumDarts[id]=0
+}
+	
+public _tranq_get_num_darts(iPlugin,iParams){
+
+
+	new id= get_param(1)
+	return gNumDarts[id]
+
+}
+
+public _tranq_dec_num_darts(iPlugin,iParams){
+
+
+	new id= get_param(1)
+	gNumDarts[id]-= (gNumDarts[id]>0)? 1:0
+
+}
+
 public plugin_cfg(){
 
-	gHeroID = tranq_get_hero_id()
+	gHeroID = larissa_get_hero_id()
 	super_dart_weapon_id=sh_log_custom_damage_source(
-								gHeroID,
+								-1,
 								dmg_source_name_short_super_dart,
 								dmg_source_name_log_super_dart,
 								0)
@@ -118,7 +183,7 @@ public CmdStart(id, uc_handle)
 		return FMRES_IGNORED
 	}
 
-	if (!client_is_hero_user(id, gHeroID)) return FMRES_IGNORED;
+	if (!client_is_weapon_user(id, SH_TRANQ_DART_GUN)) return FMRES_IGNORED;
 
 	
 	
@@ -135,7 +200,7 @@ public CmdStart(id, uc_handle)
 		{
 
 			button &= ~IN_ATTACK;
-			if(Get_BitVar(trigger_was_down_mask, id)||(tranq_get_num_darts(id)<=0)){
+			if(Get_BitVar(trigger_was_down_mask, id)||(gNumDarts[id]<=0)){
 				set_uc(uc_handle, UC_Buttons, button);
 				return FMRES_SUPERCEDE
 			}
@@ -144,6 +209,12 @@ public CmdStart(id, uc_handle)
 	}
 
 	return FMRES_IGNORED;
+}
+
+public _tranq_set_num_darts(iPlugin,iParams){
+	new id= get_param(1)
+	new value_to_set=get_param(2)
+	gNumDarts[id]=value_to_set;
 }
 
 public fw_Item_PostFrame(ent)
@@ -155,7 +226,7 @@ public fw_Item_PostFrame(ent)
 
 	}
 	static id; id = get_pdata_cbase(ent, m_pPlayer,XO_WEAPON)
-	if(!client_is_hero_user(id, gHeroID)){
+	if(!client_is_weapon_user(id, SH_TRANQ_DART_GUN)){
 
 		return HAM_IGNORED;
 	}
@@ -189,7 +260,7 @@ public fw_WeaponReloadPre(entity)
 
 	static pPlayer; pPlayer = get_pdata_cbase(entity, m_pPlayer,XO_WEAPON)
 
-	if(!client_is_hero_user(pPlayer, gHeroID)){
+	if(!client_is_weapon_user(pPlayer, SH_TRANQ_DART_GUN)){
 
 		return HAM_IGNORED
 	}
@@ -213,7 +284,7 @@ public fw_Weapon_Reload_Post(ent)
 		return HAM_IGNORED
 	}
 	static id; id = get_pdata_cbase(ent, m_pPlayer,XO_WEAPON)
-	if(!client_is_hero_user(id, gHeroID)){
+	if(!client_is_weapon_user(id, SH_TRANQ_DART_GUN)){
 
 		return HAM_IGNORED
 	}
@@ -234,7 +305,7 @@ public fw_ItemDeployPre(entity)
 	}
 	static pPlayer; pPlayer =get_pdata_cbase(entity, m_pPlayer,XO_WEAPON)
 
-	if(!client_is_hero_user(pPlayer, gHeroID)){
+	if(!client_is_weapon_user(pPlayer, SH_TRANQ_DART_GUN)){
 		return HAM_IGNORED
 	}
 	ExecuteHam(Ham_Item_Deploy, entity)
@@ -287,7 +358,7 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 	}
 
 	static id; id = get_pdata_cbase(Ent, m_pPlayer,XO_WEAPON)
-	if(!client_is_hero_user(id, gHeroID)){
+	if(!client_is_weapon_user(id, SH_TRANQ_DART_GUN)){
 		return;
 	}
 
@@ -306,7 +377,7 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 }
 launch_dart(id)
 {
-	if(!client_is_hero_user(id, gHeroID)){
+	if(!client_is_weapon_user(id, SH_TRANQ_DART_GUN)){
 
 		return
 	}
@@ -340,9 +411,9 @@ launch_dart(id)
 	velocity_by_aim(id, floatround(DART_SPEED) , Velocity)
 	entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
 
-	tranq_dec_num_darts(id)
+	gNumDarts[id]-= (gNumDarts[id]>0)? 1:0
 	new bool:dart_hurts=false;
-	if(tranq_get_is_max_points(id)){
+	if(larissa_get_is_max_points(id)){
 		dart_hurts=true
 		//dart will cause damage on top of sleeping
 		entity_set_int(Ent,EV_INT_iuser1,dart_hurts)
@@ -370,26 +441,35 @@ public chorazy_II_toumpaeeeehm(pToucher, pTouched)
 	{
 		new oid = entity_get_edict(pToucher, EV_ENT_owner)
 		new dart_hurts=entity_get_int(pToucher,EV_INT_iuser1)
-		if(dart_hurts){
-			static Float:bullet_launch_pos[3],
-				Float:origin[3],
-				Float:velocity[3],
-				Float:speed,
-				Float:damage,
-				Float:falloff_coeff,
-				Float:distance,
-				my_hitpoint_enum:the_hitpoint,
-				bool:headshot=false
+		new CsTeams:att_team=cs_get_user_team(oid)
+		new CsTeams:vic_team=cs_get_user_team(pTouched)
+		static Float:bullet_launch_pos[3],
+			Float:origin[3],
+			Float:velocity[3],
+			Float:speed,
+			Float:damage,
+			Float:falloff_coeff,
+			Float:distance,
+			my_hitpoint_enum:the_hitpoint,
+			bool:headshot=false
 
 
 
-			entity_get_vector(pToucher,EV_VEC_origin,origin);
-						
-			entity_get_vector(pToucher,EV_VEC_vuser1,bullet_launch_pos)
+		entity_get_vector(pToucher,EV_VEC_origin,origin);
+					
+		entity_get_vector(pToucher,EV_VEC_vuser1,bullet_launch_pos)
 
-			entity_get_vector(pToucher,EV_VEC_velocity,velocity)
+		entity_get_vector(pToucher,EV_VEC_velocity,velocity)
 
-			speed=max_macro(1.0,vector_length(velocity))
+		speed=max_macro(1.0,vector_length(velocity))
+
+
+		the_hitpoint= get_projectile_hit_hitpoint(pToucher,
+											velocity,
+											DART_HEADSHOT_THRESHOLD_DIST*3.0,
+											speed)
+		
+		if(dart_hurts&&(att_team!=vic_team)){
 
 			damage = calculate_nuanced_projectile_damage(pToucher,
 								bullet_launch_pos,
@@ -398,11 +478,6 @@ public chorazy_II_toumpaeeeehm(pToucher, pTouched)
 								DART_SPEED,
 								distance,
 								falloff_coeff)
-
-			the_hitpoint= get_projectile_hit_hitpoint(pToucher,
-												velocity,
-												DART_HEADSHOT_THRESHOLD_DIST*3.0,
-												speed)
 			if(the_hitpoint==MY_HIT_HEAD){
 
 				headshot=true;
@@ -411,7 +486,7 @@ public chorazy_II_toumpaeeeehm(pToucher, pTouched)
 			sh_extra_damage(pTouched,oid,floatround(damage),
 						the_hitpoint,
 						_,_,_,_,
-						SH_NEW_DMG_BLEED,
+						SH_NEW_DMG_SUPER_BULLET,
 						super_dart_weapon_id)
 			
 			if(sh_get_user_has_hero(oid,gHeroID)){
@@ -450,8 +525,23 @@ public chorazy_II_toumpaeeeehm(pToucher, pTouched)
 			}
 
 		}
-		sh_sleep_user(pTouched,oid,3.0,gHeroID)
+		static stages_to_apply = 1;
+		stages_to_apply = 1
+		if(att_team!=vic_team){
+			if(the_hitpoint==MY_HIT_HEAD){
+				stages_to_apply++
+			}
+			static bool:stat_applied = false
 
+			stat_applied = sh_apply_staged_stat_boost(pTouched,oid,STAT_ATTACK_MULT,stages_to_apply,false)
+
+			if(!stat_applied){
+
+				sh_sleep_user(pTouched,oid,3.0,gHeroID)
+
+			}
+			sh_apply_staged_stat_boost(oid,oid,STAT_ATTACK_MULT,stages_to_apply,true)
+		}
 	}
 	remove_entity(pToucher)
 }

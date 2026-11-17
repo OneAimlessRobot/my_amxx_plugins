@@ -16,6 +16,8 @@
 
 
 
+native gatling_set_num_rockets(id,value_to_set)
+native gatling_get_num_rockets(id)
 
 native gatling_set_rockets(id,value_to_set)
 native gatling_get_rockets(id)
