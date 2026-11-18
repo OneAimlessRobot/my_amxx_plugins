@@ -12,16 +12,62 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
-#include "sh_aux_stuff/sh_pokemon_dmg_framework.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "tranq_gun_inc/sh_tranq_funcs.inc"
 #include "../my_include/auxiliar_stuff.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 
-
 #define PLUGIN "Superhero larissa tranq funcs"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
+
+#define DART_CLASSNAME "tranq_dart"
+enum{
+    seq_idle=0,
+    seq_idle_leftempty,
+    seq_shoot_left1,
+    seq_shoot_left2,
+    seq_shoot_left3,
+    seq_shoot_left4,
+    seq_shoot_left5,
+    seq_shoot_leftlast,
+    seq_shoot_right1,
+    seq_shoot_right2,
+    seq_shoot_right3,
+    seq_shoot_right4,
+    seq_shoot_right5,
+    seq_shoot_rightlast,
+    seq_reload,
+    seq_draw
+}
+
+
+
+#define DART_DAMAGE 35.0
+#define DART_DAMAGE_FALLOFF_DIST 2500.0
+#define DART_HEADSHOT_THRESHOLD_DIST 20.0
+#define DART_SPEED 3500.0
+
+#define DART_SHOOT_PERIOD 0.15
+#define DART_DEPLOY_TIME 1.0
+
+#define DART_SHOOT_RANDOMNESS 0.0
+
+
+#define DART_GRAVITY_MULT 0.3
+#define DART_PHYS_UPDATE_TIME 0.05
+
+#define DART_MASS 1.0
+#define DART_CAR 0.2146
+#define DART_DIAMETER 2.0
+#define DART_AREA ((DART_DIAMETER*DART_DIAMETER)*M_PI)
+#define TRANQ_AIR_RESISTANCE 0.125
+#define DART_DRAG_CONST (DART_AREA*DART_CAR*TRANQ_AIR_RESISTANCE)
+
+#define DART_PISTOL_RECOIL 1.0
+#define DART_PISTOL_CLIP_SIZE 2
+
+
 
 new gNumDarts[SH_MAXSLOTS+1]
 new Float:g_Recoil[SH_MAXSLOTS+1][3]
@@ -63,8 +109,6 @@ public plugin_init(){
 }
 public plugin_natives(){
 
-	register_native("tranq_dec_num_darts","_tranq_dec_num_darts");
-	register_native("tranq_get_num_darts","_tranq_get_num_darts");
 	register_native("tranq_set_num_darts","_tranq_set_num_darts");
 	register_native("tranq_set_user_tranq","_tranq_set_user_tranq");
 
@@ -81,18 +125,18 @@ public _tranq_set_user_tranq(iPlugin,iParams){
 	if(value){
 
 		gNumDarts[id] = max_macro(1,start_ammo)
-		sh_give_weapon(id, CSW_ELITE,true)
+		sh_give_weapon(id, DART_GUN_WEAPON_CLASSID,true)
 	
-		new weapon_id=get_weapon_ent_of_player(id,CSW_ELITE)
+		new weapon_id=get_weapon_ent_of_player(id,DART_GUN_WEAPON_CLASSID)
 		if(is_valid_ent(weapon_id)){
 			
 			set_pdata_int(weapon_id, m_iClip, DART_PISTOL_CLIP_SIZE, XO_WEAPON);
-			cs_set_user_bpammo(id, CSW_ELITE,gNumDarts[id]-DART_PISTOL_CLIP_SIZE);
+			cs_set_user_bpammo(id, DART_GUN_WEAPON_CLASSID,gNumDarts[id]-DART_PISTOL_CLIP_SIZE);
 		}
 	}
 	else{
 		if ( is_user_alive(id) ) {
-			sh_drop_weapon(id, CSW_ELITE, true)
+			sh_drop_weapon(id, DART_GUN_WEAPON_CLASSID, true)
 		}
 	}
 
@@ -107,22 +151,7 @@ public client_disconnected(id){
 
 	gNumDarts[id]=0
 }
-	
-public _tranq_get_num_darts(iPlugin,iParams){
 
-
-	new id= get_param(1)
-	return gNumDarts[id]
-
-}
-
-public _tranq_dec_num_darts(iPlugin,iParams){
-
-
-	new id= get_param(1)
-	gNumDarts[id]-= (gNumDarts[id]>0)? 1:0
-
-}
 
 public plugin_cfg(){
 
@@ -524,23 +553,6 @@ public chorazy_II_toumpaeeeehm(pToucher, pTouched)
 				}
 			}
 
-		}
-		static stages_to_apply = 1;
-		stages_to_apply = 1
-		if(att_team!=vic_team){
-			if(the_hitpoint==MY_HIT_HEAD){
-				stages_to_apply++
-			}
-			static bool:stat_applied = false
-
-			stat_applied = sh_apply_staged_stat_boost(pTouched,oid,STAT_ATTACK_MULT,stages_to_apply,false)
-
-			if(!stat_applied){
-
-				sh_sleep_user(pTouched,oid,3.0,gHeroID)
-
-			}
-			sh_apply_staged_stat_boost(oid,oid,STAT_ATTACK_MULT,stages_to_apply,true)
 		}
 	}
 	remove_entity(pToucher)

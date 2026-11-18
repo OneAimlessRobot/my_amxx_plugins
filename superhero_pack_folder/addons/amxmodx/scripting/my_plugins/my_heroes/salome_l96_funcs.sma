@@ -16,12 +16,50 @@
 #include "special_fx_inc/sh_yakui_get_set.inc"
 #include "salome_inc/sh_salome_l96_include.inc"
 #include "salome_inc/sh_salome_general_include.inc"
-#include "sh_aux_stuff/sh_pokemon_dmg_framework.inc"
 #include "../my_include/my_author_header.inc"
 #include "../my_include/auxiliar_stuff.inc"
 
 #define PLUGIN_VER "1.0"
 #define PLUGIN_NAME "SUPERHERO Salomé Freitas: L96 weapon_thingie"
+
+#define SALOME_PROJECTILE_CLASSNAME "salome_projectile"
+
+
+#define SALOME_L96_SHOTSOUND "weapons/salome_rifle/salome_rifle.wav"
+#define SALOME_L96_SHOTSOUN_REVERB "weapons/salome_rifle/shoot-1.wav"
+#define SALOME_L96_WALLHIT_SOUND "weapons/xbow_hit1.wav"
+
+#define SALOME_PROJECTILE_KNOCKBACK 500.0
+
+#define SALOME_REVERB_SHOT_DELAY 0.1
+
+#define SALOME_PROJECTILE_DAMAGE 300.0
+#define SALOME_PROJECTILE_DAMAGE_FALLOFF_DIST 2500.0
+
+#define SALOME_PROJECTILE_HEADSHOT_THRESHOLD_DIST 20.0
+
+#define SALOME_PROJECTILE_DEPLOY_TIME 1.8888889
+#define SALOME_PROJECTILE_SHOOT_PERIOD 0.66666667
+
+#define SALOME_PROJECTILE_SHOOT_RANDOMNESS 0.3
+
+#define SALOME_PROJECTILE_SPEED 6000.0
+#define SALOME_PROJECTILE_GRAVITY_MULT 1.0
+#define SALOME_PROJECTILE_PHYS_UPDATE_TIME 0.05
+
+#define SALOME_PROJECTILE_MASS 1.0
+#define SALOME_PROJECTILE_CAR 0.21
+#define SALOME_PROJECTILE_DIAMETER 1.0
+#define SALOME_PROJECTILE_AREA ((SALOME_PROJECTILE_DIAMETER*SALOME_PROJECTILE_DIAMETER)*M_PI)
+#define SALOME_AIR_RESISTANCE 0.25
+#define SALOME_PROJECTILE_DRAG_CONST (SALOME_PROJECTILE_AREA*SALOME_PROJECTILE_CAR*SALOME_AIR_RESISTANCE)
+
+#define SALOME_L96_RECOIL 2.0
+
+
+
+#define SALOME_L96_CLIP_SIZE 4
+
 
 /*
 enum
@@ -558,11 +596,6 @@ public bulletina_touque_playor(pToucher, pTouched)
 			DMG_BULLET,
 			SH_NEW_DMG_SUPER_BULLET,
 			custom_dmg_id_l96);
-
-
-		sh_apply_staged_stat_boost(pTouched,owner,STAT_EVASIVENESS_MULT,1,false)
-		
-		sh_apply_staged_stat_boost(owner,owner,STAT_EVASIVENESS_MULT,1,true)
 
 		sh_screen_shake(pTouched,14.5,the_time/3.0,20.0)
 

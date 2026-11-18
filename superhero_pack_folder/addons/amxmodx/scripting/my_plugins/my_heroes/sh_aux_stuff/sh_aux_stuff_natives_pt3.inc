@@ -65,7 +65,11 @@ enum explosion_sfx_flags (<<= 1){
 
 }
 
-
+native explode_fx( vec1[3] ,radius, sh_custom_color:fx_color=WHITE,alpha=255,
+            explosion_sfx_flags:sfx_mask=(explosion_sfx_show_shockwave|
+                                            explosion_sfx_show_fireball|
+                                            explosion_sfx_show_smoke|
+                                            explosion_sfx_show_burn_decal))
 /** 
 
 Explosion sfx masks!

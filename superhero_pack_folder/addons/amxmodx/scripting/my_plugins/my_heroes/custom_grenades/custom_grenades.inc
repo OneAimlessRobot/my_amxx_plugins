@@ -23,7 +23,9 @@ enum sh_grenade_type{
     GREN_MARKER,
     GREN_CONC,
     GREN_WET,
-    GREN_RANDOM_FX
+    GREN_RANDOM_FX,
+    GREN_HAZE,
+    GREN_TEST
 
 }
 native get_custom_grenade_ammo(id, sh_grenade_type:gren_type)

@@ -1,6 +1,8 @@
 
 
 
+#include "../include/amxmisc.inc"
+#include "../include/amxconst.inc"
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "custom_grenades/custom_grenades.inc"
@@ -67,6 +69,17 @@ enum sh_grenade_struct{
 
 
 }
+#define NUM_ENTITIES 6000
+
+enum grenade_flags{
+
+	fx_id:grenade_fx,
+	bool:has_touched_a_player
+
+}
+
+
+new grenade_flags_and_fields[NUM_ENTITIES][grenade_flags]
 
 new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 
@@ -248,7 +261,36 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					5.0,
 					1.5,
 					0.5,
-					true}
+					true},
+
+	{"haze_grenade",
+					"models/shmod/custom_nades_hackaround/w_flashbang.mdl",
+					FROZEN_SFX,
+					"",
+					MY_CSW_SMOKEGRENADE,
+					FX_COLOR_OFFSET(_:STUN),
+					250.0,
+					1200.0,
+					1.0,
+					5.0,
+					1.5,
+					0.5,
+					true},
+
+	//do whatever you want here
+	{"test_grenades",
+					"models/shmod/custom_nades_hackaround/w_flashbang.mdl",
+					"",
+					"",
+					MY_CSW_SMOKEGRENADE,
+					BLACK,
+					250.0,
+					1200.0,
+					1.0,
+					5.0,
+					1.5,
+					0.5,
+					false}
 
 }
 
@@ -323,7 +365,10 @@ public plugin_init(){
 	
 	register_think(SH_CUSTOM_GRENADE_CLASSNAME,"sh_grenade_think")
 
+	register_concmd("give_test_grenades", "give_test_grenades", ADMIN_IMMUNITY, "Give someone some test grenades. Integer number necessary")
+
 	register_entity_as_wall_touchable(SH_CUSTOM_GRENADE_CLASSNAME,"sh_grenade_touch_things")
+	register_custom_touchable(SH_CUSTOM_GRENADE_CLASSNAME,"sh_grenade_touch_things",player_vector,1)
 	
 	init_progress_bar_msg_var()
 
@@ -339,6 +384,27 @@ public plugin_natives(){
 	register_native( "give_custom_grenades","_give_custom_grenades")
 	
 	
+}
+public give_test_grenades(id,level,cid){
+
+	if (!cmd_access(id,level,cid,2)){
+		return PLUGIN_HANDLED
+	}
+	new arg1[128],arg2[8]
+
+	read_argv(1, arg1, charsmax(arg1))
+
+	new player = cmd_target(id,arg1,2)
+
+	if (!player) return PLUGIN_HANDLED
+
+	read_argv(2, arg2, charsmax(arg2))
+
+	new num_of_nades = str_to_num(arg2)
+
+	give_custom_grenades_aux(player,GREN_TEST, max_macro(num_of_nades,1))
+
+	return PLUGIN_HANDLED
 }
 grenade_switch_notification(id){
 	if(!is_user_bot(id)){
@@ -596,6 +662,13 @@ public _give_custom_grenades(iPlugin, iParams){
 	new id=get_param(1)
 	new sh_grenade_type:gren_type= sh_grenade_type:get_param(2)
 	new grenade_ammount= get_param(3)
+
+	give_custom_grenades_aux(id, gren_type, grenade_ammount)
+
+
+}
+give_custom_grenades_aux(id,sh_grenade_type:gren_type, grenade_ammount){
+
 	if ( sh_is_active() && is_user_alive(id)){
 
 		new ammo=cs_get_user_bpammo(id,
@@ -608,7 +681,6 @@ public _give_custom_grenades(iPlugin, iParams){
 		
 		curr_grenade_ammo[id][gren_type]=grenade_ammount
 	}
-
 
 }
 public charge_task(any:param[1],id){
@@ -698,9 +770,9 @@ Origin[2]+=50.0
 my_entity_set_origin(Ent, Origin)
 set_pev(Ent, pev_angles, vAngle)
 
-set_pev(Ent, pev_effects, 2)
-set_pev(Ent, pev_solid, 1)
-set_pev(Ent, pev_movetype, 10)
+set_pev(Ent, pev_effects, EF_DIMLIGHT)
+set_pev(Ent, pev_solid, SOLID_BBOX)
+set_pev(Ent, pev_movetype, MOVETYPE_BOUNCE)
 set_pev(Ent, pev_owner, id)
 
 /*
@@ -755,7 +827,7 @@ else{
 	}
 
 }
-
+grenade_flags_and_fields[Ent][has_touched_a_player] = false
 
 engclient_cmd(id, "weapon_knife")
 emit_sound(id, CHAN_WEAPON, THROWABLE_LAUNCH_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
@@ -876,6 +948,20 @@ public sh_grenade_touch_things(pToucher, pTouched)
 	
 	
 	if(!pev_valid(pToucher)) return PLUGIN_CONTINUE
+
+	if(pev_valid(pTouched)){
+
+		if(is_user_alive(pTouched)){
+
+			if(!grenade_flags_and_fields[pToucher][has_touched_a_player]){
+				grenade_flags_and_fields[pToucher][has_touched_a_player] = true
+			}
+			else{
+				return PLUGIN_CONTINUE
+			}
+	
+		}
+	}
 	if(!(bool:pev(pToucher, pev_iuser1))){
 
 		set_pev(pToucher, pev_iuser1,1)
@@ -952,7 +1038,8 @@ random_fx_gren_effect_func(grenade_ent, Float:the_origin_of_expolosion[3]){
 	static sh_custom_color:the_color,
 			fx_id:fx_num;
 
-	fx_num = fx_id:pev(grenade_ent, pev_iuser4)
+	fx_num =  grenade_flags_and_fields[grenade_ent][grenade_fx]
+
 
 	the_color = FX_COLOR_OFFSET(fx_num)
 
@@ -1027,7 +1114,8 @@ gren_trail_fx(ent_id,sh_grenade_type:gren_type){
 
 			fx_num = sh_gen_effect()
 			color_const = FX_COLOR_OFFSET(fx_num)
-			set_pev(ent_id, pev_iuser4, _:fx_num)
+			
+			grenade_flags_and_fields[ent_id][grenade_fx] = fx_num
 
 
 
@@ -1073,9 +1161,6 @@ bool:gren_effect_neutral(grenade_ent, sh_grenade_type:gren_type, Float:the_origi
 }
 gren_effect_user(grenade_ent,tg,attacker,sh_grenade_type:gren_type){
 
-	static fx_id:the_fx_num;
-
-	the_fx_num = FX_ID_NONE;
 	switch(gren_type){
 
 		case GREN_SLEEP:{
@@ -1121,9 +1206,11 @@ gren_effect_user(grenade_ent,tg,attacker,sh_grenade_type:gren_type){
 			sh_wet_user(tg,attacker,90.0);
 		}
 		case GREN_RANDOM_FX:{
-			the_fx_num = fx_id:pev(grenade_ent, pev_iuser4)
-
-			sh_effect_user_direct(tg, attacker,10.0,-1,the_fx_num)
+			sh_effect_user_direct(tg, attacker,10.0,-1,grenade_flags_and_fields[grenade_ent][grenade_fx])
+		}
+		case GREN_HAZE:{
+		}
+		case GREN_TEST:{
 		}
 	}
 	

@@ -15,7 +15,6 @@
 #include "custom_grenades/custom_grenades.inc"
 #include "tranq_gun_inc/sh_molotov_fx.inc"
 #include "../my_include/my_author_header.inc"
-#include "sh_aux_stuff/sh_pokemon_dmg_framework.inc"
 // GLOBAL VARIABLES
 
 
@@ -224,7 +223,6 @@ public sh_client_death(killed,killer)
 	if(sh_get_user_has_hero(killer,gHeroID)&&(killed!=killer)){
 		
 		g_larissa_kills[killer]++;
-		sh_apply_staged_stat_boost(killer,killer,STAT_SPEED_ID,2,true)
 		
 	
 	}

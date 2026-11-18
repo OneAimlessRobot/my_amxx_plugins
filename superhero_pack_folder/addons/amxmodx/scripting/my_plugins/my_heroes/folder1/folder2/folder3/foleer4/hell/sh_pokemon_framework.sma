@@ -43,8 +43,7 @@
 
 
 */
-//TODO: Basically everything
-
+/*
 
 #define I_WANT_CONSTANTS
 #define I_WANT_MATH_FUNCS_PT2
@@ -69,9 +68,9 @@
 
 #define ACTIVATE_POKEMON_DMG_CVAR "sh_use_pokemon_damage"
 
-#define DAMAGE_DAMPENING_DIVIDER 20.0
+#define DAMAGE_DAMPENING_DIVIDER 37.5
 #define POKEMON_DAMAGE_RELATION_BALLAST_VAL 0.5 //idc if this makes no diff. It makes me feel safe not to divide things too close to zero
-#define POKEMON_DMG_LVL_RELEVANCE_DAMPENING_FACTOR 10.0
+#define POKEMON_DMG_LVL_RELEVANCE_DAMPENING_FACTOR 15.5
 
 #define MAX_PLAYER_STAT_STAGES 6
 
@@ -92,7 +91,7 @@ enum player_stat_struct{
 #define EVASIVENESS_TASK_PERIOD 1.0
 #define SPEED_TASK_PERIOD 0.33
 
-static const DEBUG = 0
+static const DEBUG = 1
 
 static const stat_change_notifications[2][4][] = {
 	
@@ -402,7 +401,83 @@ public sh_client_death(id){
 public plugin_natives(){
 
     register_native("sh_apply_staged_stat_boost", "_sh_apply_staged_stat_boost")
+    register_native("sh_reset_player_stat_boosts", "_sh_reset_player_stat_boosts")
 
+}
+public bool:_sh_reset_player_stat_boosts(iPlugins, iParams){
+
+
+	if(!pokemon_dmg_enabled()) return false
+
+	new id = get_param(1),
+		attacker = get_param(2)
+
+
+	if(!is_user_alive(id)) return false
+	
+	if(!is_user_connected(attacker)) return false
+
+	static bool:something_happened;
+
+	something_happened=false
+
+	if(g_player_speed_stat_mults[id][STAT_SPEED_ID][the_number_of_stages]!=0){
+	
+		something_happened = true
+	
+		last_player_deployed_weapon[id] = enum_minus_one
+	
+		arrayset(curr_player_pure_maxspeeds[id],0.0,sizeof(curr_player_pure_maxspeeds[]))
+		g_player_speed_stat_mults[id][STAT_SPEED_ID][the_number_of_stages] = 0
+		g_player_speed_stat_mults[id][STAT_SPEED_ID][the_stat_boost_value] = 0.0
+
+	}
+
+		Speed_id is 0. lets start with one as we already took care of speed
+	
+
+	for (new stat_struct_ids:s = enum_one; s < stat_struct_ids; s++) {
+
+		if(g_player_speed_stat_mults[id][s][the_number_of_stages] == 0){
+		
+			continue
+		
+		}
+		
+		something_happened = true
+
+		g_player_speed_stat_mults[id][s][the_stat_boost_value] = 0.0
+		
+		g_player_speed_stat_mults[id][s][the_number_of_stages] = 0
+	
+	}
+
+	if(something_happened){
+
+		static client_name[128]
+		
+		get_user_name(id, client_name, charsmax(client_name))
+		
+		set_render_with_color_const(id,BLACK,1,35,_,0,_,1.5,1,_,kRenderNormal,PRIO_RENDER_DELETE_INVISIBILITY)
+		
+		sh_chat_message(attacker,_,"All of %s's stats have been reset!",client_name)
+		sh_chat_message(id,_, "All of your stats have been reset!")
+	
+	}
+	else{
+	
+		sh_chat_message(attacker,_,"... Nothing happened!" )
+		
+		if(DEBUG){
+		
+			sh_chat_message(id,_, "... Nothing happened!" )
+		
+		}
+	}
+
+	
+			
+	return something_happened
 }
 
 public bool:_sh_apply_staged_stat_boost(iPlugins, iParams){
@@ -418,7 +493,11 @@ public bool:_sh_apply_staged_stat_boost(iPlugins, iParams){
 	num_stages_to_apply = abs(num_stages_to_apply)
 
 
-	if(!is_user_connected(id)){
+	if(!is_user_alive(id)){
+
+		return false
+	}
+	if(!is_user_connected(attacker)){
 
 		return false
 	}
@@ -478,13 +557,10 @@ public bool:_sh_apply_staged_stat_boost(iPlugins, iParams){
 
 }
 
-/*
-
 
 	please use a valid entity for the inflictor
 	even if it has to be a player. otherwise the function doesnt work ok??
 
-*/
 
 Float:get_dmg_between_players(id, inflictor, attacker, Float:damage, sh_thrash_brat_dmg_type:the_sh_dmg_type = enum_minus_one){
 
@@ -529,6 +605,7 @@ Float:get_dmg_between_players(id, inflictor, attacker, Float:damage, sh_thrash_b
 		static Float:attkr_level = 0.0,
 				Float:id_defense_mult = 0.0,
 				Float:attacker_attk_mult = 0.0,
+				Float:combined_attk_vs_def_mult = 0.0,
 				Float:the_power_val = 0.0,
 				Float:the_lvl_factor = 0.0,
 				Float:the_first_power_factor = 0.0,
@@ -539,28 +616,44 @@ Float:get_dmg_between_players(id, inflictor, attacker, Float:damage, sh_thrash_b
 
 
 
-
 		attck_is_neg = g_player_speed_stat_mults[attacker][the_attack_stat_to_use][the_number_of_stages] < 0
-		
-		attacker_attk_mult = attck_is_neg? 
-						
-			( (POKEMON_DAMAGE_RELATION_BALLAST_VAL/floatabs(g_player_speed_stat_mults[attacker][the_attack_stat_to_use][the_stat_boost_value])))
-			
-								:
-			
-						(POKEMON_DAMAGE_RELATION_BALLAST_VAL + g_player_speed_stat_mults[attacker][the_attack_stat_to_use][the_stat_boost_value])
-
 
 		defense_is_neg = g_player_speed_stat_mults[id][the_defense_stat_to_use][the_number_of_stages] < 0
 		
-		id_defense_mult = defense_is_neg?
-						
-			((POKEMON_DAMAGE_RELATION_BALLAST_VAL/floatabs(g_player_speed_stat_mults[id][the_defense_stat_to_use][the_stat_boost_value])))
-							
-								:
-			
-						(POKEMON_DAMAGE_RELATION_BALLAST_VAL + g_player_speed_stat_mults[id][the_defense_stat_to_use][the_stat_boost_value])
+		attacker_attk_mult = 1.0
+		
+		id_defense_mult = 1.0
 
+		combined_attk_vs_def_mult = 1.0
+
+		if(g_player_speed_stat_mults[attacker][the_attack_stat_to_use][the_number_of_stages]){
+			
+			
+			attacker_attk_mult = (attck_is_neg) ? POKEMON_DAMAGE_RELATION_BALLAST_VAL/(POKEMON_DAMAGE_RELATION_BALLAST_VAL*(1.0 + floatabs(g_player_speed_stat_mults[attacker][the_attack_stat_to_use][the_stat_boost_value])))
+			
+			
+															:
+															
+													(1.0 + g_player_speed_stat_mults[attacker][the_attack_stat_to_use][the_stat_boost_value])
+
+
+			combined_attk_vs_def_mult *= attacker_attk_mult
+
+
+		}	
+		if(g_player_speed_stat_mults[id][the_defense_stat_to_use][the_stat_boost_value]){
+			
+			
+			id_defense_mult = (defense_is_neg) ? (1.0 + floatabs(g_player_speed_stat_mults[id][the_defense_stat_to_use][the_stat_boost_value]))
+
+															:
+													POKEMON_DAMAGE_RELATION_BALLAST_VAL/(POKEMON_DAMAGE_RELATION_BALLAST_VAL*(1.0 + g_player_speed_stat_mults[id][the_defense_stat_to_use][the_stat_boost_value]))
+			
+
+			combined_attk_vs_def_mult *= id_defense_mult
+
+
+		}
 		if(DEBUG){
 			sh_chat_message(attacker,_,"Their defense coeeff: %0.2f",id_defense_mult)
 			sh_chat_message(attacker,_,"The stat we are targeting: %s", stat_consts[the_defense_stat_to_use][name])
@@ -569,6 +662,8 @@ Float:get_dmg_between_players(id, inflictor, attacker, Float:damage, sh_thrash_b
 			sh_chat_message(attacker,_,"The attack stat we are using: %s", stat_consts[the_attack_stat_to_use][name])
 
 			sh_chat_message(attacker,_,"The attack/defense ratio here is: %0.2f", (attacker_attk_mult/id_defense_mult))
+
+			sh_chat_message(attacker,_,"The final combined damage factor is: %0.2f", combined_attk_vs_def_mult)
 		}
 
 
@@ -578,11 +673,10 @@ Float:get_dmg_between_players(id, inflictor, attacker, Float:damage, sh_thrash_b
 
 		the_lvl_factor =  ((POKEMON_DMG_LVL_RELEVANCE_DAMPENING_FACTOR *2.0)*(attkr_level)/(POKEMON_DMG_LVL_RELEVANCE_DAMPENING_FACTOR *5.0)) + 2.0
 
-		the_first_power_factor = float(floatround(the_lvl_factor * the_power_val * (attacker_attk_mult/id_defense_mult), floatround_floor))
+		the_first_power_factor = float(floatround(the_lvl_factor * the_power_val * combined_attk_vs_def_mult, floatround_floor))
 
 		the_second_power_factor = float(floatround(the_first_power_factor / DAMAGE_DAMPENING_DIVIDER, floatround_floor)) + 2.0
 
-		//the_final_damage = the_second_power_factor * (float(generate_int(85,100,10))/float(100))
 		the_final_damage = the_second_power_factor
 		
 		return the_final_damage
@@ -636,3 +730,4 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_h
 
 	return DMG_FWD_HANDLED
 }
+*/

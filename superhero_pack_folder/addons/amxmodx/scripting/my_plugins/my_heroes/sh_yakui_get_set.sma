@@ -17,7 +17,7 @@
 
 new fx_id:gCurrFX[SH_MAXSLOTS+1]
 
-
+new const DEBUG = 0
 
 public plugin_init(){
 
@@ -44,13 +44,24 @@ public _make_effect(iPlugin,iParams){
 	new vic= get_param(1)
 	new attacker= get_param(2)
 	new Float:the_time = get_param_f(3)
-	new hero_id=get_param(3)
-	new fx_id:fx_num= fx_id:get_param(4)
-	new override=get_param(5)
+	new hero_id=get_param(4)
+	new fx_id:fx_num= fx_id:get_param(5)
+	new override=get_param(6)
+	
+	if(DEBUG){
+	
+		sh_chat_message(attacker,-1,"input fx id is: %d",fx_num)
+	
+	}
 
-	new fx_id:true_fx_num= ((fx_num<=enum_zero)||!FX_ID_IS_APPLIABLE(fx_num))?sh_gen_effect():fx_num
+	new fx_id:true_fx_num= ((fx_num<enum_zero)||!(FX_ID_IS_APPLIABLE(fx_num)||(fx_num==KILL)||(fx_num==FX_ID_NONE)))?sh_gen_effect():fx_num
 	
+	if(DEBUG){
 	
+		sh_chat_message(attacker,-1,"obtained fx id is: %d",true_fx_num)
+	
+	}
+
 	if(!is_user_connected(vic)||!is_user_connected(attacker)){
 		
 		return

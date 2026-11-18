@@ -26,3 +26,11 @@ enum stat_struct_ids{
 
 */
 native bool:sh_apply_staged_stat_boost(id, attacker, stat_struct_ids:the_stat_to_go_up, num_stages_to_apply, bool:go_up_or_go_down )
+
+/*
+
+  it returns true on success. false on failure
+
+*/
+
+native bool:sh_reset_player_stat_boosts(id, attacker)

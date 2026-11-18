@@ -172,8 +172,8 @@ new const HUDSYNC_MODE = 1
 static const sh_custom_color:the_color_const_to_use_main = GREEN,
 		sh_custom_color:the_color_const_to_use_fx = FX_NONE,
 		Float:the_hud_sync_mode_fx_time = 0.0,
-		Float:the_hud_sync_mode_xpos = 0.0,
-		Float:the_hud_sync_mode_ypos = 0.89,
+		Float:the_hud_sync_mode_xpos = 0.0125,
+		Float:the_hud_sync_mode_ypos = 0.9025,
 		the_hud_sync_mode_fx_type = 0,
 		the_hud_sync_mode_alpha = 200
 
@@ -188,7 +188,7 @@ new const gTeamName[4][] =  {
 	"CT",
 	"SPECTATOR"
 }
-#define MAIN_TIMER_PERIOD 1.0
+#define MAIN_TIMER_PERIOD 2.0
 //==============================================================================================
 // XP Saving Method, do not modify this here, please see the top of the file.
 #if SAVE_METHOD == 1
@@ -2578,6 +2578,10 @@ writeStatusMessage(id, const message[256])
 	if ( !is_user_connected(id) || is_user_bot(id) ) return
 	*/
 	if ( !is_user_connected(id)) return
+
+	if(is_user_bot(id)){
+		return
+	}
 	// Message is a max of 64 characters including null terminator
 	// Place in unreliable stream, not a necessary message
 	if(HUDSYNC_MODE<=0){
@@ -2587,8 +2591,8 @@ writeStatusMessage(id, const message[256])
 		message_end()
 		return
 	}
-	show_powers_hud_sync_mode(id, message)
 	
+	show_powers_hud_sync_mode(id, message)
 
 }
 show_powers_hud_sync_mode(id, const message[256]){

@@ -16,12 +16,15 @@
 #include "special_fx_inc/sh_rpsyringe_funcs.inc"
 #include "special_fx_inc/sh_gatling_funcs.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
-#include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 
 
 #define PLUGIN "Superhero yakui mk2 pt4"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
+
+#define DEBUG_ROCKET_THINK_PERIOD 0.01
+new const DEBUG = 0
 
 new gNumRockets[SH_MAXSLOTS+1]
 
@@ -38,6 +41,10 @@ public plugin_init(){
 	register_entity_as_wall_touchable(ROCKET_CLASSNAME,"seringa_toqueta_de_entiteta")
 	register_custom_touchable(ROCKET_CLASSNAME,"seringa_toqueta_de_entiteta",player_vector,1)
 	register_touch( ROCKET_CLASSNAME, ROCKET_CLASSNAME, "seringa_toqueta_de_la_seringa");
+	if(DEBUG){
+		register_think( ROCKET_CLASSNAME, "debug_seringa_think");
+	}
+
 	register_forward(FM_CmdStart, "CmdStart");
 	RPSYRINGE_RELOAD_TIMER_TASKID =allocate_typed_task_id(player_task)
 }
@@ -137,6 +144,32 @@ public CmdStart(id, uc_handle)
 	
 	return FMRES_IGNORED;
 }
+public debug_seringa_think(ent_id){
+
+	if(!DEBUG) return PLUGIN_CONTINUE
+
+	if(!is_valid_ent(ent_id)) return PLUGIN_CONTINUE
+
+
+	static owner; owner = entity_get_edict(ent_id, EV_ENT_owner)
+
+	if(!is_user_connected(owner)) return PLUGIN_CONTINUE
+
+	static fx_id:fx_num;
+
+	fx_num = fx_id:entity_get_int(ent_id, EV_INT_iuser3)
+
+	static effect_name[128], color_things[3]
+
+	sh_get_fx_color_name(fx_num,color_things,effect_name)
+	sh_chat_message(owner,-1,"The name of the fx launched in this rocket is: %s", effect_name)
+
+
+	entity_set_float(ent_id, EV_FL_nextthink, get_gametime() +DEBUG_ROCKET_THINK_PERIOD)
+
+	return PLUGIN_CONTINUE
+
+}
 public seringa_toqueta_de_la_seringa(pToucher, pTouched) {
 
 	if(!is_valid_ent(pToucher)) return
@@ -156,8 +189,8 @@ public seringa_toqueta_de_entiteta(pToucher, pTouched) {
 
 	
 	new fx_id:fx_num=fx_id:entity_get_int(pToucher,EV_INT_iuser3)
-	new entlist[33];
-	new numfound = find_sphere_class(pToucher,"player", ROCKET_RADIUS ,entlist, 32);
+	static entlist[33],numfound;
+	numfound = find_sphere_class(pToucher,"player", ROCKET_RADIUS ,entlist, 32);
 		
 	for (new i=0; i < numfound; i++)
 	{		
@@ -167,23 +200,26 @@ public seringa_toqueta_de_entiteta(pToucher, pTouched) {
 		make_effect(pid,id,5.0,gHeroID,fx_num,false)
 	}
 	
-	anime_kill_fx(fl_vExplodeAt)
-	
 	emit_sound(pToucher, CHAN_WEAPON, SMOKE_EXPLODE_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	new color[3]
-	sh_get_pill_color(fx_num,id,color)
-	make_shockwave(fl_vExplodeAt,ROCKET_RADIUS,color)
+
+	static iOrigin[3]
+
+	FVecIVec(fl_vExplodeAt, iOrigin)
+	explode_fx( iOrigin ,floatround(ROCKET_RADIUS), FX_COLOR_OFFSET(fx_num),255,(explosion_sfx_show_shockwave|
+                                            explosion_sfx_show_fireball|
+                                            explosion_sfx_show_smoke|
+                                            explosion_sfx_show_burn_decal))
+											
 
 	remove_missile(pToucher)
 }
 make_rocket(id,iarg1)
 {
 
-new Float:vOrigin[3]
-new Float:vAngles[3]
+static Float:vOrigin[3], Float:vAngles[3]
 entity_get_vector(id, EV_VEC_origin, vOrigin)
 entity_get_vector(id, EV_VEC_v_angle, vAngles)
-new notFloat_vOrigin[3]
+static notFloat_vOrigin[3]
 notFloat_vOrigin[0] = floatround(vOrigin[0])
 notFloat_vOrigin[1] = floatround(vOrigin[1])
 notFloat_vOrigin[2]  =floatround(floatadd( vOrigin[2] , 50.0))
@@ -201,8 +237,7 @@ return PLUGIN_HANDLED
 entity_set_string(NewEnt, EV_SZ_classname, ROCKET_CLASSNAME)
 entity_set_model(NewEnt, "models/rpgrocket.mdl")
 
-new Float:fl_vecminsx[3] = {-1.0, -1.0, -1.0}
-new Float:fl_vecmaxsx[3] = {1.0, 1.0, 1.0}
+static Float:fl_vecminsx[3] = {-1.0, -1.0, -1.0},Float:fl_vecmaxsx[3] = {1.0, 1.0, 1.0}
 
 entity_set_vector(NewEnt, EV_VEC_mins,fl_vecminsx)
 entity_set_vector(NewEnt, EV_VEC_maxs,fl_vecmaxsx)
@@ -217,8 +252,7 @@ entity_set_int(NewEnt, EV_INT_movetype, 10)
 
 entity_set_edict(NewEnt, EV_ENT_owner, id)
 
-new Float:fl_iNewVelocity[3]
-new iNewVelocity[3]
+static Float:fl_iNewVelocity[3], iNewVelocity[3]
 velocity_by_aim(id, iarg1, fl_iNewVelocity)
 entity_set_vector(NewEnt, EV_VEC_velocity, fl_iNewVelocity)
 iNewVelocity[0] = floatround(fl_iNewVelocity[0])
@@ -232,11 +266,14 @@ has_rocket[id] = NewEnt
 gNumRockets[id]-= (gNumRockets[id]>0)? 1:0
 
 new fx_id:fx_num=sh_gen_effect()
-
 //this will store the fx num in the rocket ent
 entity_set_int(NewEnt,EV_INT_iuser3,fx_num)
 trail(NewEnt,FX_COLOR_OFFSET(fx_num),30,20)
 entity_set_float(NewEnt, EV_FL_gravity, 0.75)
+if(DEBUG){
+	entity_set_float(NewEnt, EV_FL_nextthink, get_gametime() + DEBUG_ROCKET_THINK_PERIOD)
+}
+
 set_task(ROCKET_SHOOT_PERIOD,"reload_rocket_task",id+RPSYRINGE_RELOAD_TIMER_TASKID)
 
 return PLUGIN_HANDLED

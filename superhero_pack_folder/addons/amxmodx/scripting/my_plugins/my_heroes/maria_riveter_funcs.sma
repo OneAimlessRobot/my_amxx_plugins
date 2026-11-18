@@ -15,10 +15,54 @@
 #include "maria_riveter_inc/maria_general_funcs.inc"
 #include "maria_riveter_inc/maria_riveter_funcs.inc"
 #include "../my_include/my_author_header.inc"
-#include "sh_aux_stuff/sh_pokemon_dmg_framework.inc"
+
 
 #define PLUGIN_VER "1.0"
 #define PLUGIN_NAME "SUPERHERO Maria's riveter"
+
+
+#define MARIA_PROJECTILE_CLASSNAME "maria_rivet"
+
+
+#define MARIA_RIVETER_SHOTSOUND "weapons/m60-1.wav"
+#define MARIA_RIVETER_WALLHIT_SOUND "weapons/xbow_hit1.wav"
+
+
+#define MARIA_PROJECTILE_EXPLODE_RADIUS 90.0
+#define MARIA_PROJECTILE_EXPLODE_FORCE 2000.0
+#define MARIA_PROJECTILE_KNOCKBCK_DIRECT_RED_PCT 50.0
+#define MARIA_PROJECTILE_KNOCKBACK_DIRECT_REDUCED (MARIA_PROJECTILE_EXPLODE_FORCE* ((MARIA_PROJECTILE_KNOCKBCK_DIRECT_RED_PCT)/100.0))
+
+#define MARIA_PROJECTILE_DAMAGE 125.0
+#define MARIA_PROJECTILE_DAMAGE_DIRECT_BONUS_PCT 50.0
+#define MARIA_PROJECTILE_DAMAGE_AIRSHOT_BONUS_PCT 100.0
+#define MARIA_PROJECTILE_DAMAGE_DIRECT_BONUS (MARIA_PROJECTILE_DAMAGE* ((MARIA_PROJECTILE_DAMAGE_DIRECT_BONUS_PCT)/100.0))
+#define MARIA_PROJECTILE_DAMAGE_AIRSHOT_BONUS (MARIA_PROJECTILE_DAMAGE* ((MARIA_PROJECTILE_DAMAGE_AIRSHOT_BONUS_PCT)/100.0))
+#define MARIA_PROJECTILE_DAMAGE_FALLOFF_DIST 2500.0
+
+
+#define MARIA_PROJECTILE_DEPLOY_TIME 1.0
+#define MARIA_PROJECTILE_SHOOT_PERIOD 0.25
+
+#define MARIA_PROJECTILE_SHOOT_RANDOMNESS 0.3
+
+
+#define MARIA_PROJECTILE_SPEED 3000.0
+#define MARIA_PROJECTILE_GRAVITY_MULT 1.0
+#define MARIA_PROJECTILE_PHYS_UPDATE_TIME 0.05
+
+#define MARIA_PROJECTILE_MASS 1.0
+#define MARIA_PROJECTILE_CAR 0.1073
+#define MARIA_PROJECTILE_DIAMETER 2.0
+#define MARIA_PROJECTILE_AREA ((MARIA_PROJECTILE_DIAMETER*MARIA_PROJECTILE_DIAMETER)*M_PI)
+#define MARIA_AIR_RESISTANCE 0.25
+#define MARIA_PROJECTILE_DRAG_CONST (MARIA_PROJECTILE_AREA*MARIA_PROJECTILE_CAR*MARIA_AIR_RESISTANCE)
+
+#define RIVETER_RECOIL 3.0
+
+
+
+#define RIVETER_CLIP_SIZE 117
 
 new Float:g_Recoil[SH_MAXSLOTS+1][3]
 new g_Riveter_clip[SH_MAXSLOTS+1]
@@ -470,7 +514,6 @@ public rrrrroovvetoooo_touque_playor(pToucher, pTouched)
 		is_air_shot= bool:!(FL_ONGROUND & entity_get_int(pTouched, EV_INT_flags));
 
 	}
-	new owner = entity_get_edict(pToucher,EV_ENT_owner);
 
 	new Float:rivet_launch_pos[3]
 	entity_get_vector(pToucher,EV_VEC_vuser1,rivet_launch_pos)
@@ -500,12 +543,6 @@ public rrrrroovvetoooo_touque_playor(pToucher, pTouched)
 										explosion_sfx_show_nothing)
 	}
 	remove_entity(pToucher)
-
-	if(is_user_connected(owner)&&is_user_alive(pTouched)&&!sh_clients_are_same_team(pTouched,owner)){
-		sh_apply_staged_stat_boost(pTouched,owner,STAT_DEFENSE_MULT,_:(is_direct_hit)+_:(is_air_shot),false)
-		
-		sh_apply_staged_stat_boost(owner,owner,STAT_DEFENSE_MULT,_:(is_direct_hit)+_:(is_air_shot),true)
-	}
 }
 public plugin_precache()
 {

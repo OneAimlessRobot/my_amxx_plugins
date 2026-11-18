@@ -22,6 +22,52 @@
 #include "../my_include/my_author_header.inc"
 
 
+#define PILL_CLASSNAME "pill_gatling_pill"
+
+#define NUM_BARRELS 100
+#define PILLGATLING_CLIP_SIZE 125
+#define PILL_SPEED 1350.0
+
+#define PILL_SHOOT_PERIOD_BASE 0.08333333
+#define PILL_SHOOT_PERIOD (PILL_SHOOT_PERIOD_BASE/float(NUM_BARRELS))
+
+#define PILL_DEPLOY_TIME 1.0
+
+#define PILL_SHOOT_RANDOMNESS 0.0
+
+#define SHUTDOWN_TIME 1.7
+#define PILL_MASS 100.0
+
+#define PILLGATLING_RECOIL 0.1
+
+enum yakui_pillgatling_anims{
+	yakui_pillgatling_anim_idle = 0,
+	yakui_pillgatling_anim_idle2,
+	yakui_pillgatling_anim_gentleidle,
+	yakui_pillgatling_anim_stillidle,
+	yakui_pillgatling_anim_draw,
+	yakui_pillgatling_anim_holster,
+	yakui_pillgatling_anim_spinup,
+	yakui_pillgatling_anim_spindown,
+	yakui_pillgatling_anim_spinidle,
+	yakui_pillgatling_anim_spinfire,
+	yakui_pillgatling_anim_spinidledown
+}
+
+enum gatling_action{
+	act_none = 0,
+	act_load_up,
+	act_run
+}
+enum fire_mode_enum{
+	spin_shoot=0,
+	spin_only
+
+}
+
+#define GAT_WINDUP_PERIOD 0.2
+
+
 new gNumPills[SH_MAXSLOTS+1]
 new gatling_action:g_plAction[SH_MAXSLOTS+1]
 new Float:g_nextSound[SH_MAXSLOTS+1]
@@ -305,7 +351,6 @@ public plugin_natives(){
 
 	
 	register_native("gatling_set_num_pills","_gatling_set_num_pills");
-	register_native("gatling_get_num_pills","_gatling_get_num_pills");
 	register_native("gatling_dec_num_pills","_gatling_dec_num_pills");
 	register_native("gatling_set_user_pillgatling","_gatling_set_user_pillgatling")
 	register_native("gatling_set_pillgatling","_gatling_set_pillgatling");
@@ -359,17 +404,6 @@ public _gatling_set_num_pills(iPlugin,iParams){
 		return
 	}
 	gNumPills[id]=value_to_set;
-}
-public _gatling_get_num_pills(iPlugin,iParams){
-
-
-	new id= get_param(1)
-	if(!is_user_connected(id)){
-		
-		return -1
-	}
-	return gNumPills[id]
-
 }
 public sh_round_end(){
 

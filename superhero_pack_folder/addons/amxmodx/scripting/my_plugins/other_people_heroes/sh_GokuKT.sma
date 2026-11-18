@@ -59,7 +59,6 @@ gokukt_health 800 // How much HP does goku have in kaioken mode.
 #include <amxmodx>
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
-#include "../my_heroes/sh_aux_stuff/sh_pokemon_dmg_framework.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 
 // GLOBAL VARIABLES
@@ -74,8 +73,7 @@ new HeroName[] = "Saiyan Kaioken Technic"
 */
 enum goku_timer_enum{
 
-	the_time,
-	bool:boost_succeeded
+	the_time
 }
 new GokuKTTimer[SH_MAXSLOTS+1][goku_timer_enum]
 //reset variables
@@ -210,7 +208,6 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 	{
 		if ( is_user_connected(id)) {
 			GokuKTTimer[id][the_time] = 0
-			GokuKTTimer[id][boost_succeeded] = false
 		}
 	}
 }
@@ -221,7 +218,6 @@ public sh_client_spawn(id)
 	reset_health[id] = false
 	reset_armor[id] = false
 	GokuKTTimer[id][the_time] = 0
-	GokuKTTimer[id][boost_succeeded] = false
 }
 
 //----------------------------------------------------------------------------------------------
@@ -300,25 +296,12 @@ public end_kaioken(id)
 
 		reset_health[id] = false
 		
-		if(GokuKTTimer[id][boost_succeeded]){
-
-			/*
-				
-				yes I know they can get lowered during kaioken too idc
-			
-			*/
-			sh_apply_staged_stat_boost(id,id,STAT_DEFENSE_MULT,2,false)
-
-			
-		}
-
 		
 	}
 	if ( reset_armor[id] ) {
 		set_user_armor(id, set_armor)
 		reset_armor[id] = false
 	}
-	GokuKTTimer[id][boost_succeeded] = false
 }
 //----------------------------------------------------------------------------------------------
 public gokukt_kaiokenmode(id)
@@ -346,7 +329,6 @@ public gokukt_kaiokenmode(id)
 		set_hudmessage(255, 0, 0, -1.0, 0.3, 0, 0.25, 1.0, 0.0, 0.0)
 		show_hudmessage(id, "5 Times x Kaioken! Haaaa!")
 		emit_sound(0, CHAN_AUTO, "shmod/kaiokenbonini.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-		GokuKTTimer[id][boost_succeeded] = sh_apply_staged_stat_boost(id, id, STAT_SPECIAL_ATTACK_MULT,2,true)
 		powerup_effect(parm,id+GOKUKT_SPECIAL_FX_TASKID)
 	}
 }

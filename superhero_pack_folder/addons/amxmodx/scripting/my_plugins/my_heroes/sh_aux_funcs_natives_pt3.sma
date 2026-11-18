@@ -70,6 +70,7 @@ public plugin_natives(){
 	register_native("explosion_with_origin","_explosion_with_origin")
 
 	
+	register_native("explode_fx","_explode_fx");
 	register_native("tank_impact_shot_fx","_tank_impact_shot_fx");
 }
 prepare_shero_aux_lib_pt3(){
@@ -149,7 +150,30 @@ native explode_fx( vec1[3] ,radius, sh_custom_color:fx_color=WHITE,alpha=255,
 											*/
 //-----------------------------------------------------------------------------------------------
 
-explode_fx( vec1[3] ,radius, sh_custom_color:fx_color=WHITE,alpha=255,
+public _explode_fx(iPlugins, iParams){
+
+
+	static origin[3];
+
+
+	get_array(1,origin,sizeof origin)
+
+	new radius = get_param(2),
+			sh_custom_color:fx_color = sh_custom_color:get_param(3),
+			alpha = get_param(4),
+			explosion_sfx_flags:sfx_flags = explosion_sfx_flags:get_param(5)
+
+
+	explode_fx_aux(origin, radius, fx_color, alpha,sfx_flags )
+
+
+
+
+
+
+}
+											
+explode_fx_aux( vec1[3] ,radius, sh_custom_color:fx_color=WHITE,alpha=255,
             explosion_sfx_flags:sfx_mask=(explosion_sfx_show_shockwave|
                                             explosion_sfx_show_fireball|
                                             explosion_sfx_show_smoke|
@@ -262,7 +286,7 @@ public _explosion_with_origin(iPlugins,iParams){
 		iOrigin[i] = floatround(fOrigin[i]);
 
 	if(sfx_mask>explosion_sfx_show_nothing){
-		explode_fx(iOrigin,floatround(explosion_radius),fx_color,_,sfx_mask)
+		explode_fx_aux(iOrigin,floatround(explosion_radius),fx_color,_,sfx_mask)
 	}
 	static entlist[33];
 	new numfound = find_sphere_class(0,"player", explosion_radius ,entlist, 32,fOrigin);
@@ -331,7 +355,7 @@ public _explosion(iPlugins,iParams){
 		iOrigin[i] = floatround(fOrigin[i]);
 
 	if(sfx_mask>explosion_sfx_show_nothing){
-		explode_fx(iOrigin,floatround(explosion_radius),fx_color,_,sfx_mask)
+		explode_fx_aux(iOrigin,floatround(explosion_radius),fx_color,_,sfx_mask)
 		if((sfx_mask & explosion_sfx_show_custom_sound)){
 			emit_sound(ent_id, CHAN_VOICE, custom_sound_sample, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		}
@@ -399,7 +423,7 @@ public _explosion_custom_entity(iPlugins,iParams){
 		iOrigin[i] = floatround(fOrigin[i]);
 
 	if(sfx_mask>explosion_sfx_show_nothing){
-		explode_fx(iOrigin,floatround(explosion_radius),fx_color,_,sfx_mask)
+		explode_fx_aux(iOrigin,floatround(explosion_radius),fx_color,_,sfx_mask)
 		if((sfx_mask & explosion_sfx_show_custom_sound)){
 			emit_sound(ent_id, CHAN_VOICE, custom_sound_sample, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 		}
@@ -460,7 +484,7 @@ public _explosion_custom_entity_with_origin(iPlugins,iParams){
 		iOrigin[i] = floatround(fOrigin[i]);
 
 	if(sfx_mask>explosion_sfx_show_nothing){
-		explode_fx(iOrigin,floatround(explosion_radius),fx_color,_,sfx_mask)
+		explode_fx_aux(iOrigin,floatround(explosion_radius),fx_color,_,sfx_mask)
 	}
 
 	static entlist[33];

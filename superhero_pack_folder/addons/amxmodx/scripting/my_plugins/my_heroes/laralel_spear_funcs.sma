@@ -18,6 +18,27 @@
 #include "../my_include/my_author_header.inc"
 
 
+
+#define SPEAR_CLASSNAME "spear"
+
+#define SPEAR_RETRIEVE true
+
+
+#define SPEAR_SPEED 1750.0
+
+#define SPEAR_SHOOT_PERIOD 1.0
+
+#define SPEAR_LAUNCH_DAMAGE 100
+#define SPEAR_LAUNCH_FORCE 2300.0
+#define SPEAR_LAUNCH_EXPLODE_RADIUS 100.0
+
+#define SPEAR_SMASH_DAMAGE 400
+#define SPEAR_SMASH_FORCE 2750.0
+#define SPEAR_SMASH_EXPLODE_RADIUS 70.0
+
+
+#define SPEAR_SHOOT_RANDOMNESS 0.0
+
 #define SPEAR_CHARGE_PERIOD 0.1
 #define SPEAR_CHARGE_TIMES floatround(floatdiv(max_charge_time,SPEAR_CHARGE_PERIOD))
 
