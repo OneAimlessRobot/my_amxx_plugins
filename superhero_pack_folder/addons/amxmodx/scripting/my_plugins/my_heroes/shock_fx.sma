@@ -53,6 +53,12 @@ public _sh_shock_user(iPlugin,iParams){
 		Float:spread_radius = get_param_f(6),
 		bool:spread_to_og_shocker = bool:get_param(7),
 		custom_weapon_id = get_param(8)
+	
+	if ( !sh_is_active() ||!is_user_alive(user)){
+
+		return
+	}
+	
 
 	custom_weapon_id = ((custom_weapon_id<0)?generic_dmg_source_shock:custom_weapon_id)
 

@@ -34,10 +34,10 @@ shmod/frostnova.wav
 shmod/Teliko/chaff/chaff_blow.wav
 shmod/generic_shero_sfx/nasty_blood_sound.wav
 shmod/komak/fast_shot.wav
-shmod/erica/sleep/snore.wav
+shmod/larissa/sleep/snore.wav
 ambience/burning1.wav
 scientist/c1a0_sci_catscream.wav
-shmod/erica/molotov/molotov_fire.wav
+shmod/larissa/molotov/molotov_fire.wav
 hornet/ag_hornethit1.wav
 shmod/Teliko/counter.wav
 shmod/Teliko/MEGA_counter.wav
@@ -411,7 +411,6 @@ weapons/ric4.wav
 weapons/ric5.wav
 weapons/ric_metal-1.wav
 weapons/ric_metal-2.wav
-weapons/ric_conc-1.wav
 weapons/ric_conc-2.wav
 debris/bustmetal1.wav
 debris/bustmetal2.wav

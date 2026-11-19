@@ -66,9 +66,9 @@
 
 #define ACTIVATE_POKEMON_DMG_CVAR "sh_use_pokemon_damage"
 
-#define DAMAGE_DAMPENING_DIVIDER 37.5
-#define POKEMON_DAMAGE_RELATION_BALLAST_VAL 0.5 //idc if this makes no diff. It makes me feel safe not to divide things too close to zero
-#define POKEMON_DMG_LVL_RELEVANCE_DAMPENING_FACTOR 15.5
+#define DAMAGE_DAMPENING_DIVIDER 10.5
+#define POKEMON_DAMAGE_RELATION_BALLAST_VAL 0.5 
+#define POKEMON_DMG_LVL_RELEVANCE_DAMPENING_FACTOR 5.5
 
 #define MAX_PLAYER_STAT_STAGES 6
 
@@ -178,7 +178,13 @@ public on_Weapon_Change(id)
 	
 
 	new my_weapon_ids:user_wpn = my_weapon_ids:read_data(2)
-	if(((last_player_deployed_weapon[id]!=user_wpn)||(!is_weaponid_valid(_:last_player_deployed_weapon[id])))&&is_weaponid_valid(_:user_wpn)){
+
+	if(user_wpn==MY_CSW_C4){
+
+		return
+	}
+
+	if(((last_player_deployed_weapon[id]!=user_wpn))){
 
 		static Float:last_weapon_speed_for_this_one = 0.0,
 			Float:curr_user_maxspeed = 0.0
@@ -302,7 +308,16 @@ public apply_speed(task_id){
 		static bool:speed_is_neg,
 				Float:speed_added_thing,
 				Float:curr_speed,
-				Float:speed_stat_boost_coeff
+				Float:speed_stat_boost_coeff,
+				my_weapon_ids:user_wpn;
+
+		user_wpn = my_weapon_ids:get_user_weapon(id)
+
+		if(user_wpn==MY_CSW_C4){
+
+			continue
+		}
+
 
 		speed_stat_boost_coeff = floatabs(g_player_stats[id][STAT_SPEED_ID][the_stat_boost_value])
 		

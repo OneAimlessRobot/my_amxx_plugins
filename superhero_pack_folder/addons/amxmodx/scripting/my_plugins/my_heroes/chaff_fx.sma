@@ -42,6 +42,12 @@ public plugin_natives(){
 public _sh_chaff_user(iPlugin,iParams){
 	
 	new user=get_param(1)
+
+	if ( !sh_is_active() ||!is_user_alive(user)){
+
+		return
+	}
+	
 	new Float:the_time=get_param_f(2)
 	if(!sh_get_id_bit(user, SH_IS_CHAFFED)){
 		chaff_user(user,the_time)

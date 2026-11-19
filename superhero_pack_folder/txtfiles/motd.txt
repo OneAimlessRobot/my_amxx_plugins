@@ -25,10 +25,25 @@
 </head>
 <body>
 <pre>
+say commands:
+/general_help -> show this again
 
-New features are being tested or something being fixed.
-Joining is not advisable as restarts will be frequent
-Stay for your own choice
+/help -> superheromod help
+
+note: use lowercase when binding a power to a letter key
+examples:
+bind i +power2
+(use "i", not "I".)
+
+/extra_help -> more superheromod help
+
+/helpof [part of hero name] -> get help about hero
+		(default file will be shown
+		if a specific one does not exist)
+
+/skins -> print skins menu depending on heroes equipped
+			both weapons and body
+			
 
 </pre>
 </body>

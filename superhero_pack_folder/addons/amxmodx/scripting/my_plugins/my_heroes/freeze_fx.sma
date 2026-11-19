@@ -117,6 +117,12 @@ public _sh_freeze_user(iPlugins,iParams){
 
 	new id=get_param(1)
 
+	if ( !sh_is_active() ||!is_user_alive(id)){
+
+		return
+	}
+
+
 	if(!sh_is_active()||!is_user_alive(id)||
 				sh_get_id_bit(id, SH_IS_FROZEN)||
 				sh_get_id_bit(id, SH_IS_BURNING)){

@@ -53,10 +53,10 @@ gokukt_health 800 // How much HP does goku have in kaioken mode.
 #define I_WANT_CONSTANTS
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_PDATA_ALIASES
+#define I_WANT_MISC_FUNCS
 #define I_WANT_CUSTOM_COLORS
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
-#include <amxmodx>
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_pokemon_dmg_framework.inc"
@@ -65,7 +65,7 @@ gokukt_health 800 // How much HP does goku have in kaioken mode.
 // GLOBAL VARIABLES
 new HeroName[] = "Saiyan Kaioken Technic"
 
-#define KAIOKEN_FX_TASK_PERIOD 0.333
+#define KAIOKEN_FX_TASK_PERIOD 0.10
 
 #define POWERUP_GLOBAL_TASK_PERIOD 1.0
 /*
@@ -273,6 +273,7 @@ public gokukt_loop(taskid)
 						1.0,0,_,kRenderNormal,PRIO_RENDER_POWERUP,gHeroID)
 				set_hudmessage(255, 0, 0, -1.0, 0.3, 0, 1.0, 1.0, 0.0, 0.0)
 				show_hudmessage(id, "%d seconds left of Kaioken Mode", GokuKTTimer[id][the_time])
+				set_user_maxspeed_controlled(id, get_pcvar_float(goku_speed))
 			}
 			else if ( GokuKTTimer[id][the_time]  <= 0 ) {
 				GokuKTTimer[id][the_time] = -1
@@ -379,7 +380,7 @@ public powerup_effect(parm[2], taskid)
 
 		// power up sprite - additive sprite, plays 1 cycle
 		message_begin(MSG_ONE, SVC_TEMPENTITY, Origin, idOthers)
-		write_byte(17)			// TE_SPRITE
+		write_byte(TE_SPRITE)			// TE_SPRITE
 		write_coord(Origin[0])	// center position
 		write_coord(Origin[1])
 		write_coord(Origin[2]+20)
@@ -390,7 +391,7 @@ public powerup_effect(parm[2], taskid)
 
 		// power up sprite - additive sprite, plays 1 cycle
 		message_begin(MSG_ONE, SVC_TEMPENTITY, Origin, idOthers)
-		write_byte(17)			// TE_SPRITE
+		write_byte(TE_SPRITE)			// TE_SPRITE
 		write_coord(Origin[0]+5) // center position
 		write_coord(Origin[1])
 		write_coord(Origin[2]+20)
@@ -401,7 +402,7 @@ public powerup_effect(parm[2], taskid)
 
 		// power up sprite - additive sprite, plays 1 cycle
 		message_begin(MSG_ONE, SVC_TEMPENTITY, Origin, idOthers)
-		write_byte(17)			// TE_SPRITE
+		write_byte(TE_SPRITE)			// TE_SPRITE
 		write_coord(Origin[0]-5)	// center position
 		write_coord(Origin[1])
 		write_coord(Origin[2]+20)
@@ -412,7 +413,7 @@ public powerup_effect(parm[2], taskid)
 
 		// power up sprite - additive sprite, plays 1 cycle
 		message_begin(MSG_ONE, SVC_TEMPENTITY, Origin, idOthers)
-		write_byte(17)			// TE_SPRITE
+		write_byte(TE_SPRITE)			// TE_SPRITE
 		write_coord(Origin[0])	// center position
 		write_coord(Origin[1]+5)
 		write_coord(Origin[2]+10)
@@ -423,7 +424,7 @@ public powerup_effect(parm[2], taskid)
 
 		// power up sprite - additive sprite, plays 1 cycle
 		message_begin(MSG_ONE, SVC_TEMPENTITY, Origin, idOthers)
-		write_byte(17)			// TE_SPRITE
+		write_byte(TE_SPRITE)			// TE_SPRITE
 		write_coord(Origin[0])	// center position
 		write_coord(Origin[1]-5)
 		write_coord(Origin[2]+10)

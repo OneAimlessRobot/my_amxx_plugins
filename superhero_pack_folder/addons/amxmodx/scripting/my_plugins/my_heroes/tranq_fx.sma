@@ -116,6 +116,11 @@ stock sleep_user_switch_weapon(id){
 public _sh_sleep_user(iPlugin,iParams){
 
 	new user=get_param(1)
+	if ( !sh_is_active() ||!is_user_alive(user)){
+
+		return
+	}
+
 	if(!sh_get_id_bit(user,SH_IS_SLEEPING)){
 		new attacker=get_param(2)
 		new Float:the_time = get_param_f(3)

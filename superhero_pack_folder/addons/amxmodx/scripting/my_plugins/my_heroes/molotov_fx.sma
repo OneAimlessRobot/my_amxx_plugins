@@ -230,6 +230,11 @@ public _sh_molly_user(iPlugin,iParams){
 	new bool:should_spread = bool:get_param(6)
 	new custom_wpn_id = get_param(7)
 
+	if ( !sh_is_active() ||!is_user_alive(user)){
+
+		return
+	}
+	
 	custom_wpn_id = ((custom_wpn_id<0)?generic_dmg_source_fire:custom_wpn_id)
 
 	new bool:is_tomie_user = sh_get_player_has_hero_prop(user, SH_FIRE_RETARDANT_HERO)
