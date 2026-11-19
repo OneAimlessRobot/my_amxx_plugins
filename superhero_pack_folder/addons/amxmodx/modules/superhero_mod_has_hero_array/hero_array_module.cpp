@@ -169,14 +169,14 @@ static cell AMX_NATIVE_CALL sh_assign_id_bit(AMX *amx,cell *params)
 static cell AMX_NATIVE_CALL sh_get_id_custom_weapon_bit(AMX *amx,cell *params)
 {
 	(void)amx;
-	return the_hero_array.get_hero_projectile_weapon_bit((state_cell_type_t)params[1], (state_cell_type_t)params[2]);
+	return the_hero_array.get_id_custom_weapon_bit((state_cell_type_t)params[1], (state_cell_type_t)params[2]);
 }
 
 //the third parameter assigns the polarity of the bit
 static cell AMX_NATIVE_CALL sh_assign_id_custom_weapon_bit(AMX *amx,cell *params)
 {
 	(void)amx;
-	the_hero_array.assign_hero_projectile_weapon_bit((state_cell_type_t)params[1],(state_cell_type_t) params[2], (state_cell_type_t)params[3]);
+	the_hero_array.assign_id_custom_weapon_bit((state_cell_type_t)params[1],(state_cell_type_t) params[2], (state_cell_type_t)params[3]);
 	return 0;
 }
 

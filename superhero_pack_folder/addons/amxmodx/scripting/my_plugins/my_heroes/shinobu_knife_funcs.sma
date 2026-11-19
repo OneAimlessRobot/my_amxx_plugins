@@ -263,7 +263,7 @@ public _nani_behind_player(iPlugin,iParams){
 	entity_get_vector(tg_player,EV_VEC_origin,tg_player_curr_origin)
 
 
-	xs_vec_add_scaled(tg_player_curr_origin,tg_player_aiming, -1.0*floatabs(distance_tele_tg),tele_player_dst_origin)
+	xs_vec_add_scaled(tg_player_curr_origin,tg_player_aiming, -1.0*abs_macro(distance_tele_tg),tele_player_dst_origin)
 
 	FVecIVec(tele_player_dst_origin,g_shinobu_dst_positions[tele_player])
 	

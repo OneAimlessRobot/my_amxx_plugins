@@ -316,7 +316,7 @@ public JetpackJump( id,intensity){
 	velocity[0]=velocity[0]*float(intensity);
 	velocity[1]=velocity[1]*float(intensity);
 	velocity[2]=velocity[2]*float(intensity);
-	velocity[2]=max_macro(max_macro(0.0,cvar_val(float, pcvar_min_launch_height)),floatabs(velocity[2]));
+	velocity[2]=max_macro(max_macro(0.0,cvar_val(float, pcvar_min_launch_height)),abs_macro(velocity[2]));
 	set_pev(id, pev_velocity, velocity);
 }
 

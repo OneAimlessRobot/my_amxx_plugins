@@ -15,6 +15,33 @@
 #include "../my_include/my_author_header.inc"
 
 
+#define ARIFLE_SECRET_CODE 184128
+#define A_RIFLE_DAMAGE 100
+#define A_RIFLE_CLIP 67
+#define A_RIFLE_RESERVE 103
+#define A_RIFLE_SPEED 1.3
+#define A_RIFLE_RECOIL 1.15
+
+#define ARIFLE_PLAYER_ANIMEXT "m249"
+#define ARIFLE_OLDMODEL "models/w_m249.mdl"
+
+#define ARIFLE_V_MODEL "models/shmod/supernoodle/arifle/v_arifle.mdl"
+#define ARIFLE_P_MODEL "models/shmod/supernoodle/arifle/p_arifle.mdl"
+#define ARIFLE_W_MODEL "models/shmod/supernoodle/arifle/w_arifle.mdl"
+
+#define MUZZLE_FLASH "sprites/muzzleflash7.spr"
+
+
+enum
+{
+	anim_idle,
+	anim_shoot1,
+	anim_shoot2,
+	anim_reload,
+	anim_draw,
+}
+
+
 new const Arifle_Sound[] = "weapons/m60-1.wav"
 
 
@@ -127,7 +154,7 @@ public Get_Arifle(id)
 
 public Remove_Arifle(id)
 {
-	sh_assign_id_custom_weapon_bit(id,SH_ASSAULT_RIFLE, true)
+	sh_assign_id_custom_weapon_bit(id,SH_ASSAULT_RIFLE, false)
 }
 
 
@@ -295,6 +322,8 @@ public fw_Item_Deploy_Post(Ent)
 
 	if(!sh_get_id_custom_weapon_bit(Id, SH_ASSAULT_RIFLE))
 		return
+	
+	sh_chat_message(Id,_,"We have the assault rifle")
 	
 	set_pev(Id, pev_viewmodel2, ARIFLE_V_MODEL)
 	set_pev(Id, pev_weaponmodel2, ARIFLE_P_MODEL)

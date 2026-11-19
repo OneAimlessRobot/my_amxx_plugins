@@ -57,7 +57,7 @@ public plugin_init()
 	create_cvar("SuperNoodle_scoutmult", "2.0")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	gHeroID=shCreateHero(gHeroName, "All GEARED UP!", "Super Shotgun, Precision & Assault Rifle & Dual Pistols from DUSK!/Extra Damage for all these/Unlimited Ammo. Extra HP and AP.", false, "SuperNoodle_level")
+	gHeroID=shCreateHero(gHeroName, "All GEARED UP!", "Super Shotgun, Precision & Assault Rifle & Dual Pistols from DUSK!", false, "SuperNoodle_level")
 
 	sh_assign_hero_bit(gHeroID, SH_M249_HERO, true)
 
@@ -100,7 +100,7 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 
 	if(sh_get_user_has_hero(id, gHeroID)){
 		
-			SuperNoodle_weapons(id)
+		SuperNoodle_weapons(id)
 	}
 	//This gets run if they had the power but don't anymore
 	else {

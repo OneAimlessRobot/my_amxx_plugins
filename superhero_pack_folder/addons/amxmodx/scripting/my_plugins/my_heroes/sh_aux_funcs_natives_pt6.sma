@@ -17,6 +17,7 @@
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt17.inc"
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt15.inc"
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt18.inc"
+#include "sh_aux_stuff/sh_pokemon_dmg_framework_consts.inc"
 
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt6.inc"
 
@@ -143,6 +144,18 @@ public createHelpMotdFilePt3(extraHelpFile){
 	fputs(extraHelpFile, "(console) ")
 	fputs(extraHelpFile, hero_projectile_weapons_print)
 	fputs(extraHelpFile, " - Shows a list of projectile weapons for a hero!^n^n^n")
+	fputs(extraHelpFile, "(console) ")
+	fputs(extraHelpFile, apply_player_pokemon_stat_change)
+	fputs(extraHelpFile, " - Parm1: playername. Parm2: boost id, Parm3: boost stages, Parm4 go up or go down^n^n^n")
+	fputs(extraHelpFile, "(console) ")
+	fputs(extraHelpFile, print_pokemon_stat_descriptions)
+	fputs(extraHelpFile, " - Parm1: playername^n^n^n")
+	fputs(extraHelpFile, "(console) ")
+	fputs(extraHelpFile, reset_player_pokemon_stats)
+	fputs(extraHelpFile, " - Parm1: playername^n^n^n")
+	fputs(extraHelpFile, "(console) ")
+	fputs(extraHelpFile, print_player_pokemon_stats)
+	fputs(extraHelpFile, " - Print pokemon stats of a player^n^n^n")
 
 	
 }

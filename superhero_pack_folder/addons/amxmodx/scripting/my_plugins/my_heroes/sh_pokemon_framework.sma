@@ -61,6 +61,7 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_pokemon_dmg_framework.inc"
+#include "sh_aux_stuff/sh_pokemon_dmg_framework_consts.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "../my_include/auxiliar_stuff.inc"
 
@@ -68,6 +69,8 @@
 
 #define DAMAGE_DAMPENING_DIVIDER 10.5
 #define POKEMON_DAMAGE_RELATION_BALLAST_VAL 0.5
+#define POKEMON_DAMAGE_LEVEL_RELEVANCE_DAMPENING_FACTOR_NUMERATOR 0.0001
+#define POKEMON_DAMAGE_LEVEL_RELEVANCE_DAMPENING_FACTOR_DENOMINATOR 10.0
 
 #define MAX_PLAYER_STAT_STAGES 6
 
@@ -88,7 +91,7 @@ enum player_stat_struct{
 #define EVASIVENESS_TASK_PERIOD 1.0
 #define SPEED_TASK_PERIOD 0.33
 
-static const DEBUG = 0
+static const DEBUG = 1
 
 static const stat_change_notifications[2][4][] = {
 	
@@ -118,18 +121,19 @@ static const stat_change_notifications[2][4][] = {
 enum stat_constants_struct{
 
 	name[50],
-	Float:step
+	Float:step,
+	description[512]
 
 
 }
 static const stat_consts[stat_struct_ids][stat_constants_struct] = {
 
-	{"Speed", 1.0},
-	{"Attack", POKEMON_DAMAGE_RELATION_BALLAST_VAL},
-	{"Defense", POKEMON_DAMAGE_RELATION_BALLAST_VAL},
-	{"Sp. Attack", POKEMON_DAMAGE_RELATION_BALLAST_VAL},
-	{"Sp. Defense", POKEMON_DAMAGE_RELATION_BALLAST_VAL},
-	{"Evasiveness", 40.0}
+	{"Speed", 1.0, "Speed"},
+	{"Attack", POKEMON_DAMAGE_RELATION_BALLAST_VAL, "Physical attack"},
+	{"Defense", POKEMON_DAMAGE_RELATION_BALLAST_VAL, "Physical defense"},
+	{"Sp. Attack", POKEMON_DAMAGE_RELATION_BALLAST_VAL, "Special attack"},
+	{"Sp. Defense", POKEMON_DAMAGE_RELATION_BALLAST_VAL, "Special defense"},
+	{"Evasiveness", 40.0, "Transaparency"}
 
 
 }
@@ -157,6 +161,19 @@ public plugin_init(){
 	enable_pokemon_dmg_cvar = create_cvar(ACTIVATE_POKEMON_DMG_CVAR, "0", _,"Enable experimental pokemon based damage framework",true, 0.0,true, 1.0)
 
 
+
+	register_concmd(print_pokemon_framework_info, print_pokemon_framework_info , ADMIN_IMMUNITY, "Print pokemon library init constants and other things")
+
+	register_concmd(apply_player_pokemon_stat_change, apply_player_pokemon_stat_change , ADMIN_IMMUNITY, "Parm1: playername. Parm2: boost id, Parm3: boost stages, Parm4 go up or go down")
+
+	register_concmd(print_pokemon_stat_descriptions, print_pokemon_stat_descriptions, ADMIN_IMMUNITY, "Print the descriptions of stats availiable")
+
+	register_concmd(reset_player_pokemon_stats, reset_player_pokemon_stats, ADMIN_IMMUNITY, "Parm1: playername")
+
+	register_concmd(print_player_pokemon_stats, print_player_pokemon_stats, ADMIN_IMMUNITY, "Print pokemon stats of a player^n^n^n")
+
+
+
 	RegisterHam(Ham_TakeDamage,"player","ham_sh_stat_management_physical_damage",_, true)
 
 	EVASIVENESS_TASKID = allocate_typed_task_id(generic_task)
@@ -167,7 +184,164 @@ public plugin_init(){
 
 
 }
+public amx_print_pokemon_framework_info(id,level,cid){
 
+	if (!cmd_access(id,level,cid,0)){
+		return PLUGIN_HANDLED
+	}
+	
+	
+	console_print(id, "Info of the version of pokemon framework that is installed on this server:^n^n^n")
+	
+	console_print(id, "VERSION: %s^n", VERSION)
+
+	console_print(id, "DAMAGE_DAMPENING_DIVIDER: %0.2f^n", DAMAGE_DAMPENING_DIVIDER)
+
+	console_print(id, "POKEMON_DAMAGE_RELATION_BALLAST_VAL: %0.2f^n", POKEMON_DAMAGE_RELATION_BALLAST_VAL)
+
+	console_print(id, "POKEMON_DAMAGE_LEVEL_RELEVANCE_DAMPENING_FACTOR_NUMERATOR: %0.2f^n", POKEMON_DAMAGE_LEVEL_RELEVANCE_DAMPENING_FACTOR_NUMERATOR)
+	
+	console_print(id, "POKEMON_DAMAGE_LEVEL_RELEVANCE_DAMPENING_FACTOR_DENOMINATOR: %0.2f^n", POKEMON_DAMAGE_LEVEL_RELEVANCE_DAMPENING_FACTOR_DENOMINATOR)
+
+	console_print(id, "MAX_PLAYER_STAT_STAGES: %d", MAX_PLAYER_STAT_STAGES)
+
+	
+	
+	
+	return PLUGIN_HANDLED
+
+}
+public amx_print_player_pokemon_stats(id,level,cid){
+
+	if (!cmd_access(id,level,cid,1)){
+		return PLUGIN_HANDLED
+	}
+	new arg1[128]
+
+	read_argv(1, arg1, charsmax(arg1))
+
+	new player = cmd_target(id,arg1,2)
+
+	if (!player) return PLUGIN_HANDLED
+
+	static player_name[128]
+
+	get_user_name(id, player_name, charsmax(player_name))
+
+	console_print(id,"The pokemon stats of this player (named %s) are: ^n^n",player_name)
+
+	for(new stat_struct_ids:i = enum_zero; i < stat_struct_ids;i++){
+
+		console_print(id,"Stat %d:^n",i)
+		console_print(id,"Name - %s^n",stat_consts[i][name])
+		console_print(id,"Num of stages: %d^n",g_player_stats[id][i][the_number_of_stages])
+		console_print(id,"Total boost value: %0.6f^n",g_player_stats[id][i][the_stat_boost_value])
+	
+	
+
+	}
+
+	return PLUGIN_HANDLED
+}
+public amx_print_pokemon_stat_descriptions(id,level,cid){
+
+	if (!cmd_access(id,level,cid,0)){
+		return PLUGIN_HANDLED
+	}
+
+	if(!pokemon_dmg_enabled()){
+		
+		console_print(id,"Pokemon framework disabled")
+		return PLUGIN_HANDLED
+
+	}
+	console_print(id,"The pokemon stat boosts available on the server are: ^n^n")
+	
+	for(new stat_struct_ids:i = enum_zero; i< stat_struct_ids;i++){
+
+		console_print(id,"Stat %d:^n",i)
+		console_print(id,"Name - %s^n",stat_consts[i][name])
+		console_print(id,"Description - %s^n",stat_consts[i][description])
+	
+	
+
+	}
+
+	return PLUGIN_HANDLED
+}
+public amx_apply_player_pokemon_stat_change(id,level,cid){
+
+	if (!cmd_access(id,level,cid,4)){
+		return PLUGIN_HANDLED
+	}
+
+	if(!pokemon_dmg_enabled()){
+		
+		console_print(id,"Pokemon framework disabled")
+		return PLUGIN_HANDLED
+
+	}
+	new arg1[128],arg2[8],arg3[8],arg4[8]
+
+	read_argv(1, arg1, charsmax(arg1))
+
+	new player = cmd_target(id,arg1,2)
+
+	if (!player) return PLUGIN_HANDLED
+
+	read_argv(2, arg2, charsmax(arg2))
+
+
+	new stat_struct_ids:stat_to_use = stat_struct_ids:str_to_num(arg2)
+
+	if((stat_to_use<=enum_zero)||(stat_to_use>stat_struct_ids)){
+
+		return PLUGIN_HANDLED
+
+	}
+
+	read_argv(3, arg3, charsmax(arg3))
+	
+	new num_of_stages = str_to_num(arg3)
+
+	read_argv(4, arg4, charsmax(arg4))
+	
+	new bool:go_up_or_go_down = bool:str_to_num(arg4)
+
+	static bool:enum_zero_here;
+	enum_zero_here = enum_zero
+
+	go_up_or_go_down = clamp_macro(go_up_or_go_down, enum_zero_here, enum_one)
+
+
+	sh_apply_staged_stat_boost_aux(player, id, stat_to_use, num_of_stages,go_up_or_go_down)
+
+	return PLUGIN_HANDLED
+}
+public amx_reset_player_pokemon_stats(id,level,cid){
+
+	if (!cmd_access(id,level,cid,1)){
+		return PLUGIN_HANDLED
+	}
+
+	if(!pokemon_dmg_enabled()){
+		
+		console_print(id,"Pokemon framework disabled")
+		return PLUGIN_HANDLED
+
+	}
+	new arg1[128]
+
+	read_argv(1, arg1, charsmax(arg1))
+
+	new player = cmd_target(id,arg1,2)
+
+	if (!player) return PLUGIN_HANDLED
+
+	sh_reset_player_stat_boosts_aux(player,id)
+
+	return PLUGIN_HANDLED
+}
 public on_Weapon_Change(id)
 {
 
@@ -318,7 +492,7 @@ public apply_speed(task_id){
 		}
 
 
-		speed_stat_boost_coeff = floatabs(g_player_stats[id][STAT_SPEED_ID][the_stat_boost_value])
+		speed_stat_boost_coeff = abs_macro(g_player_stats[id][STAT_SPEED_ID][the_stat_boost_value])
 		
 		curr_speed = curr_player_pure_maxspeeds[id][my_weapon_ids:get_user_weapon(id)]
 
@@ -438,6 +612,14 @@ public bool:_sh_reset_player_stat_boosts(iPlugins, iParams){
 		attacker = get_param(2)
 
 
+	return sh_reset_player_stat_boosts_aux(id,attacker)
+	
+}
+
+bool:sh_reset_player_stat_boosts_aux(id,attacker){
+
+
+
 	if(!is_user_alive(id)) return false
 	
 	if(!is_user_connected(attacker)) return false
@@ -500,22 +682,13 @@ public bool:_sh_reset_player_stat_boosts(iPlugins, iParams){
 		}
 	}
 
-	
-			
 	return something_happened
 }
 
-public bool:_sh_apply_staged_stat_boost(iPlugins, iParams){
+bool:sh_apply_staged_stat_boost_aux(id, attacker, stat_struct_ids:the_stat_to_use, num_stages_to_apply, bool:go_up_or_go_down ){
 
-	if(!pokemon_dmg_enabled()) return false
 
-	new id = get_param(1),
-		attacker = get_param(2),
-		stat_struct_ids:the_stat_to_use = stat_struct_ids:get_param(3),
-		num_stages_to_apply = get_param(4),
-		bool:go_up_or_go_down = bool:get_param(5) //true for up. false for down
-
-	num_stages_to_apply = min_macro(MAX_PLAYER_STAT_STAGES,abs(num_stages_to_apply))
+	num_stages_to_apply = min_macro(MAX_PLAYER_STAT_STAGES,abs_macro(num_stages_to_apply))
 
 	if(!is_user_alive(id)){
 
@@ -548,13 +721,31 @@ public bool:_sh_apply_staged_stat_boost(iPlugins, iParams){
 				notify_stat_change(id, attacker, the_stat_to_use, go_up_or_go_down, num_stages_to_apply)
 				return false
 			}
-
 		}
 	}
-	else if((g_player_stats[id][the_stat_to_use][the_number_of_stages] - num_stages_to_apply) < (-MAX_PLAYER_STAT_STAGES)){
+	/*
 
-		num_stages_to_apply = max_macro((g_player_stats[id][the_stat_to_use][the_number_of_stages] - num_stages_to_apply  + MAX_PLAYER_STAT_STAGES), -(g_player_stats[id][the_stat_to_use][the_number_of_stages] + MAX_PLAYER_STAT_STAGES) )
-		if(num_stages_to_apply<=0){
+			this ASSSUMES
+			that
+			g_player_stats[id][the_stat_to_use][the_number_of_stages]
+			is negative
+
+
+	*/
+	else if(g_player_stats[id][the_stat_to_use][the_number_of_stages] - num_stages_to_apply < -MAX_PLAYER_STAT_STAGES){
+
+		if(DEBUG){
+
+			sh_chat_message(attacker,-1,"Ok lets see. The stages applied are: %d excessive are: %d",num_stages_to_apply,g_player_stats[id][the_stat_to_use][the_number_of_stages] - num_stages_to_apply  + MAX_PLAYER_STAT_STAGES)
+			
+		}
+		num_stages_to_apply = max_macro(0,MAX_PLAYER_STAT_STAGES - abs_macro(g_player_stats[id][the_stat_to_use][the_number_of_stages]) )
+		if(DEBUG){
+
+			sh_chat_message(attacker,-1,"Ok lets see. The stages applied are: %d",num_stages_to_apply)
+			
+		}
+		if(!num_stages_to_apply){
 			notify_stat_change(id, attacker, the_stat_to_use, go_up_or_go_down, num_stages_to_apply)
 			return false
 		}
@@ -575,6 +766,24 @@ public bool:_sh_apply_staged_stat_boost(iPlugins, iParams){
 	notify_stat_change(id,attacker,the_stat_to_use,go_up_or_go_down,num_stages_to_apply)
 
 	return true 
+
+
+
+
+}
+
+
+public bool:_sh_apply_staged_stat_boost(iPlugins, iParams){
+
+	if(!pokemon_dmg_enabled()) return false
+
+	new id = get_param(1),
+		attacker = get_param(2),
+		stat_struct_ids:the_stat_to_use = stat_struct_ids:get_param(3),
+		num_stages_to_apply = get_param(4),
+		bool:go_up_or_go_down = bool:get_param(5) //true for up. false for down
+
+ 	return sh_apply_staged_stat_boost_aux(id, attacker, the_stat_to_use, num_stages_to_apply, go_up_or_go_down )
 
 
 
@@ -674,7 +883,7 @@ Float:get_dmg_between_players(id, inflictor, attacker, Float:damage, sh_thrash_b
 			//positive multiplies attack by >1 number
 			
 			
-			attacker_attk_mult = (attck_is_neg) ? (1.0)/(floatabs((2.0* g_player_stats[attacker][the_attack_stat_to_use][the_stat_boost_value])-1.0))
+			attacker_attk_mult = (attck_is_neg) ? (1.0)/(abs_macro((2.0* g_player_stats[attacker][the_attack_stat_to_use][the_stat_boost_value])-1.0))
 			
 															:
 															
@@ -690,7 +899,7 @@ Float:get_dmg_between_players(id, inflictor, attacker, Float:damage, sh_thrash_b
 			//neg multiplies attack by >1 number
 			//positive multiplies attack by <1 number
 
-			id_defense_mult = (defense_is_neg) ? (floatabs((2.0* g_player_stats[id][the_defense_stat_to_use][the_stat_boost_value])-1.0))
+			id_defense_mult = (defense_is_neg) ? (abs_macro((2.0* g_player_stats[id][the_defense_stat_to_use][the_stat_boost_value])-1.0))
 															:
 													(1.0)/(g_player_stats[id][the_defense_stat_to_use][the_stat_boost_value]+1.0)
 
@@ -715,7 +924,17 @@ Float:get_dmg_between_players(id, inflictor, attacker, Float:damage, sh_thrash_b
 		attkr_level = float(sh_get_user_lvl(attacker))
 
 
-		the_lvl_factor =  ((2.0)*(attkr_level)/( 5.0)) + 2.0
+		the_lvl_factor =  ((POKEMON_DAMAGE_LEVEL_RELEVANCE_DAMPENING_FACTOR_NUMERATOR)*(attkr_level)
+		
+													/
+
+						( POKEMON_DAMAGE_LEVEL_RELEVANCE_DAMPENING_FACTOR_DENOMINATOR))
+						
+													+
+													
+							POKEMON_DAMAGE_LEVEL_RELEVANCE_DAMPENING_FACTOR_DENOMINATOR
+
+
 
 		the_first_power_factor = float(floatround(the_lvl_factor * the_power_val * combined_attk_vs_def_mult, floatround_floor))
 

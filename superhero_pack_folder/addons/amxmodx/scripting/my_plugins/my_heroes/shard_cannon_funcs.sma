@@ -18,6 +18,47 @@ new const Shard_Cannon_Sound[] = "weapons/shard_cannon-1.wav"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
+
+
+#define SHARD_CANNON_DAMAGE 62 // 122 for Zombie
+
+#define SHARD_CANNON_CLIP 6
+#define SHARD_CANNON_BPAMMO 80
+
+#define SHARD_CANNON_SPEED 0.75
+
+#define SHARD_CANNON_MODEL_V "models/shmod/adriano/shard_cannon/v_shard_cannon.mdl"
+#define SHARD_CANNON_MODEL_P "models/shmod/adriano/shard_cannon/p_shard_cannon.mdl"
+#define SHARD_CANNON_MODEL_W "models/shmod/adriano/shard_cannon/w_shard_cannon.mdl"
+
+
+enum
+{
+	ANIME_IDLE = 0,
+	ANIME_SHOOT,
+	ANIME_SHOOT2,
+	ANIME_SHOOT3,
+	ANIME_SHOOT4,
+	ANIME_SHOOT5,
+	ANIM_INSERT,
+	ANIM_AFTER_RELOAD,
+	ANIM_START_RELOAD,
+	ANIM_DRAW
+}
+
+enum
+{
+	EVENT_NONE = 0,
+	EVENT_ATTACK1,
+	EVENT_ATTACK2,
+	EVENT_RELOAD
+}
+
+
+#define SHARD_CANNON_SECRETCODE 24062015
+#define OLD_W_MODEL "models/w_deagle.mdl"
+#define OLD_EVENT "events/deagle.sc"
+
 // Main Vars
 new g_Old_Weapon[33], Float:g_ShootDelay[33], Float:g_Recoil[33]
 new g_Event_MS, g_SmokePuff_Id

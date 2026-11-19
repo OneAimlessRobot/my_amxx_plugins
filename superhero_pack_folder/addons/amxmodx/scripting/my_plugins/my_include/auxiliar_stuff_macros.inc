@@ -181,6 +181,8 @@ enum server_slot_idx
 
 #define min_macro(%1,%2) ((%1<%2)?%1:%2)
 
+#define abs_macro(%1) (((%1)<0)? (-%1):(%1))
+
 #define bzero(%1) (arrayset(%1,any:0,sizeof(%1)))
 
 #define bzero_float(%1) (arrayset(%1,0.0,sizeof(%1)))

@@ -324,7 +324,71 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					1.5,
 					0.5,
 					false,
-					"These are supposed to increase a player's defense stat by one stage"}
+					"These are supposed to increase a player's defense stat by one stage"},
+
+	//do whatever you want here
+	{"test_grenades3",
+					"models/shmod/custom_nades_hackaround/w_flashbang.mdl",
+					"",
+					"",
+					MY_CSW_SMOKEGRENADE,
+					BLACK,
+					250.0,
+					1200.0,
+					1.0,
+					5.0,
+					1.5,
+					0.5,
+					false,
+					"These are supposed to reduce a player's attack stat by 6 stages!"},
+
+	//do whatever you want here
+	{"test_grenades4",
+					"models/shmod/custom_nades_hackaround/w_flashbang.mdl",
+					"",
+					"",
+					MY_CSW_SMOKEGRENADE,
+					BLACK,
+					250.0,
+					1200.0,
+					1.0,
+					5.0,
+					1.5,
+					0.5,
+					false,
+					"These are supposed to reduce a player's attack stat by 5 stages!"},
+
+	//do whatever you want here
+	{"test_grenades5",
+					"models/shmod/custom_nades_hackaround/w_flashbang.mdl",
+					"",
+					"",
+					MY_CSW_SMOKEGRENADE,
+					BLACK,
+					250.0,
+					1200.0,
+					1.0,
+					5.0,
+					1.5,
+					0.5,
+					false,
+					"These are supposed to reduce a player's attack stat by 4 stages!"},
+
+	//do whatever you want here
+	{"test_grenades6",
+					"models/shmod/custom_nades_hackaround/w_flashbang.mdl",
+					"",
+					"",
+					MY_CSW_SMOKEGRENADE,
+					BLACK,
+					250.0,
+					1200.0,
+					1.0,
+					5.0,
+					1.5,
+					0.5,
+					false,
+					"These are supposed to reduce a player's attack stat by 3 stages!"}
 
 }
 
@@ -1282,6 +1346,22 @@ gren_effect_user(grenade_ent,tg,attacker,sh_grenade_type:gren_type){
 		case GREN_TEST2:{
 		
 			sh_apply_staged_stat_boost(tg,attacker,STAT_DEFENSE_MULT,1,true)
+		}
+		case GREN_TEST3:{
+		
+			sh_apply_staged_stat_boost(tg,attacker,STAT_ATTACK_MULT,6,false)
+		}
+		case GREN_TEST4:{
+		
+			sh_apply_staged_stat_boost(tg,attacker,STAT_ATTACK_MULT,5,false)
+		}
+		case GREN_TEST5:{
+		
+			sh_apply_staged_stat_boost(tg,attacker,STAT_ATTACK_MULT,4,false)
+		}
+		case GREN_TEST6:{
+		
+			sh_apply_staged_stat_boost(tg,attacker,STAT_ATTACK_MULT,3,false)
 		}
 
 	}

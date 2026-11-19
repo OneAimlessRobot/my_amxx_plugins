@@ -12,6 +12,25 @@
 #define VERSION "1.0"
 #include "../my_include/my_author_header.inc"
 
+
+#define H_RIFLE_DAMAGE 91 // 191 for Zombie
+
+#define H_RIFLE_CLIP 5
+#define H_RIFLE_BPAMMO 45
+
+#define H_RIFLE_SPEED 1.25
+
+#define H_RIFLE_MODEL_V "models/shmod/supernoodle/hrifle/v_mosin.mdl"
+#define H_RIFLE_MODEL_P "models/shmod/supernoodle/hrifle/p_mosin.mdl"
+#define H_RIFLE_MODEL_W "models/shmod/supernoodle/hrifle/w_mosin.mdl"
+
+
+#define H_RIFLE_SECRET_CODE 2892014
+#define OLD_W_MODEL_H_RIFLE "models/w_scout.mdl"
+#define OLD_EVENT_H_RIFLE "events/scout.sc"
+
+
+
 new const WeaponSounds[4][] = 
 {
 	"weapons/mosin-1.wav",

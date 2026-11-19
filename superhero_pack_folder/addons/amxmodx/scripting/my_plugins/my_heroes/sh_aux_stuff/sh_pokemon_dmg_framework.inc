@@ -25,7 +25,7 @@ enum stat_struct_ids{
   false if stat should go down
 
 */
-native bool:sh_apply_staged_stat_boost(id, attacker, stat_struct_ids:the_stat_to_go_up, num_stages_to_apply, bool:go_up_or_go_down )
+native bool:sh_apply_staged_stat_boost(id, attacker, stat_struct_ids:the_stat_to_use, num_stages_to_apply, bool:go_up_or_go_down )
 
 /*
 

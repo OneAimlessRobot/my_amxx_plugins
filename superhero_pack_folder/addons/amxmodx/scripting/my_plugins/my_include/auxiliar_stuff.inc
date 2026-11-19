@@ -37,6 +37,10 @@ DEFINES FOR COMPILE TIME OPTIMIZATION:
 #include "auxiliar_stuff_ent_stocks.inc"
 #endif
 
+#if defined AUX_STUFF_GIVE_STRUCTS
+#include "auxiliar_stuff_structs.inc"
+#endif
+
 
 
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
