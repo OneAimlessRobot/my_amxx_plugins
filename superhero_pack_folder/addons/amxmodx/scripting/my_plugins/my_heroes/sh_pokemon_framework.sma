@@ -67,8 +67,7 @@
 #define ACTIVATE_POKEMON_DMG_CVAR "sh_use_pokemon_damage"
 
 #define DAMAGE_DAMPENING_DIVIDER 10.5
-#define POKEMON_DAMAGE_RELATION_BALLAST_VAL 0.5 
-#define POKEMON_DMG_LVL_RELEVANCE_DAMPENING_FACTOR 5.5
+#define POKEMON_DAMAGE_RELATION_BALLAST_VAL 0.5
 
 #define MAX_PLAYER_STAT_STAGES 6
 
@@ -516,8 +515,7 @@ public bool:_sh_apply_staged_stat_boost(iPlugins, iParams){
 		num_stages_to_apply = get_param(4),
 		bool:go_up_or_go_down = bool:get_param(5) //true for up. false for down
 
-	num_stages_to_apply = abs(num_stages_to_apply)
-
+	num_stages_to_apply = min_macro(MAX_PLAYER_STAT_STAGES,abs(num_stages_to_apply))
 
 	if(!is_user_alive(id)){
 
@@ -548,17 +546,17 @@ public bool:_sh_apply_staged_stat_boost(iPlugins, iParams){
 			num_stages_to_apply = max_macro(0, MAX_PLAYER_STAT_STAGES - g_player_stats[id][the_stat_to_use][the_number_of_stages])
 			if(num_stages_to_apply<=0){
 				notify_stat_change(id, attacker, the_stat_to_use, go_up_or_go_down, num_stages_to_apply)
-				return false //no stages applied at all
+				return false
 			}
 
 		}
 	}
 	else if((g_player_stats[id][the_stat_to_use][the_number_of_stages] - num_stages_to_apply) < (-MAX_PLAYER_STAT_STAGES)){
 
-		num_stages_to_apply = max_macro(0, -(g_player_stats[id][the_stat_to_use][the_number_of_stages] + MAX_PLAYER_STAT_STAGES) )
+		num_stages_to_apply = max_macro((g_player_stats[id][the_stat_to_use][the_number_of_stages] - num_stages_to_apply  + MAX_PLAYER_STAT_STAGES), -(g_player_stats[id][the_stat_to_use][the_number_of_stages] + MAX_PLAYER_STAT_STAGES) )
 		if(num_stages_to_apply<=0){
 			notify_stat_change(id, attacker, the_stat_to_use, go_up_or_go_down, num_stages_to_apply)
-			return false //no stages applied at all
+			return false
 		}
 	}
 	g_player_stats[id][the_stat_to_use][the_number_of_stages] += (num_stages_to_apply*floatround(sign_chng_mult(!go_up_or_go_down)))
@@ -717,7 +715,7 @@ Float:get_dmg_between_players(id, inflictor, attacker, Float:damage, sh_thrash_b
 		attkr_level = float(sh_get_user_lvl(attacker))
 
 
-		the_lvl_factor =  ((POKEMON_DMG_LVL_RELEVANCE_DAMPENING_FACTOR *2.0)*(attkr_level)/(POKEMON_DMG_LVL_RELEVANCE_DAMPENING_FACTOR *5.0)) + 2.0
+		the_lvl_factor =  ((2.0)*(attkr_level)/( 5.0)) + 2.0
 
 		the_first_power_factor = float(floatround(the_lvl_factor * the_power_val * combined_attk_vs_def_mult, floatround_floor))
 
