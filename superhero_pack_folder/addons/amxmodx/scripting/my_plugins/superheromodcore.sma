@@ -173,9 +173,9 @@ static const sh_custom_color:the_color_const_to_use_main = GREEN,
 		sh_custom_color:the_color_const_to_use_fx = FX_NONE,
 		Float:the_hud_sync_mode_fx_time = 0.0,
 		Float:the_hud_sync_mode_xpos = 0.0125,
-		Float:the_hud_sync_mode_ypos = 0.9025,
+		Float:the_hud_sync_mode_ypos = 0.925,
 		the_hud_sync_mode_fx_type = 0,
-		the_hud_sync_mode_alpha = 200
+		the_hud_sync_mode_alpha = 255
 
 
 //Level up sound
@@ -1820,7 +1820,11 @@ menuSuperPowers(id, menuOffset)
 	new keys = 0
 
 	//menuOffset Stuff
-	if ( menuOffset < 1 || menuOffset > gPlayerMenuChoices[id][0] ) menuOffset = 1
+	if ( menuOffset < 1 || menuOffset > gPlayerMenuChoices[id][0] ){
+		
+		menuOffset = 1
+	
+	}
 	gPlayerMenuOffset[id] = menuOffset
 
 	new total = min(gMaxPowers, playerLevel)
@@ -1849,11 +1853,11 @@ menuSuperPowers(id, menuOffset)
 								gSuperHeros[heroIndex][superpower])
 		add(message, charsmax(message), temp)
 	}
-
-	if ( menuOffset > SH_MENU_SCROLL_SIZE ) {
+	if ( menuOffset > SH_MENU_SCROLL_SIZE) {
 		// Can only Display 8 heroes at a time
+
 		add(message, charsmax(message), "\w^n8. Previous Heroes")
-		keys |= (1<<(SH_MENU_SCROLL_SIZE)) 
+		keys |= (1<<(SH_MENU_SCROLL_SIZE))
 	}
 	if ( gPlayerMenuChoices[id][0] - menuOffset > SH_MENU_SCROLL_SIZE ) {
 		// Can only Display 8 heroes at a time
@@ -1891,12 +1895,12 @@ public selectedSuperPower(id, key)
 
 	switch(key) {
 		case (SH_MENU_SCROLL_SIZE): {
-			menuSuperPowers(id, gPlayerMenuOffset[id] - SH_MENU_SCROLL_SIZE)
+			menuSuperPowers(id, (gPlayerMenuOffset[id] - SH_MENU_SCROLL_SIZE))
 			return PLUGIN_HANDLED
 		}
 		case (SH_MENU_SCROLL_SIZE+1): {
 			// Next and Previous Super Hero Menus
-			menuSuperPowers(id, gPlayerMenuOffset[id] + SH_MENU_SCROLL_SIZE)
+			menuSuperPowers(id, (gPlayerMenuOffset[id] + SH_MENU_SCROLL_SIZE))
 			return PLUGIN_HANDLED
 		}
 		case 9: {

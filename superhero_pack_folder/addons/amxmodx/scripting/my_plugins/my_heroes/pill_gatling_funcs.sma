@@ -24,16 +24,15 @@
 
 #define PILL_CLASSNAME "pill_gatling_pill"
 
-#define NUM_BARRELS 100
-#define PILLGATLING_CLIP_SIZE 125
+#define NUM_BARRELS 6
+#define PILLGATLING_CLIP_SIZE 250
 #define PILL_SPEED 1350.0
 
-#define PILL_SHOOT_PERIOD_BASE 0.08333333
+//this should be roughly 450 rpm
+#define PILL_SHOOT_PERIOD_BASE 0.13333333333
 #define PILL_SHOOT_PERIOD (PILL_SHOOT_PERIOD_BASE/float(NUM_BARRELS))
 
 #define PILL_DEPLOY_TIME 1.0
-
-#define PILL_SHOOT_RANDOMNESS 0.0
 
 #define SHUTDOWN_TIME 1.7
 #define PILL_MASS 100.0
@@ -111,7 +110,7 @@ public plugin_init(){
 	RegisterHam(Ham_Weapon_PrimaryAttack, wpn_name_for_future_lookup, "fw_Weapon_PrimaryAttack_Post",1,true)
 	RegisterHam(Ham_Item_Deploy, wpn_name_for_future_lookup, "fw_ItemDeployPre",_,true)
 	
-	RegisterHam(Ham_Item_PostFrame, wpn_name_for_future_lookup, "Item_PostFrame_Post", 1,true)
+	RegisterHam(Ham_Item_PostFrame, wpn_name_for_future_lookup, "Item_PostFrame_Pre", _,true)
 		
 	RegisterHam(Ham_Weapon_Reload, wpn_name_for_future_lookup, "fw_WeaponReloadPre",_,true)
 	RegisterHam(Ham_Weapon_Reload, wpn_name_for_future_lookup, "fw_Weapon_Reload_Post", 1,true)
@@ -170,12 +169,11 @@ public player_prethink_yakui_weapon(id, uc_handle)
 
 	static button;
 	button= get_uc(uc_handle, UC_Buttons);
-	new wpnid=get_user_weapon(id)
-	if(button & IN_ALT1){
+	static prev_button; prev_button = entity_get_int(id, EV_INT_oldbuttons)
+	if((button & IN_ALT1)&&!(prev_button & IN_ALT1)){
 
-		button &= ~IN_ALT1
-		set_uc(uc_handle, UC_Buttons, button)
 		if(!Get_BitVar(mode_change_button_pressed_mask, id)){
+			new wpnid=get_user_weapon(id)
 			if(wpnid==YAKUI_WEAPON_CLASSID){
 				Set_BitVar(mode_change_button_pressed_mask, id);
 				new has_rockets=gatling_get_rockets(id)
@@ -284,7 +282,7 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 	add_3d_vectors(Push, g_recoil_pillgatling[id], Push)
 	entity_set_vector(id, EV_VEC_punchangle, Push)
 }
-public Item_PostFrame_Post(iEnt)
+public Item_PostFrame_Pre(iEnt)
 {    
 	if (!sh_is_active()){
 		return
@@ -578,8 +576,6 @@ public fw_Weapon_Reload_Post(ent)
 	
 	return HAM_IGNORED
 }
-
-
 public fwPlaybackEvent(flags, invoker, eventid) {
 	if (!(g_guns_eventids_bitsum & (1<<eventid)) || !client_is_weapon_user(invoker, SH_PILLGATLING)||!Get_BitVar(gPillGatlingEngaged_mask, invoker)){
 		return FMRES_IGNORED
@@ -753,13 +749,36 @@ public fw_ItemDeployPre(entity)
 //----------------------------------------------------------------------------------------------
 public sh_client_spawn(id)
 {	
-	if(sh_is_active()&&!client_is_weapon_user(id, SH_PILLGATLING)){
+	if(!sh_is_active()){
 		
-		Assign_BitVar(can_fire_mask,id,false_for_macro);
-		g_plAction[id]=act_none;
+		return
+		
+	}
+	if(!client_is_within_range(id)){
+		
+		return
 	}
 	
+	Assign_BitVar(can_fire_mask,id,false_for_macro);
+	g_plAction[id]=act_none;
 }
+//----------------------------------------------------------------------------------------------
+public sh_client_death(id)
+{	
+	if(!sh_is_active()){
+		
+		return
+		
+	}
+	if(!client_is_within_range(id)){
+		
+		return
+	}
+	
+	Assign_BitVar(can_fire_mask,id,false_for_macro);
+	g_plAction[id]=act_none;
+}
+
 public pilula_sexual_penetra_player(pToucher, pTouched)
 {
 	if(!is_valid_ent(pToucher)) return

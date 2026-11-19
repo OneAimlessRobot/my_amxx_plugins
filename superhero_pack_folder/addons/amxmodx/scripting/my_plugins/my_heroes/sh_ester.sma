@@ -624,7 +624,8 @@ public fw_HamTakeDamage(id, idinflictor, attacker, Float:damage, damagebits)
 					
 						sh_extra_damage(id,attacker,floatround(extraDamage),
 									the_hitpoint,
-									_,_,_,_,_,
+									_,_,_,_,
+									(weapon==MORALIZER_WEAPON_ID)?SH_NEW_DMG_ENERGY_BLAST:SH_NEW_DMG_BLUNT_FORCE_TRAUMA,
 									(weapon==MORALIZER_WEAPON_ID)?moralizing_ray_wpn_id:adulting_pan_wpn_id)
 						
 

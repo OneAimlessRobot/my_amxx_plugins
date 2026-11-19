@@ -7,6 +7,8 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt9.inc"
+#include "sh_aux_stuff/sh_pokemon_dmg_framework.inc"
+#include "custom_grenades/custom_grenades.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "../my_include/my_author_header.inc"
 
@@ -108,6 +110,7 @@ public sh_client_spawn(id)
 	if(is_user_alive(id) && sh_is_active()){
 		if ( sh_get_user_has_hero(id,gHeroID) ) {
 			spear_set_user_spear(id, true, cvar_val(num, pcvar_num_spears))
+			give_custom_grenades(id,GREN_HAZE,90)
 		}
 	}
 	

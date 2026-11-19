@@ -93,12 +93,12 @@ public reika_parry_switch_cmdstart_hook(id, uc_handle)
 
     static button;
     button= get_uc(uc_handle, UC_Buttons);
-    new wpnid=get_user_weapon(id)
-    if(button & IN_ALT1){
+    static prev_button; prev_button = entity_get_int(id, EV_INT_oldbuttons)
+    if((button & IN_ALT1)&&!(prev_button & IN_ALT1)){
 
-        button &= ~IN_ALT1
-        set_uc(uc_handle, UC_Buttons, button)
         if(!Get_BitVar(mode_change_button_pressed_mask,id)){
+
+            new wpnid=get_user_weapon(id)
             if(wpnid==CSW_KNIFE){
                 Set_BitVar(mode_change_button_pressed_mask,id)
                 static bool:prev_mode_value,

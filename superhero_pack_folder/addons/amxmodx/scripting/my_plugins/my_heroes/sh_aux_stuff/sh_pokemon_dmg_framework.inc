@@ -34,3 +34,5 @@ native bool:sh_apply_staged_stat_boost(id, attacker, stat_struct_ids:the_stat_to
 */
 
 native bool:sh_reset_player_stat_boosts(id, attacker)
+
+native sh_check_player_boost_stage(id, stat_struct_ids:the_stat_to_check)

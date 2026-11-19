@@ -10,6 +10,7 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
+#include "sh_aux_stuff/sh_pokemon_dmg_framework.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "track_fx_inc/track_fx.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
@@ -596,6 +597,11 @@ public bulletina_touque_playor(pToucher, pTouched)
 			DMG_BULLET,
 			SH_NEW_DMG_SUPER_BULLET,
 			custom_dmg_id_l96);
+
+
+		sh_apply_staged_stat_boost(pTouched,owner,STAT_EVASIVENESS_MULT,1,false)
+		
+		sh_apply_staged_stat_boost(owner,owner,STAT_EVASIVENESS_MULT,1,true)
 
 		sh_screen_shake(pTouched,14.5,the_time/3.0,20.0)
 

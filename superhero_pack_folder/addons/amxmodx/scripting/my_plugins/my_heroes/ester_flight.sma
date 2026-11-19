@@ -519,7 +519,7 @@ public ester_respawn(parm[2])
 	emit_sound(id, CHAN_AUTO,ester_blowup_sounds[curr_player_sound[id]] , VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 
 	inc_user_ester_respawn_attempts(id)
-	g_ester_blow_up_time_left[id]=ESTER_REBORN_EXPLOSION_DELAY_TIME
+	g_ester_blow_up_time_left[id]=ESTER_REBORN_EXPLOSION_DELAY_TIME+FLIGHT_GODMODE_THINK_TIME
 
 	// Teleport the player
 	set_pev(id, pev_origin,g_saved_coords[id])
@@ -535,7 +535,7 @@ public godmode_timer_update(id){
 		if(!is_user_bot(id)){
 			client_print(id,print_center,"Blowing up in %0.2f...",g_ester_blow_up_time_left[id])
 		}
-		g_ester_blow_up_time_left[id]=g_ester_blow_up_time_left[id]-FLIGHT_GODMODE_THINK_TIME
+		g_ester_blow_up_time_left[id]-=FLIGHT_GODMODE_THINK_TIME
 		
 		if(g_ester_blow_up_time_left[id]>0.0){
 			set_task(FLIGHT_GODMODE_THINK_TIME,"godmode_timer_update",id+ESTER_REBORN_GLOW_TASKID)
@@ -583,7 +583,7 @@ public positionChangeTimer(id)
 	else{
 
 
-		sh_set_godmode(id,ESTER_REBORN_EXPLOSION_DELAY_TIME)
+		sh_set_godmode(id,ESTER_REBORN_EXPLOSION_DELAY_TIME*0.5)
 
 		godmode_timer_update(id+ESTER_REBORN_GLOW_TASKID)
 	}

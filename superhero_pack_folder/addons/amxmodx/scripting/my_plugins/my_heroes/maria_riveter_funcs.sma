@@ -14,6 +14,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "maria_riveter_inc/maria_general_funcs.inc"
 #include "maria_riveter_inc/maria_riveter_funcs.inc"
+#include "sh_aux_stuff/sh_pokemon_dmg_framework.inc"
 #include "../my_include/my_author_header.inc"
 
 
@@ -503,25 +504,26 @@ return PLUGIN_CONTINUE
 public rrrrroovvetoooo_touque_playor(pToucher, pTouched)
 {
 	if(!is_valid_ent(pToucher)) return
-	
+
 	new Float:origin[3]
 	entity_get_vector(pToucher,EV_VEC_origin,origin);
-	
+
 	new bool:is_direct_hit = bool:is_user_alive(pTouched);
 	new bool:is_air_shot = false;
 	if(is_direct_hit){
-		
+
 		is_air_shot= bool:!(FL_ONGROUND & entity_get_int(pTouched, EV_INT_flags));
 
 	}
+	new owner = entity_get_edict(pToucher,EV_ENT_owner);
 
 	new Float:rivet_launch_pos[3]
 	entity_get_vector(pToucher,EV_VEC_vuser1,rivet_launch_pos)
 	new Float:distance=vector_distance(origin,rivet_launch_pos);
 	new Float:falloff_coeff= (is_direct_hit?0.0:min_macro(1.0,distance/MARIA_PROJECTILE_DAMAGE_FALLOFF_DIST));
-	
+
 	new Float:damage_bonus = is_direct_hit?(is_air_shot?(MARIA_PROJECTILE_DAMAGE_AIRSHOT_BONUS + MARIA_PROJECTILE_DAMAGE_DIRECT_BONUS):MARIA_PROJECTILE_DAMAGE_DIRECT_BONUS):0.0;
-	
+
 	new Float:damage=MARIA_PROJECTILE_DAMAGE-(35.0*falloff_coeff)+damage_bonus;
 	explosion(gHeroID,pToucher,
 									MARIA_PROJECTILE_EXPLODE_RADIUS,damage,
@@ -543,6 +545,12 @@ public rrrrroovvetoooo_touque_playor(pToucher, pTouched)
 										explosion_sfx_show_nothing)
 	}
 	remove_entity(pToucher)
+
+	if(is_user_connected(owner)&&is_user_alive(pTouched)&&!sh_clients_are_same_team(pTouched,owner)){
+		sh_apply_staged_stat_boost(pTouched,owner,STAT_DEFENSE_MULT,_:(is_direct_hit)+_:(is_air_shot),false)
+		
+		sh_apply_staged_stat_boost(owner,owner,STAT_DEFENSE_MULT,_:(is_direct_hit)+_:(is_air_shot),true)
+	}
 }
 public plugin_precache()
 {

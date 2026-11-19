@@ -25,6 +25,7 @@
 #include "wet_fx_inc/wet_fx.inc"
 
 #include "special_fx_inc/sh_gatling_special_fx.inc"
+#include "sh_aux_stuff/sh_pokemon_dmg_framework.inc"
 
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
@@ -65,7 +66,8 @@ enum sh_grenade_struct{
 	Float:max_charge_time,
 	Float:throw_period,
 	Float:after_touch_fuse,
-	bool:bot_allowed
+	bool:bot_allowed,
+	description[512]
 
 
 }
@@ -94,7 +96,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					0.0,
 					9999999.0,
 					12211.0,
-					false},
+					false,
+					""},
 	
 	
 	{"molotov_cocktail",
@@ -109,7 +112,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					5.0,
 					1.5,
 					0.5,
-					true},
+					true,
+					"Puts players on fire!"},
 
 	{"chaff_grenade","models/shmod/custom_nades_hackaround/w_smokegrenade.mdl",
 					"shmod/custom_grenades/chaff_grenade.wav",
@@ -122,7 +126,9 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					5.0,
 					1.5,
 					0.5,
-					true},
+					true,
+					"Shields players from detection!"},
+
 
 	{"sleep_grenade","models/shmod/custom_nades_hackaround/w_smokegrenade.mdl",
 					SMOKE_EXPLODE_SOUND,
@@ -135,7 +141,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					5.0,
 					1.5,
 					1.0,
-					false},
+					false,
+					"Puts players asleep!"},
 
 	{"CO2_grenade",
 					"models/shmod/custom_nades_hackaround/w_smokegrenade.mdl",
@@ -149,7 +156,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					5.0,
 					1.5,
 					0.9,
-					true},
+					true,
+					"Gives players fire immunity and puts them out!"},
 
 	{"shock_grenade",
 					"models/shmod/custom_nades_hackaround/w_flashbang.mdl",
@@ -163,7 +171,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					5.0,
 					1.5,
 					0.5,
-					false},
+					false,
+					"Shocks players. it may propagate!"},
 
 	{"freeze_grenade",
 					"models/shmod/custom_nades_hackaround/w_smokegrenade.mdl",
@@ -177,7 +186,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					5.0,
 					1.5,
 					0.66,
-					true},
+					true,
+					"Freezes players"},
 
 	{"disrupt_grenade",
 					"models/shmod/custom_nades_hackaround/w_flashbang.mdl",
@@ -191,7 +201,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					5.0,
 					1.5,
 					0.5,
-					false},
+					false,
+					"Causes disorientation"},
 
 	{"shrapnel_grenade",
 					"models/shmod/custom_nades_hackaround/w_hegrenade.mdl",
@@ -205,7 +216,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					5.0,
 					1.5,
 					0.5,
-					true},
+					true,
+					"makes players bleed"},
 
 	{"marker_grenade",
 					"models/shmod/custom_nades_hackaround/w_hegrenade.mdl",
@@ -219,7 +231,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					5.0,
 					1.5,
 					0.5,
-					true},
+					true,
+					"makes players visible on the radar of the team of who launches it!"},
 
 	{"conc_grenade",
 					"models/shmod/custom_nades_hackaround/w_hegrenade.mdl",
@@ -233,7 +246,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					5.0,
 					1.5,
 					0.25,
-					true},
+					true,
+					"Concusses and projects players away"},
 
 	{"wet_grenade",
 					"models/shmod/custom_nades_hackaround/w_flashbang.mdl",
@@ -247,7 +261,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					5.0,
 					1.5,
 					0.5,
-					true},
+					true,
+					"Makes players wet (pause)"},
 
 	{"random_fx_grenade",
 					"models/shmod/custom_nades_hackaround/w_smokegrenade.mdl",
@@ -261,7 +276,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					5.0,
 					1.5,
 					0.5,
-					true},
+					true,
+					"Gives a player a random yakui effect"},
 
 	{"haze_grenade",
 					"models/shmod/custom_nades_hackaround/w_flashbang.mdl",
@@ -275,7 +291,8 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					5.0,
 					1.5,
 					0.5,
-					true},
+					true,
+					"Resets the status effects of a player"},
 
 	//do whatever you want here
 	{"test_grenades",
@@ -290,7 +307,24 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 					5.0,
 					1.5,
 					0.5,
-					false}
+					false,
+					"These are supposed to lower a player's attack stat by one stage"},
+
+	//do whatever you want here
+	{"test_grenades2",
+					"models/shmod/custom_nades_hackaround/w_flashbang.mdl",
+					"",
+					"",
+					MY_CSW_SMOKEGRENADE,
+					BLACK,
+					250.0,
+					1200.0,
+					1.0,
+					5.0,
+					1.5,
+					0.5,
+					false,
+					"These are supposed to increase a player's defense stat by one stage"}
 
 }
 
@@ -365,7 +399,9 @@ public plugin_init(){
 	
 	register_think(SH_CUSTOM_GRENADE_CLASSNAME,"sh_grenade_think")
 
-	register_concmd("give_test_grenades", "give_test_grenades", ADMIN_IMMUNITY, "Give someone some test grenades. Integer number necessary")
+	register_concmd("give_grenades", "give_grenades", ADMIN_IMMUNITY, "Give someone some test grenades. Parm1: part of playername. parm2: grenade type id, parm3: ammount")
+
+	register_concmd("print_grenades", "print_grenades", ADMIN_IMMUNITY, "Print existing grenades. It will display id and description")
 
 	register_entity_as_wall_touchable(SH_CUSTOM_GRENADE_CLASSNAME,"sh_grenade_touch_things")
 	register_custom_touchable(SH_CUSTOM_GRENADE_CLASSNAME,"sh_grenade_touch_things",player_vector,1)
@@ -385,12 +421,31 @@ public plugin_natives(){
 	
 	
 }
-public give_test_grenades(id,level,cid){
+public print_grenades(id,level,cid){
 
-	if (!cmd_access(id,level,cid,2)){
+	if (!cmd_access(id,level,cid,0)){
 		return PLUGIN_HANDLED
 	}
-	new arg1[128],arg2[8]
+	console_print(id,"The grenades available on the server are: ^n^n")
+	
+	for(new sh_grenade_type:i = enum_one; i< sh_grenade_type;i++){
+
+		console_print(id,"Grenade %d:^n",i)
+		console_print(id,"Name - %s^n",sh_grenade_structs_arr[i][sh_grenade_name])
+		console_print(id,"Description - %s^n",sh_grenade_structs_arr[i][description])
+	
+	
+
+	}
+
+	return PLUGIN_HANDLED
+}
+public give_grenades(id,level,cid){
+
+	if (!cmd_access(id,level,cid,3)){
+		return PLUGIN_HANDLED
+	}
+	new arg1[128],arg2[8],arg3[8]
 
 	read_argv(1, arg1, charsmax(arg1))
 
@@ -400,9 +455,20 @@ public give_test_grenades(id,level,cid){
 
 	read_argv(2, arg2, charsmax(arg2))
 
-	new num_of_nades = str_to_num(arg2)
 
-	give_custom_grenades_aux(player,GREN_TEST, max_macro(num_of_nades,1))
+	new sh_grenade_type:grenade_type = sh_grenade_type:str_to_num(arg2)
+
+	if((grenade_type<=enum_zero)||(grenade_type>sh_grenade_type)){
+
+		return PLUGIN_HANDLED
+
+	}
+
+	read_argv(3, arg3, charsmax(arg3))
+	
+	new num_of_nades = str_to_num(arg3)
+
+	give_custom_grenades_aux(player,grenade_type, max_macro(num_of_nades,1))
 
 	return PLUGIN_HANDLED
 }
@@ -495,7 +561,7 @@ bool:switch_grenade_logic(id,my_weapon_ids:wpn_id){
 }
 //execute inside cmd start only!!
 
-bool:handle_grenade_change_button(id,wpn_id,uc_handle, button){
+bool:handle_grenade_change_button(id,wpn_id, button){
 	
 	static bool:changed_greande;
 	
@@ -503,8 +569,6 @@ bool:handle_grenade_change_button(id,wpn_id,uc_handle, button){
 	
 	if(button & IN_ALT1){
 
-		button &= ~IN_ALT1
-		set_uc(uc_handle, UC_Buttons, button)
 		if(!Get_BitVar(grenade_change_button_pressed_mask,id)){
 			Set_BitVar(grenade_change_button_pressed_mask,id)
 
@@ -535,12 +599,12 @@ public CmdStart(id, uc_handle)
 	}
 	new ent = my_find_ent_by_owner(-1,sh_grenade_structs_arr[gren_type][sh_grenade_def_wpn_name], id);
 
-	static button;
-	button = get_uc(uc_handle, UC_Buttons);
+	static button,prev_button; 
+	button = get_uc(uc_handle, UC_Buttons)
+	
+	prev_button = entity_get_int(id, EV_INT_oldbuttons)
 
 	if(is_user_bot(id)){
-
-		static prev_button; prev_button = entity_get_int(id, EV_INT_oldbuttons)
 
 		if((button & IN_ATTACK)&&(!(prev_button & IN_ATTACK))){
 
@@ -590,21 +654,16 @@ public CmdStart(id, uc_handle)
 	}
 	
 	static bool:changed_custom_grenade,bool:attk2_pressed,bool:is_same_grenade;
-	changed_custom_grenade=handle_grenade_change_button(id,wpn_id,uc_handle,button)
+	changed_custom_grenade=handle_grenade_change_button(id,wpn_id,button)
 	is_same_grenade=(!changed_custom_grenade)
 	
 	attk2_pressed= bool:(button & IN_ATTACK2)
 
-	if(attk2_pressed){
-
-		button &= ~IN_ATTACK2;
-		set_uc(uc_handle, UC_Buttons, button);
-	}
-
 	if(!is_same_grenade) return FMRES_IGNORED
 	
-	if(attk2_pressed)
+	if(attk2_pressed&&(prev_button & IN_ATTACK2))
 	{
+		//no need to consume attack2. cs doesnt use it with grenades!
 
 		if( !(is_user_alive(id))) return FMRES_IGNORED
 		
@@ -968,7 +1027,9 @@ public sh_grenade_touch_things(pToucher, pTouched)
 	}
 	new Float:velocity[3]
 	pev(pToucher, pev_velocity ,velocity)
-	emit_sound(pToucher, CHAN_WEAPON, CUSTOM_GRENADE_BOUNCE_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	if(!is_user_alive(pTouched)){
+		emit_sound(pToucher, CHAN_WEAPON, CUSTOM_GRENADE_BOUNCE_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	}
 	velocity[0]*=0.5
 	velocity[1]*=0.5
 	velocity[2]*=0.5
@@ -1209,9 +1270,20 @@ gren_effect_user(grenade_ent,tg,attacker,sh_grenade_type:gren_type){
 			sh_effect_user_direct(tg, attacker,10.0,-1,grenade_flags_and_fields[grenade_ent][grenade_fx])
 		}
 		case GREN_HAZE:{
+			
+			sh_reset_player_stat_boosts(tg,attacker)
+
+		
 		}
 		case GREN_TEST:{
+		
+			sh_apply_staged_stat_boost(tg,attacker,STAT_ATTACK_MULT,1,false)
 		}
+		case GREN_TEST2:{
+		
+			sh_apply_staged_stat_boost(tg,attacker,STAT_DEFENSE_MULT,1,true)
+		}
+
 	}
 	
 }

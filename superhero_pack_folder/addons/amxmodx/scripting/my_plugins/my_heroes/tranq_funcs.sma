@@ -12,6 +12,7 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
+#include "sh_aux_stuff/sh_pokemon_dmg_framework.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 #include "tranq_gun_inc/sh_tranq_funcs.inc"
 #include "../my_include/auxiliar_stuff.inc"
@@ -553,6 +554,23 @@ public chorazy_II_toumpaeeeehm(pToucher, pTouched)
 				}
 			}
 
+		}
+		static stages_to_apply = 1;
+		stages_to_apply = 1
+		if(att_team!=vic_team){
+			if(the_hitpoint==MY_HIT_HEAD){
+				stages_to_apply++
+			}
+			static bool:stat_applied = false
+
+			stat_applied = sh_apply_staged_stat_boost(pTouched,oid,STAT_ATTACK_MULT,stages_to_apply,false)
+
+			if(!stat_applied){
+
+				sh_sleep_user(pTouched,oid,3.0,gHeroID)
+
+			}
+			sh_apply_staged_stat_boost(oid,oid,STAT_ATTACK_MULT,stages_to_apply,true)
 		}
 	}
 	remove_entity(pToucher)

@@ -230,15 +230,15 @@ public CmdStart(id, uc_handle)
 	}
 	if(sh_get_stun(id)) return FMRES_IGNORED
 	if(sh_get_id_bit(id, SH_CONTROLLING_VEHICLE)) return FMRES_IGNORED
+	new weapon = get_user_weapon(id);
+	static button;
+	button= get_uc(uc_handle, UC_Buttons);
 	
-	
-	new button = get_uc(uc_handle, UC_Buttons);
+	static prev_button;
+	prev_button = entity_get_int(id, EV_INT_oldbuttons)
+	if((button & IN_ALT1)&&!(prev_button & IN_ALT1)){
 
-
-	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
-	
-	if(button & IN_ALT1){
-		button &= ~IN_ALT1;
+		
 		if(weapon==CSW_KNIFE){
 			if(!Get_BitVar(player_mode_button_pressed_mask,id)){
 				Set_BitVar(player_mode_button_pressed_mask,id)

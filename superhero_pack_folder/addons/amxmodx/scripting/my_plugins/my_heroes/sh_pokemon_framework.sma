@@ -1,6 +1,5 @@
 /*
-
-
+	
     the objective is to not make the game depend on this one.
     that is one constraint.
     the other is that the main formula for damage will be inspired by the one used by game freak
@@ -43,7 +42,6 @@
 
 
 */
-/*
 
 #define I_WANT_CONSTANTS
 #define I_WANT_MATH_FUNCS_PT2
@@ -91,7 +89,7 @@ enum player_stat_struct{
 #define EVASIVENESS_TASK_PERIOD 1.0
 #define SPEED_TASK_PERIOD 0.33
 
-static const DEBUG = 1
+static const DEBUG = 0
 
 static const stat_change_notifications[2][4][] = {
 	
@@ -137,7 +135,7 @@ static const stat_consts[stat_struct_ids][stat_constants_struct] = {
 
 }
 
-static g_player_speed_stat_mults[SH_MAXSLOTS+1][stat_struct_ids][player_stat_struct]
+static g_player_stats[SH_MAXSLOTS+1][stat_struct_ids][player_stat_struct]
 
 
 static Float:curr_player_pure_maxspeeds[SH_MAXSLOTS+1][my_weapon_ids] 
@@ -258,7 +256,7 @@ public apply_evasiveness(task_id){
 
 			continue
 		}
-		if(g_player_speed_stat_mults[id][STAT_EVASIVENESS_MULT][the_number_of_stages]<=0){
+		if(g_player_stats[id][STAT_EVASIVENESS_MULT][the_number_of_stages]<=0){
 			
 			continue
 
@@ -267,7 +265,7 @@ public apply_evasiveness(task_id){
 
 		static Float:stat_clamp_evasiveness_frac;
 		
-		stat_clamp_evasiveness_frac = clamp_macro((float(g_player_speed_stat_mults[id][STAT_EVASIVENESS_MULT][the_number_of_stages])/float(MAX_PLAYER_STAT_STAGES) ), 0.1,get_rid_of_annoying_warning);
+		stat_clamp_evasiveness_frac = clamp_macro((float(g_player_stats[id][STAT_EVASIVENESS_MULT][the_number_of_stages])/float(MAX_PLAYER_STAT_STAGES) ), 0.1,get_rid_of_annoying_warning);
 
 
 
@@ -306,13 +304,13 @@ public apply_speed(task_id){
 				Float:curr_speed,
 				Float:speed_stat_boost_coeff
 
-		speed_stat_boost_coeff = floatabs(g_player_speed_stat_mults[id][STAT_SPEED_ID][the_stat_boost_value])
+		speed_stat_boost_coeff = floatabs(g_player_stats[id][STAT_SPEED_ID][the_stat_boost_value])
 		
 		curr_speed = curr_player_pure_maxspeeds[id][my_weapon_ids:get_user_weapon(id)]
 
 
 
-		speed_is_neg = g_player_speed_stat_mults[id][STAT_SPEED_ID][the_number_of_stages] < 0
+		speed_is_neg = g_player_stats[id][STAT_SPEED_ID][the_number_of_stages] < 0
 		
 		speed_added_thing = speed_is_neg? 
 						
@@ -364,8 +362,8 @@ public sh_round_new(){
 		id = the_players[m];
 		for (new stat_struct_ids:s = enum_zero; s < stat_struct_ids; s++) {
 
-			g_player_speed_stat_mults[id][s][the_stat_boost_value] = 0.0
-			g_player_speed_stat_mults[id][s][the_number_of_stages] = 0
+			g_player_stats[id][s][the_stat_boost_value] = 0.0
+			g_player_stats[id][s][the_number_of_stages] = 0
 		}
 		
 		last_player_deployed_weapon[id] = enum_minus_one
@@ -385,8 +383,8 @@ public sh_client_spawn(id, bool:newRound){
 	}
 	for (new stat_struct_ids:s = enum_zero; s < stat_struct_ids; s++) {
 		
-		g_player_speed_stat_mults[id][s][the_stat_boost_value] = 0.0
-		g_player_speed_stat_mults[id][s][the_number_of_stages] = 0
+		g_player_stats[id][s][the_stat_boost_value] = 0.0
+		g_player_stats[id][s][the_number_of_stages] = 0
 	}
 	arrayset(curr_player_pure_maxspeeds[id],0.0,sizeof(curr_player_pure_maxspeeds[]))
 
@@ -401,9 +399,22 @@ public sh_client_death(id){
 public plugin_natives(){
 
     register_native("sh_apply_staged_stat_boost", "_sh_apply_staged_stat_boost")
+    register_native("sh_check_player_boost_stage", "_sh_check_player_boost_stage")
     register_native("sh_reset_player_stat_boosts", "_sh_reset_player_stat_boosts")
 
 }
+public _sh_check_player_boost_stage(iPlugins, iParams){
+
+	if(!pokemon_dmg_enabled()) return 0
+
+	new id = get_param(1),
+		stat_struct_ids:the_stat_to_use = stat_struct_ids:get_param(2)
+		
+	
+	return g_player_stats[id][the_stat_to_use][the_number_of_stages]
+
+}
+
 public bool:_sh_reset_player_stat_boosts(iPlugins, iParams){
 
 
@@ -421,24 +432,24 @@ public bool:_sh_reset_player_stat_boosts(iPlugins, iParams){
 
 	something_happened=false
 
-	if(g_player_speed_stat_mults[id][STAT_SPEED_ID][the_number_of_stages]!=0){
+	if(g_player_stats[id][STAT_SPEED_ID][the_number_of_stages]!=0){
 	
 		something_happened = true
 	
 		last_player_deployed_weapon[id] = enum_minus_one
 	
 		arrayset(curr_player_pure_maxspeeds[id],0.0,sizeof(curr_player_pure_maxspeeds[]))
-		g_player_speed_stat_mults[id][STAT_SPEED_ID][the_number_of_stages] = 0
-		g_player_speed_stat_mults[id][STAT_SPEED_ID][the_stat_boost_value] = 0.0
+		g_player_stats[id][STAT_SPEED_ID][the_number_of_stages] = 0
+		g_player_stats[id][STAT_SPEED_ID][the_stat_boost_value] = 0.0
 
 	}
 
-		Speed_id is 0. lets start with one as we already took care of speed
+	//	Speed_id is 0. lets start with one as we already took care of speed
 	
 
 	for (new stat_struct_ids:s = enum_one; s < stat_struct_ids; s++) {
 
-		if(g_player_speed_stat_mults[id][s][the_number_of_stages] == 0){
+		if(g_player_stats[id][s][the_number_of_stages] == 0){
 		
 			continue
 		
@@ -446,9 +457,9 @@ public bool:_sh_reset_player_stat_boosts(iPlugins, iParams){
 		
 		something_happened = true
 
-		g_player_speed_stat_mults[id][s][the_stat_boost_value] = 0.0
+		g_player_stats[id][s][the_stat_boost_value] = 0.0
 		
-		g_player_speed_stat_mults[id][s][the_number_of_stages] = 0
+		g_player_stats[id][s][the_number_of_stages] = 0
 	
 	}
 
@@ -511,15 +522,15 @@ public bool:_sh_apply_staged_stat_boost(iPlugins, iParams){
 	}
 	if(DEBUG){
 
-		sh_chat_message(attacker,_, "Prev num of your stages: %d",g_player_speed_stat_mults[id][the_stat_to_use][the_number_of_stages])
+		sh_chat_message(attacker,_, "Prev num of your stages: %d",g_player_stats[id][the_stat_to_use][the_number_of_stages])
 	}
 	static prev_num_of_stages = 0;
-	prev_num_of_stages = g_player_speed_stat_mults[id][the_stat_to_use][the_number_of_stages]
+	prev_num_of_stages = g_player_stats[id][the_stat_to_use][the_number_of_stages]
 
 	if(go_up_or_go_down){
-		if((g_player_speed_stat_mults[id][the_stat_to_use][the_number_of_stages] + num_stages_to_apply) > MAX_PLAYER_STAT_STAGES){
+		if((g_player_stats[id][the_stat_to_use][the_number_of_stages] + num_stages_to_apply) > MAX_PLAYER_STAT_STAGES){
 
-			num_stages_to_apply = max_macro(0, MAX_PLAYER_STAT_STAGES - g_player_speed_stat_mults[id][the_stat_to_use][the_number_of_stages])
+			num_stages_to_apply = max_macro(0, MAX_PLAYER_STAT_STAGES - g_player_stats[id][the_stat_to_use][the_number_of_stages])
 			if(num_stages_to_apply<=0){
 				notify_stat_change(id, attacker, the_stat_to_use, go_up_or_go_down, num_stages_to_apply)
 				return false //no stages applied at all
@@ -527,25 +538,25 @@ public bool:_sh_apply_staged_stat_boost(iPlugins, iParams){
 
 		}
 	}
-	else if((g_player_speed_stat_mults[id][the_stat_to_use][the_number_of_stages] - num_stages_to_apply) < (-MAX_PLAYER_STAT_STAGES)){
+	else if((g_player_stats[id][the_stat_to_use][the_number_of_stages] - num_stages_to_apply) < (-MAX_PLAYER_STAT_STAGES)){
 
-		num_stages_to_apply = max_macro(0, -(g_player_speed_stat_mults[id][the_stat_to_use][the_number_of_stages] + MAX_PLAYER_STAT_STAGES) )
+		num_stages_to_apply = max_macro(0, -(g_player_stats[id][the_stat_to_use][the_number_of_stages] + MAX_PLAYER_STAT_STAGES) )
 		if(num_stages_to_apply<=0){
 			notify_stat_change(id, attacker, the_stat_to_use, go_up_or_go_down, num_stages_to_apply)
 			return false //no stages applied at all
 		}
 	}
-	g_player_speed_stat_mults[id][the_stat_to_use][the_number_of_stages] += (num_stages_to_apply*floatround(sign_chng_mult(!go_up_or_go_down)))
+	g_player_stats[id][the_stat_to_use][the_number_of_stages] += (num_stages_to_apply*floatround(sign_chng_mult(!go_up_or_go_down)))
 
 
-	g_player_speed_stat_mults[id][the_stat_to_use][the_stat_boost_value] = (float(g_player_speed_stat_mults[id][the_stat_to_use][the_number_of_stages])
+	g_player_stats[id][the_stat_to_use][the_stat_boost_value] = (float(g_player_stats[id][the_stat_to_use][the_number_of_stages])
 																						
 																									*
 																									
 																						stat_consts[the_stat_to_use][step])
 
 
-	g_player_speed_stat_mults[id][the_stat_to_use][prev_number_of_stages] = prev_num_of_stages
+	g_player_stats[id][the_stat_to_use][prev_number_of_stages] = prev_num_of_stages
 
 
 	notify_stat_change(id,attacker,the_stat_to_use,go_up_or_go_down,num_stages_to_apply)
@@ -557,10 +568,10 @@ public bool:_sh_apply_staged_stat_boost(iPlugins, iParams){
 
 }
 
-
+/*
 	please use a valid entity for the inflictor
 	even if it has to be a player. otherwise the function doesnt work ok??
-
+*/
 
 Float:get_dmg_between_players(id, inflictor, attacker, Float:damage, sh_thrash_brat_dmg_type:the_sh_dmg_type = enum_minus_one){
 
@@ -616,46 +627,66 @@ Float:get_dmg_between_players(id, inflictor, attacker, Float:damage, sh_thrash_b
 
 
 
-		attck_is_neg = g_player_speed_stat_mults[attacker][the_attack_stat_to_use][the_number_of_stages] < 0
+		attck_is_neg = g_player_stats[attacker][the_attack_stat_to_use][the_number_of_stages] < 0
 
-		defense_is_neg = g_player_speed_stat_mults[id][the_defense_stat_to_use][the_number_of_stages] < 0
+		defense_is_neg = g_player_stats[id][the_defense_stat_to_use][the_number_of_stages] < 0
 		
+
 		attacker_attk_mult = 1.0
 		
 		id_defense_mult = 1.0
 
 		combined_attk_vs_def_mult = 1.0
 
-		if(g_player_speed_stat_mults[attacker][the_attack_stat_to_use][the_number_of_stages]){
+		/*
+			//nonegative stage defense 
+			(1.0)/(g_player_stats[id][the_defense_stat_to_use][the_stat_boost_value]+1.0)
+			
+			//negative stage defense
+			(floatabs((2.0* g_player_stats[id][the_defense_stat_to_use][the_stat_boost_value])-1.0))
+			
+			//negative stage damage
+			(1.0)/(floatabs((2.0* g_player_stats[attacker][the_attack_stat_to_use][the_stat_boost_value])-1.0))
+			
+			//nonegative stage damage 
+			(g_player_stats[attacker][the_attack_stat_to_use][the_stat_boost_value]+1.0)
+
+		*/
+
+
+
+		if(g_player_stats[attacker][the_attack_stat_to_use][the_number_of_stages]){
+			
+			//neg multiplies attack by <1 number
+			//positive multiplies attack by >1 number
 			
 			
-			attacker_attk_mult = (attck_is_neg) ? POKEMON_DAMAGE_RELATION_BALLAST_VAL/(POKEMON_DAMAGE_RELATION_BALLAST_VAL*(1.0 + floatabs(g_player_speed_stat_mults[attacker][the_attack_stat_to_use][the_stat_boost_value])))
-			
+			attacker_attk_mult = (attck_is_neg) ? (1.0)/(floatabs((2.0* g_player_stats[attacker][the_attack_stat_to_use][the_stat_boost_value])-1.0))
 			
 															:
 															
-													(1.0 + g_player_speed_stat_mults[attacker][the_attack_stat_to_use][the_stat_boost_value])
+													(g_player_stats[attacker][the_attack_stat_to_use][the_stat_boost_value]+1.0)
 
 
 			combined_attk_vs_def_mult *= attacker_attk_mult
 
 
 		}	
-		if(g_player_speed_stat_mults[id][the_defense_stat_to_use][the_stat_boost_value]){
+		if(g_player_stats[id][the_defense_stat_to_use][the_number_of_stages]){
 			
-			
-			id_defense_mult = (defense_is_neg) ? (1.0 + floatabs(g_player_speed_stat_mults[id][the_defense_stat_to_use][the_stat_boost_value]))
+			//neg multiplies attack by >1 number
+			//positive multiplies attack by <1 number
 
+			id_defense_mult = (defense_is_neg) ? (floatabs((2.0* g_player_stats[id][the_defense_stat_to_use][the_stat_boost_value])-1.0))
 															:
-													POKEMON_DAMAGE_RELATION_BALLAST_VAL/(POKEMON_DAMAGE_RELATION_BALLAST_VAL*(1.0 + g_player_speed_stat_mults[id][the_defense_stat_to_use][the_stat_boost_value]))
-			
+													(1.0)/(g_player_stats[id][the_defense_stat_to_use][the_stat_boost_value]+1.0)
 
 			combined_attk_vs_def_mult *= id_defense_mult
 
 
 		}
 		if(DEBUG){
-			sh_chat_message(attacker,_,"Their defense coeeff: %0.2f",id_defense_mult)
+			sh_chat_message(attacker,_,"Their defense coeeff: %0.2f",1.0/id_defense_mult)
 			sh_chat_message(attacker,_,"The stat we are targeting: %s", stat_consts[the_defense_stat_to_use][name])
 
 			sh_chat_message(attacker,_,"Our attack coeeff: %0.2f",attacker_attk_mult)
@@ -730,4 +761,3 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_h
 
 	return DMG_FWD_HANDLED
 }
-*/
