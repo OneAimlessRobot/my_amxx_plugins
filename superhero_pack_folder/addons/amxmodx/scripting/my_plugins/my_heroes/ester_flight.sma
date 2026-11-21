@@ -326,30 +326,32 @@ public Ester_Knockback(id)
 	return HAM_IGNORED
 }
 
-remove_user_flight_fx(id, bool:remove_flight=true){
+remove_user_flight_fx(id, bool:remove_flight=true, bool:remove_songs=true){
 	
 	if(!is_user_connected(id)||!sh_get_user_has_hero(id,gHeroID)||!sh_is_active()) return
 	
-	if(g_ester_respawned_attempts[id]<=1){
+	if(remove_songs){
+		if(g_ester_respawned_attempts[id]<=1){
 
 
-		emit_sound(id, CHAN_AUTO, ESTER_FIRST_RESPAWN_SOUND , VOL_NORM, ATTN_NONE, SND_STOP, PITCH_NORM);
-
-	
-	
-	}
-	else if(g_ester_respawned_attempts[id]==((cvar_val(num,pcvar_ester_total_respawn_attempts)))){
-
-
-		emit_sound(id, CHAN_AUTO, ESTER_LAST_RESPAWN_SOUND , VOL_NORM, ATTN_NONE, SND_STOP, PITCH_NORM);
-
-	}
-	else{
-		
-
-		emit_sound(id, CHAN_AUTO,ester_blowup_sounds[curr_player_sound[id]] , VOL_NORM, ATTN_NONE, SND_STOP, PITCH_NORM);
+			emit_sound(id, CHAN_AUTO, ESTER_FIRST_RESPAWN_SOUND , VOL_NORM, ATTN_NONE, SND_STOP, PITCH_NORM);
 
 		
+		
+		}
+		else if(g_ester_respawned_attempts[id]==((cvar_val(num,pcvar_ester_total_respawn_attempts)))){
+
+
+			emit_sound(id, CHAN_AUTO, ESTER_LAST_RESPAWN_SOUND , VOL_NORM, ATTN_NONE, SND_STOP, PITCH_NORM);
+
+		}
+		else{
+			
+
+			emit_sound(id, CHAN_AUTO,ester_blowup_sounds[curr_player_sound[id]] , VOL_NORM, ATTN_NONE, SND_STOP, PITCH_NORM);
+
+			
+		}
 	}
 	if(remove_flight){
 		kill_trails_on_user(id)
@@ -388,7 +390,7 @@ public OnCmdStart(id, uc_handle)
 
 	if(sh_get_stun(id)||sh_get_id_bit(id, SH_CONTROLLING_VEHICLE)||((sh_get_id_bit(id,SH_USER_IS_FLYING))&&!Get_BitVar(g_flying_mask,id))){
 		if(Get_BitVar(g_flying_mask,id)){
-			remove_user_flight_fx(id)
+			remove_user_flight_fx(id,_,false)
 			
 		}
 		return FMRES_IGNORED;
@@ -430,7 +432,7 @@ public OnCmdStart(id, uc_handle)
 	}
 	else{
 		if(Get_BitVar(g_flying_mask,id)){
-			remove_user_flight_fx(id)
+			remove_user_flight_fx(id,_,false)
 			
 		}
 		UnSet_BitVar(g_draining_mask,id)
@@ -656,12 +658,12 @@ public positionChangeTimer(id)
 		godmode_timer_update(id+ESTER_REBORN_GLOW_TASKID)
 	}
 }
-ester_remove_statuses(id){
+ester_remove_statuses(id, bool:remove_flight=true,bool:remove_songs=true){
 
 	if(is_user_connected(id)&&sh_get_user_has_hero(id,gHeroID)){
 		
 		remove_task(id+ESTER_REBORN_EXPLOSION_DELAY_TASKID)
-		remove_user_flight_fx(id,false)
+		remove_user_flight_fx(id,remove_flight,remove_songs)
 	}
 	
 }
@@ -685,7 +687,7 @@ public BlowUp(param[1],id)
 		set_task(ESTER_REBORN_EXPLOSION_PERIOD,"BlowUp",id+ESTER_REBORN_EXPLOSION_DELAY_TASKID,param,1)
 	}
 	else{
-		ester_remove_statuses(id)
+		ester_remove_statuses(id,false,false)
 	}
 		
 	

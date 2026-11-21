@@ -10,7 +10,10 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_include/my_author_header.inc"
 
-#define NITRO_TIMER_UPDATE_PERIOD 0.001
+
+#define NITRO_MOVEMENT_TASK_PERIOD 0.1
+
+static NITRO_MOVEMENT_TASKID
 
 /*
 
@@ -21,8 +24,6 @@
 // GLOBAL VARIABLES
 new gHeroName[]="Nitro"
 new g_is_running[SH_MAXSLOTS+1]
-new Float:g_last_user_gametime[SH_MAXSLOTS+1],
-		Float:g_curr_user_diff[SH_MAXSLOTS+1]
 
 
 //cvar floats!
@@ -66,104 +67,129 @@ public plugin_init()
 
 	RegisterHam(Ham_Player_PreThink,"player","Ham_Think_Pre",_,true)
 
+	NITRO_MOVEMENT_TASKID=allocate_typed_task_id(generic_task)
+
+	set_task(NITRO_MOVEMENT_TASK_PERIOD,"nitro_movement_loop",NITRO_MOVEMENT_TASKID,_,_,"b")
+
 
 }
+public nitro_movement_loop(task_id){
 
+	if(!sh_is_active()) return
+
+	if(sh_is_freezetime()) return
+	
+	static the_players[SH_MAXSLOTS], pnum, id		
+	get_players(the_players, pnum, "ah")
+	for (new i = 0; i < pnum; i++) {
+		id = the_players[i]
+        
+		static Float:final_velocity_player[3],
+					Float:velocity_player[3],
+					Float:propel_force,
+					bool:ducking = false
+
+		ducking = false
+		
+		if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)) continue
+
+		if(sh_get_id_bit(id, SH_CONTROLLING_VEHICLE)||sh_get_id_bit(id,SH_USER_IS_FLYING)){
+
+			continue
+		}
+		if(!(entity_get_int(id, EV_INT_flags)&FL_INGROUND2)){
+
+		
+			continue
+		}
+		if(!g_is_running[id]){
+
+			continue
+		}
+		if((entity_get_int(id, EV_INT_flags)&FL_DUCKING)){
+
+			sh_chat_message(id,gHeroID,"We are ducking!")
+			ducking = true
+		}
+
+		propel_force = (cvar_val(float, pcvar_nitro_force)*NITRO_MOVEMENT_TASK_PERIOD)/cvar_val(float, pcvar_mass)
+		
+		entity_get_vector(id,EV_VEC_velocity,velocity_player)
+
+		new Float:speed = vector_length(velocity_player)
+
+		my_velocity_by_aim(id,propel_force+speed,final_velocity_player,dummy_vector)
+
+		if(DEBUG){
+			sh_chat_message(id,gHeroID,"Initial speed: %0.7f",speed)
+
+			sh_chat_message(id,gHeroID,"Employed thrust force: %0.7f",cvar_val(float, pcvar_nitro_force)*NITRO_MOVEMENT_TASK_PERIOD)
+		}
+
+		final_velocity_player[2] = 0.0
+
+		entity_set_vector(id,EV_VEC_velocity,final_velocity_player)
+
+		
+		speed = vector_length(final_velocity_player)
+
+
+		if(DEBUG){
+			sh_chat_message(id,gHeroID,"After thrust speed: %0.7f",speed)
+		}
+		
+		
+		new Float:the_force = player_air_drag_update_speed(id,(ducking?(NITRO_DUCKING_STANDING_HEIGHT_RATIO*NITRO_DUCKING_STANDING_HEIGHT_RATIO):1.0)*PLAYER_DRAG_CONST*cvar_val(float, pcvar_nitro_air_drag),NITRO_MOVEMENT_TASK_PERIOD)
+
+
+
+		if(DEBUG){
+			sh_chat_message(id,gHeroID,"Obtained drag force: %0.7f",the_force)
+		}
+
+		entity_get_vector(id,EV_VEC_velocity,velocity_player)
+
+		speed = vector_length(velocity_player)
+
+
+		if(DEBUG){
+			sh_chat_message(id,gHeroID,"After drag speed: %0.7f",speed)
+		}
+
+	}
+}
 public Ham_Think_Pre(id) {
 	
-	static Float:final_velocity_player[3],
-			Float:velocity_player[3],
-			Float:here_gametime,
-			Float:propel_force,
-			bool:ducking = false
+	if(!sh_is_active()) return HAM_IGNORED
 
-	ducking = false
-	here_gametime = my_get_gametime()
-
-	if ( !sh_is_active() || sh_is_freezetime() ) return HAM_IGNORED
+	if(sh_is_freezetime()) return HAM_IGNORED
 	
-	if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)) return HAM_IGNORED
+	if(!is_user_alive(id)) return HAM_IGNORED
 
+	if(!sh_get_user_has_hero(id,gHeroID)){
+
+		return HAM_IGNORED
+
+	}
 	if(sh_get_id_bit(id, SH_CONTROLLING_VEHICLE)||sh_get_id_bit(id,SH_USER_IS_FLYING)){
 
-		g_last_user_gametime[id] = my_get_gametime()
+
 		return HAM_IGNORED
+
 	}
 	if(!(entity_get_int(id, EV_INT_flags)&FL_INGROUND2)){
 
-		g_last_user_gametime[id] = my_get_gametime()
-		return HAM_IGNORED
 	
+		return HAM_IGNORED
+
 	}
 	if(!g_is_running[id]){
 
-		g_last_user_gametime[id] = my_get_gametime()
 		return HAM_IGNORED
-	}
-	if((entity_get_int(id, EV_INT_flags)&FL_DUCKING)){
-
-		sh_chat_message(id,gHeroID,"We are ducking!")
-		ducking = true
-	}
-
-	g_curr_user_diff[id] = here_gametime - g_last_user_gametime[id]
-
-	if(g_curr_user_diff[id]<NITRO_TIMER_UPDATE_PERIOD){
-
-		if(DEBUG){
-			sh_chat_message(id,gHeroID,"Did we run this? Obtained gametime diff: %0.7f",g_curr_user_diff[id])
-		}
-		return HAM_IGNORED
-
-	}
-
-	propel_force = (cvar_val(float, pcvar_nitro_force)*g_curr_user_diff[id])/cvar_val(float, pcvar_mass)
 	
+	}
 	entity_set_float(id, EV_FL_friction,cvar_val(float, pcvar_friction))
 	
-	entity_get_vector(id,EV_VEC_velocity,velocity_player)
-
-	new Float:speed = vector_length(velocity_player)
-
-	my_velocity_by_aim(id,propel_force+speed,final_velocity_player,dummy_vector)
-
-	if(DEBUG){
-		sh_chat_message(id,gHeroID,"Initial speed: %0.7f",speed)
-
-		sh_chat_message(id,gHeroID,"Employed thrust force: %0.7f",cvar_val(float, pcvar_nitro_force)*g_curr_user_diff[id])
-	}
-
-	final_velocity_player[2] = 0.0
-
-	entity_set_vector(id,EV_VEC_velocity,final_velocity_player)
-
-	
-	speed = vector_length(final_velocity_player)
-
-
-	if(DEBUG){
-		sh_chat_message(id,gHeroID,"After thrust speed: %0.7f",speed)
-	}
-	
-	
-	new Float:the_force = player_air_drag_update_speed(id,(ducking?(NITRO_DUCKING_STANDING_HEIGHT_RATIO*NITRO_DUCKING_STANDING_HEIGHT_RATIO):1.0)*PLAYER_DRAG_CONST*cvar_val(float, pcvar_nitro_air_drag),g_curr_user_diff[id])
-
-
-	if(DEBUG){
-		sh_chat_message(id,gHeroID,"Obtained drag force: %0.7f",the_force)
-	}
-
-	entity_get_vector(id,EV_VEC_velocity,velocity_player)
-
-	speed = vector_length(velocity_player)
-
-
-	if(DEBUG){
-		sh_chat_message(id,gHeroID,"After drag speed: %0.7f",speed)
-	}
-
-	g_last_user_gametime[id] = my_get_gametime()
-
 	return HAM_IGNORED
 }
 //----------------------------------------------------------------------------------------------
@@ -203,8 +229,6 @@ public nitro_kd(id)
 		sh_sound_deny(id)
 		return
 	}
-
-	g_last_user_gametime[id] = my_get_gametime()
 	
 	g_is_running[id] = 1
 

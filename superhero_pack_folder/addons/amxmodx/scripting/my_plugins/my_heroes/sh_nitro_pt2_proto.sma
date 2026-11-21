@@ -39,7 +39,7 @@ new pcvar_nitro_force,
 		nitro_height 1.0
 */
 
-new const DEBUG = 1
+new const DEBUG = 0
 
 #define PLAYER_AREA ((cvar_val(float,pcvar_height)*cvar_val(float,pcvar_height))*M_PI)
 #define PLAYER_DRAG_CONST (PLAYER_AREA*cvar_val(float,pcvar_car))
