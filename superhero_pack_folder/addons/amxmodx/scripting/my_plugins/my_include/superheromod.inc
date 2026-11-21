@@ -465,8 +465,64 @@ enum sh_extra_damage_flags (<<= 1){
 
 }
 
- */
-native sh_extra_damage(victim,
+*/
+
+/*
+
+	enum sh_extra_damage_result{
+
+		SH_DMG_RESULT_VICTIM_IS_DEAD = -30,
+		SH_DMG_RESULT_ATTACKER_NOT_CONNECTED = -27,
+		SH_DMG_RESULT_VICTIM_IS_IMMUNE_VIP = -25,
+		SH_DMG_RESULT_VICTIM_IS_IN_GODMODE = -19,
+		SH_DMG_RESULT_DMG_BLOCKED_BY_PRE_FWD = -17,
+		SH_DMG_RESULT_DMG_FULLY_HAMPERED_BY_PRE_FWD = -15,
+		SH_DMG_RESULT_TEAMATE_NO_FF_NOT_DEAD = -13,
+		SH_DMG_RESULT_TEAMATE_NO_FF_NOT_HURT = -12,
+		SH_DMG_RESULT_DMG_KILLED_OPPONENT = -11
+
+
+
+
+	}
+*/
+enum sh_extra_damage_result{
+
+	SH_DMG_RESULT_VICTIM_IS_DEAD = -30,
+	SH_DMG_RESULT_ATTACKER_NOT_CONNECTED = -27,
+	SH_DMG_RESULT_VICTIM_IS_IMMUNE_VIP = -25,
+	SH_DMG_RESULT_VICTIM_IS_IN_GODMODE = -19,
+	SH_DMG_RESULT_DMG_BLOCKED_BY_PRE_FWD = -17,
+	SH_DMG_RESULT_DMG_FULLY_HAMPERED_BY_PRE_FWD = -15,
+	SH_DMG_RESULT_TEAMATE_NO_FF_NOT_DEAD = -13,
+	SH_DMG_RESULT_TEAMATE_NO_FF_NOT_HURT = -12,
+	SH_DMG_RESULT_DMG_KILLED_OPPONENT = -11
+
+
+
+
+}
+
+/*
+
+	damage could not be done: result of this will be < -20
+
+	Damage dealt to opponent with godmode: result of this will be >= -19 and < -17
+
+	Damage dealt to opponent that blocked with damage forward: result of this will be >= -17 and < -15 
+
+	Damage was so hampered by the damage forward that resulting damage was zero! >= -15 and < -13
+	
+	tried to kill teamate without friendly fire turned on: -13
+
+	tried to hurt teamate without friendly fire turned on: -12
+
+	Damage killed opponent: result of this will be > -12 and <= -10
+
+	Damage was dealt and did NOT kill opponent: the result of this will be the final damage dealt! (> 0)
+
+*/
+native sh_extra_damage_result:sh_extra_damage(victim,
 				attacker,
 				damage,
 				my_hitpoint_enum:bodypart = MY_HIT_GENERIC,

@@ -27,4 +27,4 @@ events/createsmoke.sc
 events/galil.sc
 events/famas.sc
 events/decal_reset.sc
-events/train.sc
+events/vehicle.sc

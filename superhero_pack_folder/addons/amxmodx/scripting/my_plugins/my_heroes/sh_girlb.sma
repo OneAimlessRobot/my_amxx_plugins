@@ -133,10 +133,6 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
                         "regen_glob_task",id+REGEN_GLOB_TASKID)
     }
 }
-public sh_round_end(){
-
-    remove_entity_name(GLOB_CLASSNAME)
-}
 
 //----------------------------------------------------------------------------------------------
 public sh_hero_key(id, heroID, sh_key_mode:key)
@@ -158,7 +154,7 @@ switch(key)
 //----------------------------------------------------------------------------------------------
 public girlb_kd(id)
 {
-    if(!sh_is_active()||!sh_is_inround()) return PLUGIN_CONTINUE
+    if(!sh_is_active()||!sh_is_inround()||sh_is_freezetime()) return PLUGIN_HANDLED
 
     if ( !is_user_alive(id) ) return PLUGIN_HANDLED
 
@@ -187,7 +183,7 @@ public girlb_kd(id)
 //----------------------------------------------------------------------------------------------
 public girlb_ku(id)
 {
-    if(!sh_is_active()||!sh_is_inround()) return PLUGIN_CONTINUE
+    if(!sh_is_active()||!sh_is_inround()||sh_is_freezetime()) return PLUGIN_HANDLED
 
 
     if ( !is_user_alive(id) ) return PLUGIN_HANDLED

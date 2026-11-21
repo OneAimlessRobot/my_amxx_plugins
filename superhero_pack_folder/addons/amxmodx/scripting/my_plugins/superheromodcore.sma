@@ -2836,20 +2836,74 @@ public ham_TakeDamage_Pre(victim, inflictor, attacker, Float:damage, damagebits)
 	return HAM_HANDLED
 }
 //----------------------------------------------------------------------------------------------
-public _sh_extra_damage()
+
+/*
+
+	damage could not be done: result of this will be < -20
+
+	Damage dealt to opponent with godmode: result of this will be >= -19 and < -17
+
+	Damage dealt to opponent that blocked with damage forward: result of this will be >= -17 and < -15 
+
+	Damage was so hampered by the damage forward that resulting damage was zero! >= -15 and < -13
+	
+	tried to kill teamate without friendly fire turned on: -13
+
+	tried to hurt teamate without friendly fire turned on: -12
+
+	Damage killed opponent: result of this will be > -12 and <= -10
+
+	Damage was dealt and did NOT kill opponent: the result of this will be the final damage dealt! (> 0)
+
+*/
+
+/*
+
+	enum sh_extra_damage_result{
+
+		SH_DMG_RESULT_VICTIM_IS_DEAD = -30,
+		SH_DMG_RESULT_ATTACKER_NOT_CONNECTED = -27,
+		SH_DMG_RESULT_VICTIM_IS_IMMUNE_VIP = -25,
+		SH_DMG_RESULT_VICTIM_IS_IN_GODMODE = -19,
+		SH_DMG_RESULT_DMG_BLOCKED_BY_PRE_FWD = -17,
+		SH_DMG_RESULT_DMG_FULLY_HAMPERED_BY_PRE_FWD = -15,
+		SH_DMG_RESULT_TEAMATE_NO_FF_NOT_DEAD = -13,
+		SH_DMG_RESULT_TEAMATE_NO_FF_NOT_HURT = -12,
+		SH_DMG_RESULT_DMG_KILLED_OPPONENT = -11
+
+
+
+
+	}
+*/
+
+public sh_extra_damage_result:_sh_extra_damage()
 {
 	new victim = get_param(1)
 
-	if ( !is_user_alive(victim) || get_user_godmode(victim) ) return
-
+	if ( !is_user_alive(victim) ){
+		
+		return SH_DMG_RESULT_VICTIM_IS_DEAD
+	
+	}
 	new attacker = get_param(2)
 
-	if ( !is_user_connected(attacker) ) return
+	if ( !is_user_connected(attacker) ){
 
-	if ( attacker == gXpBounsVIP && getVipFlags() & VIP_BLOCK_EXTRADMG ) return
+		return SH_DMG_RESULT_ATTACKER_NOT_CONNECTED
+	}
 
+	if ( attacker == gXpBounsVIP && getVipFlags() & VIP_BLOCK_EXTRADMG ){
+		
+		return SH_DMG_RESULT_VICTIM_IS_IMMUNE_VIP
+	
+	}
+	if( get_user_godmode(victim)){
+
+		return SH_DMG_RESULT_VICTIM_IS_IN_GODMODE
+	}
 	new damage_after;
-	damage_after = get_param(3)
+	damage_after = max_macro(0,get_param(3))
 
 	new Float:flArmor = 0.0
 
@@ -2931,7 +2985,7 @@ public _sh_extra_damage()
 
 		if((the_dmg_return_value==DMG_FWD_BLOCK)){
 
-			return
+			return SH_DMG_RESULT_DMG_BLOCKED_BY_PRE_FWD
 		}
 		else if(the_dmg_return_value==DMG_FWD_HANDLED){
 			
@@ -2956,7 +3010,11 @@ public _sh_extra_damage()
 		damage_after = health
 	}
 	else {
-		if ( damage_after <= 0 ) return
+		if(damage_after <= 0){
+			
+			return SH_DMG_RESULT_DMG_FULLY_HAMPERED_BY_PRE_FWD
+			
+		}
 
 		// *** Damage calculation due to armor from: multiplayer/dlls/player.cpp ***
 		// *** Note: this is not exactly CS damage method because we do not have that sdk ***
@@ -2988,7 +3046,7 @@ public _sh_extra_damage()
 
 
 	if ( newHealth < 1 ) {
-		new bool:kill
+		new bool:kill = false
 		new attackerFrags = get_user_frags(attacker)
 		new attackerMoney = cs_get_user_money(attacker)
 
@@ -3032,7 +3090,7 @@ public _sh_extra_damage()
 		}
 
 		if ( !kill ){
-			return
+			return SH_DMG_RESULT_TEAMATE_NO_FF_NOT_DEAD
 		}
 
 		// Kill the victim and block the message
@@ -3105,6 +3163,8 @@ public _sh_extra_damage()
 			// Damage origin is attacker
 			pev(attacker, pev_origin, dmgOrigin)
 		}
+
+		return SH_DMG_RESULT_DMG_KILLED_OPPONENT
 	}
 	else 
 	{
@@ -3122,7 +3182,7 @@ public _sh_extra_damage()
 		}
 
 		if ( !hurt ){
-			return
+			return SH_DMG_RESULT_TEAMATE_NO_FF_NOT_HURT
 		}
 
 		if ( Get_BitVar(gHasAnubisMask, attacker)  && get_pcvar_num(sh_anubisdmg_check) && victim != attacker ) {
@@ -3196,7 +3256,8 @@ public _sh_extra_damage()
 							:
 		(logHit(attacker, victim, wpnDescription,damage_after, floatround(flArmor),bodypart,custom_wpn_id,thrashbrat_dmg_type))
 
-	
+		return sh_extra_damage_result:damage_after
+		
 
 	}
 }

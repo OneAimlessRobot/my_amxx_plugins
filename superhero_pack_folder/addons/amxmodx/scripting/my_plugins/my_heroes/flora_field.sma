@@ -66,11 +66,17 @@ new dmg_source_name_short_field_drain[SAFE_BUFFER_SIZE+1]="field_drain"
 new dmg_source_name_log_field_drain[SAFE_BUFFER_SIZE+1]="field_drain"
 
 stock FLORA_COOLDOWN_TASKID,
-		FLORA_LOAD_TASKID,
-		FLORA_GLOBAL_TASKID
+		FLORA_LOAD_TASKID
 
 
 new cut_her_some_slack_start_of_round_mask = 0
+
+#define FLORA_MONITOR_THINK_PERIOD 0.05
+#define FLORA_MONITOR_THINKER_ENTITY_CLASSNAME "Flora_Monitor_Proximity_Entity"
+
+new flora_monitor_proximity_thinker_entity = -1
+
+new thinker_forward_id = -1
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -96,17 +102,53 @@ public plugin_init()
 	pcvar_flora_invis_alpha_dec_per_lvl = create_cvar("flora_invis_alpha_dec_per_lvl" ,"0.05" )
 	pcvar_flora_base_stun_speed = create_cvar("flora_base_stun_speed","210.0")
 
-
-	FLORA_COOLDOWN_TASKID=allocate_typed_task_id(player_task)
-	FLORA_LOAD_TASKID=allocate_typed_task_id(player_task)
-	FLORA_GLOBAL_TASKID=allocate_typed_task_id(generic_task)
-
 	register_forward(FM_CmdStart, "flora_noclip_control")
-
-	set_task(0.35,"flora_checks",FLORA_GLOBAL_TASKID,_,_,"b")
 
 	register_think(FLORA_FIELD_CLASSNAME, "field_think")
 
+	FLORA_COOLDOWN_TASKID=allocate_typed_task_id(player_task)
+	FLORA_LOAD_TASKID=allocate_typed_task_id(player_task)
+	
+	if(flora_monitor_proximity_thinker_entity<=0){
+
+		thinker_forward_id = register_think(FLORA_MONITOR_THINKER_ENTITY_CLASSNAME, "flora_checks")
+
+		flora_monitor_proximity_thinker_entity = create_entity("info_target")
+
+
+		if(!flora_monitor_proximity_thinker_entity){
+
+			set_fail_state("Flora Monitor entity could not be initialized!")
+			unregister_think(thinker_forward_id)
+			return
+		}
+
+		entity_set_string(flora_monitor_proximity_thinker_entity,EV_SZ_classname,FLORA_MONITOR_THINKER_ENTITY_CLASSNAME)
+
+		entity_set_float(flora_monitor_proximity_thinker_entity, EV_FL_nextthink, get_gametime() + FLORA_MONITOR_THINK_PERIOD)
+
+
+
+
+	}
+
+
+
+}
+
+public plugin_end(){
+
+	if(thinker_forward_id>=0){
+
+		unregister_think(thinker_forward_id)
+
+	}
+
+
+	if(is_valid_ent(flora_monitor_proximity_thinker_entity)){
+
+		remove_entity(flora_monitor_proximity_thinker_entity)
+	}
 }
 
 public flora_noclip_control(id, uc_handle)
@@ -115,9 +157,12 @@ public flora_noclip_control(id, uc_handle)
 		return FMRES_IGNORED
 	}
 	if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)||
-			!Get_BitVar(g_curr_flora_noclip_mask,id)){
+			!Get_BitVar(g_curr_flora_noclip_mask,id)||
+			sh_get_id_bit(id, SH_CONTROLLING_VEHICLE)||sh_get_id_bit(id,SH_USER_IS_FLYING)){
+
 			return FMRES_IGNORED;
 	}
+	
 	static buttons;
 	buttons = get_uc(uc_handle, UC_Buttons)
 
@@ -468,10 +513,21 @@ find_next_nearest_flora_field(player_id,field_to_exclude=-1,Float:distance){
 	return best_id
 	
 }
-public flora_checks(task_id){
+public flora_checks(entity_id){
 
-	if(!sh_is_active()||sh_is_freezetime()) return
 
+	if(!is_valid_ent(entity_id)){
+
+		return
+	}
+	if(!sh_is_active()){
+
+		entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + FLORA_MONITOR_THINK_PERIOD)
+	}
+	if(sh_is_freezetime()){
+		
+		entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + FLORA_MONITOR_THINK_PERIOD)
+	}
 
 	static the_players[SH_MAXSLOTS], pnum, id		
 	get_players(the_players, pnum, "ah")
@@ -640,6 +696,7 @@ public flora_checks(task_id){
 
 			
 	}
+	entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + FLORA_MONITOR_THINK_PERIOD)
 }
 flora_sheltered_values:is_flora_user_in_owned_field(player_id,&field_id=-1){
 	

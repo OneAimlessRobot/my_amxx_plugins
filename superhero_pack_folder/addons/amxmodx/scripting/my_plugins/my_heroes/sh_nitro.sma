@@ -19,7 +19,7 @@ static NITRO_MOVEMENT_TASKID
 
 	standing -> ducking factor
 */
-#define NITRO_DUCKING_STANDING_HEIGHT_RATIO 0.5
+#define NITRO_DUCKING_STANDING_HEIGHT_RATIO 0.87
 
 // GLOBAL VARIABLES
 new gHeroName[]="Nitro"
@@ -67,12 +67,57 @@ public plugin_init()
 
 	RegisterHam(Ham_Player_PreThink,"player","Ham_Think_Pre",_,true)
 
+	register_entity_as_wall_touchable("player","FwdTouchWorld")
+
 	NITRO_MOVEMENT_TASKID=allocate_typed_task_id(generic_task)
 
 	set_task(NITRO_MOVEMENT_TASK_PERIOD,"nitro_movement_loop",NITRO_MOVEMENT_TASKID,_,_,"b")
 
 
 }
+
+public FwdTouchWorld( id, World ) {
+
+
+	if(!sh_is_active()) return PLUGIN_CONTINUE
+
+	if(sh_is_freezetime()) return PLUGIN_CONTINUE
+
+	if(!is_user_alive(id)) return PLUGIN_CONTINUE
+
+	if(!sh_get_user_has_hero(id,gHeroID)){
+
+		return PLUGIN_CONTINUE
+	}
+
+	if(sh_get_id_bit(id, SH_CONTROLLING_VEHICLE)||sh_get_id_bit(id,SH_USER_IS_FLYING)){
+
+		return PLUGIN_CONTINUE
+
+	}
+	if(!g_is_running[id]){
+
+		return PLUGIN_CONTINUE
+	}
+	static head_origin[3]
+
+	get_user_origin(id,head_origin,Origin_Eyes)
+	
+	static Float:vVelocity[ 3 ];
+	entity_get_vector( id, EV_VEC_velocity, vVelocity );
+	
+	if( floatround( vector_length( vVelocity ) ) > 10 ) {
+		vVelocity[ 0 ] *= 0.85;
+		vVelocity[ 1 ] *= 0.85;
+		vVelocity[ 2 ] *= 0.85;
+		
+		entity_set_vector( id, EV_VEC_velocity, vVelocity );
+		g_is_running[id] = 0
+
+	}
+	return PLUGIN_CONTINUE
+}
+
 public nitro_movement_loop(task_id){
 
 	if(!sh_is_active()) return
@@ -107,8 +152,12 @@ public nitro_movement_loop(task_id){
 			continue
 		}
 		if((entity_get_int(id, EV_INT_flags)&FL_DUCKING)){
-
-			sh_chat_message(id,gHeroID,"We are ducking!")
+			
+			if(DEBUG){
+			
+				sh_chat_message(id,gHeroID,"We are ducking!")
+			
+			}
 			ducking = true
 		}
 
