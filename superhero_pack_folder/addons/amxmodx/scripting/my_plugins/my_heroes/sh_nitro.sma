@@ -42,7 +42,7 @@ new pcvar_nitro_force,
 		nitro_height 1.0
 */
 
-new const DEBUG = 1
+new const DEBUG = 0
 
 #define PLAYER_AREA ((cvar_val(float,pcvar_height)*cvar_val(float,pcvar_height))*M_PI)
 #define PLAYER_DRAG_CONST (PLAYER_AREA*cvar_val(float,pcvar_car))
@@ -62,7 +62,7 @@ public plugin_init()
 	pcvar_nitro_force = create_cvar("nitro_thrust_force_persec", "50.0")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	gHeroID=shCreateHero(gHeroName, "Accelerate like a car!", "Accelerate on keydown! Wait to recharge...", true, "escapist_level" )
+	gHeroID=shCreateHero(gHeroName, "Accelerate like a car!", "Accelerate on keydown! Wait to recharge...", true, "nitro_level" )
 
 	RegisterHam(Ham_Player_PreThink,"player","Ham_Think_Pre",_,true)
 
