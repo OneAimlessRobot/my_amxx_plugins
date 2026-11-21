@@ -17,13 +17,50 @@
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt12.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "../my_include/my_author_header.inc"
 
-stock const DEBUG= 0
 
-stock SHINOBU_POISON_KICK_DELAYED_TASKID,
-	SHINOBU_GLOBAL_SILENT_FOOTSTEPS_LOOP
+new num_happy_sentences = 0
+new happy_sentences[][]={
+
+    "Ara ara~ Enjoy the nap ^^-^^",
+    "Hmm? What was that? ^"Mi Mi Mi^"?",
+    "Ops, Im sorry! Can you repeat from earlier?",
+    "Oooh... You were feeling sick earlier. Are you feeling better?",
+    "I SHANKED EM DEMON GUTS NOW I SMELL BAD ^^-^^",
+    ""
+
+}
+
+
+new num_that_fucker_sentences = 0
+new shinobu_shinobu_shinobu_shinobu_dickery_sentences[][]={
+
+    "Awww, does tummy hurt?",
+    "I drink this stuff daily~ Is it really that bad?",
+    "Its not hurting... Its a cure~",
+    "Parsing tomfoolery files~",
+    ""
+
+}
+
+new num_neurodivergent_inclusivity_sentences = 0
+
+new rehearsed_neurodivergent_inclusivity[][]={
+
+    "Aww! Im so sorry! Im sure they have crayons in hell, though...",
+    "Let it go, now.Your obnixious 4chan posts do not matter past the pearly gates :P",
+    ""
+
+}
+
+
+
+new const DEBUG = 0
+
+stock SHINOBU_POISON_KICK_DELAYED_TASKID
 
 // GLOBAL VARIABLES
 new gHeroName[]="Shinobu Kocho"
@@ -74,16 +111,15 @@ public plugin_init()
 
 
 	SHINOBU_POISON_KICK_DELAYED_TASKID=allocate_typed_task_id(player_task)
-	SHINOBU_GLOBAL_SILENT_FOOTSTEPS_LOOP=allocate_typed_task_id(generic_task)
 	
 	custom_weapon_damage_sharp_poison_kick_id=sh_log_custom_damage_source(
 								gHeroID,
 								dmg_source_name_short_poison_kick,
 								dmg_source_name_log_poison_kick,
 								0)
-	set_task(1.0,"shinobu_step_silent",SHINOBU_GLOBAL_SILENT_FOOTSTEPS_LOOP,_,_,"b")
 
 }
+
 public plugin_natives(){
 	
 	register_native("shinobu_get_user_tagged_player","_shinobu_get_user_tagged_player")
@@ -95,27 +131,6 @@ public plugin_natives(){
 	
 }
 
-//----------------------------------------------------------------------------------------------
-public shinobu_step_silent(task_id)
-{
-	if (! sh_is_active()) return
-	
-	static the_players[SH_MAXSLOTS], pnum, id		
-	get_players(the_players, pnum, "ah")
-	for (new k = 0; k < pnum; k++) {
-		
-		id = the_players[k]
-		if((entity_get_int(id,EV_INT_flags)& FL_ONGROUND)){
-			if(sh_get_user_has_hero(id,gHeroID) ){
-				static wpnid
-				wpnid=get_user_weapon(id)
-				if((wpnid==CSW_KNIFE)||(wpnid==SHINOBU_WEAPON_CLASSID)) {
-					entity_set_int(id, EV_INT_flTimeStepSound, 2000)
-				}
-			}
-		}
-	}
-}
 
 public client_disconnected(id){
 
@@ -238,13 +253,13 @@ public shinobu_burst_damage_task(array[1],attacker){
 	
 	if(!sh_get_user_has_hero(attacker,gHeroID)  ) return
 
+	new the_num = generate_int(0,num_that_fucker_sentences-1)
+
 	if(!is_user_bot(tg)){
-		sh_chat_message(tg,gHeroID,"%s",shinobu_shinobu_shinobu_shinobu_dickery_sentences[shinobu_shinobu_shinobu_shinobu_dickery_sentences_id:generate_int(0,
-																								sizeof(shinobu_shinobu_shinobu_shinobu_dickery_sentences)-1)])
+		sh_chat_message(tg,gHeroID,"%s",shinobu_shinobu_shinobu_shinobu_dickery_sentences[the_num])
 	}
 	if(!is_user_bot(attacker)){
-		sh_chat_message(attacker,gHeroID,"%s",shinobu_shinobu_shinobu_shinobu_dickery_sentences[shinobu_shinobu_shinobu_shinobu_dickery_sentences_id:generate_int(0,
-																								sizeof(shinobu_shinobu_shinobu_shinobu_dickery_sentences)-1)])
+		sh_chat_message(attacker,gHeroID,"%s",shinobu_shinobu_shinobu_shinobu_dickery_sentences[the_num])
 	}
 
 	new enemy_health=get_user_health(tg)
@@ -321,7 +336,6 @@ public shinobu_kd(id)
 		}
 		return
 	}
-	sh_chat_message(id,gHeroID,"%s",shinobu_visiting_sentences[shinobu_visiting_sentences_id:generate_int(0,sizeof(shinobu_visiting_sentences)-1)])	
 	shinobu_teleport_init(id)
 }
 public sh_round_end(){
@@ -344,6 +358,58 @@ public sh_round_new(){
 	}
 
 }
+public plugin_precache(){
+
+
+	static i;
+	while(happy_sentences[num_happy_sentences][0]!=0){
+
+		num_happy_sentences++
+	}
+	if(DEBUG){
+
+		server_print("%d Shinobu elderly friendly sentences were counted! (she is very inclusive) They are:^n^n",num_happy_sentences)
+		
+		i=0
+		while(happy_sentences[i][0]!=0){
+			
+			server_print("Sentence number %d (index %d): %s^n",i+1,i,happy_sentences[i])
+			i++
+		}
+	}
+
+	while(shinobu_shinobu_shinobu_shinobu_dickery_sentences[num_that_fucker_sentences][0]!=0){
+
+		num_that_fucker_sentences++
+	}
+	if(DEBUG){
+
+		server_print("%d Shinobu friendly sentences were counted! They are:^n^n",num_that_fucker_sentences)
+		i=0
+		while(shinobu_shinobu_shinobu_shinobu_dickery_sentences[i][0]!=0){
+			
+			server_print("Sentence number %d (index %d): %s^n",i+1,i,shinobu_shinobu_shinobu_shinobu_dickery_sentences[i])
+			i++
+		}
+	}
+
+	while(rehearsed_neurodivergent_inclusivity[num_neurodivergent_inclusivity_sentences][0]!=0){
+
+		num_neurodivergent_inclusivity_sentences++
+	}
+	if(DEBUG){
+
+		server_print("%d Shinobu neuroinclusive sentences were counted! (she is very inclusive) They are:^n^n",num_neurodivergent_inclusivity_sentences)
+		i=0
+		while(rehearsed_neurodivergent_inclusivity[i][0]!=0){
+			
+			server_print("Sentence number %d (index %d): %s^n",i+1,i,rehearsed_neurodivergent_inclusivity[i])
+			i++
+		}
+	}
+
+
+}
 public sh_client_death(id,killer)
 {
 	if(!sh_is_active()) return
@@ -353,11 +419,17 @@ public sh_client_death(id,killer)
 		if(sh_get_user_has_hero(killer,gHeroID) ){
 			
 			if(g_shinobu_tagged_player[killer]==id){
+				
+				new bool:is_nd = sh_get_player_has_hero_prop(id, SH_NEURODIVERGENT_HERO)
+
+				new happy_num = generate_int(0,num_happy_sentences-1),
+					nd_num = generate_int(0,num_neurodivergent_inclusivity_sentences-1)
+
 				if(!is_user_bot(id)){
-					sh_chat_message(id,gHeroID,"%s",happy_sentences[shinobu_happy_sentence_id:generate_int(0,sizeof(happy_sentences)-1)])
+					sh_chat_message(id,gHeroID,"%s", is_nd? rehearsed_neurodivergent_inclusivity[nd_num]:happy_sentences[happy_num])
 				}
 				if(!is_user_bot(killer)){
-					sh_chat_message(killer,gHeroID,"%s",happy_sentences[shinobu_happy_sentence_id:generate_int(0,sizeof(happy_sentences)-1)])
+					sh_chat_message(killer,gHeroID,"%s",is_nd? rehearsed_neurodivergent_inclusivity[nd_num]:happy_sentences[happy_num])
 				}
 				remove_task(killer+SHINOBU_POISON_KICK_DELAYED_TASKID)
 			}

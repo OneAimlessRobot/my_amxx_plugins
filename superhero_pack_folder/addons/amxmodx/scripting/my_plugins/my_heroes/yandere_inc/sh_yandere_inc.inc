@@ -5,11 +5,14 @@
 
 
 #define YANDERE_WEAPON_CLASSID CSW_XM1014
-#define num_yandere_warcries 2
-stock const YANDERE_WARCRIES[num_yandere_warcries][128]={
+
+new num_warcries = 0
+new YANDERE_WARCRIES[][]={
 
   "shmod/yandere/Yanderu_war_cry.wav",
-  "shmod/yandere/MAKKA.wav"
+  "shmod/yandere/MAKKA.wav",
+  ""
+  
 }
 stock curr_player_sound[SH_MAXSLOTS+1]
 #define YANDERE_CYCLE "shmod/yandere/yandere_cycle3.wav"

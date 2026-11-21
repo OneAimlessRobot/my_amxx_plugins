@@ -2879,14 +2879,14 @@ public ham_TakeDamage_Pre(victim, inflictor, attacker, Float:damage, damagebits)
 
 public sh_extra_damage_result:_sh_extra_damage()
 {
-	new victim = get_param(1)
+	static victim; victim = get_param(1)
 
 	if ( !is_user_alive(victim) ){
 		
 		return SH_DMG_RESULT_VICTIM_IS_DEAD
 	
 	}
-	new attacker = get_param(2)
+	static attacker; attacker = get_param(2)
 
 	if ( !is_user_connected(attacker) ){
 
@@ -2902,25 +2902,37 @@ public sh_extra_damage_result:_sh_extra_damage()
 
 		return SH_DMG_RESULT_VICTIM_IS_IN_GODMODE
 	}
-	new damage_after;
-	damage_after = max_macro(0,get_param(3))
+	static damage_after,
+			my_hitpoint_enum:bodypart,
+			sh_damage_mode:mode,
+			sh_extra_damage_flags:sh_extra_dmg_flags,
+			bool:dmgStun,
+			bool:dmgFFmsg,
+			dmg_type,
+			sh_thrash_brat_dmg_type:thrashbrat_dmg_type,
+			custom_wpn_id
+			
 
-	new Float:flArmor = 0.0
+			
+
+	damage_after = max_macro(1,abs_macro(get_param(3)))
+
+	static Float:flArmor; flArmor = 0.0
 
 	static wpnDescription[32]
 
-	new my_hitpoint_enum:bodypart = my_hitpoint_enum:get_param(4)
-	new sh_damage_mode:mode = sh_damage_mode:get_param(5)
-	new sh_extra_damage_flags:sh_extra_dmg_flags = sh_extra_damage_flags:get_param(6)
+	bodypart = my_hitpoint_enum:get_param(4)
+	mode = sh_damage_mode:get_param(5)
+	sh_extra_dmg_flags = sh_extra_damage_flags:get_param(6)
 
-	new bool:dmgStun = bool:(sh_extra_dmg_flags & SH_EXTRA_DMG_FLAG_STUN),
-		bool:dmgFFmsg = bool:(sh_extra_dmg_flags & SH_EXTRA_DMG_FLAG_dmgFFmsg);
+	dmgStun= bool:(sh_extra_dmg_flags & SH_EXTRA_DMG_FLAG_STUN),
+	dmgFFmsg = bool:(sh_extra_dmg_flags & SH_EXTRA_DMG_FLAG_dmgFFmsg);
 
 	static Float:dmgOrigin[3]
 	get_array_f(7, dmgOrigin, 3)
-	new dmg_type=get_param(8)
-	new sh_thrash_brat_dmg_type:thrashbrat_dmg_type=sh_thrash_brat_dmg_type:get_param(9)
-	new custom_wpn_id=get_param(10)
+	dmg_type=get_param(8)
+	thrashbrat_dmg_type=sh_thrash_brat_dmg_type:get_param(9)
+	custom_wpn_id=get_param(10)
 
 	custom_wpn_id = (is_valid_custom_dmg_source(custom_wpn_id))?custom_wpn_id:generic_weapon_id
 
@@ -2964,7 +2976,9 @@ public sh_extra_damage_result:_sh_extra_damage()
 
 		new passed_preparedWpnDmgOriginInt=PrepareArray(_:passed_dmgOrigin,3)
 
-		new dmg_fwd_ret_id:the_dmg_return_value=DMG_FWD_PASS
+		static dmg_fwd_ret_id:the_dmg_return_value;
+		
+		the_dmg_return_value =DMG_FWD_PASS
 
 
 		if (!ExecuteForward(fwd_ShDamagePre, 
@@ -3002,9 +3016,13 @@ public sh_extra_damage_result:_sh_extra_damage()
 
 		}
 	}
-	new health = get_user_health(victim)
-	new CsArmorType:armorType
-	new plrArmor = cs_get_user_armor(victim, armorType)
+	static health,
+		 CsArmorType:armorType,
+		plrArmor;
+		
+	plrArmor = cs_get_user_armor(victim, armorType)
+
+	health = get_user_health(victim)
 
 	if ( mode == SH_DMG_KILL ) {
 		damage_after = health
@@ -3018,8 +3036,13 @@ public sh_extra_damage_result:_sh_extra_damage()
 
 		// *** Damage calculation due to armor from: multiplayer/dlls/player.cpp ***
 		// *** Note: this is not exactly CS damage method because we do not have that sdk ***
-		new Float:flDamage = float(damage_after)
-		new Float:flNewDamage = flDamage * SH_ARMOR_RATIO
+		static Float:flDamage,
+			Float:flNewDamage;
+
+		flDamage = float(damage_after)
+
+		
+		flNewDamage = flDamage * SH_ARMOR_RATIO
 		flArmor = (flDamage - flNewDamage) * SH_ARMOR_BONUS
 
 		// Does this use more armor than we have figured for?
@@ -3038,11 +3061,17 @@ public sh_extra_damage_result:_sh_extra_damage()
 		//*** End of damage-armor calculations ***
 	}
 
-	new newHealth = health - damage_after
-	new FFon = get_pcvar_num(mp_friendlyfire)
-	new freeforall = get_pcvar_num(sh_ffa)
-	new CsTeams:victimTeam = cs_get_user_team(victim)
-	new CsTeams:attackerTeam = cs_get_user_team(attacker)
+	static newHealth,
+			FFon,
+			freeforall,
+			CsTeams:victimTeam,
+			CsTeams:attackerTeam;
+
+	newHealth = health - damage_after
+	FFon = get_pcvar_num(mp_friendlyfire)
+	freeforall = get_pcvar_num(sh_ffa)
+	victimTeam = cs_get_user_team(victim)
+	attackerTeam = cs_get_user_team(attacker)
 
 
 	if ( newHealth < 1 ) {
@@ -3067,7 +3096,7 @@ public sh_extra_damage_result:_sh_extra_damage()
 
 			// Frag gives $300, make sure not to go over max
 			if ( attackerMoney < 16000 ) {
-				new money = min((attackerMoney + 300), 16000)
+				new money = min_macro((attackerMoney + 300), 16000)
 				cs_set_user_money(attacker, money, 1)
 			}
 		}
@@ -3084,7 +3113,7 @@ public sh_extra_damage_result:_sh_extra_damage()
 
 			// Teamkill removes $3300, make sure not to go under min
 			if ( attackerMoney > 0 ) {
-				new money = max((attackerMoney - 3300), 0)
+				new money = max_macro((attackerMoney - 3300), 0)
 				cs_set_user_money(attacker, money, 1)
 			}
 		}
@@ -3132,8 +3161,8 @@ public sh_extra_damage_result:_sh_extra_damage()
 			write_short(_:victimTeam)
 			message_end()
 		}
-		new victim_name[128];
-		new attacker_name[128];
+		static victim_name[128],
+			attacker_name[128];
 		get_user_name(victim,victim_name,127)
 		get_user_name(attacker,attacker_name,127)
 		
@@ -3175,7 +3204,7 @@ public sh_extra_damage_result:_sh_extra_damage()
 		else if ( FFon ) {
 			hurt = true
 			if ( dmgFFmsg) {
-				new name[32]
+				static name[32]
 				get_user_name(attacker, name, charsmax(name))
 				client_print(0, print_chat, "%s attacked a teammate", name)
 			}
@@ -3211,7 +3240,7 @@ public sh_extra_damage_result:_sh_extra_damage()
 			// Fake a slowdown from damage
 			// Method needs improvement can not find how cs does it
 			// possibly use a sh_get_velocity type of method adding to current velocity
-			new Float:velocity[3]
+			static Float:velocity[3]
 			pev(victim, pev_velocity, velocity)
 			velocity[0] = 0.0
 			velocity[1] = 0.0

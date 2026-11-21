@@ -11,6 +11,27 @@
 #include "jetplane_inc/sh_yandere_get_set.inc"
 #include "yandere_inc/sh_yandere_psychosis.inc"
 
+
+new num_psychosis_sounds = 0
+
+new yandere_pain_sounds[][]={
+	"shmod/yandere/Yakui_the_maid-bodies_everywhere.wav",
+	"shmod/yandere/Yakui_the_maid-46.wav",
+	"shmod/yandere/Yakui_the_maid-Chloramine.wav",
+	""
+	
+	
+}
+#define PSYCHOSIS_PERIOD 1.0
+#define PSYCHOSIS_TIMES floatround(floatdiv(psychosis_time,PSYCHOSIS_PERIOD))
+
+stock g_yandere_leaped_mask
+
+stock Float:gPsychosisTime[SH_MAXSLOTS+1]
+
+stock MsgSetFOV
+
+
 stock curr_player_pain_sound[SH_MAXSLOTS+1]
 
 
@@ -26,6 +47,7 @@ new pcvar_psychosis_dmg_cushion
 
 new YANDERE_PSYCHOSIS_TASKID
 
+new const DEBUG = 0
 public plugin_init(){
 	
 	
@@ -48,6 +70,27 @@ public plugin_init(){
 public plugin_cfg(){
 
 	gHeroID = yandere_get_hero_id()
+
+}
+public plugin_precache(){
+
+	
+	static i;
+	while(yandere_pain_sounds[num_psychosis_sounds][0]!=0){
+		
+		engfunc(EngFunc_PrecacheSound,yandere_pain_sounds[num_psychosis_sounds] );
+		num_psychosis_sounds++
+	}
+	if(DEBUG){
+
+		server_print("%d yandere psychosis morph sounds were counted! Their filenames are:^n^n",num_psychosis_sounds)
+		i=0
+		while(yandere_pain_sounds[i][0]!=0){
+			
+			server_print("Sound number %d (index %d): %s^n",i+1,i,yandere_pain_sounds[i])
+			i++
+		}
+	}
 
 }
 //----------------------------------------------------------------------------------------------
@@ -237,7 +280,7 @@ psychosis_on(id){
 
 gPsychosisTime[id]=cvar_val(float, pcvar_psychosis_time)
 sh_set_cooldown(id, cvar_val(float, pcvar_psychosis_cooldown) * 1.0)
-curr_player_pain_sound[id]=generate_int(0,NUM_YANDERE_PAIN_SOUNDS-1)
+curr_player_pain_sound[id]=generate_int(0,num_psychosis_sounds-1)
 emit_sound(id, CHAN_AUTO,yandere_pain_sounds[curr_player_pain_sound[id]] , VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 
 new flags = pev(id, pev_flags)

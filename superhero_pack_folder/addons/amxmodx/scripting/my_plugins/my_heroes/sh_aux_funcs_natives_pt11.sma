@@ -72,7 +72,9 @@ static const sh_hero_property_structs_array[hero_property_flags_id][hero_propert
 			
 			{"Lightning rod hero", "Upon getting shocked, these heroes wont let the current spread to teammates!",25},
 
-			{"Elderly hero", "Heroes that are very old", 100}
+			{"Elderly hero", "Heroes that are very old", 100},
+
+			{"Neurodivergent hero", "For heroes that think in a different way", 110}
 }
 
 enum property_counter{

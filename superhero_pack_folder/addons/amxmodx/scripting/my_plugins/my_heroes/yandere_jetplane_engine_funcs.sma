@@ -7,7 +7,6 @@
 #include "jetplane_inc/sh_jetplane_funcs.inc"
 #include "jetplane_inc/sh_jetplane_engine_funcs.inc"
 #include "jetplane_inc/sh_yandere_get_set.inc"
-#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 
 
@@ -32,8 +31,15 @@ new g_jetplane_flying_mask = 0
 new g_jetplane_engine_mask = 0
 
 
-#define ENGINE_TASK_PERIOD 0.1
-new ENGINE_TASKID
+#define ENGINE_TASK_PERIOD 0.05
+
+#define YANDERE_JET_MONITOR_ENTITY_CLASSNAME "Yandere_Jet_Monitor_Entity"
+
+new yandere_jet_monitor_entity = -1
+
+new thinker_forward_id = -1
+
+
 
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -45,15 +51,47 @@ public plugin_init()
 	pcvar_jetplane_fuel = create_cvar("yandere_jetplane_fuel", "5")
 	pcvar_fuel_spend = create_cvar("yandere_jetplane_fuel_spend", "5")
 	register_forward(FM_CmdStart, "OnCmdStart")
-	ENGINE_TASKID=allocate_typed_task_id(generic_task)
 
-	set_task(ENGINE_TASK_PERIOD,"engine_loop",ENGINE_TASKID,_,_,"b")
+	if(yandere_jet_monitor_entity<=0){
+
+		thinker_forward_id = register_think(YANDERE_JET_MONITOR_ENTITY_CLASSNAME, "engine_loop")
+
+		yandere_jet_monitor_entity = create_entity("info_target")
 
 
+		if(!yandere_jet_monitor_entity){
+
+			set_fail_state("Flora Monitor entity could not be initialized!")
+			unregister_think(thinker_forward_id)
+			return
+		}
+
+		entity_set_string(yandere_jet_monitor_entity,EV_SZ_classname,YANDERE_JET_MONITOR_ENTITY_CLASSNAME)
+
+		entity_set_float(yandere_jet_monitor_entity, EV_FL_nextthink, get_gametime() + ENGINE_TASK_PERIOD)
+
+
+
+
+	}
 
 
 }
 
+public plugin_end(){
+
+	if(thinker_forward_id>=0){
+
+		unregister_think(thinker_forward_id)
+
+	}
+
+
+	if(is_valid_ent(yandere_jet_monitor_entity)){
+
+		remove_entity(yandere_jet_monitor_entity)
+	}
+}
 public plugin_natives(){
 	register_native("get_jet_flying","_get_jet_flying");
 	register_native("set_jet_flying","_set_jet_flying");
@@ -258,12 +296,20 @@ public _reset_user_fuel_ammount(iPlugins,iParams){
 
 }
 
-public engine_loop(task_id){
+public engine_loop(entity_id){
 
-	if(!sh_is_active()) return
+	if(!is_valid_ent(entity_id)){
 
-	if(sh_is_freezetime()) return
-	
+		return
+	}
+	if(!sh_is_active()){
+
+		entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + ENGINE_TASK_PERIOD)
+	}
+	if(sh_is_freezetime()){
+		
+		entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + ENGINE_TASK_PERIOD)
+	}
 	static the_players[SH_MAXSLOTS], pnum, id		
 	get_players(the_players, pnum, "ah")
 	for (new i = 0; i < pnum; i++) {
@@ -314,6 +360,8 @@ public engine_loop(task_id){
 		}
 
 	}
+
+	entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + ENGINE_TASK_PERIOD)
 }
 public OnCmdStart(id,uc_handle)
 {

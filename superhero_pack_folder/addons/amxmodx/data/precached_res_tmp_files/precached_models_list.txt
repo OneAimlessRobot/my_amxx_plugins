@@ -266,6 +266,9 @@ sprites/rifle_smoke2.spr
 sprites/rifle_smoke3.spr
 models/hgibs.mdl
 models/agibs.mdl
+models/metalplategibs_green.mdl
+models/woodgibs.mdl
+models/glassgibs.mdl
 models/w_squeak.mdl
 models/shmod/ksun/ksun_rifle/v_r5rifle.mdl
 models/shmod/ksun/ksun_rifle/p_r5rifle.mdl
@@ -315,7 +318,6 @@ models/player/ester/ester.mdl
 models/player/thrash/thrash.mdl
 models/player/jaqueo/jaqueo.mdl
 models/player/haloune/haloune.mdl
-models/player/graciete/graciete.mdl
 models/player/L96/L96.mdl
 models/player/swat/swat.mdl
 models/player/sh_darkpredator/sh_darkpredator.mdl

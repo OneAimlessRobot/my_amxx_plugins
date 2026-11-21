@@ -17,6 +17,37 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
+
+new num_fwend_sentences = 0
+new fwend_sentences[][]={
+
+    "Ai, Ai, Ai~",
+    "heeeeeey~",
+    "Am I interrupting something?~",
+    ""
+
+}
+
+
+new num_elderly_inclusive_sentences = 0
+new old_sentences[][]={
+
+    "Ive been told you were in the high-risk group~",
+    "Your body is more fragile, right?",
+    ""
+
+}
+
+new num_visitor_sentences = 0
+new shinobu_visiting_sentences[][]={
+
+    "Lets go make them feel at home",
+    "I wonder if they feel lonely...",
+	""
+
+}
+
+
 new TELEPORT_CHECK_TASKID
 new SHINOBU_GLOBAL_KNIFE_CLOAK_TASKID
 
@@ -45,6 +76,7 @@ enum{
 	TELEPORT_TASK_NUM_INIT_ARGS	
 }
 
+new const DEBUG = 0
 
 public plugin_init(){
 	
@@ -61,6 +93,59 @@ public plugin_init(){
 
     
 	set_task(1.0,"shinobu_cloak_apply",SHINOBU_GLOBAL_KNIFE_CLOAK_TASKID,_,_,"b")
+}
+
+public plugin_precache(){
+
+
+
+	static i;
+	while(fwend_sentences[num_fwend_sentences][0]!=0){
+
+		num_fwend_sentences++
+	}
+	if(DEBUG){
+
+		server_print("%d Shinobu friendly sentences were counted! They are:^n^n",num_fwend_sentences)
+		i=0
+		while(fwend_sentences[i][0]!=0){
+			
+			server_print("Sentence number %d (index %d): %s^n",i+1,i,fwend_sentences[i])
+			i++
+		}
+	}
+
+
+	while(old_sentences[num_elderly_inclusive_sentences][0]!=0){
+
+		num_elderly_inclusive_sentences++
+	}
+	if(DEBUG){
+
+		server_print("%d Shinobu elderly friendly sentences were counted! (she is very inclusive) They are:^n^n",num_elderly_inclusive_sentences)
+		i=0
+		while(old_sentences[i][0]!=0){
+			
+			server_print("Sentence number %d (index %d): %s^n",i+1,i,old_sentences[i])
+			i++
+		}
+	}
+
+	while(shinobu_visiting_sentences[num_visitor_sentences][0]!=0){
+
+		num_visitor_sentences++
+	}
+	if(DEBUG){
+
+		server_print("%d Shinobu visitor sentences were counted! They are:^n^n",num_visitor_sentences)
+		i=0
+		while(shinobu_visiting_sentences[i][0]!=0){
+			
+			server_print("Sentence number %d (index %d): %s^n",i+1,i,shinobu_visiting_sentences[i])
+			i++
+		}
+	}
+
 }
 public plugin_cfg(){
 
@@ -215,13 +300,20 @@ public positionChangeCheck(array[], attacker)
 		sh_end_cooldown(attacker+SH_COOLDOWN_TASKID)
 		return
 	}
+	new the_elderly_num = generate_int(0,num_elderly_inclusive_sentences-1),
+		the_fwend_num = generate_int(0,num_fwend_sentences-1),
+		bool:is_elder = sh_get_player_has_hero_prop(tg, SH_IS_ELDER)
 	sh_chat_message(tg,gHeroID,"%s",
-					sh_get_player_has_hero_prop(tg, SH_IS_ELDER)?
-					(old_sentences[shinobu_old_sentence_id:generate_int(0,sizeof(old_sentences)-1)]):
-					(fwend_sentences[shinobu_fwend_sentence_id:generate_int(0,sizeof(fwend_sentences)-1)]))	
+					is_elder?
+					(old_sentences[the_elderly_num]):
+					(fwend_sentences[the_fwend_num]))
 	
 	
-	sh_chat_message(attacker,gHeroID,"%s",fwend_sentences[shinobu_fwend_sentence_id:generate_int(0,sizeof(fwend_sentences)-1)])	
+	sh_chat_message(attacker,gHeroID,"%s",
+					is_elder?
+					(old_sentences[the_elderly_num]):
+					(fwend_sentences[the_fwend_num]))
+
 	entity_set_vector(attacker, EV_VEC_velocity, null_vector)
 	shinobu_set_user_tagged_player(attacker,0)
 }
@@ -242,6 +334,9 @@ public _nani_behind_player(iPlugin,iParams){
 		}
 		return
 	}
+
+	sh_chat_message(tele_player,gHeroID,"%s",shinobu_visiting_sentences[generate_int(0,num_visitor_sentences-1)])	
+
 
 	arrayset(g_shinobu_dst_positions[tele_player],0,sizeof g_shinobu_dst_positions[])
 	arrayset(g_shinobu_positions[tele_player],0,sizeof g_shinobu_positions[])

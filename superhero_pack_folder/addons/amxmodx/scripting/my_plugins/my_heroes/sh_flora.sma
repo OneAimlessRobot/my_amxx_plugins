@@ -43,6 +43,8 @@ public plugin_init()
 	arrayset(hero_name_arr,0,sizeof hero_name_arr)
 	add(hero_name_arr,charsmax(hero_name_arr),gHeroName,charsmax(gHeroName))
 	superheromod_help_link_hero(gHeroID, "Flora: Help file","flora_folder/","flora_help_file.html",hero_name_arr)
+
+	sh_assign_hero_bit(gHeroID,SH_NEURODIVERGENT_HERO,true)
 	
 }
 

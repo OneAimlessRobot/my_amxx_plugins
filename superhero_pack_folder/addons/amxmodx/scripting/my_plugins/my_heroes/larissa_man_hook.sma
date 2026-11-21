@@ -38,15 +38,25 @@ static Float:vec2LOS[SH_MAXSLOTS+1][2],
 stock g_player_hook[SH_MAXSLOTS+1]
 stock Float:g_prev_max_speed[SH_MAXSLOTS+1] = { 0.0, ...}
 stock g_hook_kills[SH_MAXSLOTS+1] = { 0 , ...}
-#define NUM_SENTENCES 5
-stock const larissa_sentences[NUM_SENTENCES][]={
+
+new const DEBUG = 0
+
+new num_sentences = 0
+
+new larissa_sentences[][]={
 	
 	"TAKE THIS! Wow... this think really went deep... Ok gotta get it off... HMMFFPPH!",
 	"Ahhh its too stuck! its between the guys ribs...",
 	"Hmmph! hmmph! Man their loosing blood but I still cant get if off!",
 	"Man those are guts... those are... his lower vertebrae, I think... ",
-	"I think... AHH got it!"
+	"I think... AHH got it!",
+	""
 }
+
+#define HOOK_DRAG_THINK_PERIOD 0.1
+#define HOOK_DRAG_THINK_TIMES (cvar_val(float,hook_drag_time_pcvar)/HOOK_DRAG_THINK_PERIOD)
+#define DRAG_FORCE 10.0
+
 #define SENTENCE_TICKS 30
 new hook_distance_pcvar
 new gutting_dmg_mult_pcvar
@@ -263,7 +273,7 @@ public hook_think(ent)
 	set_user_maxspeed(id,1.0)
 
 	if(!(times_left%SENTENCE_TICKS)){
-		new random_number=generate_int(0,NUM_SENTENCES-1);
+		new random_number=generate_int(0,num_sentences-1);
 		sh_chat_message(id,gHeroID,"%s",larissa_sentences[random_number]);
 		sh_chat_message(vic,gHeroID,"%s",larissa_sentences[random_number]);
 	}
@@ -468,7 +478,7 @@ if(sh_get_user_has_hero(attacker,gHeroID)&&!(cs_get_user_team(id)==att_team)&&is
 								SH_NEW_DMG_SUPER_MELEE,
 								custom_dmg_id_gutting)
 					
-					new random_number=generate_int(0,NUM_SENTENCES-1);
+					new random_number=generate_int(0,num_sentences-1);
 					
 					if(!is_user_bot(target)){
 						sh_chat_message(target,gHeroID,"%s",larissa_sentences[random_number]);
@@ -514,13 +524,22 @@ Assign_BitVar(hook_on_mask, id,value_to_set)
 }
 public plugin_precache()
 {
-	for(new i=0;i<sizeof(man_hook_sounds);i++){
-	
-		engfunc(EngFunc_PrecacheSound,man_hook_sounds[i] );
-	
-	}
-	
 
+	static i;
+	while(larissa_sentences[num_sentences][0]!=0){
+
+		num_sentences++
+	}
+	if(DEBUG){
+
+		server_print("%d hooking sentences were counted! They are:^n^n",num_sentences)
+		i=0
+		while(larissa_sentences[i][0]!=0){
+			
+			server_print("Sentence number %d (index %d): %s^n",i+1,i,larissa_sentences[i])
+			i++
+		}
+	}
 }
 
 public sh_client_death(id)

@@ -68,7 +68,6 @@ stock JET_LOAD_TASKID,
 		JET_HUD_TASKID,
 		JET_SOUND_TASKID
 
-
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -319,7 +318,7 @@ uncharge_user(id){
 		Set_BitVar(g_jetplane_loaded_mask, id)
 	}
 	if(pev_valid(g_jetplane[id])==2){
-		jet_destroy(id)
+		jet_destroy_aux(id)
 	}
 	
 	
@@ -454,9 +453,9 @@ public FwdTouchWorld( jet, World ) {
 			
 			if(world_exploded){
 				new world_owner = entity_get_edict(World,EV_ENT_owner)
-				jet_destroy(world_owner,true,world_owner)
+				jet_destroy_aux(world_owner,true,world_owner)
 			}
-			jet_destroy(owner,true,owner)
+			jet_destroy_aux(owner,true,owner)
 
 
 			return
@@ -504,7 +503,7 @@ public jet_think(ent)
 
 			explode_jet_entity(g_jetplane[owner])
 
-			jet_destroy(owner,true,last_inflictor)
+			jet_destroy_aux(owner,true,last_inflictor)
 			sh_chat_message(owner,gHeroID,"Someone took you out!")
 			uncharge_user(owner)
 		}
@@ -722,13 +721,27 @@ public jet_think(ent)
 }
 public charge_task(id){
 
-	if(!sh_is_active()||sh_is_freezetime()||!sh_is_inround()){
+	id-=JET_CHARGE_TASKID
 
+	
+	if(!sh_is_active()){
+	
 		return
 	
 	}
-	id-=JET_CHARGE_TASKID
-	if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)){
+	
+	if(sh_is_freezetime()||!sh_is_inround()){
+
+		if((!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID))){
+		
+			uncharge_user(id)
+			return
+		
+		}
+		return
+	
+	}
+	if((!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID))){
 	
 		uncharge_user(id)
 		return
@@ -869,17 +882,19 @@ public jet_hud_task(id){
 		
 		return
 	}
-	new Float:abs_velocity=get_entity_velocity(g_jetplane[owner])
+	static Float:abs_velocity;
+	abs_velocity=get_entity_velocity(g_jetplane[owner])
 	if(g_jetplane_telemetry_data[owner][0]>JET_AVG_SPEED_CALC_PERIOD){
 		g_jetplane_telemetry_data[owner][2]=g_jetplane_telemetry_data[owner][1]/(g_jetplane_telemetry_data[owner][0]/JET_HUD_PERIOD)
 		g_jetplane_telemetry_data[owner][0]=0.0
 		g_jetplane_telemetry_data[owner][1]=0.0
 		
 	}
-	new Float:the_hp
+	static Float:the_hp
+	the_hp = 0.0
 	pev(g_jetplane[owner],pev_health, the_hp)
 	static hud_msg[300]
-	formatex(hud_msg,299,"jetplane hp: %0.2f^njetplane fuel: %0.2f^njetplane AVG SPEED (hu/s): %0.2f^njetplane BOMBS: %d^njetplane JETGATLING rounds: %d^njetplane roquetos: %d^nGround scans left: %d^n",
+	formatex(hud_msg,charsmax(hud_msg),"jetplane hp: %0.2f^njetplane fuel: %0.2f^njetplane AVG SPEED (hu/s): %0.2f^njetplane BOMBS: %d^njetplane JETGATLING rounds: %d^njetplane roquetos: %d^nGround scans left: %d^n",
 		the_hp-1000.0,
 		get_user_fuel_ammount(owner),
 		g_jetplane_telemetry_data[owner][2],
@@ -897,17 +912,22 @@ public jet_hud_task(id){
 }
 public _jet_destroy(iPlugin,iParams){
 	
-	new id= get_param(1)
-	
+	new id= get_param(1),
+		bool:kill_user= bool:get_param(2),
+		inflictor= get_param(3)
+
 	if(!client_is_within_range(id)){
 		return
 	}
-	if(!Get_BitVar(g_jetplane_deployed_mask,id)){
-		return
-	}
 
-	new bool:kill_user= bool:get_param(2)
-	new inflictor= get_param(3)
+	jet_destroy_aux(id, kill_user, inflictor)
+
+	
+}
+
+jet_destroy_aux(id,kill_user=false,inflictor=-1){
+
+
 	emit_sound(g_jetplane[id], CHAN_WEAPON, JETPLANE_IDLE_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
 	emit_sound(g_jetplane[id], CHAN_WEAPON, JETPLANE_FLY_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
 	emit_sound(g_jetplane[id], CHAN_WEAPON, JETPLANE_BLOW_SOUND, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
@@ -931,7 +951,7 @@ public _jet_destroy(iPlugin,iParams){
 				if(kill_user){
 
 					if(is_user_connected(inflictor)){
-						sh_extra_damage(id,inflictor, floatround(cvar_val(float,pcvar_jetplane_hp)),MY_HIT_HEAD,SH_DMG_KILL,_,_,_,SH_NEW_DMG_FRAG_BLAST,custom_dmg_id_yandere_mayday)
+						sh_extra_damage(id,inflictor, floatround(cvar_val(float,pcvar_jetplane_hp)),MY_HIT_HEAD,SH_DMG_KILL,_,_,_,SH_NEW_DMG_HEALTH_SET,custom_dmg_id_yandere_mayday)
 					}
 				}
 			}

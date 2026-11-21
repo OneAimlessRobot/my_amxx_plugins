@@ -4,7 +4,10 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "shinobu_knife/shinobu_general.inc"
 #include "shinobu_knife/shinobu_usp_funcs.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 
+
+#define SHINOBU_WEAPON_CLASSID CSW_USP
 
 #define AMMO_TYPE_45ACP 6
 #define START_MAX_AMMO 0
@@ -15,6 +18,7 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
+new SHINOBU_GLOBAL_SILENT_FOOTSTEPS_LOOP
 
 new g_shinobu_curr_ammo[SH_MAXSLOTS+1]
 new wpn_name_for_future_lookup[50]
@@ -35,9 +39,33 @@ public plugin_init(){
 	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
 	register_event("CurWeapon", "on_Usp_Weapon_Change", "be", "1=1")
 
+	SHINOBU_GLOBAL_SILENT_FOOTSTEPS_LOOP=allocate_typed_task_id(generic_task)
 	
     
+	set_task(1.0,"shinobu_step_silent",SHINOBU_GLOBAL_SILENT_FOOTSTEPS_LOOP,_,_,"b")
+
+}
+
+//----------------------------------------------------------------------------------------------
+public shinobu_step_silent(task_id)
+{
+	if (! sh_is_active()) return
 	
+	static the_players[SH_MAXSLOTS], pnum, id		
+	get_players(the_players, pnum, "ah")
+	for (new k = 0; k < pnum; k++) {
+		
+		id = the_players[k]
+		if((entity_get_int(id,EV_INT_flags)& FL_ONGROUND)){
+			if(sh_get_user_has_hero(id,gHeroID) ){
+				static wpnid
+				wpnid=get_user_weapon(id)
+				if((wpnid==CSW_KNIFE)||(wpnid==SHINOBU_WEAPON_CLASSID)) {
+					entity_set_int(id, EV_INT_flTimeStepSound, 2000)
+				}
+			}
+		}
+	}
 }
 public plugin_cfg(){
 

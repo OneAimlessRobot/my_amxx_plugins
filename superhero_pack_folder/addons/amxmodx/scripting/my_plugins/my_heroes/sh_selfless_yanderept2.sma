@@ -30,12 +30,13 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
 
-stock const yandere_sentences[5][]={
-	"Hiss.... Hiss.... Hiss.... Hiss.....",
+new num_sentences = 0
+new yandere_sentences[][]={
 	"Where are you... where... are you...",
 	"Come out to plaaaaayyyy... There is NO WAY IM LETTING ANY OF YOU GO NOW!!!!!",
 	"I hear their voices... I hear them... Then want... they want... red and black",
-	"I want... all your blood. All of it.... and water the graves of my family with it."
+	"I want... all your blood. All of it.... and water the graves of my family with it.",
+	""
 }
 
 static const DEBUG = 0
@@ -440,7 +441,7 @@ public yandere_timer_transform(id){
 					
 					emit_sound(id, CHAN_AUTO, YANDERE_WARCRIES[curr_player_sound[id]],
 						VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
-					curr_player_sound[id]=generate_int(0,num_yandere_warcries-1)
+					curr_player_sound[id]=generate_int(0,num_warcries-1)
 					emit_sound(id, CHAN_AUTO, YANDERE_WARCRIES[curr_player_sound[id]], 1.0, 0.0, 0, PITCH_NORM)
 					Set_BitVar(gPlayedSoundMask,id)
 				}
@@ -588,15 +589,21 @@ public yandere_damage(id, idinflictor, attacker, Float:damage, damagebits)
 				}
 				if((weapon==CSW_KNIFE)){
 					
-					Set_BitVar(g_is_cursed_masks[attacker],id)
+
+					if(!Get_BitVar(g_is_cursed_masks[attacker],id)){
+						
+						Set_BitVar(g_is_cursed_masks[attacker],id)
+						
+						if(!is_user_bot(attacker)){
+							sh_chat_message(attacker,gHeroID,"%s has been cursed!",client_name)
+						}
 					
-					if(!is_user_bot(attacker)){
-						sh_chat_message(attacker,gHeroID,"%s has been cursed!",client_name)
+						if(!is_user_bot(id)){
+							sh_chat_message(id,gHeroID,"%s has put a curse on you!",attacker_name)
+						}
 					}
-				
-					if(!is_user_bot(id)){
-						sh_chat_message(id,gHeroID,"%s has put a curse on you!",attacker_name)
-					}
+					
+					
 				
 				}
 			}
@@ -627,19 +634,46 @@ public yandere_damage(id, idinflictor, attacker, Float:damage, damagebits)
 }
 public plugin_precache()
 {
-	for(new i=0;i<num_yandere_warcries;i++){
-		engfunc(EngFunc_PrecacheSound,YANDERE_WARCRIES[i])
+	
+	static i;
+
+	while(YANDERE_WARCRIES[num_warcries][0]!=0){
+		
+		engfunc(EngFunc_PrecacheSound,YANDERE_WARCRIES[num_warcries] );
+		num_warcries++
 	}
+	if(DEBUG){
+
+		server_print("%d yandere warcry sounds were counted! Their filenames are:^n^n",num_warcries)
+		i=0
+		while(YANDERE_WARCRIES[i][0]!=0){
+			
+			server_print("Sound number %d (index %d): %s^n",i+1,i,YANDERE_WARCRIES[i])
+			i++
+		}
+	}
+
+	while(yandere_sentences[num_sentences][0]!=0){
+
+		num_sentences++
+	}
+	if(DEBUG){
+
+		server_print("%d yandere rambling sentences were counted! They are:^n^n",num_sentences)
+		i=0
+		while(yandere_sentences[i][0]!=0){
+			
+			server_print("Sentence number %d (index %d): %s^n",i+1,i,yandere_sentences[i])
+			i++
+		}
+	}
+
 	engfunc(EngFunc_PrecacheSound,YANDERE_CYCLE)
 	engfunc(EngFunc_PrecacheSound,YANDERE_THELAST)
 	engfunc(EngFunc_PrecacheSound,YANDERE_THELAST2)
 	engfunc(EngFunc_PrecacheSound,YANDERE_THELAST3)
 	engfunc(EngFunc_PrecacheSound,YANDERE_PAIN)
-	for(new i=0;i<NUM_YANDERE_PAIN_SOUNDS;i++){
-		
-		engfunc(EngFunc_PrecacheSound,yandere_pain_sounds[i])
 	
-	}
 	engfunc(EngFunc_PrecacheModel,YANDERE_SHOTGUN_V_MODEL)
 	engfunc(EngFunc_PrecacheModel,YANDERE_SHOTGUN_P_MODEL)
 	engfunc(EngFunc_PrecacheModel,YANDERE_KNIFE_V_MODEL)

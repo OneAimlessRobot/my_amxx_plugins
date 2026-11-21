@@ -24,6 +24,37 @@
 
 // GLOBAL VARIABLES
 
+
+
+#define MORALIZER_WEAPON_ID CSW_TMP
+
+#define COUNTER_UP_SFX "shmod/Teliko/counter_plus_plus.wav"
+#define NEUROBLAST_CHARGE "shmod/ester/ester_neuroblast_load.wav"
+
+#define PAN_P_MODEL "models/shmod/ester/pan/p_knife.mdl"
+#define PAN_V_MODEL  "models/shmod/ester/pan/v_knife.mdl"
+
+new num_death_sounds = 0 
+stock ester_death_sounds[][]={
+	
+	"headcrab/hc_pain2.wav",
+	""
+}
+
+#define ESTER_MIN_ALPHA_DIST 1000.0
+#define ESTER_MIN_ALPHA 20.0
+#define MAX_ESTER_XP 1000
+#define ESTER_GIVE_PER_HIT 50
+#define ESTER_GIVE_PER_HIT_BIG 400
+#define ESTER_SAVED_THE_DAY_STRING "you have just given %s an extra %d xp from your annoying ass, smothering moralizing!"
+#define ESTER_JUST_SHUT_UP_STRING "[SH] %s: Moralizing has earned you %d more xp!"
+#define ESTER_FINE_WHATEVER_YOU_SAY "Moralizing last round has earned you %d more xp!"
+
+
+
+
+
+
 new const gHeroName[] = "Ester"
 new generic_dmg_shock = -1
 
@@ -83,8 +114,8 @@ new neuroblast_wpn_id
 new dmg_source_name_short_neuroblast[SAFE_BUFFER_SIZE+1]="neuroblast"
 new dmg_source_name_log_neuroblast[SAFE_BUFFER_SIZE+1]="neuroblast"
 
+new const DEBUG = 0
 
-#define ESTER_HAS_ENEMIES(%1)  ((g_ester_enemies_masks[%1]>0))
 
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -681,13 +712,24 @@ public client_disconnected(id){
 public plugin_precache()
 {
 
-	for(new i=0;i<ESTER_NUM_DEATH_SOUNDS;i++){
+	static i;
+	while(ester_death_sounds[num_death_sounds][0]!=0){
 		
-		engfunc(EngFunc_PrecacheSound, ester_death_sounds[i])
-		
+		engfunc(EngFunc_PrecacheSound,ester_death_sounds[num_death_sounds] );
+		num_death_sounds++
 	}
+	if(DEBUG){
+
+		server_print("%d Death sounds were counted! Their filenames are:^n^n",num_death_sounds)
+		i=0
+		while(ester_death_sounds[i][0]!=0){
+			
+			server_print("Sound number %d (index %d): %s^n",i+1,i,ester_death_sounds[i])
+			i++
+		}
+	}
+
 	engfunc(EngFunc_PrecacheSound,NEUROBLAST_CHARGE)
-	
 	
 }
 public sh_client_death(id)
@@ -700,7 +742,7 @@ public sh_client_death(id)
 		
 		ester_set_reborn_mode(id,0)
 		reset_status(id)
-		emit_sound(id, CHAN_VOICE, ester_death_sounds[generate_int(0,(sizeof ester_death_sounds) -1)], 1.0, 0.0,0,generate_int(95,120))
+		emit_sound(id, CHAN_VOICE, ester_death_sounds[generate_int(0,num_death_sounds -1)], 1.0, 0.0,0,generate_int(95,120))
 		
 		gTimesLeft[id]-=(gTimesLeft[id]&&(g_ester_attack_phase[id] == PEDAL_FLOORED))?1:0
 		

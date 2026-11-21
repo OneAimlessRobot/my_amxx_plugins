@@ -14,8 +14,15 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-
 #define TELIKO_SLITTER_DUMMY_ENTITY_CLASSNAME "teliko_slitter"
+
+#define SLITTER_V_MODEL "models/shmod/teliko/v_knife.mdl"
+
+
+#define SLITTER_DRAG_THINK_PERIOD 0.1
+#define SLITTER_DRAG_THINK_TIMES (cvar_val(float,pcvar_slitter_drag_time)/SLITTER_DRAG_THINK_PERIOD)
+#define DRAG_FORCE 10.0
+
 
 new slitter_on_mask = 0
 new g_player_slitter[SH_MAXSLOTS + 1]
@@ -507,11 +514,7 @@ Assign_BitVar(slitter_on_mask, id,value_to_set)
 public plugin_precache()
 {
 	engfunc(EngFunc_PrecacheModel,SLITTER_V_MODEL)
-	for(new i=0;i<sizeof(teliko_slitter_sounds);i++){
-	
-		engfunc(EngFunc_PrecacheSound,teliko_slitter_sounds[i] );
-	
-	}
+
 
 }
 

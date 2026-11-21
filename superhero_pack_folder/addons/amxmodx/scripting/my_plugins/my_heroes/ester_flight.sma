@@ -22,6 +22,87 @@
 #define PLUGIN "Superhero ester flight funcs"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
+
+
+
+#define FLIGHT_POWER "shmod/ester/flight/flight_power.wav"
+#define FLIGHT_IGNITION "shmod/ester/flight/flight_ignition.wav"
+#define FLIGHT_HUM "shmod/ester/flight/flight_hum.wav"
+#define FLIGHT_WEAK "shmod/ester/flight/flight_weak.wav"
+
+#define FLIGHT_DRAIN_INFLICT_PERIOD 0.33
+
+#define FLIGHT_MOVEMENT_PERIOD 0.1
+
+#define COLOR_STRONG WHITE
+#define COLOR_WEAK GREEN
+
+
+new num_sounds = 0
+
+
+new ester_blowup_sounds[][]={
+
+	"shmod/ester/flight/preventative_conniferous.wav",
+	"shmod/ester/flight/kaitai_the_maid_404_Dante_the_maid_cover.wav",
+	"shmod/ester/flight/Kichi_-_REBORN_-_02_Shallow_Emptiness.wav",
+	"shmod/ester/flight/mahokichi_deathless.wav",
+	"shmod/ester/flight/amurican_malez.wav",
+	"shmod/ester/flight/end_of_days.wav",
+	"shmod/ester/flight/IT_AINT_THE_END_OF_ME.wav",
+	"shmod/ester/flight/This_Fire.wav",
+	"shmod/ester/flight/born_to_win.wav",
+	"shmod/ester/flight/captain_tsubasa_counter_attack.wav",
+	"shmod/ester/flight/No_More_Words.wav",
+	"shmod/ester/flight/shitai_maid_overdrinking.wav",
+	"shmod/ester/flight/ozoi_x_yakui_maids_-_frontier.wav",
+	""
+
+}
+
+stock curr_player_sound[SH_MAXSLOTS+1]
+
+#define ESTER_RESPAWN_FAIL_SOUND "shmod/ester/flight/flight_blowup_fail.wav"
+
+#define ESTER_FIRST_RESPAWN_SOUND "shmod/ester/flight/chikoi_the_maid_autumn_melancholy.wav"
+
+#define ESTER_LAST_RESPAWN_SOUND "shmod/ester/flight/The_Last_Breath_Of_A_Hollow_Bosom__mp3.wav"
+
+#define ESTER_RESPAWN_FAIL_MSG "You're done. You get no more chances."
+
+#define ESTER_SUICIDE_FAIL_MSG "You failed to transcend self-worth, for you have bailed the ultimate honour. You're done. Now, rest easy."
+
+#define ESTER_SUICIDE_SCOURN_MSG "Wow, they really do not make gods like they used to. Forgiven for taking your own life? Alright, enjoy the rest of the round."
+
+#define FLIGHT_GODMODE_THINK_TIME 1.0
+
+#define ESTER_WALL_STUCK_MSG "You were eliminated completely. Dont get stuck on walls, moron."
+#define ESTER_REBORN_TEAM_CHANGE_MSG "You changed teams and were reborn as ester, now you shall die"
+
+
+#define ESTER_REBORN_COLLISION_DISTANCE_THRESHOLD 30.0
+
+#define ESTER_REBORN_COLLISION_THINK_TIME 0.25
+
+#define PRE_RESPAWN_MESSAGE_RELAY 0.0
+#define ESTER_REBORN_EXPLOSION_DELAY_TIME 10.0
+#define ESTER_REBORN_EXPLOSION_PERIOD 0.5
+#define ESTER_REBORN_EXPLOSION_NUMBER 3
+
+
+new num_sentences = 0
+new ester_sentences[][]={
+
+	"You were made to do more than survive the day. Go avenge yourself",
+	"This one must count, now. I wont disappoint myself or them any longer",
+	"Its show time.",
+	""
+}
+
+
+
+
+
 new g_ester_is_denied_mask = 0
 new g_flying_mask = 0
 new g_draining_mask = 0
@@ -70,6 +151,8 @@ new ESTER_REBORN_CALCULATION_LOOP_TASKID,
 		ESTER_FLIGHT_DRAIN_GLOBAL_TASKID,
 		ESTER_FLIGHT_MOVEMENT_TASKID
 
+
+new const DEBUG = 0
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -453,10 +536,38 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,ESTER_RESPAWN_FAIL_SOUND );
 	engfunc(EngFunc_PrecacheSound,ESTER_FIRST_RESPAWN_SOUND );
 	engfunc(EngFunc_PrecacheSound,ESTER_LAST_RESPAWN_SOUND );
-
 	
-	for(new i=0;i<ESTER_NUM_BLOWUPSOUNDS;i++){
-		engfunc(EngFunc_PrecacheSound,ester_blowup_sounds[i] );	
+	
+	static i;
+	while(ester_blowup_sounds[num_sounds][0]!=0){
+		
+		engfunc(EngFunc_PrecacheSound,ester_blowup_sounds[num_sounds] );
+		num_sounds++
+	}
+	if(DEBUG){
+
+		server_print("%d ester reborn sounds were counted! Their filenames are:^n^n",num_sounds)
+		i=0
+		while(ester_blowup_sounds[i][0]!=0){
+			
+			server_print("Sound number %d (index %d): %s^n",i+1,i,ester_blowup_sounds[i])
+			i++
+		}
+	}
+
+	while(ester_sentences[num_sentences][0]!=0){
+
+		num_sentences++
+	}
+	if(DEBUG){
+
+		server_print("%d ester reborn sentences were counted! They are:^n^n",num_sentences)
+		i=0
+		while(ester_sentences[i][0]!=0){
+			
+			server_print("Sentence number %d (index %d): %s^n",i+1,i,ester_sentences[i])
+			i++
+		}
 	}
 	
 }
@@ -554,8 +665,8 @@ public ester_respawn(parm[2])
 				!sh_is_inround()) return
 	if ( g_which_team_is_user[id]!= cs_get_user_team(id) ) return
 
-	sh_chat_message(id,gHeroID, "%s",ester_sentences[generate_int(0,ESTER_NUM_SENTENCES-1)])
-	new user_name[128]
+	sh_chat_message(id,gHeroID, "%s",ester_sentences[generate_int(0,num_sentences-1)])
+	static user_name[128]
 	get_user_name(id,user_name,127)
 	sh_chat_message(0,gHeroID, "%s! They've been reborn!",user_name)
 	sh_chat_message(id,gHeroID, "%d attempts to change left",
@@ -582,14 +693,14 @@ public ester_respawn(parm[2])
 	}
 	else{
 		
-		curr_player_sound[id]=generate_int(0,ESTER_NUM_BLOWUPSOUNDS-1,40)
+		curr_player_sound[id]=generate_int(0,num_sounds-1,40)
 
 		emit_sound(id, CHAN_AUTO,ester_blowup_sounds[curr_player_sound[id]] , VOL_NORM, ATTN_NONE, 0, PITCH_NORM);
 
 		
 	}
 	inc_user_ester_respawn_attempts(id)
-	g_ester_blow_up_time_left[id]=ESTER_REBORN_EXPLOSION_DELAY_TIME+FLIGHT_GODMODE_THINK_TIME
+	g_ester_blow_up_time_left[id]=ESTER_REBORN_EXPLOSION_DELAY_TIME
 
 	// Teleport the player
 	set_pev(id, pev_origin,g_saved_coords[id])

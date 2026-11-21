@@ -268,7 +268,7 @@ maria_heal_loop(id){
 						_,
 						SH_DMG_NORM,
 						_,_,_,
-						SH_NEW_DMG_BLEED,
+						SH_NEW_DMG_HEALTH_SET,
 						selflessness_weapon_id)
 		
 		set_render_with_color_const(id,LTGREEN,1,cvar_val(num, pcvar_maria_alpha),100,1,0,heal_period,0,_,kRenderNormal,PRIO_RENDER_INFORMATIVE)

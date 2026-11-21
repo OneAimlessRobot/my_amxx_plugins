@@ -66,7 +66,7 @@ public slayer_loop()
 				get_user_name(id,slayer_name,127)
 				sh_chat_message(id, gHeroID,"You removed %s's godmode!",name)
 				sh_chat_message(aid, gHeroID,"%s removed your godmode!",slayer_name)
-				sh_extra_damage(id, id, get_user_health(id)/2,_,_,_,_,_,SH_NEW_DMG_DARK_ARTS,godmode_stripper_wpn_id)
+				sh_extra_damage(id, id, get_user_health(id)/2,_,_,_,_,_,SH_NEW_DMG_HEALTH_SET,godmode_stripper_wpn_id)
 				sh_set_cooldown(id, get_cvar_float("slayer_cooldown"))
 				sh_set_cooldown_flag(id)
 			}
@@ -85,8 +85,8 @@ public slayer_damage(id)
     if ( sh_get_user_has_hero(attacker,gHeroID)&& (weapon != CSW_HEGRENADE) && is_user_alive(attacker) && is_user_alive(id) && (id!=attacker) ) {
       new randNum = generate_int(0, 100)
       if (get_cvar_float("slayer_chance") * 100 >= randNum) {
-		sh_extra_damage(attacker, attacker, get_user_health(attacker)/2,_,_,_,_,_,SH_NEW_DMG_DARK_ARTS,godmode_stripper_wpn_id)
-		sh_extra_damage(id, attacker, get_user_health(id), my_hitpoint_enum:bodypart ,_,_,_,_,SH_NEW_DMG_DARK_ARTS,assassination_wpn_id)		
+		sh_extra_damage(attacker, attacker, get_user_health(attacker)/2,_,_,_,_,_,SH_NEW_DMG_HEALTH_SET,godmode_stripper_wpn_id)
+		sh_extra_damage(id, attacker, get_user_health(id), my_hitpoint_enum:bodypart ,SH_DMG_KILL,_,_,_,SH_NEW_DMG_HEALTH_SET,assassination_wpn_id)		
       }
     }
     return PLUGIN_CONTINUE
