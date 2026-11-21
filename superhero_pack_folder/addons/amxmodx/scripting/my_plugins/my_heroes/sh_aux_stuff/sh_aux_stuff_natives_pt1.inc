@@ -19,6 +19,8 @@ native make_shockwave(Float:point[3],Float:radius,const color[3],shockwave_frame
 
 native thunder_effects(Float:fl_Origin[3])
 
+native kill_trails_on_user(id)
+
 /** 
 hide=0
 show=1

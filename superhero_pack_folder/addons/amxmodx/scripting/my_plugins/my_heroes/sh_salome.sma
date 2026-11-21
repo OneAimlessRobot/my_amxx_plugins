@@ -14,7 +14,7 @@
 #define PLUGIN_NAME "SUPERHERO Salomé Freitas"
 
 // GLOBAL VARIABLES
-new gHeroName[] = "Salomeh"
+new gHeroName[] = "Salomé"
 
 new salome_max_bullets
 
@@ -35,8 +35,8 @@ public plugin_init()
 								"models/player/L96/L96.mdl",
 								"models/player/L96/L96T.mdl",
 								"L96",
-								"S- SOU A S_OME!",
-								"D_culpa...")
+								"S- SOU A S'OME!",
+								"D'culpa...")
 	
 	sh_assign_hero_projectile_weapon_bit(gHeroID,my_weapon_ids:SALOME_WEAPON_CLASSID,true)
 	sh_assign_hero_bit(gHeroID, SH_RADIO_DETECTOR_HERO,true)

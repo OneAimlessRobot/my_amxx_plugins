@@ -146,7 +146,8 @@ uncharge_user(id){
 	if(Get_BitVar(g_graciete_jetpack_on_mask,id)){
 		UnSet_BitVar(g_graciete_jetpack_on_mask,id);
 	}
-	trail(id,RED,0,0)
+	
+	kill_trails_on_user(id)
 	emit_sound(id, CHAN_ITEM, jp_fly, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 	emit_sound(id, CHAN_ITEM, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	

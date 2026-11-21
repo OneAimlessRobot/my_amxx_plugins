@@ -238,7 +238,7 @@ launch_shell(id)
 	
 	if(!is_valid_ent(user_mg[id])) return PLUGIN_HANDLED
 
-	new Float: Origin[3], Float: vAngle[3], Ent
+	static Float:Origin[3], Float:vAngle[3], Ent
 
 	entity_get_vector(user_mg[id], EV_VEC_origin , Origin)
 	entity_get_vector(id, EV_VEC_v_angle, vAngle)

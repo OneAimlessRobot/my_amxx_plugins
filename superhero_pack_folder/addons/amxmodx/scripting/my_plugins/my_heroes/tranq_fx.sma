@@ -41,19 +41,19 @@ FULLY_WAKE_UP_TASKID=allocate_typed_task_id(player_task)
 //https://forums.alliedmods.net/showthread.php?t=258006
 public Ham_PlayerPreThink(id)
 {
-	if(!sh_is_active()) return FMRES_IGNORED
+	if(!sh_is_active()) return HAM_IGNORED
 
 	if(!is_user_alive(id)){
-		return FMRES_IGNORED
+		return HAM_IGNORED
 	}
 
 	if(!sh_get_id_bit(id,SH_IS_SLEEPING)){
-		return FMRES_IGNORED
+		return HAM_IGNORED
 	}
 	entity_set_vector( id, EV_VEC_angles, gKeepAngles[id] )
 	entity_set_vector( id, EV_VEC_v_angle, gKeepAngles[id] )
 	entity_set_int( id, EV_INT_fixangle, 1 )
-	return FMRES_IGNORED
+	return HAM_SUPERCEDE
 }
 
 public fm_UpdateClientDataPost(player, sendWeapons, cd)

@@ -1,6 +1,7 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_CUSTOM_COLORS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_MATH_FUNCS
 #define I_WANT_PDATA_ALIASES
 #define I_WANT_ENTITY_VECTORS
 #define I_WANT_RESOURCE_ALIASES
@@ -9,6 +10,10 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 
 
+const Float:dummy_val_speed = 0.1;
+const Float:think_period_dummy_val = 0.0005
+
+		
 #define PLUGIN "SH_AuxFun15: proj. wpn gating"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
@@ -19,6 +24,7 @@
 
 static sh_player_hero_projectile_weapon_tracker[SH_MAXSLOTS+1];
 
+new const DEBUG = 0
 
 public plugin_init(){
 
@@ -84,6 +90,8 @@ public plugin_cfg(){
 public plugin_natives(){
 
 	register_native("sh_get_player_has_hero_projectile_weapon","_sh_get_player_has_hero_projectile_weapon")
+	register_native("launch_projectile_native", "_launch_projectile_native")
+
 }
 public bool:_sh_get_player_has_hero_projectile_weapon(iPLugin,iParams){
 
@@ -263,4 +271,208 @@ public sh_hero_init(id,heroID, sh_init_mode:mode){
 		}
 
 	}
+}
+
+
+/*
+
+	parms
+	owner: id
+	launch_speed: floatround(SPEAR_SPEED*(curr_charge[id]/max_charge_time))
+	think_period: SPEAR_SHOOT_PERIOD
+	entity_family: "info_target"
+	classname: SPEAR_CLASSNAME
+	model_filename: SPEAR_W_MODEL
+	solid_type: SOLID_BBOX
+	move_type: MOVETYPE_BOUNCE
+	gravity: entity_set_float(Ent,EV_FL_gravity, MARIA_PROJECTILE_GRAVITY_MULT*0.1)
+	effects: EF_MUZZLEFLASH
+	post_launch_callback_plugin_id: 
+	post_launch_callback_id:
+
+	callback is of format: (noreturn)func_name(entity_returned, owner_id, Float:Velocity[3], &bool:modified_speed_flag = false){
+
+	modify the velocity vector to modify velocity RIGHT AFTER launch!
+
+	if you want to modify the speed parameters, set the flag to true!
+
+	it isnt called on failure!
+
+	buffs will be assumed to have size 128!
+
+
+	return: entity_id on success, -1 on failure
+
+launch_projectile_native(id,   1
+					Float:launch_speed,  2
+					Float:think_period,  3
+					const new_classname[128],  4
+					const model_filename[128],   5
+					const entity_family[128] = "info_target",  6
+					Float:box_mins[3] = {-1.0,-1.0,-1.0},  7
+					Float:box_maxs[3] = {1.0,1.0,1.0},   8
+					Float:launch_height_offset = 0.0,   9
+					solid_type = SOLID_BBOX,  10
+					move_type = MOVETYPE_BOUNCE,  11
+					effects = EF_MUZZLEFLASH,   12
+					Float:gravity = 1.0,    13
+					post_launch_callback_plugin_id = -1,  14
+					post_launch_callback_id = -1     15)   
+
+
+*/
+public _launch_projectile_native(iPlugins, iParams){
+
+	new id = get_param(1)
+
+	if(!is_user_alive(id)){
+
+		return -1
+	}
+
+	new Float:launch_speed = get_param_f(2)
+	
+	
+	launch_speed = max_macro(launch_speed,dummy_val_speed)
+
+
+	new Float:think_period = get_param_f(3)
+
+
+	think_period = max_macro(think_period,think_period_dummy_val)
+
+	static new_classname[128],
+			model_filename[128],
+			entity_family[128],
+			Float:box_mins[3],
+			Float:box_maxs[3]
+		
+	
+	get_string(4,new_classname,charsmax(new_classname))
+	get_string(5,model_filename,charsmax(model_filename))
+	get_string(6,entity_family,charsmax(entity_family))
+
+
+	get_array_f(7,box_mins,sizeof(box_mins))
+	get_array_f(8,box_maxs,sizeof(box_maxs))
+
+
+	new Float:launch_height_offset = get_param_f(9),
+		solid_type = get_param(10),
+		move_type = get_param(11),
+		effects = get_param(12),
+		Float:gravity = get_param_f(13),
+		post_launch_callback_plugin_id = get_param(14),
+		post_launch_callback_id = get_param(15)
+
+
+
+	if(DEBUG){
+
+
+		server_print("Projectile owner id obtained: %d^n", id)
+		server_print("Projectile launch speed obtained: %0.2f^n", launch_speed)
+		server_print("Projectile think period obtained: %0.2f^n", think_period)
+		server_print("Projectile classname to apply: %s^n", new_classname)
+		server_print("Projectile entity family obtained: %s^n", entity_family)
+		server_print("Projectile model filename obtained: %s^n", model_filename)
+		server_print("Projectile mins vector obtained^n")
+		print_vector(box_mins)
+		server_print("Projectile maxs vector obtained^n")
+		print_vector(box_maxs)
+		server_print("^nProjectile launch height offset obtained: %0.2f^n",launch_height_offset)
+		server_print("^nProjectile solid type value obtained: %d^n",solid_type)
+		server_print("^nProjectile move type value obtained: %d^n",move_type)
+		server_print("^nProjectile effects value obtained: %d^n",effects)
+		server_print("^nProjectile launch gravity obtained: %0.2f^n",gravity)
+		server_print("Projectile plugin id obtained: %d^n", post_launch_callback_plugin_id)
+		server_print("Projectile post launch callback id obtained: %d^n", post_launch_callback_id)
+
+
+	}
+
+
+
+	static Float:Origin[3], Float:Velocity[3], Float:vAngle[3], Ent
+
+	entity_get_vector(id, EV_VEC_origin , Origin)
+	entity_get_vector(id, EV_VEC_v_angle, vAngle)
+
+
+	Ent = create_entity(entity_family)
+
+	if (!Ent){
+		
+		return -1
+	
+	}
+
+	entity_set_string(Ent, EV_SZ_classname, new_classname)
+	entity_set_model(Ent, model_filename)
+
+	entity_set_vector(Ent, EV_VEC_mins, box_mins)
+	entity_set_vector(Ent, EV_VEC_maxs, box_maxs)
+
+	
+	Origin[2]+=launch_height_offset
+	entity_set_origin(Ent, Origin)
+	entity_set_vector(Ent, EV_VEC_angles, vAngle)
+
+	entity_set_int(Ent, EV_INT_effects, effects)
+	entity_set_int(Ent, EV_INT_solid, solid_type)
+	entity_set_int(Ent, EV_INT_movetype, move_type)
+	entity_set_float(Ent, EV_FL_gravity, gravity)
+
+	entity_set_edict(Ent,EV_ENT_owner,id)
+	
+	my_velocity_by_aim(id, launch_speed , Velocity, dummy_vector)
+
+
+
+	
+	if((post_launch_callback_plugin_id>=0)&&(post_launch_callback_id>=0)){
+		static Float:modded_speed[3],
+			bool:modified_speed_flag = false;
+
+		modified_speed_flag = false
+		multiply_3d_vector_by_scalar(Velocity,1.0,modded_speed)
+
+		if(DEBUG){
+			server_print("Pre callback speed vector of entity:^n")
+			print_vector(modded_speed)
+		}
+		
+		callfunc_begin_i(post_launch_callback_id,post_launch_callback_plugin_id)
+		callfunc_push_int(Ent)
+		callfunc_push_int(id)
+		callfunc_push_array(_:modded_speed, sizeof modded_speed, true)
+		callfunc_push_intrf(_:modified_speed_flag)
+		callfunc_end()
+
+		if(modified_speed_flag){
+			if(DEBUG){
+				server_print("The vector WAS modded by caller!^n")
+				server_print("Post callback speed vector of entity:^n")
+				print_vector(modded_speed)
+			}
+			entity_set_vector(Ent, EV_VEC_velocity ,modded_speed)
+
+		}
+		else{
+			
+			if(DEBUG){
+				server_print("The vector was not modded by caller!^n")
+			}
+			entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
+
+
+		}
+
+
+	}
+
+	entity_set_float( Ent, EV_FL_nextthink, floatadd(get_gametime( ) ,think_period));
+
+	return Ent
+
 }

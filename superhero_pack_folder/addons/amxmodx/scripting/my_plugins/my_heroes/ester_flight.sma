@@ -67,7 +67,8 @@ new generic_dmg_source_shock = -1
 new ESTER_REBORN_CALCULATION_LOOP_TASKID,
 		ESTER_REBORN_GLOW_TASKID,
 		ESTER_REBORN_EXPLOSION_DELAY_TASKID,
-		ESTER_FLIGHT_DRAIN_GLOBAL_TASKID
+		ESTER_FLIGHT_DRAIN_GLOBAL_TASKID,
+		ESTER_FLIGHT_MOVEMENT_TASKID
 
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -107,7 +108,9 @@ public plugin_init()
 	ESTER_REBORN_GLOW_TASKID=allocate_typed_task_id(player_task)
 	ESTER_REBORN_EXPLOSION_DELAY_TASKID=allocate_typed_task_id(player_task)
 	ESTER_FLIGHT_DRAIN_GLOBAL_TASKID=allocate_typed_task_id(generic_task)
+	ESTER_FLIGHT_MOVEMENT_TASKID=allocate_typed_task_id(generic_task)
 
+	set_task(FLIGHT_MOVEMENT_PERIOD,"ester_flight_loop",ESTER_FLIGHT_MOVEMENT_TASKID,_,_,"b")
 
 	set_task(FLIGHT_DRAIN_INFLICT_PERIOD,"ester_drain_loop",ESTER_FLIGHT_DRAIN_GLOBAL_TASKID,_,_,"b")
 }
@@ -154,6 +157,12 @@ public ester_drain_loop(task_id){
 			continue
 		
 		}
+
+		if(!Get_BitVar(g_flying_mask,id)){
+			continue
+		}
+
+
 		if(!Get_BitVar(g_draining_mask,id)){
 			continue
 		}
@@ -191,6 +200,53 @@ public ester_drain_loop(task_id){
 					SH_NEW_DMG_DRAIN,
 					ester_flight_drain_wpn_id)
 
+
+
+	}
+}
+public ester_flight_loop(task_id){
+
+	if(!sh_is_active()) return
+
+	if(sh_is_freezetime()) return
+	
+	static the_players[SH_MAXSLOTS], pnum, id		
+	get_players(the_players, pnum, "ah")
+	for (new i = 0; i < pnum; i++) {
+		id = the_players[i]
+        
+
+		if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)||
+				!sh_get_id_bit(id,SH_IS_REBORN)){
+				continue;
+		}
+
+		if(Get_BitVar(g_flying_mask,id)){
+			static Float:Velocity[3]
+
+			static Float:curr_hp_ratio,
+						Float:flight_speed,
+						Float:flight_speed_if_not_desperate,
+						Float:flight_speed_if_desperate,
+						max_hp_to_use
+			
+			
+			max_hp_to_use = sh_get_max_hp(id)
+			
+			curr_hp_ratio = float(get_user_health(id))/float(max_hp_to_use)
+			
+			flight_speed_if_desperate = cvar_val(float,pcvar_ester_flyspeed)
+
+			flight_speed_if_not_desperate = min_macro(flight_speed_if_desperate, max_macro(250.0, flight_speed_if_desperate*curr_hp_ratio))
+			
+			
+			flight_speed = (Get_BitVar(g_is_desperate_mask,id)? flight_speed_if_desperate:flight_speed_if_not_desperate)
+
+			
+			velocity_by_aim(id, floatround(flight_speed), Velocity)
+		
+			entity_set_vector(id, EV_VEC_velocity, Velocity)
+		}
 
 
 	}
@@ -270,19 +326,37 @@ public Ester_Knockback(id)
 	return HAM_IGNORED
 }
 
-remove_user_flight_fx(id){
+remove_user_flight_fx(id, bool:remove_flight=true){
 	
 	if(!is_user_connected(id)||!sh_get_user_has_hero(id,gHeroID)||!sh_is_active()) return
 	
-	trail(id,GREEN,0,0)
-	emit_sound(id, CHAN_BODY,NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
+	if(g_ester_respawned_attempts[id]<=1){
 
-	emit_sound(id, CHAN_AUTO, ester_blowup_sounds[curr_player_sound[id]],
-				VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
+
+		emit_sound(id, CHAN_AUTO, ESTER_FIRST_RESPAWN_SOUND , VOL_NORM, ATTN_NONE, SND_STOP, PITCH_NORM);
+
 	
-	UnSet_BitVar(g_flying_mask, id);
-	sh_assign_id_bit(id,SH_USER_IS_FLYING, false)
 	
+	}
+	else if(g_ester_respawned_attempts[id]==((cvar_val(num,pcvar_ester_total_respawn_attempts)))){
+
+
+		emit_sound(id, CHAN_AUTO, ESTER_LAST_RESPAWN_SOUND , VOL_NORM, ATTN_NONE, SND_STOP, PITCH_NORM);
+
+	}
+	else{
+		
+
+		emit_sound(id, CHAN_AUTO,ester_blowup_sounds[curr_player_sound[id]] , VOL_NORM, ATTN_NONE, SND_STOP, PITCH_NORM);
+
+		
+	}
+	if(remove_flight){
+		kill_trails_on_user(id)
+		emit_sound(id, CHAN_BODY,NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
+		UnSet_BitVar(g_flying_mask, id);
+		sh_assign_id_bit(id,SH_USER_IS_FLYING, false)
+	}
 	
 }
 
@@ -352,34 +426,6 @@ public OnCmdStart(id, uc_handle)
 			}
 			Set_BitVar(g_draining_mask,id)
 		}
-		if(generate_int(0, 5) <3)
-		{
-			static Float:Velocity[3]
-
-			static Float:curr_hp_ratio,
-						Float:flight_speed,
-						Float:flight_speed_if_not_desperate,
-						Float:flight_speed_if_desperate,
-						max_hp_to_use
-			
-			
-			max_hp_to_use = sh_get_max_hp(id)
-			
-			curr_hp_ratio = float(get_user_health(id))/float(max_hp_to_use)
-			
-			flight_speed_if_desperate = cvar_val(float,pcvar_ester_flyspeed)
-
-			flight_speed_if_not_desperate = min_macro(flight_speed_if_desperate, max_macro(250.0, flight_speed_if_desperate*curr_hp_ratio))
-			
-			
-			flight_speed = (Get_BitVar(g_is_desperate_mask,id)? flight_speed_if_desperate:flight_speed_if_not_desperate)
-
-			
-			velocity_by_aim(id, floatround(flight_speed), Velocity)
-		
-			entity_set_vector(id, EV_VEC_velocity, Velocity)
-		
-		}
 		
 	}
 	else{
@@ -403,6 +449,9 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,FLIGHT_IGNITION );
 	engfunc(EngFunc_PrecacheSound,FLIGHT_WEAK );
 	engfunc(EngFunc_PrecacheSound,ESTER_RESPAWN_FAIL_SOUND );
+	engfunc(EngFunc_PrecacheSound,ESTER_FIRST_RESPAWN_SOUND );
+	engfunc(EngFunc_PrecacheSound,ESTER_LAST_RESPAWN_SOUND );
+
 	
 	for(new i=0;i<ESTER_NUM_BLOWUPSOUNDS;i++){
 		engfunc(EngFunc_PrecacheSound,ester_blowup_sounds[i] );	
@@ -515,9 +564,28 @@ public ester_respawn(parm[2])
 	revival(id)
 	revival(id)
 	ester_set_reborn_mode_primitive(id,1)
-	curr_player_sound[id]=generate_int(0,ESTER_NUM_BLOWUPSOUNDS-1)
-	emit_sound(id, CHAN_AUTO,ester_blowup_sounds[curr_player_sound[id]] , VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
+	if(g_ester_respawned_attempts[id]<=0){
 
+
+		emit_sound(id, CHAN_AUTO, ESTER_FIRST_RESPAWN_SOUND , VOL_NORM, ATTN_NONE, 0, PITCH_NORM);
+
+	
+	
+	}
+	else if(g_ester_respawned_attempts[id]==((cvar_val(num,pcvar_ester_total_respawn_attempts))-1)){
+
+
+		emit_sound(id, CHAN_AUTO, ESTER_LAST_RESPAWN_SOUND , VOL_NORM, ATTN_NONE, 0, PITCH_NORM);
+
+	}
+	else{
+		
+		curr_player_sound[id]=generate_int(0,ESTER_NUM_BLOWUPSOUNDS-1,40)
+
+		emit_sound(id, CHAN_AUTO,ester_blowup_sounds[curr_player_sound[id]] , VOL_NORM, ATTN_NONE, 0, PITCH_NORM);
+
+		
+	}
 	inc_user_ester_respawn_attempts(id)
 	g_ester_blow_up_time_left[id]=ESTER_REBORN_EXPLOSION_DELAY_TIME+FLIGHT_GODMODE_THINK_TIME
 
@@ -593,7 +661,7 @@ ester_remove_statuses(id){
 	if(is_user_connected(id)&&sh_get_user_has_hero(id,gHeroID)){
 		
 		remove_task(id+ESTER_REBORN_EXPLOSION_DELAY_TASKID)
-		remove_user_flight_fx(id)
+		remove_user_flight_fx(id,false)
 	}
 	
 }

@@ -35,7 +35,10 @@ new const allow_self_charge = 1
 new const allow_self_deplete = 1
 new const DEBUG = 0
 
-new ZENITSU_DEBUG_HUD_TASKID
+#define ZENITSU_FLIGHT_TASK_PERIOD 0.1
+
+new ZENITSU_DEBUG_HUD_TASKID,
+	ZENITSU_FLIGHT_TASKID
 // ints
 
 
@@ -81,6 +84,42 @@ public plugin_init(){
 	if(DEBUG){
 		ZENITSU_DEBUG_HUD_TASKID = allocate_typed_task_id(generic_task)
 		set_task(1.0,"zenitsu_debug_hud_task",ZENITSU_DEBUG_HUD_TASKID,_,_,"b")
+	}
+	ZENITSU_FLIGHT_TASKID=allocate_typed_task_id(generic_task)
+
+	set_task(ZENITSU_FLIGHT_TASK_PERIOD,"zenitsu_flight_loop",ZENITSU_FLIGHT_TASKID,_,_,"b")
+
+}
+
+public zenitsu_flight_loop(task_id){
+
+	if(!sh_is_active()) return
+
+
+	if(sh_is_freezetime()) return
+	
+	static the_players[SH_MAXSLOTS], pnum, id		
+	get_players(the_players, pnum, "ah")
+	for (new i = 0; i < pnum; i++) {
+		id = the_players[i]
+        
+
+		if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)||sh_get_id_bit(id, SH_ZENITSU_HAS_STRUCK)
+					||!sh_get_id_bit(id, SH_ZENITSU_CHARGE_IS_ON)){
+				continue;
+		}
+
+
+		if(!Get_BitVar(g_zenitsu_is_charging_mask,id)){
+			continue
+		}
+
+
+		static Float:Velocity[3]
+		velocity_by_aim(id, floatround(get_zenitsu_charge_speed(id)), Velocity)
+	
+		entity_set_vector(id, EV_VEC_velocity, Velocity)
+	
 	}
 
 }
@@ -236,7 +275,8 @@ remove_user_flight_fx(id){
 	
 	if(!sh_get_user_has_hero(id,gHeroID)||!is_user_connected(id)||!sh_is_active()) return
 	
-	trail(id,GREEN,0,0);
+	
+	kill_trails_on_user(id)
 	Assign_BitVar(g_zenitsu_is_glowing_mask, id, false_for_macro);
 	Assign_BitVar(g_zenitsu_is_charging_mask, id, false_for_macro);
 	sh_assign_id_bit(id,SH_USER_IS_FLYING, false)
@@ -361,15 +401,7 @@ public zenitsu_charge(id, uc_handle, seed)
 				}
 			
 		}
-		if(generate_int(0, 5,8) <3)
-		{
-			static Float:Velocity[3]
-			velocity_by_aim(id, floatround(get_zenitsu_charge_speed(id)), Velocity)
 		
-			entity_set_vector(id, EV_VEC_velocity, Velocity)
-		
-		
-		}
 	}
 	else{
 		if(Get_BitVar(g_zenitsu_is_charging_mask,id)){

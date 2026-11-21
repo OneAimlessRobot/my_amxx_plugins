@@ -7,6 +7,7 @@
 #include "jetplane_inc/sh_jetplane_funcs.inc"
 #include "jetplane_inc/sh_jetplane_engine_funcs.inc"
 #include "jetplane_inc/sh_yandere_get_set.inc"
+#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 
 
@@ -30,6 +31,10 @@ new g_jetplane_right_rollflapon_mask = 0
 new g_jetplane_flying_mask = 0
 new g_jetplane_engine_mask = 0
 
+
+#define ENGINE_TASK_PERIOD 0.1
+new ENGINE_TASKID
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -40,6 +45,9 @@ public plugin_init()
 	pcvar_jetplane_fuel = create_cvar("yandere_jetplane_fuel", "5")
 	pcvar_fuel_spend = create_cvar("yandere_jetplane_fuel_spend", "5")
 	register_forward(FM_CmdStart, "OnCmdStart")
+	ENGINE_TASKID=allocate_typed_task_id(generic_task)
+
+	set_task(ENGINE_TASK_PERIOD,"engine_loop",ENGINE_TASKID,_,_,"b")
 
 
 
@@ -249,6 +257,64 @@ public _reset_user_fuel_ammount(iPlugins,iParams){
 	return reset_jet_fuel(jet_get_user_jet(id))
 
 }
+
+public engine_loop(task_id){
+
+	if(!sh_is_active()) return
+
+	if(sh_is_freezetime()) return
+	
+	static the_players[SH_MAXSLOTS], pnum, id		
+	get_players(the_players, pnum, "ah")
+	for (new i = 0; i < pnum; i++) {
+		id = the_players[i]
+        
+		
+		if(!is_user_alive(id)){
+				
+			continue
+		}
+		if(!jet_deployed(id)){
+
+			continue
+		}
+		if(sh_get_stun(id)){
+
+			continue
+		}
+
+		static user_jet, Float:fuel_ammount;
+		user_jet = jet_get_user_jet(id)
+
+		pev(user_jet,pev_fuser1,fuel_ammount)
+
+		if(!Get_BitVar(g_jetplane_engine_mask,id)||(fuel_ammount < cvar_val(float, pcvar_fuel_spend))){
+			if(Get_BitVar(g_jetplane_flying_mask,id)){
+					sh_chat_message(id,gHeroID,"Jetplane too weak! Forcing a landing...");
+					Assign_BitVar(g_jetplane_flying_mask,id,false_for_macro);
+			}
+		}
+		else if((fuel_ammount > (cvar_val(float, pcvar_jetplane_fuel)*0.25))&&Get_BitVar(g_jetplane_engine_mask,id)){
+			if(!Get_BitVar(g_jetplane_flying_mask,id)){
+			
+				sh_chat_message(id,gHeroID,"Jetplane is okay now! Ready for take off!");
+				Assign_BitVar(g_jetplane_flying_mask,id,true_for_macro);
+			}
+		}
+
+		if(Get_BitVar(g_jetplane_throttle_mask, id)){
+
+
+			set_pev(user_jet,pev_fuser1,max_macro(0.0,fuel_ammount-(cvar_val(float, pcvar_fuel_spend)+((JETPLANE_THOTTLE_FUEL_SPEND_PERSEC* cvar_val(float, pcvar_fuel_spend))))))
+		
+		}
+		else
+		{
+			set_pev(user_jet,pev_fuser1,min_macro(cvar_val(float, pcvar_jetplane_fuel),fuel_ammount+((entity_get_int(user_jet, EV_INT_flags) & FL_ONGROUND)?cvar_val(float, pcvar_fuel_spend)*JETPLANE_STANDSTILL_FUEL_REGEN_PERSEC:cvar_val(float, pcvar_fuel_spend))))
+		}
+
+	}
+}
 public OnCmdStart(id,uc_handle)
 {
 
@@ -308,37 +374,14 @@ public OnCmdStart(id,uc_handle)
 		
 		button&=~IN_RIGHT
 	}
-	static user_jet, Float:fuel_ammount;
-	user_jet = jet_get_user_jet(id)
 
-	pev(user_jet,pev_fuser1,fuel_ammount)
-
-	if(!Get_BitVar(g_jetplane_engine_mask,id)||(fuel_ammount < cvar_val(float, pcvar_fuel_spend))){
-		if(Get_BitVar(g_jetplane_flying_mask,id)){
-				sh_chat_message(id,gHeroID,"Jetplane too weak! Forcing a landing...");
-				Assign_BitVar(g_jetplane_flying_mask,id,false_for_macro);
-		}
-	}
-	else if((fuel_ammount > (cvar_val(float, pcvar_jetplane_fuel)*0.25))&&Get_BitVar(g_jetplane_engine_mask,id)){
-		if(!Get_BitVar(g_jetplane_flying_mask,id)){
-		
-			sh_chat_message(id,gHeroID,"Jetplane is okay now! Ready for take off!");
-			Assign_BitVar(g_jetplane_flying_mask,id,true_for_macro);
-		}
-	}
 	if(Get_BitVar(g_jetplane_flying_mask,id)){
 		
 		Assign_BitVar(g_jetplane_throttle_mask, id, (button & IN_JUMP));
 		if((button & IN_JUMP)){
 			
 			button&=~IN_JUMP
-			set_pev(user_jet,pev_fuser1,max_macro(0.0,fuel_ammount-(cvar_val(float, pcvar_fuel_spend)+((JETPLANE_THOTTLE_FUEL_SPEND_MULT* cvar_val(float, pcvar_fuel_spend))))))
 		}
-	
-	}
-	else
-	{
-		set_pev(user_jet,pev_fuser1,min_macro(cvar_val(float, pcvar_jetplane_fuel),fuel_ammount+((entity_get_int(user_jet, EV_INT_flags) & FL_ONGROUND)?cvar_val(float, pcvar_fuel_spend)*JETPLANE_STANDSTILL_FUEL_REGEN_MULT:cvar_val(float, pcvar_fuel_spend))))
 	}
 	return FMRES_SUPERCEDE
 	

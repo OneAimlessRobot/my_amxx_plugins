@@ -43,6 +43,8 @@ public plugin_init()
 
 	sh_assign_hero_bit(gHeroID,SH_EXPLOSION_POWERS, true)
 	
+	sh_assign_hero_bit(gHeroID,SH_IS_ELDER,true)
+	
 	sh_register_superheromod_model(gHeroID,
 								"models/player/graciete/graciete.mdl",
 								"models/player/graciete/graciete.mdl",

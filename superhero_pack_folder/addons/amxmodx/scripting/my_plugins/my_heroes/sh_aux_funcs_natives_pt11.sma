@@ -70,8 +70,9 @@ static const sh_hero_property_structs_array[hero_property_flags_id][hero_propert
 			
 			{"Passive invisibility hero", "Heroes that grant passive, rapidly changing invisibility. Equipping many would get messy", 1},
 			
-			{"Lightning rod hero", "Upon getting shocked, these heroes wont let the current spread to teammates!",25}
+			{"Lightning rod hero", "Upon getting shocked, these heroes wont let the current spread to teammates!",25},
 
+			{"Elderly hero", "Heroes that are very old", 100}
 }
 
 enum property_counter{

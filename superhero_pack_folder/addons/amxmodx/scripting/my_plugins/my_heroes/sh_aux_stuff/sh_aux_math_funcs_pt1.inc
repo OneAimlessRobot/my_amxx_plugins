@@ -2,7 +2,8 @@
   #endinput
 #endif
 #define sh_aux_math_funcs_pt1
-stock sv_gravity_pcvar;
+stock sv_gravity_pcvar,
+	Float:dummy_vector[3]
 
 stock init_gravity_pcvar(){
 
@@ -13,10 +14,13 @@ stock init_gravity_pcvar(){
 stock randomize_vector_with_coeff(Float:coeff,Float:vec_to_randomize[3]){
 	
 	
-	new Float:normal_speed[3];
-	new Float:norm_speed_random[3];
-	new Float:speed=vector_length(vec_to_randomize)
-	new Float:norm_random_speed;
+	static Float:normal_speed[3],
+		Float:norm_speed_random[3],
+		Float:speed,
+		Float:norm_random_speed;
+	
+	speed = vector_length(vec_to_randomize)
+
 	multiply_3d_vector_by_scalar(vec_to_randomize,1.0/speed,normal_speed);
 
 	new Float:rnd_floatx=generate_float(-coeff,coeff)*float(generate_bool()?0:1),
@@ -156,10 +160,10 @@ stock get_entity_direction_vector_raw(player_id, aimed_at_entity, Float:raw_aim_
 	if (!is_user_alive(player_id) || !is_user_alive(aimed_at_entity)) {
 		return;
 	}
-	new Float:tg_aim_vector_raw[3];
-	new Float:user_aim_vector_raw[3];
-	new Float:user_coords[3];
-	new Float:tg_coords[3];
+	static Float:tg_aim_vector_raw[3],
+			Float:user_aim_vector_raw[3],
+			Float:user_coords[3],
+			Float:tg_coords[3];
 	entity_get_vector(player_id, EV_VEC_origin, user_coords)
 	entity_get_vector(aimed_at_entity, EV_VEC_origin,tg_coords)
 	get_player_aim_vector_raw(player_id, user_aim_vector_raw);
@@ -261,18 +265,17 @@ stock build_carthesian_vector_from_angles_vector(Float:angles_vector[3],Float:ds
 
 
 }
-stock projectile_air_drag_update_speed(parm[],Float:drag_const,Float:gravity_mult,Float:phys_update_time){
+stock projectile_air_drag_update_speed(pid,Float:drag_const,Float:gravity_mult,Float:phys_update_time){
 
 	
 
-	new pid = parm[0]
 	if (!is_valid_ent(pid))
 	{
 		return
 	}
-	new Float:speedz,Float:speedx,Float:speedy;
-	new Float:velocity[3]
-	new Float:velocity_copy[3]
+	static Float:speedz,Float:speedx,Float:speedy,
+				Float:velocity[3],
+				Float:velocity_copy[3]
 	
 	
 	entity_get_vector(pid,EV_VEC_velocity,velocity);
@@ -295,4 +298,57 @@ stock projectile_air_drag_update_speed(parm[],Float:drag_const,Float:gravity_mul
 	velocity_copy[2]=speedz
 	entity_set_vector(pid,EV_VEC_velocity,velocity_copy);
 
+}
+stock Float:player_air_drag_update_speed(id,Float:drag_const,Float:phys_update_time){
+
+	
+
+	if (!is_user_alive(id))
+	{
+		return 0.0
+	}
+	static Float:speedx,Float:speedy,
+			Float:velocity[3],
+			Float:velocity_copy[3],
+			Float:velocity2d[2],
+			Float:velocity_copy2d[2]
+	
+	
+	entity_get_vector(id,EV_VEC_velocity,velocity);
+	
+	velocity2d[0] = velocity[0]
+	velocity2d[1] = velocity[1]
+
+	multiply_2d_vector_by_scalar(velocity2d,1.0,velocity_copy2d);
+	speedx=velocity_copy2d[0]
+	speedy=velocity_copy2d[1]
+
+	new Float:velocity_num=vector_length_var(velocity_copy2d,2)
+
+	new Float:delta_x=((drag_const*velocity_num*speedx))*phys_update_time;
+	new Float:delta_y=((drag_const*velocity_num*speedy))*phys_update_time;
+	
+	speedx-=delta_x
+	speedy-=delta_y
+	velocity_copy[0]=speedx
+	velocity_copy[1]=speedy
+	entity_set_vector(id,EV_VEC_velocity,velocity_copy);
+
+	static Float:drag_vector[2]
+
+	drag_vector[0] = delta_x
+	drag_vector[1] = delta_y
+
+	return vector_length_var(drag_vector,2)
+
+}
+
+stock my_velocity_by_aim(iIndex, Float:fDistance, Float:fVelocity[3], Float:fViewAngle[3])
+{
+
+	pev(iIndex, pev_v_angle, fViewAngle)
+	fVelocity[0] = floatcos(fViewAngle[1], degrees) * fDistance
+	fVelocity[1] = floatsin(fViewAngle[1], degrees) * fDistance
+	fVelocity[2] = floatcos(fViewAngle[0]+90.0, degrees) * fDistance
+	return 1
 }

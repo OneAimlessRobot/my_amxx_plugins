@@ -155,7 +155,7 @@ public kick_ball(iPlugin,iParams)
 		return PLUGIN_HANDLED
 		
 	}
-	new Float: Origin[3], Float: Velocity[3], Float: vAngle[3], Ent
+	static Float:Origin[3], Float:Velocity[3], Float:vAngle[3], Ent
 	
 	entity_get_vector(id, EV_VEC_origin , Origin)
 	entity_get_vector(id, EV_VEC_v_angle, vAngle)
@@ -184,7 +184,7 @@ public kick_ball(iPlugin,iParams)
 	drop_to_floor(Ent)
 	velocity_by_aim(id, floatround(BALL_SPEED) , Velocity)
 
-	new Float:mini_Velocity[3];
+	static Float:mini_Velocity[3];
 	multiply_3d_vector_by_scalar(Velocity,1.0/BALL_SPEED,mini_Velocity);
 	multiply_3d_vector_by_scalar(mini_Velocity,30.0,mini_Velocity);
 	add_3d_vectors(Origin,mini_Velocity,Origin);
@@ -243,7 +243,7 @@ public ball_think(ent)
 
 	}
 	
-	new Float:newVelocity[3],Float:velocityVec[ 3 ],Float:fl_origin[3],iAimVec[3],iPos[3],Float:Pos[3],Float:AimVec[3]
+	static Float:newVelocity[3],Float:velocityVec[ 3 ],Float:fl_origin[3],iAimVec[3],iPos[3],Float:Pos[3],Float:AimVec[3]
 	entity_get_vector( ent, EV_VEC_velocity, velocityVec );
 	entity_get_vector( ent, EV_VEC_velocity, newVelocity );
 	entity_get_vector( ent, EV_VEC_origin, fl_origin );
@@ -255,7 +255,7 @@ public ball_think(ent)
 	
 	IVecFVec(iAimVec,AimVec)
 	
-	new Float:AimDirVector[3];
+	static Float:AimDirVector[3];
 	
 	AimDirVector[0]=AimVec[0]-Pos[0]
 	AimDirVector[1]=AimVec[1]-Pos[1]
@@ -269,7 +269,7 @@ public ball_think(ent)
 	AimDirVector[1]*=(CURVE_APEX_DIST/(length))
 	AimDirVector[2]*=(CURVE_APEX_DIST/(length))
 	
-	new Float:end_point[3]
+	static Float:end_point[3]
 	
 	end_point[0]=Pos[0]+AimDirVector[0]
 	end_point[1]=Pos[1]+AimDirVector[1]
@@ -290,14 +290,11 @@ public ball_think(ent)
 	entity_set_vector(ent, EV_VEC_velocity ,newVelocity)
 	set_pev(ent, pev_vuser1, newVelocity)
 
-	new parm[2]
-	parm[0] = ent
-	parm[1] = id
 
 	orient_entity_with_move_vector(ent)
 
 
-	projectile_air_drag_update_speed(parm,BALL_DRAG_CONST,BALL_GRAVITY_MULT,BALL_PHYS_UPDATE_TIME)
+	projectile_air_drag_update_speed(ent,BALL_DRAG_CONST,BALL_GRAVITY_MULT,BALL_PHYS_UPDATE_TIME)
 
 	entity_set_float( ent, EV_FL_nextthink, get_gametime( ) + BALL_THINK_TIME );
 }

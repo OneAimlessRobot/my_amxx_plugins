@@ -191,14 +191,11 @@ public tranque_thinque(ent){
 	}
 
 
-	new parm[2]
-	parm[0] = ent
-	parm[1] = owner
 
 	orient_entity_with_move_vector(ent)
 
 
-	projectile_air_drag_update_speed(parm,DART_DRAG_CONST,DART_GRAVITY_MULT,DART_PHYS_UPDATE_TIME)
+	projectile_air_drag_update_speed(ent,DART_DRAG_CONST,DART_GRAVITY_MULT,DART_PHYS_UPDATE_TIME)
 
 
 	entity_set_float( ent, EV_FL_nextthink, floatadd(get_gametime( ) ,DART_PHYS_UPDATE_TIME));
@@ -411,7 +408,7 @@ launch_dart(id)
 
 		return
 	}
-	new Float: Origin[3], Float: Velocity[3], Float: vAngle[3], Ent
+	static Float:Origin[3], Float:Velocity[3], Float:vAngle[3], Ent
 
 	entity_get_vector(id, EV_VEC_origin , Origin)
 	entity_get_vector(id, EV_VEC_v_angle, vAngle)
@@ -424,8 +421,8 @@ launch_dart(id)
 	entity_set_string(Ent, EV_SZ_classname, DART_CLASSNAME)
 	entity_set_model(Ent, "models/shell.mdl")
 
-	new Float:MinBox[3] = {-1.0, -1.0, -1.0}
-	new Float:MaxBox[3] = {1.0, 1.0, 1.0}
+	static Float:MinBox[3] = {-1.0, -1.0, -1.0},
+		Float:MaxBox[3] = {1.0, 1.0, 1.0}
 	entity_set_vector(Ent, EV_VEC_mins, MinBox)
 	entity_set_vector(Ent, EV_VEC_maxs, MaxBox)
 
@@ -442,6 +439,7 @@ launch_dart(id)
 	entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
 
 	gNumDarts[id]-= (gNumDarts[id]>0)? 1:0
+
 	new bool:dart_hurts=false;
 	if(larissa_get_is_max_points(id)){
 		dart_hurts=true
@@ -452,9 +450,7 @@ launch_dart(id)
 		entity_set_vector(Ent,EV_VEC_vuser1,Origin)
 
 	}
-	new parm2[1]
-
-	parm2[0]= id
+	
 	emit_sound(id, CHAN_WEAPON, SILENT_TRANQS_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 
 	trail(Ent,dart_hurts?RED:WHITE,3,2)

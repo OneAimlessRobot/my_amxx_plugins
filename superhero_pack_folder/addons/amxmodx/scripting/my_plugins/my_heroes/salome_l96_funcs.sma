@@ -12,6 +12,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "sh_aux_stuff/sh_pokemon_dmg_framework.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt15.inc"
 #include "track_fx_inc/track_fx.inc"
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
@@ -102,10 +103,12 @@ new dmg_source_name_log_l96[SAFE_BUFFER_SIZE+1]="Salomé's L96"
 new custom_dmg_id_l96
 new bool:is_hostage_map = false
 //new HamHook:TakeDamage
+
+new PLUGIN_ID_HERE
 public plugin_init(){
 	
 	
-	register_plugin(PLUGIN_NAME, PLUGIN_VER, AUTHOR);
+	PLUGIN_ID_HERE = register_plugin(PLUGIN_NAME, PLUGIN_VER, AUTHOR);
 
 	pcvar_dmg_headshot_mult = create_cvar("salome_dmg_headshot_mult","5")
 	pcvar_xp_distance_mult = create_cvar("salome_xp_distance_mult","4")
@@ -143,7 +146,6 @@ public plugin_init(){
 public plugin_natives(){
 	
 	register_native("l96_set_user_l96","_l96_set_user_l96");
-	register_native("l96_set_num_bullets","_l96_set_num_bullets");
 }
 public sh_round_end(){
 
@@ -180,12 +182,6 @@ public _l96_set_user_l96(iPlugin,iParams){
 	}
 
 }
-		
-public _l96_set_num_bullets(iPlugin,iParams){
-	new id= get_param(1)
-	new value_to_set=get_param(2)
-	gNumBullets[id]=value_to_set;
-}
 public plugin_cfg(){
 
 	gHeroID = salome_get_hero_id()
@@ -205,10 +201,6 @@ public bulette_thinque(ent){
 		return
 	}
 
-
-	new parm[2]
-	parm[0] = ent
-	parm[1] = owner
 	new Float:current_bullet_reverb_time=entity_get_float(ent,EV_FL_fuser1)
 	if(!entity_get_int(ent,EV_INT_iuser1)){
 		
@@ -225,7 +217,7 @@ public bulette_thinque(ent){
 	
 	orient_entity_with_move_vector(ent)
 
-	projectile_air_drag_update_speed(parm,SALOME_PROJECTILE_DRAG_CONST,SALOME_PROJECTILE_GRAVITY_MULT,SALOME_PROJECTILE_PHYS_UPDATE_TIME)
+	projectile_air_drag_update_speed(ent,SALOME_PROJECTILE_DRAG_CONST,SALOME_PROJECTILE_GRAVITY_MULT,SALOME_PROJECTILE_PHYS_UPDATE_TIME)
 	
 
 	entity_set_float( ent, EV_FL_nextthink, floatadd(get_gametime( ) ,SALOME_PROJECTILE_PHYS_UPDATE_TIME));
@@ -424,6 +416,52 @@ public fw_Weapon_PrimaryAttack_Post(Ent)
 	add_3d_vectors(Push, g_Recoil[id], Push)
 	entity_set_vector(id, EV_VEC_punchangle, Push)
 }
+
+public bullet_post_launch_callback(Ent, id, Float:Velocity[3], &bool:modified_speed_flag){
+
+
+if(!is_valid_ent(Ent)){
+
+	return
+}
+static Float:Origin[3]
+
+entity_get_vector(Ent,EV_VEC_origin, Origin)
+
+
+new Float:coeff_to_multiply_with
+new resume_zoom=get_pdata_bool(id,m_bResumeZoom,XO_PLAYER*4)
+if(!(resume_zoom)){
+	coeff_to_multiply_with=SALOME_PROJECTILE_SHOOT_RANDOMNESS;
+}
+else{
+	
+	static Float:user_movement_velocity[3]
+	entity_get_vector(id,EV_VEC_velocity,user_movement_velocity)
+	new Float:user_maxspeed=get_user_maxspeed(id);
+	new Float:user_current_speed=vector_length(user_movement_velocity)
+	new Float:coeff_to_multiply_with_extra=(user_current_speed/user_maxspeed)
+	coeff_to_multiply_with=coeff_to_multiply_with_extra*SALOME_PROJECTILE_SHOOT_RANDOMNESS
+	
+}
+
+randomize_vector_with_coeff(coeff_to_multiply_with,Velocity)
+
+//bullet launch pos
+entity_set_vector(Ent,EV_VEC_vuser1,Origin)
+
+entity_set_float(Ent,EV_FL_fuser1,SALOME_REVERB_SHOT_DELAY)
+entity_set_int(Ent,EV_INT_iuser1,0)
+
+create_fired_shot_disk(Origin,id,true)
+
+gNumBullets[id]-= (gNumBullets[id]>0)? 1:0
+trail(Ent,ORANGE,6,4,200)
+emit_sound(id, CHAN_WEAPON, SALOME_L96_SHOTSOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+
+modified_speed_flag = true
+
+}
 launch_bullet(id)
 {
 
@@ -432,72 +470,30 @@ if(!client_is_weapon_user(id, SH_L96A1)){
 	return
 }
 
-new Float: Origin[3], Float: Velocity[3], Float: vAngle[3], Ent
+static func_id;
+func_id = get_func_id("bullet_post_launch_callback",PLUGIN_ID_HERE)
 
-entity_get_vector(id, EV_VEC_origin , Origin)
-entity_get_vector(id, EV_VEC_v_angle, vAngle)
+if(!is_user_alive(id)){
 
-
-Ent = create_entity("info_target")
-
-if (!Ent){
 	return
 }
-entity_set_string(Ent, EV_SZ_classname, SALOME_PROJECTILE_CLASSNAME)
-entity_set_model(Ent, "models/grenade.mdl")
-
-new Float:MinBox[3] = {-1.0, -1.0, -1.0}
-new Float:MaxBox[3] = {1.0, 1.0, 1.0}
-entity_set_vector(Ent, EV_VEC_mins, MinBox)
-entity_set_vector(Ent, EV_VEC_maxs, MaxBox)
-
-entity_set_origin(Ent, Origin)
-entity_set_vector(Ent, EV_VEC_angles, vAngle)
-
-entity_set_int(Ent, EV_INT_effects, 2)
-entity_set_int(Ent, EV_INT_solid, SOLID_BBOX)
-entity_set_int(Ent, EV_INT_movetype, MOVETYPE_TOSS)
-entity_set_float(Ent,EV_FL_gravity, SALOME_PROJECTILE_GRAVITY_MULT*0.5)
-entity_set_edict(Ent, EV_ENT_owner, id)
-
-velocity_by_aim(id, floatround(SALOME_PROJECTILE_SPEED) , Velocity)
-new Float:coeff_to_multiply_with
-new resume_zoom=get_pdata_bool(id,m_bResumeZoom,XO_PLAYER*4)
-if(!(resume_zoom)){
-	coeff_to_multiply_with=SALOME_PROJECTILE_SHOOT_RANDOMNESS;
-}
-else{
-	
-	new Float:user_movement_velocity[3]
-	entity_get_vector(id,EV_VEC_velocity,user_movement_velocity)
-	new Float:user_maxspeed=get_user_maxspeed(id);
-	new Float:user_current_speed=vector_length(user_movement_velocity)
-	new Float:coeff_to_multiply_with_extra=(user_current_speed/user_maxspeed)
-	coeff_to_multiply_with=coeff_to_multiply_with_extra*SALOME_PROJECTILE_SHOOT_RANDOMNESS
-	
-}
-randomize_vector_with_coeff(coeff_to_multiply_with,Velocity)
-
-entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
-
-gNumBullets[id]-= (gNumBullets[id]>0)? 1:0
-
-//bullet launch pos
-entity_set_vector(Ent,EV_VEC_vuser1,Origin)
-
-entity_set_float(Ent,EV_FL_fuser1,SALOME_REVERB_SHOT_DELAY)
-entity_set_int(Ent,EV_INT_iuser1,0)
-new parm2[1]
-
-parm2[0]= id
-emit_sound(id, CHAN_WEAPON, SALOME_L96_SHOTSOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-create_fired_shot_disk(Origin,id,true)
-
-trail(Ent,ORANGE,6,4,200)
 
 
-entity_set_float( Ent, EV_FL_nextthink, floatadd(get_gametime( ) ,SALOME_PROJECTILE_PHYS_UPDATE_TIME));
-
+launch_projectile_native(id,
+	SALOME_PROJECTILE_SPEED,
+	SALOME_PROJECTILE_PHYS_UPDATE_TIME,
+	SALOME_PROJECTILE_CLASSNAME,
+	"models/grenade.mdl",
+	"info_target",
+	Float:{-1.0,-1.0,-1.0},
+	Float:{1.0,1.0,1.0},
+	0.0,
+	SOLID_BBOX,
+	MOVETYPE_TOSS,
+	2,
+	SALOME_PROJECTILE_GRAVITY_MULT*0.5,
+	PLUGIN_ID_HERE,
+	func_id)
 }
 
 public FwdTouchWorld( bull_et, World ) {

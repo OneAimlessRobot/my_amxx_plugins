@@ -199,15 +199,11 @@ public rivette_thinque(ent){
 		return
 	}
 
-	new parm[2]
-	parm[0] = ent
-	parm[1] = owner
-
 	
 	orient_entity_with_move_vector(ent)
 
 	
-	projectile_air_drag_update_speed(parm,MARIA_PROJECTILE_DRAG_CONST,MARIA_PROJECTILE_GRAVITY_MULT,MARIA_PROJECTILE_PHYS_UPDATE_TIME)
+	projectile_air_drag_update_speed(ent,MARIA_PROJECTILE_DRAG_CONST,MARIA_PROJECTILE_GRAVITY_MULT,MARIA_PROJECTILE_PHYS_UPDATE_TIME)
 	
 
 	entity_set_float( ent, EV_FL_nextthink, floatadd(get_gametime( ) ,MARIA_PROJECTILE_PHYS_UPDATE_TIME));
@@ -437,7 +433,7 @@ if(!client_is_weapon_user(id, SH_RIVETER)){
 		
 	return PLUGIN_CONTINUE
 }
-new Float: Origin[3], Float: Velocity[3], Float: vAngle[3], Ent
+static Float:Origin[3], Float:Velocity[3], Float:vAngle[3], Ent
 
 entity_get_vector(id, EV_VEC_origin , Origin)
 entity_get_vector(id, EV_VEC_v_angle, vAngle)
@@ -451,8 +447,8 @@ if (!Ent){
 entity_set_string(Ent, EV_SZ_classname, MARIA_PROJECTILE_CLASSNAME)
 entity_set_model(Ent, "models/shell.mdl")
 
-new Float:MinBox[3] = {-1.0, -1.0, -1.0}
-new Float:MaxBox[3] = {1.0, 1.0, 1.0}
+static Float:MinBox[3] = {-1.0, -1.0, -1.0},
+	Float:MaxBox[3] = {1.0, 1.0, 1.0}
 entity_set_vector(Ent, EV_VEC_mins, MinBox)
 entity_set_vector(Ent, EV_VEC_maxs, MaxBox)
 
@@ -485,12 +481,6 @@ gNumRivets[id]-= (gNumRivets[id]>0)? 1:0
 //rivet launch pos
 entity_set_vector(Ent,EV_VEC_vuser1,Origin)
 
-new parm[2]
-new parm2[1]
-
-parm2[0]= id
-parm[0] = Ent
-parm[1] = id
 emit_sound(id, CHAN_WEAPON, MARIA_RIVETER_SHOTSOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 
 trail(Ent,LTGREEN,3,5)
@@ -505,7 +495,7 @@ public rrrrroovvetoooo_touque_playor(pToucher, pTouched)
 {
 	if(!is_valid_ent(pToucher)) return
 
-	new Float:origin[3]
+	static Float:origin[3]
 	entity_get_vector(pToucher,EV_VEC_origin,origin);
 
 	new bool:is_direct_hit = bool:is_user_alive(pTouched);
@@ -517,7 +507,7 @@ public rrrrroovvetoooo_touque_playor(pToucher, pTouched)
 	}
 	new owner = entity_get_edict(pToucher,EV_ENT_owner);
 
-	new Float:rivet_launch_pos[3]
+	static Float:rivet_launch_pos[3]
 	entity_get_vector(pToucher,EV_VEC_vuser1,rivet_launch_pos)
 	new Float:distance=vector_distance(origin,rivet_launch_pos);
 	new Float:falloff_coeff= (is_direct_hit?0.0:min_macro(1.0,distance/MARIA_PROJECTILE_DAMAGE_FALLOFF_DIST));

@@ -6,8 +6,7 @@
 #define MORALIZER_WEAPON_ID CSW_TMP
 
 #define COUNTER_UP_SFX "shmod/Teliko/counter_plus_plus.wav"
-#define NEUROBLAST_CHARGE "shmod/ester/ester_buildup.wav"
-#define NEUROBLAST_RELEASE  "shmod/ester/ester_release.wav"
+#define NEUROBLAST_CHARGE "shmod/ester/ester_neuroblast_load.wav"
 
 #define PAN_P_MODEL "models/shmod/ester/pan/p_knife.mdl"
 #define PAN_V_MODEL  "models/shmod/ester/pan/v_knife.mdl"

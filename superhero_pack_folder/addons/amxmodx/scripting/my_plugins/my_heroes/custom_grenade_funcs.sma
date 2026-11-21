@@ -43,6 +43,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt15.inc"
 #include "../my_include/stripweapons.inc"
 
 #define PLUGIN "Superhero custom grenades module"
@@ -399,8 +400,13 @@ new grenade_change_button_pressed_mask = 0
 new bot_grenade_change_button_pressed_mask = 0
 
 new sh_grenade_armed_mask = 0
+enum player_charging_struct{
 
-new Float:curr_charge[SH_MAXSLOTS+1]
+	Float:curr_charge_time,
+	sh_grenade_type:the_grenade_type
+
+}
+new curr_charge[SH_MAXSLOTS+1][player_charging_struct]
 
 new curr_grenade_ammo[SH_MAXSLOTS+1][sh_grenade_type]
 
@@ -441,10 +447,12 @@ bool:user_has_grenade_on(id,&my_weapon_ids:weapon_id=my_weapon_ids:0){
 	return result
 
 }
+
+new PLUGIN_ID_HERE
 public plugin_init(){
 	
 	
-	register_plugin(PLUGIN, VERSION, AUTHOR);
+	PLUGIN_ID_HERE = register_plugin(PLUGIN, VERSION, AUTHOR);
 	
 	for(new sh_grenade_type:i = sh_grenade_type:1; i<sh_grenade_type;i++ ){
 
@@ -550,7 +558,7 @@ uncharge_user_primitive(id){
 		progressBar(id,0)
 	}
 
-	curr_charge[id]=0.0;
+	curr_charge[id][curr_charge_time]=0.0;
 	UnSet_BitVar(sh_grenade_armed_mask ,id)
 }
 public event_curr_grenade(id){
@@ -693,7 +701,7 @@ public CmdStart(id, uc_handle)
 					}
 					prev_user_grenade[id]=curr_user_grenade[id]
 					curr_user_grenade[id]=curr
-					curr_charge[id] = (sh_grenade_structs_arr[gren_type][min_charge_time] +
+					curr_charge[id][curr_charge_time] = (sh_grenade_structs_arr[gren_type][min_charge_time] +
 									
 									(generate_float(0.1,0.99) *
 								
@@ -733,7 +741,7 @@ public CmdStart(id, uc_handle)
 		
 		if(!Get_BitVar(sh_grenade_armed_mask,id)){
 			Set_BitVar(sh_grenade_armed_mask,id)
-			curr_charge[id]=0.0
+			curr_charge[id][curr_charge_time]=0.0
 			switch_grenade_animation_on_player(id,cs_grenade_pullpin)
 			progressBar(id,
 					floatround(sh_grenade_structs_arr[gren_type][max_charge_time]))
@@ -742,11 +750,11 @@ public CmdStart(id, uc_handle)
 		}
 	}
 	else if(Get_BitVar(sh_grenade_armed_mask,id)){
-		if((curr_charge[id]>=sh_grenade_structs_arr[gren_type][min_charge_time])){
+		if((curr_charge[id][curr_charge_time]>=sh_grenade_structs_arr[gren_type][min_charge_time])){
 			launch_custom_grenade(id,gren_type)
 			
 		}
-		else if(curr_charge[id]>0.0){
+		else if(curr_charge[id][curr_charge_time]>0.0){
 
 			uncharge_user_primitive(id)
 			switch_grenade_animation_on_player(id,
@@ -817,13 +825,13 @@ public charge_task(any:param[1],id){
 
 	new my_weapon_ids:wpn_id=my_weapon_ids:get_user_weapon(id)
 
-	curr_charge[id]=floatadd(curr_charge[id],SH_CUSTOM_GRENADE_CHARGE_PERIOD)
+	curr_charge[id][curr_charge_time]=floatadd(curr_charge[id][curr_charge_time],SH_CUSTOM_GRENADE_CHARGE_PERIOD)
 	
 	if(((wpn_id==sh_grenade_structs_arr[the_type][sh_grenade_weapon_classid])&&
 				curr_user_grenade[id]==the_type)&&
 				Get_BitVar(sh_grenade_armed_mask,id)){
 
-		if(((100.0*(curr_charge[id]/sh_grenade_structs_arr[the_type][max_charge_time])))>100.0){
+		if(((100.0*(curr_charge[id][curr_charge_time]/sh_grenade_structs_arr[the_type][max_charge_time])))>100.0){
 
 			launch_custom_grenade(id,the_type)
 
@@ -863,41 +871,22 @@ public _get_custom_grenade_ammo(iPlugin,iParams){
 	
 }
 
-launch_custom_grenade(id,sh_grenade_type:the_type)
-{
-
-switch_grenade_animation_on_player(id,cs_grenade_throw)
-
-static Float:Origin[3], Float:Velocity[3], Float:user_vel[3], Float:vAngle[3], Ent
-
-pev(id,  pev_origin , Origin)
-pev(id,  pev_v_angle, vAngle)
-
-Ent = create_entity("info_target")
-
-if (!Ent) return
-
-set_pev(Ent, pev_classname,SH_CUSTOM_GRENADE_CLASSNAME)
-
-my_entity_set_model(Ent, sh_grenade_structs_arr[the_type][sh_grenade_modelname])
+public custom_grenade_post_launch_callback(Ent, id, Float:Velocity[3], &bool:modified_speed_flag){
 
 
+if(!is_valid_ent(Ent)){
 
-static Float:MinBox[3] = {-1.0, -1.0, -1.0}
-static Float:MaxBox[3] = {1.0, 1.0, 1.0}
-set_pev(Ent, pev_mins, MinBox)
-set_pev(Ent, pev_maxs, MaxBox)
+	return
+}
+if(!is_user_alive(id)){
 
+	return
+	
+}
+static Float:user_vel[3],
+	sh_grenade_type:the_type
 
-Origin[2]+=50.0
-my_entity_set_origin(Ent, Origin)
-set_pev(Ent, pev_angles, vAngle)
-
-set_pev(Ent, pev_effects, EF_DIMLIGHT)
-set_pev(Ent, pev_solid, SOLID_BBOX)
-set_pev(Ent, pev_movetype, MOVETYPE_BOUNCE)
-set_pev(Ent, pev_owner, id)
-
+the_type = curr_charge[id][the_grenade_type]
 /*
 
 set grenade type!
@@ -908,10 +897,6 @@ Its iuser3!
 
 set_pev(Ent, pev_iuser3,_:the_type)
 
-velocity_by_aim(id, floatround(
-				sh_grenade_structs_arr[the_type][sh_grenade_throw_speed]*
-				(curr_charge[id]/sh_grenade_structs_arr[the_type][max_charge_time])),
-				Velocity)
 
 pev(id, pev_velocity, user_vel)
 
@@ -961,7 +946,42 @@ gren_trail_fx(Ent,the_type)
 
 set_pev(Ent, pev_iuser1,0)
 set_pev(Ent, pev_iuser2,0)
-set_pev(Ent, pev_nextthink,get_gametime()+1.0)
+
+modified_speed_flag = true
+
+}
+launch_custom_grenade(id,sh_grenade_type:the_type)
+{
+
+if(!is_user_alive(id)){
+
+	return
+}
+switch_grenade_animation_on_player(id,cs_grenade_throw)
+
+static func_id;
+func_id = get_func_id("custom_grenade_post_launch_callback",PLUGIN_ID_HERE)
+
+curr_charge[id][the_grenade_type] = the_type
+
+launch_projectile_native(id,
+	sh_grenade_structs_arr[the_type][sh_grenade_throw_speed]*
+				(curr_charge[id][curr_charge_time]/sh_grenade_structs_arr[the_type][max_charge_time]),
+	1.0,
+	SH_CUSTOM_GRENADE_CLASSNAME,
+	sh_grenade_structs_arr[the_type][sh_grenade_modelname],
+	"info_target",
+	Float:{-1.0,-1.0,-1.0},
+	Float:{1.0,1.0,1.0},
+	50.0,
+	SOLID_BBOX,
+	MOVETYPE_BOUNCE,
+	EF_DIMLIGHT,
+	1.0,
+	PLUGIN_ID_HERE,
+	func_id)
+
+
 }
 
 

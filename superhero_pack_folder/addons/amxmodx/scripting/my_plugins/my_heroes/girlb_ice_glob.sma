@@ -125,6 +125,9 @@ public girlb_skating(id, uc_handle, seed)
     }
 	else if(Get_BitVar(is_glowing_mask,id)){//avoids calling it too many times (heavy function)
 		UnSet_BitVar(is_glowing_mask,id)
+		if(Get_BitVar(was_skating_mask,id)){
+			kill_trails_on_user(id)
+		}
 	}
 	return return_result;
 }
@@ -355,20 +358,20 @@ public _launch_ice_glob(iPlugin,iParams)
 	
 	if(!sh_get_user_has_hero(id,gHeroID)||!is_user_alive(id)) return
 	
-	new Float: Origin[3], Float: Velocity[3], Float: vAngle[3], Ent
-	new Float: advance[3]
+	static Float:Origin[3], Float:Velocity[3], Float:vAngle[3], Ent,
+			Float:advance[3]
 
 	pev(id, pev_origin , Origin)
 	pev(id, pev_angles, vAngle)
 	
-	velocity_by_aim(id,5,advance)
+	my_velocity_by_aim(id,5.0,advance,dummy_vector)
 
 	add_3d_vectors(Origin,advance,Origin)
 	
 	Ent = create_entity("info_target")
 	
-	if (!pev_valid(Ent)){
-		sh_chat_message(id,gHeroID,"Glob failure!");
+	if (!(Ent)){
+		
 		return
 	}
 	

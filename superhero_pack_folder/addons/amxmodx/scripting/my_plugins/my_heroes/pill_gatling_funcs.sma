@@ -633,7 +633,7 @@ fire_mode(id,entity, fire_mode_enum:type) {
 launch_pill(id)
 {
 
-	new Float: Origin[3], Float: Velocity[3], Float: vAngle[3], Ent
+	static Float:Origin[3], Float:Velocity[3], Float:vAngle[3], Ent
 
 	entity_get_vector(id, EV_VEC_origin , Origin)
 	entity_get_vector(id, EV_VEC_v_angle, vAngle)
@@ -672,7 +672,7 @@ launch_pill(id)
 	
 	//this will store the fx num in the pill ent
 	entity_set_int(Ent,EV_INT_iuser3,fx_num)
-	new color[3]
+	static color[3]
 	sh_get_pill_color(fx_num,id,color)
 
 	aura(id,color,3,1)

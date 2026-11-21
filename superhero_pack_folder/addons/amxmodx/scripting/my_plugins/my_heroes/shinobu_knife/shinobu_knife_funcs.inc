@@ -42,6 +42,17 @@ stock const fwend_sentences[shinobu_fwend_sentence_id][]={
 
 }
 
+enum shinobu_old_sentence_id{
+
+    HIGH_RISK_GROUP,
+    UNCONSPICUOUSLY
+}
+stock const old_sentences[shinobu_old_sentence_id][]={
+
+    "Ive been told you were in the high-risk group~",
+    "Your body is more fragile, right?"
+
+}
 enum shinobu_shinobu_shinobu_shinobu_dickery_sentences_id{
 
     TUMMY_HURT=0,

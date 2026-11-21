@@ -20,10 +20,6 @@ new const gHeroName[] = "Laralel"
 new pcvar_num_spears
 
 
-new dmg_source_name_short_laralel_spear[SAFE_BUFFER_SIZE+1]="laralel_spear"
-new dmg_source_name_log_laralel_spear[SAFE_BUFFER_SIZE+1]="laralel_spear"
-new custom_dmg_id_laralel_spear
-
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -41,14 +37,6 @@ public plugin_init()
 	gHeroID=shCreateHero(gHeroName, "laralel the hunter!", "Get a spear!", false, "laralel_level" )
 
 	sh_register_superheromod_weapon_model(gHeroID,CSW_KNIFE,SPEAR_V_MODEL,SPEAR_P_MODEL)
-	
-	custom_dmg_id_laralel_spear=sh_log_custom_damage_source(gHeroID,
-			dmg_source_name_short_laralel_spear,
-			dmg_source_name_log_laralel_spear,1)
-
-	/*sh_register_admin_only_hero(gHeroID,ADMIN_ALL,0,
-				"Its under maintenance")*/
-	RegisterHam(Ham_TakeDamage,"player","Laralel_ham_damage",1,true)
 	
 	
 
@@ -79,29 +67,6 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 		spear_set_user_spear(id, false)
 	}
 	
-	
-}
-public Laralel_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
-{
-	if(damage <= 0.0){
-
-		return HAM_IGNORED
-	}
-	if ( !sh_is_active() || !is_user_alive(id)||!is_user_alive(attacker)){
-
-		return HAM_IGNORED
-	}
-
-	if(attacker == id) return HAM_IGNORED 
-
-	new my_hitpoint_enum:the_hitpoint = my_hitpoint_enum:get_pdata_int(id, m_iLastHitGroup, XO_PLAYER)
-	
-	pev(id, pev_dmg_take, damage)
-
-	return do_bleed_knife_attack(id,attacker,gHeroID,SPEAR_SLASH_DAMAGE,SPEAR_STAB_DAMAGE,
-						sh_get_user_has_hero(attacker,gHeroID),
-								custom_dmg_id_laralel_spear,
-								dmg_source_name_short_laralel_spear,_,_,the_hitpoint);
 	
 }
 //----------------------------------------------------------------------------------------------

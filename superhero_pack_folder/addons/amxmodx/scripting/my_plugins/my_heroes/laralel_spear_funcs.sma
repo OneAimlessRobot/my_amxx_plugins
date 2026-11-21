@@ -15,38 +15,42 @@
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt15.inc"
 #include "../my_include/my_author_header.inc"
 
+new const DEBUG = 0
 
-
-#define SPEAR_CLASSNAME "spear"
+#define SPEAR_CLASSNAME "laralel_spear"
 
 #define SPEAR_RETRIEVE true
 
 
-#define SPEAR_SPEED 1750.0
+#define SPEAR_SPEED 3000.0
 
 #define SPEAR_SHOOT_PERIOD 1.0
 
-#define SPEAR_LAUNCH_DAMAGE 100
-#define SPEAR_LAUNCH_FORCE 2300.0
-#define SPEAR_LAUNCH_EXPLODE_RADIUS 100.0
+#define SPEAR_LAUNCH_DAMAGE 500.0
+#define SPEAR_LAUNCH_FORCE 1600.0
+#define SPEAR_LAUNCH_EXPLODE_RADIUS 200.0
 
-#define SPEAR_SMASH_DAMAGE 400
-#define SPEAR_SMASH_FORCE 2750.0
-#define SPEAR_SMASH_EXPLODE_RADIUS 70.0
+#define SPEAR_SMASH_DAMAGE 500.0
+#define SPEAR_SMASH_FORCE 3000.0
+#define SPEAR_SMASH_EXPLODE_RADIUS 500.0
 
 
 #define SPEAR_SHOOT_RANDOMNESS 0.0
 
 #define SPEAR_CHARGE_PERIOD 0.1
-#define SPEAR_CHARGE_TIMES floatround(floatdiv(max_charge_time,SPEAR_CHARGE_PERIOD))
+
+new dmg_source_name_short_laralel_spear[SAFE_BUFFER_SIZE+1]="laralel_spear"
+new dmg_source_name_log_laralel_spear[SAFE_BUFFER_SIZE+1]="laralel_spear"
+new custom_dmg_id_laralel_spear
 
 enum spear_mode{
 	spear_mode_off=0,
 	spear_mode_launch=1,
 	spear_mode_blast=2,
-  spear_mode_max=3
+  	spear_mode_max=3
 };
 
 stock const spear_mode_names[spear_mode_max][]={
@@ -74,10 +78,11 @@ new Float:min_charge_time,Float:max_charge_time
 stock SPEAR_CHARGE_TASKID,
 	UNSPEAR_CHARGE_TASKID
 
+new PLUGIN_ID_HERE;
 public plugin_init(){
 
 
-	register_plugin(PLUGIN, VERSION, AUTHOR);
+	PLUGIN_ID_HERE = register_plugin(PLUGIN, VERSION, AUTHOR);
 
 
 	register_forward(FM_CmdStart, "CmdStart");
@@ -95,7 +100,35 @@ public plugin_init(){
 	
 	register_entity_as_wall_touchable(SPEAR_CLASSNAME,"FwdTouchWorld")
 	register_custom_touchable(SPEAR_CLASSNAME,"spaaaaeer_touch_player",player_vector,1)
+	RegisterHam(Ham_TakeDamage,"player","Laralel_ham_damage",1,true)
+	
+	
 
+		
+}
+
+public Laralel_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
+{
+	if(damage <= 0.0){
+
+		return HAM_IGNORED
+	}
+	if ( !sh_is_active() || !is_user_alive(id)||!is_user_alive(attacker)){
+
+		return HAM_IGNORED
+	}
+
+	if(attacker == id) return HAM_IGNORED 
+
+	new my_hitpoint_enum:the_hitpoint = my_hitpoint_enum:get_pdata_int(id, m_iLastHitGroup, XO_PLAYER)
+	
+	pev(id, pev_dmg_take, damage)
+
+	return do_bleed_knife_attack(id,attacker,gHeroID,SPEAR_SLASH_DAMAGE,SPEAR_STAB_DAMAGE,
+						client_is_weapon_user(attacker, SH_LARALEL_HARPOON_SPEAR) ,
+								custom_dmg_id_laralel_spear,
+								dmg_source_name_short_laralel_spear,_,_,the_hitpoint);
+	
 }
 public plugin_natives(){
 
@@ -253,19 +286,22 @@ public CmdStart(id, uc_handle)
 	}
 	if(weapon==CSW_KNIFE){
 	
-		if(!player_spear_mode[id]) return FMRES_IGNORED
+		
+
+		if((button & IN_ATTACK2)&&((player_spear_mode[id]>enum_zero)||(gNumSpears[id]<=0)))
+		{
+			button &= ~IN_ATTACK2;
+			set_uc(uc_handle, UC_Buttons, button);
+		}
 
 		if(button & IN_ATTACK)
 		{
 			button &= ~IN_ATTACK;
 			set_uc(uc_handle, UC_Buttons, button);
-			if( !(is_user_alive(id))) return FMRES_IGNORED
+			if(!player_spear_mode[id]) return FMRES_IGNORED
+			
 			if(gNumSpears[id]<=0)
 			{
-				
-				if(!is_user_bot(id)){
-					client_print(id, print_center, "You are out of spears")
-				}
 				return FMRES_IGNORED
 			}
 			if(!Get_BitVar(spear_armed_mask,id)){
@@ -308,6 +344,11 @@ public loadCVARS()
 {
 	
 	gHeroID = laralel_get_hero_id()
+	
+	custom_dmg_id_laralel_spear=sh_log_custom_damage_source(gHeroID,
+		dmg_source_name_short_laralel_spear,
+		dmg_source_name_log_laralel_spear,1)
+		
 	max_charge_time=get_cvar_float("lara_spear_max_charge_time")
 	min_charge_time=get_cvar_float("lara_spear_min_charge_time")
 }
@@ -377,51 +418,54 @@ public Ham_Weapon_Stab(weapon_ent)
 
 	return HAM_IGNORED
 }
+public spear_post_launch_callback(Ent, id, Float:Velocity[3], &bool:modified_speed_flag){
 
-launch_spear(id)
-{
-	new Float: Origin[3], Float: Velocity[3], Float: vAngle[3], Ent
+	if(!is_valid_ent(Ent)){
 
-	entity_get_vector(id, EV_VEC_origin , Origin)
-	entity_get_vector(id, EV_VEC_v_angle, vAngle)
+		return
+	}
 
-
-	Ent = create_entity("info_target")
-
-	if (!Ent) return PLUGIN_HANDLED
-
-	entity_set_string(Ent, EV_SZ_classname, SPEAR_CLASSNAME)
-	entity_set_model(Ent, SPEAR_W_MODEL)
-
-	new Float:MinBox[3] = {-1.0, -1.0, -1.0}
-	new Float:MaxBox[3] = {1.0, 1.0, 1.0}
-	entity_set_vector(Ent, EV_VEC_mins, MinBox)
-	entity_set_vector(Ent, EV_VEC_maxs, MaxBox)
-
-	
-	Origin[2]+=50.0
-	entity_set_origin(Ent, Origin)
-	entity_set_vector(Ent, EV_VEC_angles, vAngle)
-
-	entity_set_int(Ent, EV_INT_effects, 2)
-	entity_set_int(Ent, EV_INT_solid, SOLID_BBOX)
-	entity_set_int(Ent, EV_INT_movetype, MOVETYPE_BOUNCE)
-
-	entity_set_edict(Ent,EV_ENT_owner,id)
-	
-	velocity_by_aim(id, floatround(SPEAR_SPEED*(curr_charge[id]/max_charge_time)) , Velocity)
-
-	entity_set_vector(Ent, EV_VEC_velocity ,Velocity)
-	gNumSpears[id]-= (gNumSpears[id]>0)? 1:0
-
-	emit_sound(id, CHAN_WEAPON, THROWABLE_LAUNCH_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+	entity_set_edict(Ent, EV_ENT_owner,0)
+	entity_set_edict(Ent, EV_ENT_euser1, id)
+	//has touched ENEMY player
+	entity_set_int(Ent, EV_INT_iuser1, false)
+	entity_set_float(Ent, EV_FL_fuser1, get_charge_index_from_id(id))
 
 	//set pickability status
 	entity_set_int(Ent,EV_INT_iuser2,false)
+	emit_sound(id, CHAN_WEAPON, THROWABLE_LAUNCH_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	trail(Ent,WHITE,10,5)
 	entity_set_string(id, EV_SZ_viewmodel, NOSPEAR_V_MODEL)
-	entity_set_float( Ent, EV_FL_nextthink, floatadd(get_gametime( ) ,SPEAR_SHOOT_PERIOD));
-	return PLUGIN_CONTINUE
+	gNumSpears[id]-= (gNumSpears[id]>0)? 1:0
+
+}
+launch_spear(id)
+{
+	static func_id;
+	func_id = get_func_id("spear_post_launch_callback",PLUGIN_ID_HERE)
+
+	if(!is_user_alive(id)){
+
+		return
+	}
+
+
+	launch_projectile_native(id,
+		SPEAR_SPEED*(curr_charge[id]/max_charge_time),
+		SPEAR_SHOOT_PERIOD,
+		SPEAR_CLASSNAME,
+		SPEAR_W_MODEL,
+		"info_target",
+		Float:{-10.0,-10.0, 0.0},
+		Float:{10.0,10.0,7.0},
+		50.0,
+		SOLID_TRIGGER,
+		MOVETYPE_TOSS,
+		2,
+		1.0,
+		PLUGIN_ID_HERE,
+		func_id)
+
 }
 
 
@@ -429,12 +473,25 @@ public lara_spear_decide_func(id){
 
 	if ( !is_user_alive(id)||!client_is_weapon_user(id, SH_LARALEL_HARPOON_SPEAR)) return ;
 
-	new spear_mode:the_mode=player_spear_mode[id];
+	new spear_mode:the_mode=player_spear_mode[id],
+		Float:charge_index = get_charge_index_from_id(id)
+
 	switch(the_mode){
 		case spear_mode_launch:{
 			launch_spear(id)
 
-			if(!is_user_bot(id)){
+			if(is_user_bot(id)){
+				return
+
+			}
+			if(gNumSpears[id]<=0)
+			{
+				
+				client_print(id, print_center, "You are out of spears")
+
+			}
+			else{
+
 				client_print(id,print_center,"You have %d spears left",
 				gNumSpears[id]
 				);
@@ -444,9 +501,9 @@ public lara_spear_decide_func(id){
 
 			
 			explosion(gHeroID,id,
-							get_charge_index_from_id(id)*SPEAR_SMASH_EXPLODE_RADIUS,
-							get_charge_index_from_id(id)*float(SPEAR_SMASH_DAMAGE),
-							get_charge_index_from_id(id)*SPEAR_SMASH_FORCE,
+							charge_index*SPEAR_SMASH_EXPLODE_RADIUS,
+							charge_index*SPEAR_SMASH_DAMAGE,
+							charge_index*SPEAR_SMASH_FORCE,
 							1)
 		}
 		default:{
@@ -463,30 +520,56 @@ public spaaaaeer_touch_player(pToucher, pTouched)
 	if(!is_valid_ent(pToucher)) return
 
 
-	new oid = entity_get_edict(pToucher, EV_ENT_owner)
+	static oid,
+		Float:charge_index
+		
+	oid = entity_get_edict(pToucher, EV_ENT_euser1),
+	charge_index = entity_get_float(pToucher, EV_FL_fuser1)
+
 	//new Float:origin[3],dist
 	
 	if(is_user_alive(pTouched))
 	{
+
 		//get pickability status
 		new is_pickable=entity_get_int(pToucher,EV_INT_iuser2)
 		if(client_is_weapon_user(pTouched, SH_LARALEL_HARPOON_SPEAR)&&(pTouched==oid)&&is_pickable&& SPEAR_RETRIEVE){
-		
-			gNumSpears[oid]++
-			sh_chat_message(oid,gHeroID,"Youve picked up your spear back! You now have %d",gNumSpears[oid])
-			remove_entity(pToucher);
-			return
-		}
-		
-		if(!is_user_alive(oid)){
+			if(is_user_alive(oid)){
+				gNumSpears[oid]++
+				sh_chat_message(oid,gHeroID,"Youve picked up your spear back! You now have %d",gNumSpears[oid])
+				if(DEBUG){
 
+					sh_chat_message(oid,gHeroID,"The launching charge of this spear was: %0.2f",charge_index)
+
+				}
+				remove_entity(pToucher);
+			}
 			return
 		}
 		
-		if(!sh_clients_are_same_team(pTouched,oid)&&(pTouched!=oid)){
+		//has touched ENEMY player
+		
+		static bool:has_touched_enemy_player;
+		
+		has_touched_enemy_player = bool:entity_get_int(pTouched, EV_INT_iuser1)
+
+		if(!sh_clients_are_same_team(pTouched,oid)&&(pTouched!=oid)&&!has_touched_enemy_player){
+			
+			//has touched ENEMY player
+
+			entity_set_int(pToucher, EV_INT_iuser1, true)
+
 			sh_bleed_user(pTouched,oid,BLEED_NORMAL,gHeroID)
-			explosion(gHeroID,pToucher,get_charge_index_from_id(oid)*SPEAR_LAUNCH_EXPLODE_RADIUS,get_charge_index_from_id(oid)*float(SPEAR_LAUNCH_DAMAGE), get_charge_index_from_id(oid)*SPEAR_LAUNCH_FORCE,0)
-			emit_sound(pToucher, CHAN_WEAPON, PIERCE_WOUND_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
+			static Float:here_origin_of_explosion[3]
+
+			entity_get_vector(pToucher, EV_VEC_origin, here_origin_of_explosion)
+
+			explosion_with_origin(gHeroID,oid,here_origin_of_explosion,charge_index*SPEAR_LAUNCH_EXPLODE_RADIUS,charge_index*SPEAR_LAUNCH_DAMAGE, charge_index*SPEAR_LAUNCH_FORCE,0)
+			
+			if(!is_valid_ent(pToucher)){
+
+				return
+			}
 			//set pickability status
 			entity_set_int(pToucher,EV_INT_iuser2,true)
 			entity_set_float( pToucher, EV_FL_nextthink, floatadd(get_gametime( ) ,SPEAR_SHOOT_PERIOD));

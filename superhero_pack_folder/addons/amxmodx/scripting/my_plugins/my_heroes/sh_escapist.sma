@@ -1,16 +1,4 @@
-// Static Shock - Based from Iron Man, with modifications by me, Neogaiden(z)/Strife
 
-/* CVARS - copy and paste to shconfig.cfg
-
-//Static Shock
-shock_level 0
-shock_timer 0.1			//How often (seconds) to run the loop
-shock_maxspeed 930			//Max Speed(def=930)
-shock_armorfuel 1			//Armor Refill each second(def=1)
-shock_fuelcost 2			//Armor Used (def=2)
-shock_armor 250			//Armor Starts with (def=250)
-
-*/
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_ENTITY_VECTORS
@@ -203,7 +191,7 @@ switch(key)
 }
 }
 //----------------------------------------------------------------------------------------------
-public escapist_loop(id)
+public escapist_loop(taskid)
 {	
 	if ( !sh_is_active() || sh_is_freezetime() ) return
 

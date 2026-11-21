@@ -11,6 +11,7 @@
 #include "shinobu_knife/shinobu_knife_funcs.inc"
 #include "shinobu_knife/shinobu_usp_funcs.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 
 #define PLUGIN "Shinobu knife funcs"
 #define VERSION "1.0.0"
@@ -214,7 +215,12 @@ public positionChangeCheck(array[], attacker)
 		sh_end_cooldown(attacker+SH_COOLDOWN_TASKID)
 		return
 	}
-	sh_chat_message(tg,gHeroID,"%s",fwend_sentences[shinobu_fwend_sentence_id:generate_int(0,sizeof(fwend_sentences)-1)])	
+	sh_chat_message(tg,gHeroID,"%s",
+					sh_get_player_has_hero_prop(tg, SH_IS_ELDER)?
+					(old_sentences[shinobu_old_sentence_id:generate_int(0,sizeof(old_sentences)-1)]):
+					(fwend_sentences[shinobu_fwend_sentence_id:generate_int(0,sizeof(fwend_sentences)-1)]))	
+	
+	
 	sh_chat_message(attacker,gHeroID,"%s",fwend_sentences[shinobu_fwend_sentence_id:generate_int(0,sizeof(fwend_sentences)-1)])	
 	entity_set_vector(attacker, EV_VEC_velocity, null_vector)
 	shinobu_set_user_tagged_player(attacker,0)

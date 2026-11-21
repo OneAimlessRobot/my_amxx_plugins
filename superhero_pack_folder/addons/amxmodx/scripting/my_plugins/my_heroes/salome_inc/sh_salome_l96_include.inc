@@ -6,6 +6,5 @@
 #define SALOME_WEAPON_CLASSID CSW_AWP
 
 native l96_set_user_l96(id, bool:value_to_set, start_ammo = 100)
-native l96_set_num_bullets(id,value_to_set)
 
 

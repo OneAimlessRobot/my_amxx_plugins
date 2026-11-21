@@ -10,23 +10,32 @@
 
 #define FLIGHT_DRAIN_INFLICT_PERIOD 0.33
 
+#define FLIGHT_MOVEMENT_PERIOD 0.1
+
 #define COLOR_STRONG WHITE
 #define COLOR_WEAK GREEN
 
 #define ESTER_NUM_BLOWUPSOUNDS 11
 
+
+
+
+
+
+
+
 stock const ester_blowup_sounds[ESTER_NUM_BLOWUPSOUNDS][128]={
 
-	"shmod/ester/flight/flight_blowup1.wav",
-	"shmod/ester/flight/flight_blowup2.wav",
-	"shmod/ester/flight/flight_blowup3.wav",
-	"shmod/ester/flight/flight_blowup4.wav",
-	"shmod/ester/flight/flight_blowup5.wav",
-	"shmod/ester/flight/flight_blowup6.wav",
+	"shmod/ester/flight/preventative_conniferous.wav",
+	"shmod/ester/flight/kaitai_the_maid_404_Dante_the_maid_cover.wav",
+	"shmod/ester/flight/Kichi_-_REBORN_-_02_Shallow_Emptiness.wav",
+	"shmod/ester/flight/mahokichi_deathless.wav",
 	"shmod/ester/flight/amurican_malez.wav",
 	"shmod/ester/flight/end_of_days.wav",
 	"shmod/ester/flight/IT_AINT_THE_END_OF_ME.wav",
 	"shmod/ester/flight/This_Fire.wav",
+	"shmod/ester/flight/born_to_win.wav",
+	"shmod/ester/flight/captain_tsubasa_counter_attack.wav",
 	"shmod/ester/flight/No_More_Words.wav"
 
 }
@@ -34,6 +43,10 @@ stock const ester_blowup_sounds[ESTER_NUM_BLOWUPSOUNDS][128]={
 stock curr_player_sound[SH_MAXSLOTS+1]
 
 #define ESTER_RESPAWN_FAIL_SOUND "shmod/ester/flight/flight_blowup_fail.wav"
+
+#define ESTER_FIRST_RESPAWN_SOUND "shmod/ester/flight/chikoi_the_maid_autumn_melancholy.wav"
+
+#define ESTER_LAST_RESPAWN_SOUND "shmod/ester/flight/The_Last_Breath_Of_A_Hollow_Bosom__mp3.wav"
 
 #define ESTER_RESPAWN_FAIL_MSG "You're done. You get no more chances."
 

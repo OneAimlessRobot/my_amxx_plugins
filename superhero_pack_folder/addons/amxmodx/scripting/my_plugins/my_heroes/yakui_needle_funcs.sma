@@ -18,6 +18,7 @@
 new fx_id:curr_needle_fx[SH_MAXSLOTS+1]
 new needle_on_mask = 0
 
+
 new mode_change_button_pressed_mask = 0;
 
 public plugin_init(){
@@ -49,13 +50,15 @@ public player_prethink_yakui_weapon(id, uc_handle)
 	}
 	if ( !is_user_alive(id) ||!sh_get_user_has_hero(id, gHeroID) ) return FMRES_IGNORED;
 
-	if(sh_get_id_bit(id, SH_CONTROLLING_VEHICLE)) return FMRES_IGNORED
+	if(sh_get_id_bit(id, SH_CONTROLLING_VEHICLE)||sh_get_id_bit(id, SH_USER_IS_FLYING)) return FMRES_IGNORED
 
 	static button;
 	button= get_uc(uc_handle, UC_Buttons);
 
 	static prev_button;
 	prev_button = entity_get_int(id, EV_INT_oldbuttons)
+
+
 	if((button & IN_ALT1)&&!(prev_button & IN_ALT1)){
 
 		if(!Get_BitVar(mode_change_button_pressed_mask, id)){
@@ -63,8 +66,7 @@ public player_prethink_yakui_weapon(id, uc_handle)
 			if(wpnid==CSW_KNIFE){
 				Set_BitVar(mode_change_button_pressed_mask, id);
 				sh_chat_message(id,gHeroID,"Mode changed")
-				new has_needle=Get_BitVar(needle_on_mask,id);
-				Assign_BitVar(needle_on_mask,id,!has_needle)
+				Assign_BitVar(needle_on_mask,id,!Get_BitVar(needle_on_mask,id))
 			}
 		}
 	}
@@ -86,6 +88,11 @@ public weaponChange(id)
 			notify_fx_user(id)
 		}
 	}
+	else if(Get_BitVar(needle_on_mask, id)){
+
+		Assign_BitVar(needle_on_mask,id,false_for_macro)
+		kill_trails_on_user(id)
+	}
 	return PLUGIN_CONTINUE
 	
 }
@@ -95,10 +102,7 @@ notify_fx_user(id){
 	static needle_name[128]
 	sh_get_fx_color_name(curr_needle_fx[id],needle_color,needle_name);
 	sh_screen_fade(id, 0.1, 0.9, needle_color[0], needle_color[1], needle_color[2], 50)
-	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-	write_byte(TE_KILLBEAM)	// TE_KILLBEAM
-	write_short(id)
-	message_end()
+	kill_trails_on_user(id)
 	playertrail(id)
 	if(!is_user_bot(id)){
 		sh_chat_message(id,gHeroID,"Effect switched! On next swing, you will inject: %s fluid",needle_name)
@@ -233,10 +237,7 @@ public _gatling_set_needle(iPlugin,iParams){
 	}
 	else if (is_user_alive(id))
 	{
-		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
-		write_byte(TE_KILLBEAM)	// TE_KILLBEAM
-		write_short(id)
-		message_end()
+		kill_trails_on_user(id)
 	}
 	Assign_BitVar(needle_on_mask, id, value_to_set);
 

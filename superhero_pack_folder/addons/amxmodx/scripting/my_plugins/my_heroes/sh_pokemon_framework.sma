@@ -91,7 +91,7 @@ enum player_stat_struct{
 #define EVASIVENESS_TASK_PERIOD 1.0
 #define SPEED_TASK_PERIOD 0.33
 
-static const DEBUG = 1
+static const DEBUG = 0
 
 static const stat_change_notifications[2][4][] = {
 	
@@ -476,7 +476,6 @@ public apply_speed(task_id){
 			continue
 
 		}
-
 		
 		static bool:speed_is_neg,
 				Float:speed_added_thing,

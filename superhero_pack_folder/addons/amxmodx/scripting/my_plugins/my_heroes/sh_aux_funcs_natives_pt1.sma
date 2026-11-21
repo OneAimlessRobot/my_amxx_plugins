@@ -110,6 +110,21 @@ public plugin_natives(){
 	register_native("big_gun_shot_decal","_big_gun_shot_decal")
 	register_native("thunder_effects","_thunder_effects")
 	register_native("set_damage_icon","_set_damage_icon")
+	register_native("kill_trails_on_user", "_kill_trails_on_user")
+}
+
+public _kill_trails_on_user(iPlugins, iParams){
+
+	new id = get_param(1)
+
+	if(!is_user_connected(id)){
+
+		return
+	}
+	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
+	write_byte(TE_KILLBEAM)	// TE_KILLBEAM
+	write_short(id)
+	message_end()
 
 }
 
