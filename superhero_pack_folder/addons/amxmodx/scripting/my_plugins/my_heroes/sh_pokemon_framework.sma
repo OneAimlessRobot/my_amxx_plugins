@@ -471,9 +471,10 @@ public apply_speed(task_id){
 
 			continue
 		}
-		if(sh_get_stun(id)){
-			
+		if(sh_get_stun(id)||sh_get_id_bit(id, SH_CONTROLLING_VEHICLE)||sh_get_id_bit(id,SH_USER_IS_FLYING)){
+
 			continue
+
 
 		}
 		
