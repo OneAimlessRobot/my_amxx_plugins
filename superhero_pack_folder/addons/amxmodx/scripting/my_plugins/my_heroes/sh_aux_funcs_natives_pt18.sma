@@ -439,8 +439,13 @@ public sh_hero_init(id,heroID, sh_init_mode:mode){
 }
 public sh_extra_damage_fwd_post(victim, attacker, damage, my_hitpoint_enum:bodypart ,sh_damage_mode:dmgMode, sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],dmg_type,const sh_thrash_brat_dmg_type:new_dmg_type,const custom_weapon_id){
 	
+	if(damage <= 0){
+			
+		return
+	}
+
 	if ( !sh_is_active() ||  !is_user_connected(victim)||!is_user_alive(attacker)){
-	
+
 		return
 	}
 	if((victim==attacker)||sh_clients_are_same_team(victim,attacker)){

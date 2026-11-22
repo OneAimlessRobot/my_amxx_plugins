@@ -112,6 +112,12 @@ public tracked_damage(id, idinflictor, attacker, Float:damage, damagebits)
 }
 
 public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,const sh_thrash_brat_dmg_type:new_dmg_type,const custom_weapon_id){
+	
+	if(damage <= 0){
+            
+		return DMG_FWD_PASS
+	}
+	
 	if (!sh_is_active() || !is_user_alive(victim) || !is_user_alive(attacker) || !(CUSTOM_DMG_TYPE_IS_SPECIAL(new_dmg_type))) return DMG_FWD_PASS
 
 	new fx_num_vic=(gatling_get_fx_num(victim));

@@ -51,6 +51,10 @@
 ([\s]*)pev\(id,([\s]*)pev_dmg_take,([\s]*)damage\)
 
 
+		if(damage_after <= 0){
+            
+            return DMG_FWD_PASS
+        }
 
 in this,
 

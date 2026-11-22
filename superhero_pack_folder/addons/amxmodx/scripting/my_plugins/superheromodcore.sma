@@ -2845,7 +2845,7 @@ public ham_TakeDamage_Pre(victim, inflictor, attacker, Float:damage, damagebits)
 
 	Damage dealt to opponent that blocked with damage forward: result of this will be >= -17 and < -15 
 
-	Damage was so hampered by the damage forward that resulting damage was zero! >= -15 and < -13
+	Damage becomes zero before application!! >= -15 and < -13
 	
 	tried to kill teamate without friendly fire turned on: -13
 
@@ -2866,7 +2866,7 @@ public ham_TakeDamage_Pre(victim, inflictor, attacker, Float:damage, damagebits)
 		SH_DMG_RESULT_VICTIM_IS_IMMUNE_VIP = -25,
 		SH_DMG_RESULT_VICTIM_IS_IN_GODMODE = -19,
 		SH_DMG_RESULT_DMG_BLOCKED_BY_PRE_FWD = -17,
-		SH_DMG_RESULT_DMG_FULLY_HAMPERED_BY_PRE_FWD = -15,
+		SH_DMG_RESULT_ZERO_DMG = -15,
 		SH_DMG_RESULT_TEAMATE_NO_FF_NOT_DEAD = -13,
 		SH_DMG_RESULT_TEAMATE_NO_FF_NOT_HURT = -12,
 		SH_DMG_RESULT_DMG_KILLED_OPPONENT = -11
@@ -2915,8 +2915,15 @@ public sh_extra_damage_result:_sh_extra_damage()
 
 			
 
-	damage_after = max_macro(1,abs_macro(get_param(3)))
+	damage_after = get_param(3)
 
+	damage_after = max_macro(0,damage_after)
+
+	if(damage_after <= 0){
+		
+		return SH_DMG_RESULT_ZERO_DMG
+		
+	}
 	static Float:flArmor; flArmor = 0.0
 
 	static wpnDescription[32]
@@ -3028,12 +3035,12 @@ public sh_extra_damage_result:_sh_extra_damage()
 		damage_after = health
 	}
 	else {
+
 		if(damage_after <= 0){
-			
-			return SH_DMG_RESULT_DMG_FULLY_HAMPERED_BY_PRE_FWD
+		
+			return SH_DMG_RESULT_ZERO_DMG
 			
 		}
-
 		// *** Damage calculation due to armor from: multiplayer/dlls/player.cpp ***
 		// *** Note: this is not exactly CS damage method because we do not have that sdk ***
 		static Float:flDamage,
