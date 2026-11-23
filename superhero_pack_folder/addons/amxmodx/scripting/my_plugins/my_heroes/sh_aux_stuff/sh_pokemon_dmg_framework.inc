@@ -30,9 +30,17 @@ native bool:sh_apply_staged_stat_boost(id, attacker, stat_struct_ids:the_stat_to
 /*
 
   it returns true on success. false on failure
+  keep the default value of minus_one to reset all stats.
 
 */
 
 native bool:sh_reset_player_stat_boosts(id, attacker)
+/*
+
+  it returns true on success. false on failure
+
+*/
+
+native bool:sh_set_player_single_stat_boost(id, stat_struct_ids:the_stat_to_use, the_stat_value)
 
 native sh_check_player_boost_stage(id, stat_struct_ids:the_stat_to_check)

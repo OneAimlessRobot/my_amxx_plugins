@@ -2,6 +2,7 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_CUSTOM_COLORS
 #define I_WANT_MATH_VECTORS
+#define I_WANT_PRECACHE_UTILITIES
 #include "../../include/float.inc"
 #include <xs>
 #include "../my_include/superheromod.inc"
@@ -97,54 +98,22 @@ public plugin_init(){
 
 public plugin_precache(){
 
+	num_fwend_sentences = count_null_terminated_string_array(fwend_sentences,
+															"Shinobu friendly sentences",
+															"Sentence",
+															DEBUG)
 
+	num_elderly_inclusive_sentences = count_null_terminated_string_array(old_sentences,
+																"Shinobu elderly inclusive sentences",
+																"Sentence",
+																DEBUG)
 
-	static i;
-	while(fwend_sentences[num_fwend_sentences][0]!=0){
+															
 
-		num_fwend_sentences++
-	}
-	if(DEBUG){
-
-		server_print("%d Shinobu friendly sentences were counted! They are:^n^n",num_fwend_sentences)
-		i=0
-		while(fwend_sentences[i][0]!=0){
-			
-			server_print("Sentence number %d (index %d): %s^n",i+1,i,fwend_sentences[i])
-			i++
-		}
-	}
-
-
-	while(old_sentences[num_elderly_inclusive_sentences][0]!=0){
-
-		num_elderly_inclusive_sentences++
-	}
-	if(DEBUG){
-
-		server_print("%d Shinobu elderly friendly sentences were counted! (she is very inclusive) They are:^n^n",num_elderly_inclusive_sentences)
-		i=0
-		while(old_sentences[i][0]!=0){
-			
-			server_print("Sentence number %d (index %d): %s^n",i+1,i,old_sentences[i])
-			i++
-		}
-	}
-
-	while(shinobu_visiting_sentences[num_visitor_sentences][0]!=0){
-
-		num_visitor_sentences++
-	}
-	if(DEBUG){
-
-		server_print("%d Shinobu visitor sentences were counted! They are:^n^n",num_visitor_sentences)
-		i=0
-		while(shinobu_visiting_sentences[i][0]!=0){
-			
-			server_print("Sentence number %d (index %d): %s^n",i+1,i,shinobu_visiting_sentences[i])
-			i++
-		}
-	}
+	num_visitor_sentences = count_null_terminated_string_array(shinobu_visiting_sentences,
+																"Shinobu neighbour sentences",
+																"Sentence",
+																DEBUG)
 
 }
 public plugin_cfg(){
@@ -347,10 +316,9 @@ public _nani_behind_player(iPlugin,iParams){
 	arrayset(g_shinobu_dst_v_angles[tele_player],0.0,sizeof g_shinobu_dst_v_angles[])
 	arrayset(g_shinobu_v_angles[tele_player],0.0,sizeof g_shinobu_v_angles[])
 
-	new Float: tg_player_aiming[3];
-	new Float:tg_player_curr_origin[3]
-
-	new Float:tele_player_dst_origin[3]
+	static Float:tg_player_aiming[3],
+			Float:tg_player_curr_origin[3],
+			Float:tele_player_dst_origin[3]
 
 
 	entity_get_vector(tg_player,EV_VEC_origin,tg_player_curr_origin)
@@ -364,7 +332,7 @@ public _nani_behind_player(iPlugin,iParams){
 	entity_get_vector(tg_player,EV_VEC_origin,tg_player_curr_origin)
 
 
-	xs_vec_add_scaled(tg_player_curr_origin,tg_player_aiming, -1.0*abs_macro(distance_tele_tg),tele_player_dst_origin)
+	xs_vec_add_scaled(tg_player_curr_origin,tg_player_aiming, -1.0*float_abs_macro(distance_tele_tg),tele_player_dst_origin)
 
 	FVecIVec(tele_player_dst_origin,g_shinobu_dst_positions[tele_player])
 	

@@ -438,6 +438,7 @@ public plugin_natives()
 	register_native("sh_get_player_save_key_on_db","_sh_get_player_save_key_on_db",0)
 	register_native("sh_chat_message", "_sh_chat_message")
 	register_native("sh_debug_message", "_sh_debug_message")
+	register_native("sh_get_user_sh_maxspeed", "_sh_get_user_sh_maxspeed")
 	register_native("sh_extra_damage", "_sh_extra_damage")
 	register_native("sh_set_stun", "_sh_set_stun")
 	register_native("sh_get_stun", "_sh_get_stun")
@@ -1021,7 +1022,7 @@ public _sh_drop_weapon()
 
 	if ( !user_has_weapon(id, weaponID) ) return
 
-	new my_weapon_slots:slot = wlt_get_def_slot(weaponID)
+	new my_weapon_slots:slot = wlt_get_def_slot(my_weapon_ids:weaponID)
 
 	if ( slot == MY_SLOT_PRIMARY || slot == MY_SLOT_SECONDARY || slot == MY_SLOT_C4 ) {
 
@@ -1040,7 +1041,7 @@ dropWeapon(id, weaponID, bool:remove)
 	if ( id == gXpBounsVIP && getVipFlags() & VIP_BLOCK_WEAPONS ) return
 	if ( !user_has_weapon(id, weaponID) ) return
 
-	new my_weapon_slots:slot = wlt_get_def_slot(weaponID)
+	new my_weapon_slots:slot = wlt_get_def_slot(my_weapon_ids:weaponID)
 
 	if ( slot == MY_SLOT_PRIMARY || slot == MY_SLOT_SECONDARY || slot == MY_SLOT_C4 ) {
 
@@ -1395,6 +1396,27 @@ public _sh_set_hero_grav()
 	gHeroMinGravity[heroIndex] = pcvarGravity // pCVAR expected!
 	//copy(gHeroGravityWeapons[heroIndex], charsmax(gHeroGravityWeapons[]), pWeapons) // Array expected!
 }
+public Float:_sh_get_user_sh_maxspeed(iPlugins, iParams){
+
+	new id = get_param(1),
+		weapon = get_param(2)
+
+	if(!is_user_connected(id)){
+
+		return 0.0
+	}
+	if(!is_weaponid_valid(weapon)){
+
+		return 0.0
+	}
+
+	return getMaxSpeed(id, weapon)
+
+
+
+
+}
+
 //----------------------------------------------------------------------------------------------
 Float:getMaxSpeed(id, weapon)
 {
@@ -3482,7 +3504,7 @@ public _sh_reload_ammo()
 	gReloadTime[id] = gametime
 
 	new clip, ammo
-	new wpnid = get_user_weapon(id, clip, ammo)
+	new my_weapon_ids:wpnid = my_weapon_ids:get_user_weapon(id, clip, ammo)
 	new my_weapon_slots:wpnslot = wlt_get_def_slot(wpnid)
 
 	if ( wpnslot != MY_SLOT_PRIMARY && wpnslot != MY_SLOT_SECONDARY ) return
@@ -3503,7 +3525,7 @@ public _sh_reload_ammo()
 
 			new iWPNidx = -1
 			new wpn[32]
-			get_weaponname(wpnid, wpn, charsmax(wpn))
+			get_weaponname(_:wpnid, wpn, charsmax(wpn))
 
 			while ( (iWPNidx = engfunc(EngFunc_FindEntityByString, iWPNidx, "classname", wpn)) != 0 ) {
 				if (id == pev(iWPNidx, pev_owner)) {
@@ -3526,7 +3548,7 @@ public _sh_reload_ammo()
 			if ( clip != 0 ) return
 
 			new idSilence, idBurst
-			if ( wpnid == CSW_M4A1 || wpnid == CSW_USP ) {
+			if ( _:wpnid == CSW_M4A1 || _:wpnid == CSW_USP ) {
 				new iWPNidx = -1
 				new wpn[32]
 				get_weaponname(wpnid, wpn, charsmax(wpn))
@@ -3537,7 +3559,7 @@ public _sh_reload_ammo()
 					}
 				}
 			}
-			else if ( wpnid == CSW_FAMAS || wpnid == CSW_GLOCK18 ) {
+			else if ( _:wpnid == CSW_FAMAS || _:wpnid == CSW_GLOCK18 ) {
 				new iWPNidx = -1
 				new wpn[32]
 				get_weaponname(wpnid, wpn, charsmax(wpn))

@@ -6,6 +6,7 @@
 #define I_WANT_RESOURCE_ALIASES
 #define I_WANT_ENTITY_VECTORS
 #define I_WANT_PDATA_ALIASES
+#define I_WANT_PRECACHE_UTILITIES
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "ester_inc/ester_global.inc"
@@ -152,7 +153,7 @@ new ESTER_REBORN_CALCULATION_LOOP_TASKID,
 		ESTER_FLIGHT_MOVEMENT_TASKID
 
 
-new const DEBUG = 0
+new const DEBUG = 1
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -537,38 +538,18 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,ESTER_FIRST_RESPAWN_SOUND );
 	engfunc(EngFunc_PrecacheSound,ESTER_LAST_RESPAWN_SOUND );
 	
-	
-	static i;
-	while(ester_blowup_sounds[num_sounds][0]!=0){
-		
-		engfunc(EngFunc_PrecacheSound,ester_blowup_sounds[num_sounds] );
-		num_sounds++
-	}
-	if(DEBUG){
 
-		server_print("%d ester reborn sounds were counted! Their filenames are:^n^n",num_sounds)
-		i=0
-		while(ester_blowup_sounds[i][0]!=0){
-			
-			server_print("Sound number %d (index %d): %s^n",i+1,i,ester_blowup_sounds[i])
-			i++
-		}
-	}
+	num_sounds = count_null_terminated_string_array(ester_blowup_sounds,
+															"ester reborn sounds",
+															"Filename",
+															DEBUG)
 
-	while(ester_sentences[num_sentences][0]!=0){
+	num_sentences = count_null_terminated_string_array(ester_sentences,
+															"ester reborn sentences",
+															"Sentence",
+															DEBUG)
 
-		num_sentences++
-	}
-	if(DEBUG){
-
-		server_print("%d ester reborn sentences were counted! They are:^n^n",num_sentences)
-		i=0
-		while(ester_sentences[i][0]!=0){
-			
-			server_print("Sentence number %d (index %d): %s^n",i+1,i,ester_sentences[i])
-			i++
-		}
-	}
+	precache_null_terminated_resource_list(ester_blowup_sounds,PRECACHE_SOUNDS, DEBUG)
 	
 }
 //---------------------------------------------------------------------------------------------- 

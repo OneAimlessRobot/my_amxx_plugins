@@ -78,6 +78,7 @@ enum goku_timer_enum{
 	bool:boost_succeeded
 }
 new GokuKTTimer[SH_MAXSLOTS+1][goku_timer_enum]
+new g_prevWeapon[SH_MAXSLOTS+1]
 //reset variables
 new bool:reset_speed[SH_MAXSLOTS+1], bool:reset_health[SH_MAXSLOTS+1], bool:reset_armor[SH_MAXSLOTS+1]
 new goku_kt_dmg_boost_wpn_short_name[SAFE_BUFFER_SIZE+1]="goku_kt_dmg_boost"
@@ -128,6 +129,7 @@ public plugin_init()
 	// LOOP
 	set_task(POWERUP_GLOBAL_TASK_PERIOD, "gokukt_loop", GOKUKT_LOOP_TASKID,_,_, "b") //forever loop
 	 
+	register_event("CurWeapon", "curweapon", "be", "1=1")
 }
 public Kaioken_Damage(id, idinflictor, attacker, Float:damage, damagebits){
 	
@@ -328,6 +330,24 @@ public end_kaioken(id)
 	GokuKTTimer[id][boost_succeeded] = false
 }
 //----------------------------------------------------------------------------------------------
+public curweapon(id)
+{
+	if ( !sh_is_active() || !sh_get_user_has_hero(id,gHeroID) || !sh_is_inround()) return
+	
+	new wpnid = read_data(2)
+
+	if ( g_prevWeapon[id] != wpnid ) {
+		
+		if( GokuKTTimer[id][the_time] > 0 ){ 
+			
+			set_user_maxspeed(id, get_pcvar_float(goku_speed));
+		
+		}
+	
+	}
+	g_prevWeapon[id] = wpnid
+}
+//----------------------------------------------------------------------------------------------
 public gokukt_kaiokenmode(id)
 {
 	if ( sh_get_user_has_hero(id,gHeroID)&& is_user_alive(id) ) {
@@ -335,6 +355,7 @@ public gokukt_kaiokenmode(id)
 		parm[0] = id
 		parm[1] = 5
 		if ( get_pcvar_float(goku_speed) > get_user_maxspeed(id) ) {
+
 			set_user_maxspeed(id, get_pcvar_float(goku_speed));
 			reset_speed[id] = true
 		}

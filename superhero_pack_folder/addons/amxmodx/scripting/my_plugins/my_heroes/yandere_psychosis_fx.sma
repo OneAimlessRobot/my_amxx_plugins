@@ -2,8 +2,10 @@
 #define I_WANT_MISC_FUNCS_2
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_BASIC_MACROS
+#define I_WANT_MATH_FUNCS
 #define I_WANT_CUSTOM_COLORS
 #define I_WANT_PDATA_ALIASES
+#define I_WANT_PRECACHE_UTILITIES
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -59,7 +61,7 @@ public plugin_init(){
 	pcvar_psychosis_dmg_cushion = create_cvar("yandere_psychosis_dmg_cushion", "5")
 	pcvar_psychosis_cooldown = create_cvar("yandere_psychosis_cooldown", "30")
 
-	RegisterHam(Ham_Player_PreThink,"player","Ham_Think_Pre",_,true)
+	RegisterHam(Ham_Player_PostThink,"player","Ham_Think_Post",_,true)
 	RegisterHam(Ham_TakeDamage,"player","psychosis_ham_damage",_,true)
 	MsgSetFOV = get_user_msgid("SetFOV")
 	register_forward(FM_CmdStart, "psychosis_leap")
@@ -74,23 +76,13 @@ public plugin_cfg(){
 }
 public plugin_precache(){
 
-	
-	static i;
-	while(yandere_pain_sounds[num_psychosis_sounds][0]!=0){
-		
-		engfunc(EngFunc_PrecacheSound,yandere_pain_sounds[num_psychosis_sounds] );
-		num_psychosis_sounds++
-	}
-	if(DEBUG){
 
-		server_print("%d yandere psychosis morph sounds were counted! Their filenames are:^n^n",num_psychosis_sounds)
-		i=0
-		while(yandere_pain_sounds[i][0]!=0){
-			
-			server_print("Sound number %d (index %d): %s^n",i+1,i,yandere_pain_sounds[i])
-			i++
-		}
-	}
+	num_psychosis_sounds = count_null_terminated_string_array(yandere_pain_sounds,
+															"yandere psychosis morph sounds",
+															"Sentence",
+															DEBUG)
+
+	precache_null_terminated_resource_list(yandere_pain_sounds,PRECACHE_SOUNDS, DEBUG)
 
 }
 //----------------------------------------------------------------------------------------------
@@ -144,7 +136,7 @@ public _yandere_unpsychosis_user(iPlugin,iParams){
 
 }
 
-public Ham_Think_Pre(id) {
+public Ham_Think_Post(id) {
 	if(!sh_is_active()) return HAM_IGNORED
 
 	if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)) { 
@@ -176,24 +168,56 @@ public psychosis_leap(id, uc_handle)
 		return FMRES_IGNORED
 	}
 
-	if (!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)||
-			!sh_get_id_bit(id,SH_IS_PSYCHOSIS)) return FMRES_IGNORED;
+	if (!is_user_alive(id)){
+		
+		
+		return FMRES_IGNORED
+	
+	}
+
+	if(!sh_get_user_has_hero(id,gHeroID)||
+			!sh_get_id_bit(id,SH_IS_PSYCHOSIS)||
+			sh_get_id_bit(id, SH_CONTROLLING_VEHICLE)||
+			sh_get_id_bit(id, SH_USER_IS_FLYING)) return FMRES_IGNORED;
 	
 	if(sh_get_stun(id)) return FMRES_IGNORED
 	
-	new button = get_uc(uc_handle, UC_Buttons);
+	static button; button = get_uc(uc_handle, UC_Buttons);
 	
-	if(!Get_BitVar(g_yandere_leaped_mask,id)){
-		if(button & IN_JUMP)
+	static flags; flags = pev(id, pev_flags)
+	if((flags  & FL_INGROUND2)){
+		if((button&IN_JUMP))
 		{
-			button &= ~IN_JUMP;
-			new Float:velocity[3]
-			pev(id,pev_velocity,velocity)
-			velocity[2]+=600.0
-			set_pev(id,pev_velocity,velocity)
-			Set_BitVar(g_yandere_leaped_mask,id)
-			
-			
+			if(!Get_BitVar(g_yandere_leaped_mask,id)){
+				static Float:velocity[3],
+						Float:aimdir[3],
+						Float:aimdir_2d[2],
+						Float:curr_movespeed = 0.0
+				
+				pev(id,pev_velocity,velocity)
+
+				curr_movespeed = vector_length(velocity)
+
+
+				my_velocity_by_aim(id,curr_movespeed,aimdir,dummy_vector)
+
+				aimdir_2d[0] = aimdir[0]
+				aimdir_2d[1] = aimdir[1]
+
+				multiply_2d_vector_by_scalar(aimdir_2d,0.15,aimdir_2d)
+
+				aimdir[0] = aimdir_2d[0]
+				aimdir[1] = aimdir_2d[1]
+
+				aimdir[2]=180.0
+
+				add_3d_vectors(velocity,aimdir,velocity)
+
+				set_pev(id,pev_velocity,velocity)
+				Set_BitVar(g_yandere_leaped_mask,id)
+				
+				
+			}
 		}
 	}
 	return FMRES_IGNORED;
@@ -230,7 +254,7 @@ public psychosis_task(id){
 		superhero_protected_hud_message(superhero_hud_msg_sync,id,"%s", hud_msg,LineColors[PINK][0],LineColors[PINK][1],LineColors[PINK][2], -0.7, -1.0, 1, 0.0, 1.0,0.0,0.0)
 		sh_screen_fade(id,0.1,1.0,LineColors[PINK][0],LineColors[PINK][1],LineColors[PINK][2],50)
 	}
-	if(gPsychosisTime[id]>=0.0){
+	if(gPsychosisTime[id]>=1.0){
 		set_task(PSYCHOSIS_PERIOD,"psychosis_task",id+YANDERE_PSYCHOSIS_TASKID)
 	}
 	else{
@@ -280,7 +304,7 @@ psychosis_on(id){
 
 gPsychosisTime[id]=cvar_val(float, pcvar_psychosis_time)
 sh_set_cooldown(id, cvar_val(float, pcvar_psychosis_cooldown) * 1.0)
-curr_player_pain_sound[id]=generate_int(0,num_psychosis_sounds-1)
+curr_player_pain_sound[id]=generate_int(0,num_psychosis_sounds-1,40)
 emit_sound(id, CHAN_AUTO,yandere_pain_sounds[curr_player_pain_sound[id]] , VOL_NORM, ATTN_NORM, 0, PITCH_NORM);
 
 new flags = pev(id, pev_flags)

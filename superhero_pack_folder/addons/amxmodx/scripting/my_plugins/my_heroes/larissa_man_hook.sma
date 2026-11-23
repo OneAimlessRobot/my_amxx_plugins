@@ -4,6 +4,7 @@
 #define I_WANT_CUSTOM_COLORS
 #define I_WANT_MATH_FUNCS
 #define I_WANT_RESOURCE_ALIASES
+#define I_WANT_PRECACHE_UTILITIES
 #include <float>
 #include <xs>
 #include "../my_include/superheromod.inc"
@@ -525,21 +526,11 @@ Assign_BitVar(hook_on_mask, id,value_to_set)
 public plugin_precache()
 {
 
-	static i;
-	while(larissa_sentences[num_sentences][0]!=0){
 
-		num_sentences++
-	}
-	if(DEBUG){
-
-		server_print("%d hooking sentences were counted! They are:^n^n",num_sentences)
-		i=0
-		while(larissa_sentences[i][0]!=0){
-			
-			server_print("Sentence number %d (index %d): %s^n",i+1,i,larissa_sentences[i])
-			i++
-		}
-	}
+	num_sentences = count_null_terminated_string_array(larissa_sentences,
+															"hooking sentences",
+															"Sentence",
+															DEBUG)
 }
 
 public sh_client_death(id)

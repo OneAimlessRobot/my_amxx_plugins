@@ -50,10 +50,10 @@
 #define I_WANT_MISC_FUNCS
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_PDATA_ALIASES
+#define I_WANT_INIT_UTILITIES
 #include <amxmisc>
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
-#include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 
 
 #define PLUGIN "SH_PKMN_Framework"
@@ -68,7 +68,7 @@
 #define ACTIVATE_POKEMON_DMG_CVAR "sh_use_pokemon_damage"
 
 #define DAMAGE_DAMPENING_DIVIDER 10.5
-#define POKEMON_DAMAGE_RELATION_BALLAST_VAL 0.5
+#define POKEMON_DAMAGE_RELATION_BALLAST_VAL 0.20
 #define POKEMON_DAMAGE_LEVEL_RELEVANCE_DAMPENING_FACTOR_NUMERATOR 0.0001
 #define POKEMON_DAMAGE_LEVEL_RELEVANCE_DAMPENING_FACTOR_DENOMINATOR 10.0
 
@@ -88,12 +88,11 @@ enum player_stat_struct{
 
 }
 
-#define EVASIVENESS_TASK_PERIOD 1.0
-#define SPEED_TASK_PERIOD 0.33
+#define EVASIVENESS_TASK_PERIOD 0.1
 
-static const DEBUG = 0
+static const DEBUG = 1
 
-static const stat_change_notifications[2][4][] = {
+static const stat_change_notifications[2][5][] = {
 	
 		
 		{
@@ -103,7 +102,8 @@ static const stat_change_notifications[2][4][] = {
 			"cannot go any lower!",
 			"was lowered...",
 			"was cripplied!",
-			"plummeted!"
+			"plummeted!",
+			"collapsed!!"
 
 
 		},
@@ -111,7 +111,8 @@ static const stat_change_notifications[2][4][] = {
 			"cannot get any higher!",
 			"rose!",
 			"rose sharply!",
-			"rose drastically!"
+			"rose drastically!",
+			"rose skyrocketed!!"
 
 
 		}
@@ -141,16 +142,14 @@ static const stat_consts[stat_struct_ids][stat_constants_struct] = {
 static g_player_stats[SH_MAXSLOTS+1][stat_struct_ids][player_stat_struct]
 
 
-static Float:curr_player_pure_maxspeeds[SH_MAXSLOTS+1][my_weapon_ids] 
-
-
-static my_weapon_ids:last_player_deployed_weapon[SH_MAXSLOTS+1] 
-
-
-stock EVASIVENESS_TASKID = -1,
-		SPEED_TASKID = -1
-
 static enable_pokemon_dmg_cvar = -1
+
+
+#define POKEMON_EVASIVENESS_MONITOR_ENTITY_CLASSNAME "Pokemon_evasiveness_Monitor_Entity"
+
+new pokemon_evasiveness_monitor_entity = -1
+
+new pokemon_evasiveness_monitor_forward_id = -1
 
 
 public plugin_init(){
@@ -173,15 +172,94 @@ public plugin_init(){
 	register_concmd(print_player_pokemon_stats, print_player_pokemon_stats, ADMIN_IMMUNITY, "Print pokemon stats of a player^n^n^n")
 
 
-
 	RegisterHam(Ham_TakeDamage,"player","ham_sh_stat_management_physical_damage",_, true)
 
-	EVASIVENESS_TASKID = allocate_typed_task_id(generic_task)
-	SPEED_TASKID = allocate_typed_task_id(generic_task)
+	init_monitor_entity_based_global(POKEMON_EVASIVENESS_MONITOR_ENTITY_CLASSNAME, "apply_evasiveness", EVASIVENESS_TASK_PERIOD,
+											pokemon_evasiveness_monitor_entity,
+											pokemon_evasiveness_monitor_forward_id)
 
-	register_event("CurWeapon", "on_Weapon_Change", "be", "1=1")
+	register_event("CurWeapon", "curweapon", "be", "1=1")
 
 
+}
+public curweapon(id){
+	
+
+	if ( !sh_is_active() || !sh_is_inround()||sh_is_freezetime()) return
+	
+	if(sh_get_stun(id)||sh_get_id_bit(id, SH_CONTROLLING_VEHICLE)||sh_get_id_bit(id,SH_USER_IS_FLYING)){
+
+		return
+
+
+	}
+	static my_weapon_ids:wpn_id;
+	wpn_id= my_weapon_ids:read_data(2)
+
+	if((!is_weaponid_valid(_:wpn_id))||(wpn_id==MY_CSW_C4)){
+
+		return
+	}
+
+	pokemon_speed_update(id,wpn_id)
+
+}
+//----------------------------------------------------------------------------------------------
+pokemon_speed_update(id,my_weapon_ids:wpn_id)
+{
+	
+
+	if ( !sh_is_active() || !sh_is_inround()||sh_is_freezetime()) return
+	
+	if(sh_get_stun(id)||sh_get_id_bit(id, SH_CONTROLLING_VEHICLE)||sh_get_id_bit(id,SH_USER_IS_FLYING)){
+
+		return
+
+
+	}
+
+	if((!is_weaponid_valid(_:wpn_id))||(wpn_id==MY_CSW_C4)){
+
+		return
+	}
+	
+	static bool:speed_is_neg,
+			Float:speed_added_thing,
+			Float:curr_speed,
+			Float:speed_stat_boost_coeff,
+			stat_diff
+
+	stat_diff = (g_player_stats[id][STAT_SPEED_ID][the_number_of_stages]-g_player_stats[id][STAT_SPEED_ID][prev_number_of_stages])
+
+	speed_stat_boost_coeff = float_abs_macro(g_player_stats[id][STAT_SPEED_ID][the_stat_boost_value])
+	
+	curr_speed = max_macro(wlt_get_def_movespeed(wpn_id),sh_get_user_sh_maxspeed(id, _:wpn_id))
+
+
+
+	speed_is_neg = g_player_stats[id][STAT_SPEED_ID][the_number_of_stages] < 0
+	
+	speed_added_thing = speed_is_neg? 
+					
+				-(curr_speed* (1.0 -(1.0/(speed_stat_boost_coeff+stat_consts[STAT_SPEED_ID][step]))))
+		
+							:
+		
+					((150.0) * speed_stat_boost_coeff)
+					
+	
+	
+	set_user_maxspeed_controlled(id, curr_speed +
+	
+								speed_added_thing
+								
+								, false, (stat_diff>=0))
+
+	if(DEBUG){
+
+
+		sh_chat_message(id,_,"How much speed are we supposed to apply? %0.2f", curr_speed+speed_added_thing)
+	}
 
 }
 public amx_print_pokemon_framework_info(id,level,cid){
@@ -294,7 +372,7 @@ public amx_apply_player_pokemon_stat_change(id,level,cid){
 
 	new stat_struct_ids:stat_to_use = stat_struct_ids:str_to_num(arg2)
 
-	if((stat_to_use<=enum_zero)||(stat_to_use>stat_struct_ids)){
+	if((stat_to_use<enum_zero)||(stat_to_use>=stat_struct_ids)){
 
 		return PLUGIN_HANDLED
 
@@ -342,54 +420,6 @@ public amx_reset_player_pokemon_stats(id,level,cid){
 
 	return PLUGIN_HANDLED
 }
-public on_Weapon_Change(id)
-{
-
-	if(!pokemon_dmg_enabled()) return
-
-	if (!sh_is_active()) return
-	
-
-	new my_weapon_ids:user_wpn = my_weapon_ids:read_data(2)
-
-	if(user_wpn==MY_CSW_C4){
-
-		return
-	}
-
-	if(((last_player_deployed_weapon[id]!=user_wpn))){
-
-		static Float:last_weapon_speed_for_this_one = 0.0,
-			Float:curr_user_maxspeed = 0.0
-
-		curr_user_maxspeed = get_user_maxspeed(id)
-
-		
-		if(DEBUG){
-			last_weapon_speed_for_this_one = (!is_weaponid_valid(_:last_player_deployed_weapon[id]))?
-		
-													curr_user_maxspeed
-																:
-													curr_player_pure_maxspeeds[id][last_player_deployed_weapon[id]]
-			static switched_wpn_name[50]
-
-			wlt_get_def_name(user_wpn,switched_wpn_name,charsmax(switched_wpn_name))
-			sh_chat_message(id,-1,"Last weapon's speed: %0.2f. The curr_weapon name is: %s",last_weapon_speed_for_this_one, switched_wpn_name)
-			if(is_weaponid_valid(_:last_player_deployed_weapon[id])){
-
-
-				wlt_get_def_name(last_player_deployed_weapon[id],switched_wpn_name,charsmax(switched_wpn_name))
-				sh_chat_message(id,-1,"The last weapon name is: %s",switched_wpn_name)
-			}
-		}
-		curr_player_pure_maxspeeds[id][user_wpn] = curr_user_maxspeed
-
-		last_player_deployed_weapon[id]=user_wpn
-
-
-	}
-
-}
 public notify_stat_change(id, attacker, stat_struct_ids:the_stat, bool:go_up_or_go_down, num_stages){
 
 	if(!pokemon_dmg_enabled()) return
@@ -403,7 +433,7 @@ public notify_stat_change(id, attacker, stat_struct_ids:the_stat, bool:go_up_or_
 
 		}
 		
-		num_stages = max_macro(0,min_macro(num_stages,3))
+		num_stages = max_macro(0,min_macro(num_stages,4))
 
 		if(num_stages||(!num_stages&&DEBUG)){
 			
@@ -419,10 +449,32 @@ public notify_stat_change(id, attacker, stat_struct_ids:the_stat, bool:go_up_or_
 	}
 
 }
-public apply_evasiveness(task_id){
+public apply_evasiveness(entity_id){
 
 
-	if (! sh_is_active() || sh_is_freezetime() || !pokemon_dmg_enabled()) return
+	if(!is_valid_ent(entity_id)){
+		
+		return PLUGIN_CONTINUE
+	
+	}
+	if(!sh_is_active()){
+
+		entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + EVASIVENESS_TASK_PERIOD)
+		return PLUGIN_CONTINUE
+	}
+	if(sh_is_freezetime()){
+		
+		entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + EVASIVENESS_TASK_PERIOD)
+		return PLUGIN_CONTINUE
+	}
+	if( !sh_is_inround()){
+		entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + EVASIVENESS_TASK_PERIOD)
+		return PLUGIN_CONTINUE
+	}
+	if( !pokemon_dmg_enabled()){
+		entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + EVASIVENESS_TASK_PERIOD)
+		return PLUGIN_CONTINUE
+	}
 
 	
 	static the_players[SH_MAXSLOTS], pnum, id		
@@ -454,75 +506,10 @@ public apply_evasiveness(task_id){
 
 		
 	}
-}
-public apply_speed(task_id){
-
-
-	if (! sh_is_active() || sh_is_freezetime() || !pokemon_dmg_enabled() || !sh_is_inround()) return
-
-	
-	static the_players[SH_MAXSLOTS], pnum, id		
-	get_players(the_players, pnum, "ah")
-	for (new k = 0; k < pnum; k++) {
-		
-		id = the_players[k]
-
-		if(!is_user_alive(id)){
-
-			continue
-		}
-		if(sh_get_stun(id)||sh_get_id_bit(id, SH_CONTROLLING_VEHICLE)||sh_get_id_bit(id,SH_USER_IS_FLYING)){
-
-			continue
-
-
-		}
-		
-		static bool:speed_is_neg,
-				Float:speed_added_thing,
-				Float:curr_speed,
-				Float:speed_stat_boost_coeff,
-				my_weapon_ids:user_wpn;
-
-		user_wpn = my_weapon_ids:get_user_weapon(id)
-
-		if(user_wpn==MY_CSW_C4){
-
-			continue
-		}
-
-
-		speed_stat_boost_coeff = abs_macro(g_player_stats[id][STAT_SPEED_ID][the_stat_boost_value])
-		
-		curr_speed = curr_player_pure_maxspeeds[id][my_weapon_ids:get_user_weapon(id)]
-
-
-
-		speed_is_neg = g_player_stats[id][STAT_SPEED_ID][the_number_of_stages] < 0
-		
-		speed_added_thing = speed_is_neg? 
-						
-					-(curr_speed* (1.0 -(1.0/speed_stat_boost_coeff)))
-			
-								:
-			
-						((150.0) * speed_stat_boost_coeff)
-
-
-		set_user_maxspeed_controlled(id, curr_speed +
-		
-									speed_added_thing
-									
-									, false, speed_is_neg?false:true)
-		
-	}
+	entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + EVASIVENESS_TASK_PERIOD)
+	return PLUGIN_CONTINUE
 }
 public plugin_cfg(){
-
-	if(!pokemon_dmg_enabled()) return 
-
-	set_task(EVASIVENESS_TASK_PERIOD,"apply_evasiveness",EVASIVENESS_TASKID,_,_,"b")
-	set_task(SPEED_TASK_PERIOD,"apply_speed",SPEED_TASKID,_,_,"b")
 
 	server_print("%s innited!^n",PLUGIN)
 	
@@ -551,10 +538,9 @@ public sh_round_new(){
 		for (new stat_struct_ids:s = enum_zero; s < stat_struct_ids; s++) {
 
 			g_player_stats[id][s][the_stat_boost_value] = 0.0
+			g_player_stats[id][s][prev_number_of_stages] = 0
 			g_player_stats[id][s][the_number_of_stages] = 0
 		}
-		
-		last_player_deployed_weapon[id] = enum_minus_one
 
 	} 
 
@@ -563,7 +549,6 @@ public sh_client_spawn(id, bool:newRound){
 
 	if(!pokemon_dmg_enabled()) return
 	
-	last_player_deployed_weapon[id] = enum_minus_one
 	
 	if(newRound){
 
@@ -572,16 +557,9 @@ public sh_client_spawn(id, bool:newRound){
 	for (new stat_struct_ids:s = enum_zero; s < stat_struct_ids; s++) {
 		
 		g_player_stats[id][s][the_stat_boost_value] = 0.0
+		g_player_stats[id][s][prev_number_of_stages] = 0
 		g_player_stats[id][s][the_number_of_stages] = 0
 	}
-	arrayset(curr_player_pure_maxspeeds[id],0.0,sizeof(curr_player_pure_maxspeeds[]))
-
-}
-public sh_client_death(id){
-
-	if(!pokemon_dmg_enabled()) return
-
-	last_player_deployed_weapon[id] = enum_minus_one
 
 }
 public plugin_natives(){
@@ -589,6 +567,7 @@ public plugin_natives(){
     register_native("sh_apply_staged_stat_boost", "_sh_apply_staged_stat_boost")
     register_native("sh_check_player_boost_stage", "_sh_check_player_boost_stage")
     register_native("sh_reset_player_stat_boosts", "_sh_reset_player_stat_boosts")
+    register_native("sh_set_player_single_stat_boost", "_sh_set_player_single_stat_boost")
 
 }
 public _sh_check_player_boost_stage(iPlugins, iParams){
@@ -607,7 +586,8 @@ public bool:_sh_reset_player_stat_boosts(iPlugins, iParams){
 
 
 	if(!pokemon_dmg_enabled()) return false
-
+	
+	
 	new id = get_param(1),
 		attacker = get_param(2)
 
@@ -616,6 +596,50 @@ public bool:_sh_reset_player_stat_boosts(iPlugins, iParams){
 	
 }
 
+public bool:_sh_set_player_single_stat_boost(iPlugins, iParams){
+
+
+	if(!pokemon_dmg_enabled()) return false
+
+
+
+
+	new id = get_param(1),
+		stat_struct_ids:the_stat_id = stat_struct_ids:get_param(2),
+		the_stat_stage_value = get_param(3)
+
+
+	return sh_set_player_single_stat_boost_aux(id, the_stat_id, the_stat_stage_value)
+	
+}
+
+bool:sh_set_player_single_stat_boost_aux(id,stat_struct_ids:the_stat_id, the_stat_stage_value){
+
+
+
+
+	if(!is_user_alive(id)) return false
+	
+	if(!IS_VALID_STAT_ID(the_stat_id)) return false
+
+	new annoying_warning_value = 1
+
+	the_stat_stage_value = clamp_macro(the_stat_stage_value, -MAX_PLAYER_STAT_STAGES,annoying_warning_value* MAX_PLAYER_STAT_STAGES)
+
+
+	g_player_stats[id][the_stat_id][the_number_of_stages] = the_stat_stage_value
+
+
+	g_player_stats[id][the_stat_id][the_stat_boost_value] = (float(g_player_stats[id][the_stat_id][the_number_of_stages])
+																						
+																									*
+																									
+																						stat_consts[the_stat_id][step])
+
+	g_player_stats[id][the_stat_id][prev_number_of_stages] = the_stat_stage_value
+
+	return true
+}
 bool:sh_reset_player_stat_boosts_aux(id,attacker){
 
 
@@ -628,23 +652,9 @@ bool:sh_reset_player_stat_boosts_aux(id,attacker){
 
 	something_happened=false
 
-	if(g_player_stats[id][STAT_SPEED_ID][the_number_of_stages]!=0){
-	
-		something_happened = true
-	
-		last_player_deployed_weapon[id] = enum_minus_one
-	
-		arrayset(curr_player_pure_maxspeeds[id],0.0,sizeof(curr_player_pure_maxspeeds[]))
-		g_player_stats[id][STAT_SPEED_ID][the_number_of_stages] = 0
-		g_player_stats[id][STAT_SPEED_ID][the_stat_boost_value] = 0.0
+	for (new stat_struct_ids:s = enum_zero; s < stat_struct_ids; s++) {
 
-	}
-
-	//	Speed_id is 0. lets start with one as we already took care of speed
-	
-
-	for (new stat_struct_ids:s = enum_one; s < stat_struct_ids; s++) {
-
+		g_player_stats[id][s][prev_number_of_stages] = 0
 		if(g_player_stats[id][s][the_number_of_stages] == 0){
 		
 			continue
@@ -654,7 +664,6 @@ bool:sh_reset_player_stat_boosts_aux(id,attacker){
 		something_happened = true
 
 		g_player_stats[id][s][the_stat_boost_value] = 0.0
-		
 		g_player_stats[id][s][the_number_of_stages] = 0
 	
 	}
@@ -688,8 +697,10 @@ bool:sh_reset_player_stat_boosts_aux(id,attacker){
 bool:sh_apply_staged_stat_boost_aux(id, attacker, stat_struct_ids:the_stat_to_use, num_stages_to_apply, bool:go_up_or_go_down ){
 
 
-	num_stages_to_apply = min_macro(MAX_PLAYER_STAT_STAGES,abs_macro(num_stages_to_apply))
+	if ( !sh_is_active() || !sh_is_inround()||sh_is_freezetime()) return false
 
+
+	num_stages_to_apply = abs_macro(num_stages_to_apply)
 	if(!is_user_alive(id)){
 
 		return false
@@ -723,15 +734,6 @@ bool:sh_apply_staged_stat_boost_aux(id, attacker, stat_struct_ids:the_stat_to_us
 			}
 		}
 	}
-	/*
-
-			this ASSSUMES
-			that
-			g_player_stats[id][the_stat_to_use][the_number_of_stages]
-			is negative
-
-
-	*/
 	else if(g_player_stats[id][the_stat_to_use][the_number_of_stages] - num_stages_to_apply < -MAX_PLAYER_STAT_STAGES){
 
 		if(DEBUG){
@@ -762,7 +764,12 @@ bool:sh_apply_staged_stat_boost_aux(id, attacker, stat_struct_ids:the_stat_to_us
 
 	g_player_stats[id][the_stat_to_use][prev_number_of_stages] = prev_num_of_stages
 
-
+	
+	if(the_stat_to_use == STAT_SPEED_ID){
+		static my_weapon_ids:wpn_id;
+		wpn_id = my_weapon_ids:get_user_weapon(id)
+		pokemon_speed_update(id,wpn_id)
+	}
 	notify_stat_change(id,attacker,the_stat_to_use,go_up_or_go_down,num_stages_to_apply)
 
 	return true 
@@ -772,10 +779,11 @@ bool:sh_apply_staged_stat_boost_aux(id, attacker, stat_struct_ids:the_stat_to_us
 
 }
 
-
 public bool:_sh_apply_staged_stat_boost(iPlugins, iParams){
 
 	if(!pokemon_dmg_enabled()) return false
+
+	if ( !sh_is_active() || !sh_is_inround()||sh_is_freezetime()) return false
 
 	new id = get_param(1),
 		attacker = get_param(2),
@@ -883,7 +891,7 @@ Float:get_dmg_between_players(id, inflictor, attacker, Float:damage, sh_thrash_b
 			//positive multiplies attack by >1 number
 			
 			
-			attacker_attk_mult = (attck_is_neg) ? (1.0)/(abs_macro((2.0* g_player_stats[attacker][the_attack_stat_to_use][the_stat_boost_value])-1.0))
+			attacker_attk_mult = (attck_is_neg) ? (1.0)/(float_abs_macro((g_player_stats[attacker][the_attack_stat_to_use][the_stat_boost_value])-1.0))
 			
 															:
 															
@@ -899,14 +907,18 @@ Float:get_dmg_between_players(id, inflictor, attacker, Float:damage, sh_thrash_b
 			//neg multiplies attack by >1 number
 			//positive multiplies attack by <1 number
 
-			id_defense_mult = (defense_is_neg) ? (abs_macro((2.0* g_player_stats[id][the_defense_stat_to_use][the_stat_boost_value])-1.0))
+			id_defense_mult = (defense_is_neg) ? (float_abs_macro((g_player_stats[id][the_defense_stat_to_use][the_stat_boost_value])-1.0))
 															:
 													(1.0)/(g_player_stats[id][the_defense_stat_to_use][the_stat_boost_value]+1.0)
 
 			combined_attk_vs_def_mult *= id_defense_mult
 
 
+
 		}
+
+		the_power_val = damage
+
 		if(DEBUG){
 			sh_chat_message(attacker,_,"Their defense coeeff: %0.2f",1.0/id_defense_mult)
 			sh_chat_message(attacker,_,"The stat we are targeting: %s", stat_consts[the_defense_stat_to_use][name])
@@ -914,13 +926,26 @@ Float:get_dmg_between_players(id, inflictor, attacker, Float:damage, sh_thrash_b
 			sh_chat_message(attacker,_,"Our attack coeeff: %0.2f",attacker_attk_mult)
 			sh_chat_message(attacker,_,"The attack stat we are using: %s", stat_consts[the_attack_stat_to_use][name])
 
+			sh_chat_message(id,_,"Our defense coeeff: %0.2f",1.0/id_defense_mult)
+			sh_chat_message(id,_,"The stat they are targeting: %s", stat_consts[the_defense_stat_to_use][name])
+
+			sh_chat_message(id,_,"Their attack coeeff: %0.2f",attacker_attk_mult)
+			sh_chat_message(id,_,"The attack stat they are using: %s", stat_consts[the_attack_stat_to_use][name])
+
+			/*
 			sh_chat_message(attacker,_,"The attack/defense ratio here is: %0.2f", (attacker_attk_mult/id_defense_mult))
+			*/
 
 			sh_chat_message(attacker,_,"The final combined damage factor is: %0.2f", combined_attk_vs_def_mult)
+
+			sh_chat_message(attacker,_,"Input damage is: %0.2f", the_power_val)
+
+			sh_chat_message(id,_,"The final combined damage factor is: %0.2f", combined_attk_vs_def_mult)
+
+			sh_chat_message(id,_,"Input damage is: %0.2f", the_power_val)
 		}
 
 
-		the_power_val = damage
 		attkr_level = float(sh_get_user_lvl(attacker))
 
 
@@ -942,6 +967,12 @@ Float:get_dmg_between_players(id, inflictor, attacker, Float:damage, sh_thrash_b
 
 		the_final_damage = the_second_power_factor
 		
+		if(DEBUG){
+			
+			sh_chat_message(attacker,_,"Final damage is: %0.2f", the_final_damage)
+			sh_chat_message(id,_,"Final damage is: %0.2f", the_final_damage)
+		}
+
 		return the_final_damage
 
 

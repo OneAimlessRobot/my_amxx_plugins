@@ -36,7 +36,7 @@ public plugin_init()
 	
 	register_ham_for_weapon_bitsum(Ham_Item_PostFrame,GUNS_BIT_SUM, "fw_Item_PostFrame", 1, true, true)
 	
-	register_ham_for_weapon_bitsum(Ham_Item_AddToPlayer,GUNS_BIT_SUM, "fw_Item_AddToPlayer_Post", 0, true, true)
+	register_ham_for_weapon_bitsum(Ham_Item_AddToPlayer,GUNS_BIT_SUM, "fw_Item_AddToPlayer_Pre", 0, true, true)
 
 }
 public plugin_natives(){
@@ -69,7 +69,7 @@ public Float:_deplete_trash_wpn_dmg_reserve(iPlugins, iParams){
 
 
 }
-public fw_Item_AddToPlayer_Post(Ent, id)
+public fw_Item_AddToPlayer_Pre(Ent, id)
 {
 	ent_check(Ent,)
 	

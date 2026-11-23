@@ -5,6 +5,7 @@
 #define I_WANT_CUSTOM_COLORS
 #define I_WANT_RESOURCE_ALIASES
 #define I_WANT_MATH_VECTORS
+#define I_WANT_INIT_UTILITIES
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -71,7 +72,7 @@ stock FLORA_COOLDOWN_TASKID,
 
 new cut_her_some_slack_start_of_round_mask = 0
 
-#define FLORA_MONITOR_THINK_PERIOD 0.05
+#define FLORA_MONITOR_THINK_PERIOD 0.14
 #define FLORA_MONITOR_THINKER_ENTITY_CLASSNAME "Flora_Monitor_Proximity_Entity"
 
 new flora_monitor_proximity_thinker_entity = -1
@@ -109,28 +110,9 @@ public plugin_init()
 	FLORA_COOLDOWN_TASKID=allocate_typed_task_id(player_task)
 	FLORA_LOAD_TASKID=allocate_typed_task_id(player_task)
 	
-	if(flora_monitor_proximity_thinker_entity<=0){
-
-		thinker_forward_id = register_think(FLORA_MONITOR_THINKER_ENTITY_CLASSNAME, "flora_checks")
-
-		flora_monitor_proximity_thinker_entity = create_entity("info_target")
-
-
-		if(!flora_monitor_proximity_thinker_entity){
-
-			set_fail_state("Flora Monitor entity could not be initialized!")
-			unregister_think(thinker_forward_id)
-			return
-		}
-
-		entity_set_string(flora_monitor_proximity_thinker_entity,EV_SZ_classname,FLORA_MONITOR_THINKER_ENTITY_CLASSNAME)
-
-		entity_set_float(flora_monitor_proximity_thinker_entity, EV_FL_nextthink, get_gametime() + FLORA_MONITOR_THINK_PERIOD)
-
-
-
-
-	}
+	init_monitor_entity_based_global(FLORA_MONITOR_THINKER_ENTITY_CLASSNAME, "flora_checks", FLORA_MONITOR_THINK_PERIOD,
+											flora_monitor_proximity_thinker_entity,
+											thinker_forward_id)
 
 
 
@@ -517,16 +499,19 @@ public flora_checks(entity_id){
 
 
 	if(!is_valid_ent(entity_id)){
-
-		return
+		
+		return PLUGIN_CONTINUE
+	
 	}
 	if(!sh_is_active()){
 
 		entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + FLORA_MONITOR_THINK_PERIOD)
+		return PLUGIN_CONTINUE
 	}
 	if(sh_is_freezetime()){
 		
 		entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + FLORA_MONITOR_THINK_PERIOD)
+		return PLUGIN_CONTINUE
 	}
 
 	static the_players[SH_MAXSLOTS], pnum, id		
@@ -697,6 +682,7 @@ public flora_checks(entity_id){
 			
 	}
 	entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + FLORA_MONITOR_THINK_PERIOD)
+	return PLUGIN_CONTINUE
 }
 flora_sheltered_values:is_flora_user_in_owned_field(player_id,&field_id=-1){
 	

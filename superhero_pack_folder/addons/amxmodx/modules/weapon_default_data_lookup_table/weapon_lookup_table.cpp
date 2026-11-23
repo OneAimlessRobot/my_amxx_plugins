@@ -120,6 +120,16 @@ static cell AMX_NATIVE_CALL wlt_get_def_rld_delay(AMX *amx,cell *params)
 	return amx_ftoc(weapon_data_structs_array[params[1]].wpn_struct_reload_delay );
 }
 
+static cell AMX_NATIVE_CALL wlt_get_def_movespeed(AMX *amx,cell *params)
+{
+	if(!is_valid_cs_weapon(params[1])) 
+	{
+		MF_LogError(amx,AMX_ERR_NATIVE,"Invalid wpnid Specified!");
+		return -1;
+	}
+	return amx_ftoc(weapon_data_structs_array[params[1]].wpn_default_movespeed );
+}
+
 AMX_NATIVE_INFO weapon_lookup_table_exports[] = 
 {
 	{ "wlt_get_def_name", wlt_get_def_name },
@@ -134,6 +144,7 @@ AMX_NATIVE_INFO weapon_lookup_table_exports[] =
 	{ "wlt_get_def_ammo_id", wlt_get_def_ammo_id },
 	{ "wlt_get_def_pos", wlt_get_def_pos },
 	{ "wlt_get_def_slot", wlt_get_def_slot },
+	{ "wlt_get_def_movespeed", wlt_get_def_movespeed },
 	{ NULL, NULL }
 };
 

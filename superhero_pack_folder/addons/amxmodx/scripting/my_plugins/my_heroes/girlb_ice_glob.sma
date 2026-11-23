@@ -6,6 +6,7 @@
 #define I_WANT_CUSTOM_COLORS
 #define I_WANT_ENTITY_VECTORS
 #define I_WANT_PDATA_ALIASES
+#define I_WANT_INIT_UTILITIES
 #include "../my_include/superheromod.inc"
 #include "freeze_fx/freeze_fx.inc"
 #include "girlb_includes/girlb_get_set.inc"
@@ -107,53 +108,14 @@ public plugin_init(){
 	RegisterHam(Ham_Player_PreThink,"player","Ham_Think_Pre",_,true)
 
 
-	if(girlb_monitor_proximity_thinker_entity<=0){
 
-		proximity_forward_id = register_think(GIRLB_MONITOR_PROXIMITY_THINKER_ENTITY_CLASSNAME, "player_on_ice_glob_checks")
+	init_monitor_entity_based_global(GIRLB_MONITOR_PROXIMITY_THINKER_ENTITY_CLASSNAME, "player_on_ice_glob_checks", ICE_GLOB_TASK_PERIOD,
+											girlb_monitor_proximity_thinker_entity,
+											proximity_forward_id)
 
-		girlb_monitor_proximity_thinker_entity = create_entity("info_target")
-
-
-		if(!girlb_monitor_proximity_thinker_entity){
-
-			set_fail_state("GirlB Proximity Monitor entity could not be initialized!")
-			unregister_think(proximity_forward_id)
-			return
-		}
-
-		entity_set_string(girlb_monitor_proximity_thinker_entity,EV_SZ_classname,GIRLB_MONITOR_PROXIMITY_THINKER_ENTITY_CLASSNAME)
-
-		entity_set_float(girlb_monitor_proximity_thinker_entity, EV_FL_nextthink, get_gametime() + ICE_GLOB_TASK_PERIOD)
-
-
-
-
-	}
-
-	if(girlb_monitor_skating_thinker_entity<=0){
-
-		skating_forward_id = register_think(GIRLB_MONITOR_SKATING_THINKER_ENTITY_CLASSNAME, "girlb_skating_loop")
-
-		girlb_monitor_skating_thinker_entity = create_entity("info_target")
-
-
-		if(!girlb_monitor_skating_thinker_entity){
-
-			set_fail_state("GirlB Monitor entity could not be initialized!")
-			unregister_think(skating_forward_id)
-			unregister_think(proximity_forward_id)
-			return
-		}
-
-		entity_set_string(girlb_monitor_skating_thinker_entity,EV_SZ_classname,GIRLB_MONITOR_SKATING_THINKER_ENTITY_CLASSNAME)
-
-		entity_set_float(girlb_monitor_skating_thinker_entity, EV_FL_nextthink, get_gametime() + SKATING_GLOBAL_TASK_PERIOD)
-
-
-
-
-	}
-
+	init_monitor_entity_based_global(GIRLB_MONITOR_SKATING_THINKER_ENTITY_CLASSNAME, "girlb_skating_loop", SKATING_GLOBAL_TASK_PERIOD,
+											girlb_monitor_skating_thinker_entity,
+											skating_forward_id)
 }
 public Ham_Think_Pre(id) {
 	
@@ -202,15 +164,17 @@ public girlb_skating_loop(ent_id){
 
 	if(!is_valid_ent(ent_id)){
 
-		return
+		return PLUGIN_CONTINUE
 	}
 	if(!sh_is_active()){
 
 		entity_set_float(ent_id, EV_FL_nextthink, get_gametime() + SKATING_GLOBAL_TASK_PERIOD)
+		return PLUGIN_CONTINUE
 	}
 	if(sh_is_freezetime()){
 		
 		entity_set_float(ent_id, EV_FL_nextthink, get_gametime() + SKATING_GLOBAL_TASK_PERIOD)
+		return PLUGIN_CONTINUE
 	}
 	
 	static the_players[SH_MAXSLOTS], pnum, id		
@@ -272,6 +236,7 @@ public girlb_skating_loop(ent_id){
 	}
 
 	entity_set_float(ent_id, EV_FL_nextthink, get_gametime() + SKATING_GLOBAL_TASK_PERIOD)
+	return PLUGIN_CONTINUE
 }
 public girlb_skating(id, uc_handle, seed)
 {	
@@ -369,15 +334,17 @@ public player_on_ice_glob_checks(ent_id){
 
 	if(!is_valid_ent(ent_id)){
 
-		return
+		return PLUGIN_CONTINUE
 	}
 	if(!sh_is_active()){
 
 		entity_set_float(ent_id, EV_FL_nextthink, get_gametime() + SKATING_GLOBAL_TASK_PERIOD)
+		return PLUGIN_CONTINUE
 	}
 	if(sh_is_freezetime()){
 		
 		entity_set_float(ent_id, EV_FL_nextthink, get_gametime() + SKATING_GLOBAL_TASK_PERIOD)
+		return PLUGIN_CONTINUE
 	}
 
 	static the_players[SH_MAXSLOTS], pnum, id		
@@ -479,6 +446,7 @@ public player_on_ice_glob_checks(ent_id){
 		
 	}
 	entity_set_float(ent_id, EV_FL_nextthink, get_gametime() + ICE_GLOB_TASK_PERIOD)
+	return PLUGIN_CONTINUE
 }
 public plugin_natives(){
 	
@@ -564,31 +532,6 @@ public player_touch( Glob, Player ) {
 
 	}
 	return
-}
-
-public plugin_end(){
-
-	if(proximity_forward_id>=0){
-
-		unregister_think(proximity_forward_id)
-
-	}
-	if(skating_forward_id>=0){
-
-		unregister_think(skating_forward_id)
-
-	}
-
-	if(is_valid_ent(girlb_monitor_proximity_thinker_entity)){
-
-		remove_entity(girlb_monitor_proximity_thinker_entity)
-	}
-
-	if(is_valid_ent(girlb_monitor_skating_thinker_entity)){
-
-		remove_entity(girlb_monitor_skating_thinker_entity)
-	}
-
 }
 
 public sh_round_end(){

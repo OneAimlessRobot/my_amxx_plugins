@@ -2,7 +2,7 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_MISC_FUNCS
-
+#define I_WANT_INIT_UTILITIES
 #include "../my_include/superheromod.inc"
 #include "jetplane_inc/sh_jetplane_funcs.inc"
 #include "jetplane_inc/sh_jetplane_engine_funcs.inc"
@@ -52,28 +52,9 @@ public plugin_init()
 	pcvar_fuel_spend = create_cvar("yandere_jetplane_fuel_spend", "5")
 	register_forward(FM_CmdStart, "OnCmdStart")
 
-	if(yandere_jet_monitor_entity<=0){
-
-		thinker_forward_id = register_think(YANDERE_JET_MONITOR_ENTITY_CLASSNAME, "engine_loop")
-
-		yandere_jet_monitor_entity = create_entity("info_target")
-
-
-		if(!yandere_jet_monitor_entity){
-
-			set_fail_state("Flora Monitor entity could not be initialized!")
-			unregister_think(thinker_forward_id)
-			return
-		}
-
-		entity_set_string(yandere_jet_monitor_entity,EV_SZ_classname,YANDERE_JET_MONITOR_ENTITY_CLASSNAME)
-
-		entity_set_float(yandere_jet_monitor_entity, EV_FL_nextthink, get_gametime() + ENGINE_TASK_PERIOD)
-
-
-
-
-	}
+	init_monitor_entity_based_global(YANDERE_JET_MONITOR_ENTITY_CLASSNAME, "engine_loop", ENGINE_TASK_PERIOD,
+											yandere_jet_monitor_entity,
+											thinker_forward_id)
 
 
 }
@@ -300,15 +281,17 @@ public engine_loop(entity_id){
 
 	if(!is_valid_ent(entity_id)){
 
-		return
+		return PLUGIN_CONTINUE
 	}
 	if(!sh_is_active()){
 
 		entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + ENGINE_TASK_PERIOD)
+		return PLUGIN_CONTINUE
 	}
 	if(sh_is_freezetime()){
 		
 		entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + ENGINE_TASK_PERIOD)
+		return PLUGIN_CONTINUE
 	}
 	static the_players[SH_MAXSLOTS], pnum, id		
 	get_players(the_players, pnum, "ah")
@@ -362,6 +345,7 @@ public engine_loop(entity_id){
 	}
 
 	entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + ENGINE_TASK_PERIOD)
+	return PLUGIN_CONTINUE
 }
 public OnCmdStart(id,uc_handle)
 {

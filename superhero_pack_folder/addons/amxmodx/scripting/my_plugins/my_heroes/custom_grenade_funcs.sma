@@ -530,7 +530,7 @@ public give_grenades(id,level,cid){
 
 	new sh_grenade_type:grenade_type = sh_grenade_type:str_to_num(arg2)
 
-	if((grenade_type<=enum_zero)||(grenade_type>sh_grenade_type)){
+	if((grenade_type<=enum_zero)||(grenade_type>=sh_grenade_type)){
 
 		return PLUGIN_HANDLED
 
@@ -1193,9 +1193,8 @@ random_fx_gren_effect_func(grenade_ent, Float:the_origin_of_expolosion[3]){
 	the_origin_of_expolosion[2] = the_origin_of_expolosion[2]+30.0
 	make_shockwave(the_origin_of_expolosion,
 				sh_grenade_structs_arr[GREN_RANDOM_FX][blast_radius],
-				LineColors[the_color],1,5,8,4)
+				LineColors[the_color],1,20,20,1)
 
-	anime_kill_fx(the_origin_of_expolosion)
 	if(strlen(sh_grenade_structs_arr[GREN_RANDOM_FX][sh_grenade_break_sound])>0){
 
 		emit_sound(grenade_ent, CHAN_WEAPON,
@@ -1217,9 +1216,8 @@ default_neutral_effect_func(grenade_ent,sh_grenade_type:gren_type, Float:the_ori
 	the_origin_of_expolosion[2] = the_origin_of_expolosion[2]+30.0
 	make_shockwave(the_origin_of_expolosion,
 				sh_grenade_structs_arr[gren_type][blast_radius],
-				LineColors[sh_grenade_structs_arr[gren_type][grenade_color_num]],1,5,8,4)
+				LineColors[sh_grenade_structs_arr[gren_type][grenade_color_num]],1,20,20,1)
 
-	anime_kill_fx(the_origin_of_expolosion)
 	if(strlen(sh_grenade_structs_arr[gren_type][sh_grenade_break_sound])>0){
 
 		emit_sound(grenade_ent, CHAN_WEAPON,

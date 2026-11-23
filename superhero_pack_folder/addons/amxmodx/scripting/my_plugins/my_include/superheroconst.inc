@@ -139,7 +139,7 @@ stock const gSoundDeny[] = 	"common/wpn_denyselect.wav";
 
 // usage: check sh_get_weapon_speed stock in superheromod.inc
 // Thanks WC3:FT for weapon speeds so I didn't have to check them
-stock Float:gWeaponSpeed[] = {
+stock const Float:gWeaponSpeed[] = {
 	0.0,
 	250.0,	// CSW_P228
 	0.0,

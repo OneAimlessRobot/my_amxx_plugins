@@ -89,6 +89,7 @@ typedef enum{
 	
 }my_ammo_ids;
 
+
 #define CSW_LAST_WEAPON     CSW_P90
 
 
@@ -108,73 +109,75 @@ typedef struct def_weapon_data_struct{
 	char wpn_struct_ammo_name[20];
     my_weapon_slots wpn_slot;
 	char wpn_struct_events_file[32];
+	float wpn_default_movespeed;
 	
 }def_weapon_data_struct;
-	
+
+
 	
 const def_weapon_data_struct weapon_data_structs_array[CSW_LAST_WEAPON+1] = {
 	
-	{ "", "", 0.000000f, 0.000000f, 0.000f, 0, AMMOID_NONE, 0, 0, "", (my_weapon_slots)0, "" },
+	{ "", "", 0.000000f, 0.000000f, 0.000f, 0, AMMOID_NONE, 0, 0, "", (my_weapon_slots)0, "",0.0f },
 
-	{ "SIG P228", "weapon_p228", 0.150000f, 0.150000f, 2.7000f, 13, AMMOID_357SIG, 3, 52, "357sig", MY_SLOT_SECONDARY, "events/p228.sc" },
+	{ "SIG P228", "weapon_p228", 0.150000f, 0.150000f, 2.7000f, 13, AMMOID_357SIG, 3, 52, "357sig", MY_SLOT_SECONDARY, "events/p228.sc" , 250.0f },
 
-	{ "", "", 0.000000f, 0.00000f, 0.00f, 0, AMMOID_NONE, 0, 0, "", (my_weapon_slots)0, ""},
+	{ "", "", 0.000000f, 0.00000f, 0.00f, 0, AMMOID_NONE, 0, 0, "", (my_weapon_slots)0, "", 0.0f},
 
-	{ "Scout", "weapon_scout", 1.250000f, 0.30000f, 2.000f, 10, AMMOID_762NATO, 9, 90, "762nato", MY_SLOT_PRIMARY, "events/scout.sc" },
+	{ "Scout", "weapon_scout", 1.250000f, 0.30000f, 2.000f, 10, AMMOID_762NATO, 9, 90, "762nato", MY_SLOT_PRIMARY, "events/scout.sc",260.0f },
 	
-	{ "HE Grenade", "weapon_hegrenade", 0.00000f, 0.00000f, 0.00f, 1,  AMMOID_HEGRENADE, 1, 1, "", MY_SLOT_GRENADE, "" },
+	{ "HE Grenade", "weapon_hegrenade", 0.00000f, 0.00000f, 0.00f, 1,  AMMOID_HEGRENADE, 1, 1, "", MY_SLOT_GRENADE, "", 250.0f },
 
-	{ "XM1014 Auto Shotgun", "weapon_xm1014", 0.25000f, 0.250000f, 0.5500f, 7,  AMMOID_BUCKSHOT, 12, 32, "buckshot", MY_SLOT_PRIMARY, "events/xm1014.sc" },
+	{ "XM1014 Auto Shotgun", "weapon_xm1014", 0.25000f, 0.250000f, 0.5500f, 7,  AMMOID_BUCKSHOT, 12, 32, "buckshot", MY_SLOT_PRIMARY, "events/xm1014.sc",240.0f },
 	
-	{ "C4", "weapon_c4", 0.00000f, 0.00000f, 0.00, 1,  AMMOID_C4, 3, 1, "", MY_SLOT_C4, "" },
+	{ "C4", "weapon_c4", 0.00000f, 0.00000f, 0.00, 1,  AMMOID_C4, 3, 1, "", MY_SLOT_C4, "",250.0f },
 	
-	{ "MAC-10", "weapon_mac10", 0.07000f, 0.07000f, 3.1500f, 30, AMMOID_45ACP, 13, 100, "45acp", MY_SLOT_PRIMARY, "events/mac10.sc" },
+	{ "MAC-10", "weapon_mac10", 0.07000f, 0.07000f, 3.1500f, 30, AMMOID_45ACP, 13, 100, "45acp", MY_SLOT_PRIMARY, "events/mac10.sc", 250.0f },
 	
-	{ "AUG", "weapon_aug", 0.082500f, 0.30000f, 3.300f, 30, AMMOID_556NATO, 14, 90, "556nato", MY_SLOT_PRIMARY, "events/aug.sc" },
+	{ "AUG", "weapon_aug", 0.082500f, 0.30000f, 3.300f, 30, AMMOID_556NATO, 14, 90, "556nato", MY_SLOT_PRIMARY, "events/aug.sc",240.0f },
 	
-	{ "Smokegrenade", "weapon_smokegrenade", 0.00000f, 0.000000f, 0.00f, 1,  AMMOID_SMOKEGRENADE, 3, 1, "", MY_SLOT_GRENADE, "" },
+	{ "Smokegrenade", "weapon_smokegrenade", 0.00000f, 0.000000f, 0.00f, 1,  AMMOID_SMOKEGRENADE, 3, 1, "", MY_SLOT_GRENADE, "", 250.0f },
 	
-	{ "Dual Elites", "weapon_elite", 0.12200000f, 0.12200000f, 4.5000f, 30, AMMOID_9MM, 5, 120, "9mm", MY_SLOT_SECONDARY, "" },
+	{ "Dual Elites", "weapon_elite", 0.12200000f, 0.12200000f, 4.5000f, 30, AMMOID_9MM, 5, 120, "9mm", MY_SLOT_SECONDARY, "", 250.0f },
 	
-	{ "Five-Seven", "weapon_fiveseven", 0.15000000f, 0.15000000f, 2.7000f, 20, AMMOID_57, 6, 100, "57mm", MY_SLOT_SECONDARY, "events/fiveseven.sc" },
+	{ "Five-Seven", "weapon_fiveseven", 0.15000000f, 0.15000000f, 2.7000f, 20, AMMOID_57, 6, 100, "57mm", MY_SLOT_SECONDARY, "events/fiveseven.sc", 250.0f },
 	
-	{ "UMP-45", "weapon_ump45", 0.10000000f, 0.10000000f, 3.5000f, 25, AMMOID_45ACP, 15, 100, "45acp", MY_SLOT_PRIMARY,"events/ump45.sc" },
+	{ "UMP-45", "weapon_ump45", 0.10000000f, 0.10000000f, 3.5000f, 25, AMMOID_45ACP, 15, 100, "45acp", MY_SLOT_PRIMARY,"events/ump45.sc", 250.0f },
 
-	{ "SIG SG-550", "weapon_sg550", 0.25000000f, 0.30000000f, 3.3500f, 30, AMMOID_556NATO, 16, 90, "556nato", MY_SLOT_PRIMARY, "events/sg550.sc" },
+	{ "SIG SG-550", "weapon_sg550", 0.25000000f, 0.30000000f, 3.3500f, 30, AMMOID_556NATO, 16, 90, "556nato", MY_SLOT_PRIMARY, "events/sg550.sc", 210.0f },
 	
-	{ "Galil", "weapon_galil", 0.08749900f, 0.08749900f, 2.4500f, 35, AMMOID_556NATO, 17, 90, "556nato", MY_SLOT_PRIMARY, "events/galil.sc" },
+	{ "Galil", "weapon_galil", 0.08749900f, 0.08749900f, 2.4500f, 35, AMMOID_556NATO, 17, 90, "556nato", MY_SLOT_PRIMARY, "events/galil.sc", 240.0f },
 	
-	{ "Famas", "weapon_famas", 0.082500f, 0.300000f, 3.3000f, 25, AMMOID_556NATO, 18, 90, "556nato", MY_SLOT_PRIMARY, "events/famas.sc" },
+	{ "Famas", "weapon_famas", 0.082500f, 0.300000f, 3.3000f, 25, AMMOID_556NATO, 18, 90, "556nato", MY_SLOT_PRIMARY, "events/famas.sc", 240.0f },
 	
-	{ "HK USP", "weapon_usp", 0.14999900f, 3.13000000f, 2.7000f, 12, AMMOID_45ACP, 4, 100,"45acp", MY_SLOT_SECONDARY, "events/usp.sc" },
+	{ "HK USP", "weapon_usp", 0.14999900f, 3.13000000f, 2.7000f, 12, AMMOID_45ACP, 4, 100,"45acp", MY_SLOT_SECONDARY, "events/usp.sc", 250.0f },
 	
-	{ "Glock-18", "weapon_glock18", 0.150000f, 0.30000000f, 2.2000f, 20, AMMOID_9MM, 2, 120, "9mm", MY_SLOT_SECONDARY, "events/glock18.sc" },
+	{ "Glock-18", "weapon_glock18", 0.150000f, 0.30000000f, 2.2000f, 20, AMMOID_9MM, 2, 120, "9mm", MY_SLOT_SECONDARY, "events/glock18.sc", 250.0f },
 	
-	{ "AWP", "weapon_awp", 1.450000f, 0.300000f, 2.5000f, 10, AMMOID_338MAGNUM, 2, 30, "338magnum", MY_SLOT_PRIMARY, "events/awp.sc" },
+	{ "AWP", "weapon_awp", 1.450000f, 0.300000f, 2.5000f, 10, AMMOID_338MAGNUM, 2, 30, "338magnum", MY_SLOT_PRIMARY, "events/awp.sc", 210.0f },
 	
-	{ "HK MP5", "weapon_mp5navy", 0.07500000f, 0.07500000f, 2.6300f, 30, AMMOID_9MM, 7, 120, "9mm", MY_SLOT_PRIMARY, "events/mp5n.sc" },
+	{ "HK MP5", "weapon_mp5navy", 0.07500000f, 0.07500000f, 2.6300f, 30, AMMOID_9MM, 7, 120, "9mm", MY_SLOT_PRIMARY, "events/mp5n.sc", 250.0f },
 	
-	{ "M249", "weapon_m249", 0.10000000f, 0.10000000f, 4.7000f, 100, AMMOID_556NATOBOX, 4, 200, "556natobox", MY_SLOT_PRIMARY, "events/m249.sc" },
+	{ "M249", "weapon_m249", 0.10000000f, 0.10000000f, 4.7000f, 100, AMMOID_556NATOBOX, 4, 200, "556natobox", MY_SLOT_PRIMARY, "events/m249.sc", 220.0f },
 	
-	{ "M3 Pump Action", "weapon_m3", 0.87500000f, 0.87500000f, 0.5500f, 8,  AMMOID_BUCKSHOT, 5, 32, "buckshot", MY_SLOT_PRIMARY, "events/m3.sc" },
+	{ "M3 Pump Action", "weapon_m3", 0.87500000f, 0.87500000f, 0.5500f, 8,  AMMOID_BUCKSHOT, 5, 32, "buckshot", MY_SLOT_PRIMARY, "events/m3.sc", 230.0f },
 	
-	{ "M4A1", "weapon_m4a1", 0.08749900f, 2.00000000f, 3.0500f, 30, AMMOID_556NATO, 6, 90, "556nato", MY_SLOT_PRIMARY, "events/m4a1.sc" },
+	{ "M4A1", "weapon_m4a1", 0.08749900f, 2.00000000f, 3.0500f, 30, AMMOID_556NATO, 6, 90, "556nato", MY_SLOT_PRIMARY, "events/m4a1.sc", 230.0f },
 	
-	{ "TMP", "weapon_tmp", 0.07000000f, 0.07000000f, 2.1200f, 30, AMMOID_9MM, 11, 120, "9mm", MY_SLOT_PRIMARY, "events/tmp.sc" },
+	{ "TMP", "weapon_tmp", 0.07000000f, 0.07000000f, 2.1200f, 30, AMMOID_9MM, 11, 120, "9mm", MY_SLOT_PRIMARY, "events/tmp.sc", 250.0f },
 	
-	{ "G3-SG1", "weapon_g3sg1", 0.25000000f, 0.30000000f, 3.5000f, 20, AMMOID_762NATO, 3, 90, "762nato", MY_SLOT_PRIMARY, "events/g3sg1.sc" },
+	{ "G3-SG1", "weapon_g3sg1", 0.25000000f, 0.30000000f, 3.5000f, 20, AMMOID_762NATO, 3, 90, "762nato", MY_SLOT_PRIMARY, "events/g3sg1.sc", 210.0f },
 	
-	{ "Flashbang", "weapon_flashbang", 0.00000000f, 0.00000000f, 0.0000f, 2,  AMMOID_FLASHBANG, 2, 2, "", MY_SLOT_GRENADE, "" },
+	{ "Flashbang", "weapon_flashbang", 0.00000000f, 0.00000000f, 0.0000f, 2,  AMMOID_FLASHBANG, 2, 2, "", MY_SLOT_GRENADE, "", 250.0f },
 
-	{ "Desert Eagle", "weapon_deagle", 0.22500000f, 0.22500000f, 2.2000f, 7,  AMMOID_50AE, 1, 35, "50ae", MY_SLOT_SECONDARY, "events/deagle.sc"},
+	{ "Desert Eagle", "weapon_deagle", 0.22500000f, 0.22500000f, 2.2000f, 7,  AMMOID_50AE, 1, 35, "50ae", MY_SLOT_SECONDARY, "events/deagle.sc", 250.0f},
 	
-	{ "SIG SG-552", "weapon_sg552", 0.08250000f, 0.30000000f, 3.0000f, 30, AMMOID_556NATO, 10, 90, "556nato", MY_SLOT_PRIMARY, "events/sg552.sc" },
+	{ "SIG SG-552", "weapon_sg552", 0.08250000f, 0.30000000f, 3.0000f, 30, AMMOID_556NATO, 10, 90, "556nato", MY_SLOT_PRIMARY, "events/sg552.sc", 235.0f },
 	
-	{ "AK47", "weapon_ak47", 0.09549900f, 0.09549900f, 2.4500f, 30, AMMOID_762NATO, 1, 90, "762nato", MY_SLOT_PRIMARY, "events/ak47.sc" },
+	{ "AK47", "weapon_ak47", 0.09549900f, 0.09549900f, 2.4500f, 30, AMMOID_762NATO, 1, 90, "762nato", MY_SLOT_PRIMARY, "events/ak47.sc", 221.0f },
 
-	{ "Knife", "weapon_knife", 0.00000000f, 0.00000000f, 0.0000f, 1, AMMOID_KNIFE, 1, 0, "", MY_SLOT_KNIFE, "events/knife.sc" },
+	{ "Knife", "weapon_knife", 0.00000000f, 0.00000000f, 0.0000f, 1, AMMOID_KNIFE, 1, 0, "", MY_SLOT_KNIFE, "events/knife.sc", 250.0f },
 
-	{ "P90", "weapon_p90", 0.06599900f, 0.06599900f, 3.4000f, 50, AMMOID_57, 8, 100, "57mm", MY_SLOT_PRIMARY, "events/p90.sc" }
+	{ "P90", "weapon_p90", 0.06599900f, 0.06599900f, 3.4000f, 50, AMMOID_57, 8, 100, "57mm", MY_SLOT_PRIMARY, "events/p90.sc", 245.0f }
 
 };
 #endif

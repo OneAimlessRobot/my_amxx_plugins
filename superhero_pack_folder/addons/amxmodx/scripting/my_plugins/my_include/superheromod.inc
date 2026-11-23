@@ -584,6 +584,9 @@ native sh_get_hero_id(const heroName[]);
  */
 native sh_reset_max_speed(id);
 
+
+native Float:sh_get_user_sh_maxspeed(id, weapon)
+
 /**
  * Reset client's min gravity according to heroes they have.
  * Useful incase a temporary value was set.

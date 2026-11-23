@@ -4,6 +4,7 @@
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_PDATA_ALIASES
 #define I_WANT_CUSTOM_COLORS
+#define I_WANT_PRECACHE_UTILITIES
 #include "../my_include/superheromod.inc"
 #include "colt_inc/sh_ethereal.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -304,23 +305,10 @@ update_stats(id){
 }
 public plugin_precache(){
 	
-	
-	static i;
-
-	while(adriano_sentences[num_sentences][0]!=0){
-
-		num_sentences++
-	}
-	if(DEBUG){
-
-		server_print("%d Adriano hype sentences were counted! They are:^n^n",num_sentences)
-		i=0
-		while(adriano_sentences[i][0]!=0){
-			
-			server_print("Sentence number %d (index %d): %s^n",i+1,i,adriano_sentences[i])
-			i++
-		}
-	}
+	num_sentences = count_null_terminated_string_array(adriano_sentences,
+															"Adriano hype sentences",
+															"Sentence",
+															DEBUG)
 }
 public weaponChange(id)
 {

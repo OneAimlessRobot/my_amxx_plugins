@@ -194,10 +194,10 @@ public CmdStart(id, uc_handle)
 
 	if(sh_get_id_bit(id, SH_CONTROLLING_VEHICLE)||sh_get_id_bit(id,SH_USER_IS_FLYING)) return FMRES_IGNORED
 
-	new button = get_uc(uc_handle, UC_Buttons);
-	new clip, ammo, weapon = get_user_weapon(id, clip, ammo);
+	static button; button = get_uc(uc_handle, UC_Buttons);
+	new weapon = get_user_weapon(id);
 	
-	new flags = pev(id, pev_flags)
+	static flags; flags = pev(id, pev_flags)
 	if((flags  & FL_INGROUND2)){
 		if((button & IN_DUCK)&&(button&IN_JUMP))
 		{
@@ -317,7 +317,7 @@ public JetpackJump( id,intensity){
 	velocity[0]=velocity[0]*float(intensity);
 	velocity[1]=velocity[1]*float(intensity);
 	velocity[2]=velocity[2]*float(intensity);
-	velocity[2]=max_macro(max_macro(0.0,cvar_val(float, pcvar_min_launch_height)),abs_macro(velocity[2]));
+	velocity[2]=max_macro(max_macro(0.0,cvar_val(float, pcvar_min_launch_height)),float_abs_macro(velocity[2]));
 	set_pev(id, pev_velocity, velocity);
 }
 

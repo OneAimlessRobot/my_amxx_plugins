@@ -6,6 +6,7 @@
 #define I_WANT_CUSTOM_COLORS
 #define I_WANT_RESOURCE_ALIASES
 #define I_WANT_BASIC_MACROS
+#define I_WANT_PRECACHE_UTILITIES
 #include <amxconst>
 #include <csx>
 #include "../my_include/superheromod.inc"
@@ -361,52 +362,22 @@ public sh_round_new(){
 public plugin_precache(){
 
 
-	static i;
-	while(happy_sentences[num_happy_sentences][0]!=0){
+	num_happy_sentences = count_null_terminated_string_array(happy_sentences,
+															"Shinobu happy sentences",
+															"Sentence",
+															DEBUG)
 
-		num_happy_sentences++
-	}
-	if(DEBUG){
+	num_that_fucker_sentences = count_null_terminated_string_array(shinobu_shinobu_shinobu_shinobu_dickery_sentences,
+																"Shinobu fucker sentences",
+																"Sentence",
+																DEBUG)
 
-		server_print("%d Shinobu elderly friendly sentences were counted! (she is very inclusive) They are:^n^n",num_happy_sentences)
-		
-		i=0
-		while(happy_sentences[i][0]!=0){
-			
-			server_print("Sentence number %d (index %d): %s^n",i+1,i,happy_sentences[i])
-			i++
-		}
-	}
+															
 
-	while(shinobu_shinobu_shinobu_shinobu_dickery_sentences[num_that_fucker_sentences][0]!=0){
-
-		num_that_fucker_sentences++
-	}
-	if(DEBUG){
-
-		server_print("%d Shinobu friendly sentences were counted! They are:^n^n",num_that_fucker_sentences)
-		i=0
-		while(shinobu_shinobu_shinobu_shinobu_dickery_sentences[i][0]!=0){
-			
-			server_print("Sentence number %d (index %d): %s^n",i+1,i,shinobu_shinobu_shinobu_shinobu_dickery_sentences[i])
-			i++
-		}
-	}
-
-	while(rehearsed_neurodivergent_inclusivity[num_neurodivergent_inclusivity_sentences][0]!=0){
-
-		num_neurodivergent_inclusivity_sentences++
-	}
-	if(DEBUG){
-
-		server_print("%d Shinobu neuroinclusive sentences were counted! (she is very inclusive) They are:^n^n",num_neurodivergent_inclusivity_sentences)
-		i=0
-		while(rehearsed_neurodivergent_inclusivity[i][0]!=0){
-			
-			server_print("Sentence number %d (index %d): %s^n",i+1,i,rehearsed_neurodivergent_inclusivity[i])
-			i++
-		}
-	}
+	num_neurodivergent_inclusivity_sentences = count_null_terminated_string_array(rehearsed_neurodivergent_inclusivity,
+																"Shinobu autist rights sentences",
+																"Sentence",
+																DEBUG)
 
 
 }

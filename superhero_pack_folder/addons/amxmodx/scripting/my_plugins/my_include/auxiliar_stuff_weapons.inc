@@ -104,6 +104,8 @@ stock const event_files_elite[NUM_OF_HANDS_IN_A_HUMAN][] = {
 
 #define BURSTGUNS_BIT_SUM ((1<<CSW_FAMAS) | (1<<CSW_GLOCK18))
 
+#define KNIFE_AND_NADES ((1<<CSW_KNIFE)|(1<<CSW_HEGRENADE)|(1<<CSW_FLASHBANG)|(1<<CSW_SMOKEGRENADE))
+
 #define SHOTGUNS_BS	((1<<CSW_M3)|(1<<CSW_XM1014))
 
 #define SILENT_BS	((1<<CSW_USP)|(1<<CSW_M4A1))
@@ -127,21 +129,31 @@ native wlt_get_ammo_name(my_weapon_ids:wpn_id, wpn_name[], len)
 
 native wlt_get_events_file(my_weapon_ids:wpn_id, wpn_name[], len);
 
-native wlt_get_def_clip(wpn_id);
+native wlt_get_def_clip(my_weapon_ids:wpn_id);
 
-native wlt_get_def_bp_ammo(wpn_id);
+native wlt_get_def_bp_ammo(my_weapon_ids:wpn_id);
 
-native wlt_get_def_ammo_id(wpn_id);
+native wlt_get_def_ammo_id(my_weapon_ids:wpn_id);
 
-native wlt_get_def_pos(wpn_id);
+native wlt_get_def_pos(my_weapon_ids:wpn_id);
 
-native my_weapon_slots:wlt_get_def_slot(wpn_id);
+native my_weapon_slots:wlt_get_def_slot(my_weapon_ids:wpn_id);
 
-native Float:wlt_get_def_prim_atk_delay(wpn_id);
+native Float:wlt_get_def_prim_atk_delay(my_weapon_ids:wpn_id);
 
-native Float:wlt_get_def_scnd_atk_delay(wpn_id);
+native Float:wlt_get_def_scnd_atk_delay(my_weapon_ids:wpn_id);
 
-native Float:wlt_get_def_rld_delay(wpn_id);
+native Float:wlt_get_def_rld_delay(my_weapon_ids:wpn_id);
+
+/*
+
+	scout is 260.0 for example
+
+
+*/
+
+native Float:wlt_get_def_movespeed(my_weapon_ids:wpn_id);
+
 
 stock list_weapons_in_bitsum(weapon_bitsum,bool:exclude_mode=false){
 	
