@@ -13,6 +13,33 @@
 #include "../my_include/my_author_header.inc"
 
 
+
+#define LAUNCHER_CLASSNAME "ksun_launcher"
+
+
+#define LAUNCHER_DEAD_HP 1000.0
+
+#define LAUNCHER_SIZE 15.0
+
+#define LAUNCHER_THINK_PERIOD 0.25
+
+
+#define PHASE_IDLE 0
+#define PHASE_DEPLOY 1
+#define PHASE_HOLD 2
+#define PHASE_SEND 3
+#define PHASE_DONE 4
+
+#define SPORE_READY_SFX "shmod/ksun/launcher/spore_notification.wav"
+
+#define SHOOT_LOOP_PERIOD 0.2
+
+#define DEPLOY_LOOP_PERIOD 0.2
+
+
+#define UNITS_ABOVE 80
+
+
 new pcvar_ksun_hold_time,
 	pcvar_ksun_launcher_base_health;
 

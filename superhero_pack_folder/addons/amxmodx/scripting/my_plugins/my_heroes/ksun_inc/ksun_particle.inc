@@ -5,22 +5,6 @@
 
 
 #define KSUN_SPORE_MDL "models/shmod/predgun/preddisc.mdl"
-#define SPORE_TRAVEL_SFX "roach/rch_smash.wav"
-
-
-#define KSUN_HEAL_GLOW_TIME SHOOT_LOOP_PERIOD
-
-
-#define SPORE_CLASSNAME "ksun_spore"
-
-#define SPORE_SIZE 10.0
-#define SPORE_RADIUS (5.0)
-
-#define WALL_BUMP_LENGTH ((CENTER_CUBE_VEX_DISTANCE(SPORE_RADIUS)))
-
-
-
-#define SPORE_DEAD_HP 1000.0
 
 native get_from_player_spores(id,index)
 native spore_launch(id)

@@ -22,6 +22,12 @@
 #define KSUN_ULTIMATE_LOOP_PERIOD 0.4
 #define KSUN_ULTIMATE_LOOP_DEC 30
 
+
+
+
+#define KSUN_ULTIMATE_SOUND "shmod/ksun/ultimate/ksun_ultimate_deploy_sound.wav"
+
+
 new pcvar_ksun_supply_capacity;
 new pcvar_ksun_health_to_supply_ratio
 new pcvar_ksun_dmg_absorption_index

@@ -1,12 +1,8 @@
-#if defined sh_yandere_jet_radio_funcs
+#if defined sh_grief_drive_jet_radio_funcs
   #endinput
 #endif
-#define sh_yandere_jet_radio_funcs
+#define sh_grief_drive_jet_radio_funcs
 
-#define RADIO_SCAN_PERIOD 5.0
-
-
-#define RADIO_RADIUS 500.0
 
 native reset_jet_scans(jet_id)
 native get_user_jet_scans(id)

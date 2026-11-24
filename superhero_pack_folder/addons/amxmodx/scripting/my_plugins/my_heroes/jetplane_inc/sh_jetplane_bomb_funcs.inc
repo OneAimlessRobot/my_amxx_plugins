@@ -1,17 +1,9 @@
-#if defined sh_yandere_jet_bomb_funcs
+#if defined sh_grief_drive_jet_bomb_funcs
   #endinput
 #endif
-#define sh_yandere_jet_bomb_funcs
+#define sh_grief_drive_jet_bomb_funcs
 
 
-#define BOMB_DROP_PERIOD 10.0
-
-
-
-#define BOMB_EXPLODE_SOUND "weapons/explode3.wav"
-
-#define JETPLANE_BOMB_CLASSNAME "yandere_bomb"
-#define BOMB_MODEL "models/shmod/yandere/jetplane/projectiles/airattack_nuke.mdl"
 
 native reset_jet_bombs(jet_id)
 native get_user_jet_bombs(id)

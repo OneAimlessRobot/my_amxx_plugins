@@ -27,7 +27,21 @@ new g_player_targets[SH_MAXSLOTS+1][SH_MAXSLOTS+2]
 new g_player_tracks_player[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
 
 new g_player_scanner[SH_MAXSLOTS+1]
-//cvar_val(float, pcvar_
+
+#define BUSY_MSG "Some launched spores still busy!"
+
+
+
+#define UNITS_ABOVE 80
+
+
+#define SPORE_PREPARE_SFX "shmod/ksun/launcher/eject_prepare.wav"
+
+
+
+
+
+
 
 public plugin_init()
 {

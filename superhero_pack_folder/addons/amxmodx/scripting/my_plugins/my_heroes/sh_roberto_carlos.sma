@@ -184,11 +184,6 @@ public sh_client_spawn(id)
 	}
 	
 }
-public sh_round_end(){
-	
-	remove_entity_name(BALL_CLASSNAME)
-	
-}
 public plugin_precache()
 {
 	engfunc(EngFunc_PrecacheSound,round_win)

@@ -1,7 +1,7 @@
-#if defined sh_yandere_jet_engine_funcs
+#if defined sh_grief_drive_jet_engine_funcs
   #endinput
 #endif
-#define sh_yandere_jet_engine_funcs
+#define sh_grief_drive_jet_engine_funcs
 
 #define FlameRate 20
 #define SoundRate 1
@@ -25,9 +25,9 @@
 #define JETPLANE_DRAG_CONST (JETPLANE_AREA*JETPLANE_CAR*JETPLANE_AIR_RESISTANCE)
 
 
-#define JETPLANE_FLY_SOUND "shmod/yandere/jetsounds/engine/fly2.wav"
-#define JETPLANE_IDLE_SOUND "shmod/yandere/jetsounds/engine/idle.wav"
-#define JETPLANE_BLOW_SOUND "shmod/yandere/jetsounds/engine/blow.wav"
+#define JETPLANE_FLY_SOUND "shmod/grief_drive/jetsounds/engine/fly2.wav"
+#define JETPLANE_IDLE_SOUND "shmod/grief_drive/jetsounds/engine/idle.wav"
+#define JETPLANE_BLOW_SOUND "shmod/grief_drive/jetsounds/engine/blow.wav"
 
 #define JETPLANE_ACCEL_PER_SEC (JETPLANE_THRUST/JETPLANE_MASS)
 

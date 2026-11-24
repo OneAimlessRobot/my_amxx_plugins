@@ -11,12 +11,9 @@
 #define I_WANT_INIT_UTILITIES
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
-#include "yandere_inc/sh_yandere_psychosis.inc"
-#include "jetplane_inc/sh_jetplane_mg_funcs.inc"
+#include "grief_drive_inc/sh_grief_drive_psychosis.inc"
 #include "jetplane_inc/sh_jetplane_funcs.inc"
-#include "jetplane_inc/sh_jetplane_bomb_funcs.inc"
-#include "jetplane_inc/sh_yandere_get_set.inc"
-#include "jetplane_inc/sh_jetplane_rocket_funcs.inc"
+#include "jetplane_inc/sh_grief_drive_get_set.inc"
 #include "sh_aux_stuff/sh_pokemon_dmg_framework.inc"
 #include "./superheromod_help_files_includes/superheromod_help_files.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
@@ -33,7 +30,7 @@
 
 
 stock num_sentences = 0
-new yandere_sentences[][]={
+new grief_drive_sentences[][]={
 	"Where are you... where... are you...",
 	"Come out to plaaaaayyyy... There is NO WAY IM LETTING ANY OF YOU GO NOW!!!!!",
 	"I hear their voices... I hear them... Then want... they want... red and black",
@@ -46,36 +43,36 @@ new yandere_sentences[][]={
 static const DEBUG = 0
 
 
-#define YANDERE_CYCLE "shmod/yandere/yandere_cycle3.wav"
-#define YANDERE_PAIN "shmod/yandere/Yandere_pain.wav"
+#define GRIEF_DRIVE_CYCLE "shmod/grief_drive/grief_drive_cycle3.wav"
+#define GRIEF_DRIVE_PAIN "shmod/grief_drive/grief_drive_pain.wav"
 
-#define YANDERE_SHOTGUN_V_MODEL "models/shmod/yandere/shotgun/v_yanderu_shotgun.mdl"
-#define YANDERE_SHOTGUN_P_MODEL "models/shmod/yandere/shotgun/w_xm1014.mdl"
+#define GRIEF_DRIVE_SHOTGUN_V_MODEL "models/shmod/grief_drive/shotgun/v_grief_drive_shotgun.mdl"
+#define GRIEF_DRIVE_SHOTGUN_P_MODEL "models/shmod/grief_drive/shotgun/w_xm1014.mdl"
 
-#define YANDERE_KNIFE_V_MODEL "models/shmod/yandere/knife/v_knife.mdl"
-#define YANDERE_KNIFE_P_MODEL "models/shmod/yandere/knife/p_knife.mdl"
+#define GRIEF_DRIVE_KNIFE_V_MODEL "models/shmod/grief_drive/knife/v_knife.mdl"
+#define GRIEF_DRIVE_KNIFE_P_MODEL "models/shmod/grief_drive/knife/p_knife.mdl"
 
-#define YANDERE_PSYCHO_KNIFE_V_MODEL "models/shmod/yandere/knife/v_psycho_knife.mdl"
-#define YANDERE_PSYCHO_KNIFE_P_MODEL "models/shmod/yandere/knife/p_psycho_knife.mdl"
+#define GRIEF_DRIVE_PSYCHO_KNIFE_V_MODEL "models/shmod/grief_drive/knife/v_psycho_knife.mdl"
+#define GRIEF_DRIVE_PSYCHO_KNIFE_P_MODEL "models/shmod/grief_drive/knife/p_psycho_knife.mdl"
 
 
 
-#define YANDERE_WEAPON_CLASSID CSW_XM1014
+#define GRIEF_DRIVE_WEAPON_CLASSID CSW_XM1014
 
 new num_warcries = 0
-new YANDERE_WARCRIES[][]={
+new GRIEF_DRIVE_WARCRIES[][]={
 
-  "shmod/yandere/Yuyoyuppe_-_Kyakkya.wav",
-  "shmod/yandere/Yuyoyuppe_-_MAKKA.wav",
-  "shmod/yandere/ozoi_x_yakui_maid_lanterns.wav",
+  "shmod/grief_drive/Yuyoyuppe_-_Kyakkya.wav",
+  "shmod/grief_drive/Yuyoyuppe_-_MAKKA.wav",
+  "shmod/grief_drive/ozoi_x_yakui_maid_lanterns.wav",
   ""
   
 }
 new num_melancholy_sounds = 0
 new melancholy_sounds[][]={
 
-  "shmod/yandere/ozoi_x_yakui_maid_Y_X_O.wav",
-  "shmod/yandere/Shinda_boku_no_kanojo_Hades_end_song.wav",
+  "shmod/grief_drive/ozoi_x_yakui_maid_Y_X_O.wav",
+  "shmod/grief_drive/Shinda_boku_no_kanojo_Hades_end_song.wav",
   ""
   
 }
@@ -97,13 +94,13 @@ stock dmg_source_name_short_senpai_avenger[SAFE_BUFFER_SIZE+1]="senpai_avgr",
     custom_dmg_id_rage
 
 
-#define YANDERE_CYCLE_PERIOD 0.33
-#define YANDERE_TEAM_COUNT_MONITOR_PERIOD 0.5
+#define GRIEF_DRIVE_CYCLE_PERIOD 0.33
+#define GRIEF_DRIVE_TEAM_COUNT_MONITOR_PERIOD 0.5
 
 // GLOBAL VARIABLES
 //Replacing with bitmasks...
 
-stock const gHeroName[] = "Yandere Mk.II"
+stock const gHeroName[] = "Grief Drive"
 
 
 stock gSuperAngryMask
@@ -126,7 +123,7 @@ stock Float:gTransTimer[SH_MAXSLOTS+1]
 
 
 
-#define YANDERE_STATS_MAX_MAGNITUDE 2
+#define GRIEF_DRIVE_STATS_MAX_MAGNITUDE 2
 
 
 stock hud_sync
@@ -150,46 +147,45 @@ new pcvar_overheal_hp_max
 new pcvar_trans_time
 new generic_dmg_dark_arts = -1
 
-#define YANDERE_SUPER_ANGRY_MONITOR_ENTITY_CLASSNAME "super_angry_monitor"
-#define YANDERE_TRANSFORM_MONITOR_ENTITY_CLASSNAME "transform_monitor"
-#define YANDERE_PLAYER_TEAM_COUNT_MONITOR_CLASSNAME "team_count_monitor"
+#define GRIEF_DRIVE_SUPER_ANGRY_MONITOR_ENTITY_CLASSNAME "super_angry_monitor"
+#define GRIEF_DRIVE_TRANSFORM_MONITOR_ENTITY_CLASSNAME "transform_monitor"
+#define GRIEF_DRIVE_PLAYER_TEAM_COUNT_MONITOR_CLASSNAME "team_count_monitor"
 
-new yandere_super_monitor_entity_id = -1,
-	yandere_transform_monitor_entity_id = -1,
-	yandere_team_count_monitor_entity_id = -1
+new grief_drive_super_monitor_entity_id = -1,
+	grief_drive_transform_monitor_entity_id = -1,
+	grief_drive_team_count_monitor_entity_id = -1
 
 new super_angry_forward_id = -1,
-	yandere_transform_forward_id = -1,
-	yandere_team_count_forward_id = -1
+	grief_drive_transform_forward_id = -1,
+	grief_drive_team_count_forward_id = -1
 	
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
 	// Plugin Info
-	register_plugin("SUPERHERO Selfless Yandere", "1.0", AUTHOR)
+	register_plugin("SUPERHERO grief_drive", "1.0", AUTHOR)
 	// DO NOT EDIT THIS FILE TO CHANGE CVARS, USE THE SHCONFIG.CFG
-	create_cvar("yandere_level", "8")
-	create_cvar("yandere_degen_iter_period", "0.1")
-	pcvar_explode_radius = create_cvar("yandere_explode_radius", "1")
-	pcvar_explode_maxdamage = create_cvar("yandere_explode_maxdamage", "1")
-	pcvar_psychosis_degen_pct = create_cvar("yandere_psychosis_degen_pct", "20.0")
-	pcvar_psychosis_degen_health_threshold = create_cvar("yandere_psychosis_degen_health_threshold", "50.0")
-	pcvar_trans_time = create_cvar("yandere_trans_time", "4.0")
-	pcvar_curse_pct = create_cvar("yandere_angry_curse_pct", "0.5")
-	pcvar_angry_gravity = create_cvar("yandere_angry_gravity", "0.25")
-	pcvar_angry_dmg_mult = create_cvar("yandere_angry_dmg_mult", "5.0")
-	pcvar_angry_degen_pct = create_cvar("yandere_angry_degen_pct", "10.0")
-	pcvar_overheal_hp_max = create_cvar("yandere_overheal_hp_max", "1000.0")
-	pcvar_degen_health_extra_threshold = create_cvar("yandere_degen_health_extra_threshold", "500.0")
-	pcvar_angry_hitheal_pct = create_cvar("yandere_angry_hitheal_pct", "1.0")
-	pcvar_min_players = create_cvar("yandere_min_players", "6")
-	gHeroID=shCreateHero(gHeroName, "YANDERE!", "Protect live teamates and avenge dead ones!", true, "yandere_level" )
+	create_cvar("grief_drive_level", "8")
+	create_cvar("grief_drive_degen_iter_period", "0.1")
+	pcvar_explode_radius = create_cvar("grief_drive_explode_radius", "1")
+	pcvar_explode_maxdamage = create_cvar("grief_drive_explode_maxdamage", "1")
+	pcvar_psychosis_degen_pct = create_cvar("grief_drive_psychosis_degen_pct", "20.0")
+	pcvar_psychosis_degen_health_threshold = create_cvar("grief_drive_psychosis_degen_health_threshold", "50.0")
+	pcvar_trans_time = create_cvar("grief_drive_trans_time", "4.0")
+	pcvar_curse_pct = create_cvar("grief_drive_angry_curse_pct", "0.5")
+	pcvar_angry_gravity = create_cvar("grief_drive_angry_gravity", "0.25")
+	pcvar_angry_dmg_mult = create_cvar("grief_drive_angry_dmg_mult", "5.0")
+	pcvar_angry_degen_pct = create_cvar("grief_drive_angry_degen_pct", "10.0")
+	pcvar_overheal_hp_max = create_cvar("grief_drive_overheal_hp_max", "1000.0")
+	pcvar_degen_health_extra_threshold = create_cvar("grief_drive_degen_health_extra_threshold", "500.0")
+	pcvar_angry_hitheal_pct = create_cvar("grief_drive_angry_hitheal_pct", "1.0")
+	pcvar_min_players = create_cvar("grief_drive_min_players", "6")
+	gHeroID=shCreateHero(gHeroName, "Grief driven!", "Protect live teamates and avenge dead ones!", true, "grief_drive_level" )
 	
 	can_jet_here = (sh_test_map_name_here(true,"cs_assault")||sh_test_map_name_here(true,"starwars"))
 
 	sh_assign_hero_bit(gHeroID,SH_EXPLOSION_POWERS, true)
 
-	sh_assign_hero_bit(gHeroID,SH_YANDERE_HERO, true)
 
 	sh_register_admin_only_hero(gHeroID,ADMIN_IMMUNITY,13,
 				"No access was granted")
@@ -198,7 +194,7 @@ public plugin_init()
 	static hero_name_arr[STRLEN_FOR_NAMES];
 	arrayset(hero_name_arr,0,sizeof hero_name_arr)
 	add(hero_name_arr,charsmax(hero_name_arr),gHeroName,charsmax(gHeroName))
-	superheromod_help_link_hero(gHeroID, "Yandere: Help file","yandere_folder/","yandere_help_file.html",hero_name_arr)
+	superheromod_help_link_hero(gHeroID, "Grief Drive: Help file","grief_drive_folder/","grief_drive_help_file.html",hero_name_arr)
 	
 	sh_register_superheromod_model(gHeroID,
 								"models/player/yanderu/yanderu.mdl",
@@ -221,19 +217,19 @@ public plugin_init()
 
 	register_event("CurWeapon", "weaponChange", "be", "1=1")
 
-	RegisterHam(Ham_TakeDamage, "player", "yandere_damage",1,true)
+	RegisterHam(Ham_TakeDamage, "player", "grief_drive_damage",1,true)
 
-	RegisterHam(Ham_TakeDamage,"player","Yandere_ham_knife_damage",1,true)
+	RegisterHam(Ham_TakeDamage,"player","grief_drive_ham_knife_damage",1,true)
 
 	register_ham_hook_multiple(Ham_TraceAttack,
 						full_entity_array_for_trace_attack,
 						length_of_trace_attack_entity_array,
-						"Yandere_Fire_Weapon",
+						"grief_drive_fire_Weapon",
 						1,
 						true)
 	
 
-	register_forward(FM_CmdStart, "yandere_angry_idle_checks")
+	register_forward(FM_CmdStart, "grief_drive_angry_idle_checks")
 
 	custom_dmg_id_senpai_avenger=sh_log_custom_damage_source(
 								gHeroID,
@@ -255,31 +251,31 @@ public plugin_init()
 
 	init_hud_syncs()
 
-	init_monitor_entity_based_global(YANDERE_TRANSFORM_MONITOR_ENTITY_CLASSNAME, "yandere_loop", YANDERE_CYCLE_PERIOD,
-											yandere_transform_monitor_entity_id,
-											yandere_transform_forward_id)
+	init_monitor_entity_based_global(GRIEF_DRIVE_TRANSFORM_MONITOR_ENTITY_CLASSNAME, "grief_drive_loop", GRIEF_DRIVE_CYCLE_PERIOD,
+											grief_drive_transform_monitor_entity_id,
+											grief_drive_transform_forward_id)
 
-	init_monitor_entity_based_global(YANDERE_PLAYER_TEAM_COUNT_MONITOR_CLASSNAME, "yandere_team_count_monitor_callback", YANDERE_TEAM_COUNT_MONITOR_PERIOD,
-											yandere_team_count_monitor_entity_id,
-											yandere_team_count_forward_id)
+	init_monitor_entity_based_global(GRIEF_DRIVE_PLAYER_TEAM_COUNT_MONITOR_CLASSNAME, "grief_drive_team_count_monitor_callback", GRIEF_DRIVE_TEAM_COUNT_MONITOR_PERIOD,
+											grief_drive_team_count_monitor_entity_id,
+											grief_drive_team_count_forward_id)
 
 }
 
 
 public plugin_natives(){
 
-	register_native("yandere_get_is_super","_yandere_get_is_super");
-	register_native("yandere_get_hero_id","_yandere_get_hero_id");
+	register_native("grief_drive_get_is_super","_grief_drive_get_is_super");
+	register_native("grief_drive_get_hero_id","_grief_drive_get_hero_id");
 
 
 
 }
-public _yandere_get_hero_id(iPlugin,iParams){
+public _grief_drive_get_hero_id(iPlugin,iParams){
 	
 	return gHeroID
 
 }
-public _yandere_get_is_super(iPlugin,iParams){
+public _grief_drive_get_is_super(iPlugin,iParams){
 	new id= get_param(1)
 	
 	//return gSuperAngry[id]
@@ -287,7 +283,7 @@ public _yandere_get_is_super(iPlugin,iParams){
 
 }
 
-public yandere_angry_idle_checks(id, uc_handle){
+public grief_drive_angry_idle_checks(id, uc_handle){
 
 	
 	if(!sh_is_active()||sh_is_freezetime()){
@@ -310,7 +306,7 @@ public yandere_angry_idle_checks(id, uc_handle){
 	return FMRES_IGNORED
 
 }
-public Yandere_ham_knife_damage(id, idinflictor, attacker, Float:damage, damagebits)
+public grief_drive_ham_knife_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
 	if(damage <= 0.0){
 
@@ -343,7 +339,7 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 		
 	}
 	else{
-		killyandere(id,true)
+		killgrief_drive(id,true)
 	}
 	
 	
@@ -363,7 +359,7 @@ return -1;
 
 }
 
-public yandere_team_count_monitor_callback(entity_id){
+public grief_drive_team_count_monitor_callback(entity_id){
 
 	if(!is_valid_ent(entity_id)){
 
@@ -371,12 +367,12 @@ public yandere_team_count_monitor_callback(entity_id){
 	}
 	if(!sh_is_active()){
 
-		entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + YANDERE_TEAM_COUNT_MONITOR_PERIOD)
+		entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + GRIEF_DRIVE_TEAM_COUNT_MONITOR_PERIOD)
 		return PLUGIN_CONTINUE
 	}
 	if(sh_is_freezetime()){
 		
-		entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + YANDERE_TEAM_COUNT_MONITOR_PERIOD)
+		entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + GRIEF_DRIVE_TEAM_COUNT_MONITOR_PERIOD)
 		return PLUGIN_CONTINUE
 	}
 	
@@ -407,13 +403,13 @@ public yandere_team_count_monitor_callback(entity_id){
 		}
 	}
 
-	entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + YANDERE_TEAM_COUNT_MONITOR_PERIOD)
+	entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + GRIEF_DRIVE_TEAM_COUNT_MONITOR_PERIOD)
 	return PLUGIN_CONTINUE
 
 }
 
 
-public yandere_sentence_loop(entity_id){
+public grief_drive_sentence_loop(entity_id){
 	
 	if(!is_valid_ent(entity_id)){
 
@@ -470,8 +466,8 @@ public yandere_sentence_loop(entity_id){
 					fx_bleed(client_origin)
 					if(degen_iter_period>1.0){
 							get_user_name(id,client_name,127)
-							emit_sound(id, CHAN_AUTO, YANDERE_CYCLE, 1.0, 0.0, 0, PITCH_NORM)
-							sh_chat_message(0,gHeroID,"%s: %s",client_name,yandere_sentences[generate_int(0,num_sentences-1)])
+							emit_sound(id, CHAN_AUTO, GRIEF_DRIVE_CYCLE, 1.0, 0.0, 0, PITCH_NORM)
+							sh_chat_message(0,gHeroID,"%s: %s",client_name,grief_drive_sentences[generate_int(0,num_sentences-1)])
 					}
 				}
 				
@@ -481,7 +477,7 @@ public yandere_sentence_loop(entity_id){
 	entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + degen_iter_period)
 	return PLUGIN_CONTINUE
 }
-public yandere_loop(entity_id){
+public grief_drive_loop(entity_id){
 
 	if(!is_valid_ent(entity_id)){
 
@@ -489,11 +485,11 @@ public yandere_loop(entity_id){
 	}
 	if(!sh_is_active()){
 
-		entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + YANDERE_CYCLE_PERIOD)
+		entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + GRIEF_DRIVE_CYCLE_PERIOD)
 	}
 	if(sh_is_freezetime()){
 		
-		entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + YANDERE_CYCLE_PERIOD)
+		entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + GRIEF_DRIVE_CYCLE_PERIOD)
 	}
 
 
@@ -509,13 +505,13 @@ public yandere_loop(entity_id){
 		if(!is_user_bot(id)&&Get_BitVar(gTransTimerStartedMask,id)){
 			client_print(id,print_center,"All teamates died! Grief will take over in... %0.2fs^n",gTransTimer[id])
 		}
-		yandere_timer_transform(id)
+		grief_drive_timer_transform(id)
 	}
 
-	entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + YANDERE_CYCLE_PERIOD)
+	entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + GRIEF_DRIVE_CYCLE_PERIOD)
 }
 
-update_yanderes_stats(CsTeams:the_team,bool:died_or_spawned,id_to_exclude=-1){
+update_grief_drives_stats(CsTeams:the_team,bool:died_or_spawned,id_to_exclude=-1){
 
 	static the_players[SH_MAXSLOTS], pnum, id	
 	g_num_players = get_playersnum(0)
@@ -527,11 +523,11 @@ update_yanderes_stats(CsTeams:the_team,bool:died_or_spawned,id_to_exclude=-1){
 		if(!sh_get_user_has_hero(id,gHeroID) ){
 			continue;
 		}
-		static CsTeams:curr_yanderes_team = CS_TEAM_UNASSIGNED;
+		static CsTeams:curr_grief_drives_team = CS_TEAM_UNASSIGNED;
 
-		curr_yanderes_team = cs_get_user_team(id)
+		curr_grief_drives_team = cs_get_user_team(id)
 
-		if(curr_yanderes_team!=the_team){
+		if(curr_grief_drives_team!=the_team){
 
 			continue
 		}
@@ -550,17 +546,17 @@ update_stats(id, bool:go_up_or_go_down){
 	if(!is_user_alive(id)) return
 	if(!sh_get_user_has_hero(id,gHeroID) ) return
 	if(go_up_or_go_down){
-		if(sh_check_player_boost_stage(id, STAT_SPEED_ID)<YANDERE_STATS_MAX_MAGNITUDE){
+		if(sh_check_player_boost_stage(id, STAT_SPEED_ID)<GRIEF_DRIVE_STATS_MAX_MAGNITUDE){
 
 			sh_apply_staged_stat_boost(id,id,STAT_SPEED_ID, 1, true)
 
 		}
-		if(sh_check_player_boost_stage(id, STAT_DEFENSE_MULT)>-YANDERE_STATS_MAX_MAGNITUDE){
+		if(sh_check_player_boost_stage(id, STAT_DEFENSE_MULT)>-GRIEF_DRIVE_STATS_MAX_MAGNITUDE){
 			
 			sh_apply_staged_stat_boost(id,id,STAT_DEFENSE_MULT, 1, false)
 		
 		}
-		if(sh_check_player_boost_stage(id, STAT_ATTACK_MULT)<YANDERE_STATS_MAX_MAGNITUDE){
+		if(sh_check_player_boost_stage(id, STAT_ATTACK_MULT)<GRIEF_DRIVE_STATS_MAX_MAGNITUDE){
 			
 			sh_apply_staged_stat_boost(id,id,STAT_ATTACK_MULT, 1, true)
 		
@@ -573,7 +569,7 @@ update_stats(id, bool:go_up_or_go_down){
 			sh_apply_staged_stat_boost(id,id,STAT_SPEED_ID, 1, false)
 
 		}
-		if(sh_check_player_boost_stage(id, STAT_DEFENSE_MULT)<YANDERE_STATS_MAX_MAGNITUDE){
+		if(sh_check_player_boost_stage(id, STAT_DEFENSE_MULT)<GRIEF_DRIVE_STATS_MAX_MAGNITUDE){
 			
 			sh_apply_staged_stat_boost(id,id,STAT_DEFENSE_MULT, 1, true)
 		
@@ -586,7 +582,7 @@ update_stats(id, bool:go_up_or_go_down){
 
 	}
 }
-public yandere_timer_transform(id){
+public grief_drive_timer_transform(id){
 	
 	if(Get_BitVar(gSuperAngryMask,id)){
 
@@ -600,11 +596,11 @@ public yandere_timer_transform(id){
 			sh_apply_staged_stat_boost(id,id,STAT_DEFENSE_MULT,1,true)
 			sh_chat_message(0,gHeroID,"Hah... What happened?");
 			UnSet_BitVar(gPlayedSoundMask,id)
-			if(user_has_weapon(id,YANDERE_WEAPON_CLASSID)){
-				sh_drop_weapon(id, YANDERE_WEAPON_CLASSID,true)
+			if(user_has_weapon(id,GRIEF_DRIVE_WEAPON_CLASSID)){
+				sh_drop_weapon(id, GRIEF_DRIVE_WEAPON_CLASSID,true)
 			}
 
-			emit_sound(id, CHAN_AUTO, YANDERE_WARCRIES[curr_player_sound[id]],
+			emit_sound(id, CHAN_AUTO, GRIEF_DRIVE_WARCRIES[curr_player_sound[id]],
 				VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
 		}
 	}
@@ -612,15 +608,15 @@ public yandere_timer_transform(id){
 		UnSet_BitVar(gIdleAngryMask,id)
 		if(Get_BitVar(gTransTimerStartedMask,id)){
 
-			gTransTimer[id]-= YANDERE_CYCLE_PERIOD
+			gTransTimer[id]-= GRIEF_DRIVE_CYCLE_PERIOD
 			if((gTransTimer[id]<=0.0)){
 				
 				Set_BitVar(gSuperAngryMask,id)
 				sh_reset_min_gravity(id)
 				sh_reset_player_stat_boosts(id,id)
-				sh_apply_staged_stat_boost(id,id,STAT_SPEED_ID,-YANDERE_STATS_MAX_MAGNITUDE,true)
-				sh_apply_staged_stat_boost(id,id,STAT_DEFENSE_MULT,YANDERE_STATS_MAX_MAGNITUDE,false)
-				sh_apply_staged_stat_boost(id,id,STAT_ATTACK_MULT,YANDERE_STATS_MAX_MAGNITUDE+1,true)
+				sh_apply_staged_stat_boost(id,id,STAT_SPEED_ID,-GRIEF_DRIVE_STATS_MAX_MAGNITUDE,true)
+				sh_apply_staged_stat_boost(id,id,STAT_DEFENSE_MULT,GRIEF_DRIVE_STATS_MAX_MAGNITUDE,false)
+				sh_apply_staged_stat_boost(id,id,STAT_ATTACK_MULT,GRIEF_DRIVE_STATS_MAX_MAGNITUDE+1,true)
 				if(!Get_BitVar(gPlayedSoundMask,id)){
 					static client_name[128]
 					get_user_name(id,client_name,127)
@@ -628,9 +624,9 @@ public yandere_timer_transform(id){
 					
 					emit_sound(id, CHAN_AUTO, melancholy_sounds[curr_melancholy_sound[id]],VOL_NORM,ATTN_NORM,SND_STOP,PITCH_NORM)
 
-					emit_sound(id, CHAN_AUTO, YANDERE_WARCRIES[curr_player_sound[id]],VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
+					emit_sound(id, CHAN_AUTO, GRIEF_DRIVE_WARCRIES[curr_player_sound[id]],VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
 					curr_player_sound[id]=generate_int(0,num_warcries-1)
-					emit_sound(id, CHAN_AUTO, YANDERE_WARCRIES[curr_player_sound[id]], 1.0, 0.0, 0, PITCH_NORM)
+					emit_sound(id, CHAN_AUTO, GRIEF_DRIVE_WARCRIES[curr_player_sound[id]], 1.0, 0.0, 0, PITCH_NORM)
 					Set_BitVar(gPlayedSoundMask,id)
 				}
 				gTransTimer[id]=cvar_val(float,pcvar_trans_time)
@@ -647,8 +643,8 @@ public yandere_timer_transform(id){
 				jet_destroy(id)
 			}
 			if(!sh_is_freezetime()){
-				if(!user_has_weapon(id,YANDERE_WEAPON_CLASSID)){
-					sh_give_weapon(id, YANDERE_WEAPON_CLASSID,true)
+				if(!user_has_weapon(id,GRIEF_DRIVE_WEAPON_CLASSID)){
+					sh_give_weapon(id, GRIEF_DRIVE_WEAPON_CLASSID,true)
 				}
 			}
 		}
@@ -659,7 +655,7 @@ public yandere_timer_transform(id){
 public client_disconnected(id){
 
 
-	killyandere(id,true)
+	killgrief_drive(id,true)
 
 	
 }
@@ -672,12 +668,12 @@ loadCVARS();
 //----------------------------------------------------------------------------------------------
 public loadCVARS()
 {
-degen_iter_period=get_cvar_float("yandere_degen_iter_period")
+degen_iter_period=get_cvar_float("grief_drive_degen_iter_period")
 generic_dmg_dark_arts = get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_DARK_ARTS)
 
 
-init_monitor_entity_based_global(YANDERE_SUPER_ANGRY_MONITOR_ENTITY_CLASSNAME, "yandere_sentence_loop", degen_iter_period,
-										yandere_super_monitor_entity_id,
+init_monitor_entity_based_global(GRIEF_DRIVE_SUPER_ANGRY_MONITOR_ENTITY_CLASSNAME, "grief_drive_sentence_loop", degen_iter_period,
+										grief_drive_super_monitor_entity_id,
 										super_angry_forward_id)
 
 }
@@ -688,30 +684,30 @@ public sh_client_spawn(id, bool:newRound)
 		g_is_cursed_masks[id]=0
 		if ( sh_get_user_has_hero(id,gHeroID) ) {
 			
-			sh_drop_weapon(id, YANDERE_WEAPON_CLASSID,true)
-			yandere_unpsychosis_user(id)
+			sh_drop_weapon(id, GRIEF_DRIVE_WEAPON_CLASSID,true)
+			grief_drive_unpsychosis_user(id)
 			sh_end_cooldown(id+SH_COOLDOWN_TASKID);
 			UnSet_BitVar(gSuperAngryMask,id);
 			UnSet_BitVar(gPlayedSoundMask,id);
 			gTransTimer[id]=cvar_val(float,pcvar_trans_time);
 			UnSet_BitVar(gTransTimerStartedMask,id)
-			emit_sound(id, CHAN_AUTO, YANDERE_CYCLE, 1.0, 0.0, SND_STOP, PITCH_NORM)
-			emit_sound(id, CHAN_VOICE, YANDERE_PAIN, 1.0, 0.0, SND_STOP, PITCH_NORM)
+			emit_sound(id, CHAN_AUTO, GRIEF_DRIVE_CYCLE, 1.0, 0.0, SND_STOP, PITCH_NORM)
+			emit_sound(id, CHAN_VOICE, GRIEF_DRIVE_PAIN, 1.0, 0.0, SND_STOP, PITCH_NORM)
 
 		}
 		if(!newRound){
-			notify_yanderes_about_life(id,false)
+			notify_grief_drives_about_life(id,false)
 		}
 		else{
 
 			emit_sound(id, CHAN_AUTO, melancholy_sounds[curr_melancholy_sound[id]],VOL_NORM,ATTN_NORM,SND_STOP,PITCH_NORM)
 
-			emit_sound(id, CHAN_AUTO, YANDERE_WARCRIES[curr_player_sound[id]],VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
+			emit_sound(id, CHAN_AUTO, GRIEF_DRIVE_WARCRIES[curr_player_sound[id]],VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
 		}
 	}
 	
 }
-public yandere_damage(id, idinflictor, attacker, Float:damage, damagebits)
+public grief_drive_damage(id, idinflictor, attacker, Float:damage, damagebits)
 {
 	if(damage <= 0.0){
 
@@ -749,7 +745,7 @@ public yandere_damage(id, idinflictor, attacker, Float:damage, damagebits)
 							the_hitpoint,
 							_,_,_,_,
 							SH_NEW_DMG_DARK_ARTS,
-							Get_BitVar(gSuperAngryMask,attacker)&&(weapon==YANDERE_WEAPON_CLASSID)?
+							Get_BitVar(gSuperAngryMask,attacker)&&(weapon==GRIEF_DRIVE_WEAPON_CLASSID)?
 							custom_dmg_id_senpai_avenger
 							:
 							custom_dmg_id_rage)
@@ -818,35 +814,35 @@ public plugin_precache()
 
 
 
-	num_sentences = count_null_terminated_string_array(yandere_sentences,
-															"yandere rambling sentences",
+	num_sentences = count_null_terminated_string_array(grief_drive_sentences,
+															"grief_drive rambling sentences",
 															"Sentence",
 															DEBUG)
 
-	num_warcries = count_null_terminated_string_array(YANDERE_WARCRIES,
-															"yandere warcry sounds",
+	num_warcries = count_null_terminated_string_array(GRIEF_DRIVE_WARCRIES,
+															"grief_drive warcry sounds",
 															"Filename",
 															DEBUG)
 
-	precache_null_terminated_resource_list(YANDERE_WARCRIES,PRECACHE_SOUNDS, DEBUG)
+	precache_null_terminated_resource_list(GRIEF_DRIVE_WARCRIES,PRECACHE_SOUNDS, DEBUG)
 	
 
 	num_melancholy_sounds = count_null_terminated_string_array(melancholy_sounds,
-															"yandere melancholy sounds",
+															"grief_drive melancholy sounds",
 															"Filename",
 															DEBUG)
 
 	precache_null_terminated_resource_list(melancholy_sounds,PRECACHE_SOUNDS, DEBUG)
 
-	engfunc(EngFunc_PrecacheSound,YANDERE_CYCLE)
-	engfunc(EngFunc_PrecacheSound,YANDERE_PAIN)
+	engfunc(EngFunc_PrecacheSound,GRIEF_DRIVE_CYCLE)
+	engfunc(EngFunc_PrecacheSound,GRIEF_DRIVE_PAIN)
 	
-	engfunc(EngFunc_PrecacheModel,YANDERE_SHOTGUN_V_MODEL)
-	engfunc(EngFunc_PrecacheModel,YANDERE_SHOTGUN_P_MODEL)
-	engfunc(EngFunc_PrecacheModel,YANDERE_KNIFE_V_MODEL)
-	engfunc(EngFunc_PrecacheModel,YANDERE_KNIFE_P_MODEL)
-	engfunc(EngFunc_PrecacheModel,YANDERE_PSYCHO_KNIFE_V_MODEL)
-	engfunc(EngFunc_PrecacheModel,YANDERE_PSYCHO_KNIFE_P_MODEL)
+	engfunc(EngFunc_PrecacheModel,GRIEF_DRIVE_SHOTGUN_V_MODEL)
+	engfunc(EngFunc_PrecacheModel,GRIEF_DRIVE_SHOTGUN_P_MODEL)
+	engfunc(EngFunc_PrecacheModel,GRIEF_DRIVE_KNIFE_V_MODEL)
+	engfunc(EngFunc_PrecacheModel,GRIEF_DRIVE_KNIFE_P_MODEL)
+	engfunc(EngFunc_PrecacheModel,GRIEF_DRIVE_PSYCHO_KNIFE_V_MODEL)
+	engfunc(EngFunc_PrecacheModel,GRIEF_DRIVE_PSYCHO_KNIFE_P_MODEL)
 
 	
 	
@@ -861,16 +857,16 @@ if ( gHeroID != heroID ||!sh_get_user_has_hero(id,gHeroID) ) return
 switch(key)
 {
 	case SH_KEYDOWN: {
-		yandere_kd(id)
+		grief_drive_kd(id)
 	}
 	
 	case SH_KEYUP: {
 		
-		yandere_ku(id)
+		grief_drive_ku(id)
 	}
 }
 }
-public yandere_kd(id)
+public grief_drive_kd(id)
 {
 	
 	if ( !is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)||!sh_is_inround()||sh_is_freezetime()||!sh_is_active() ||Get_BitVar(gTransTimerStartedMask,id) ) {
@@ -892,7 +888,7 @@ public yandere_kd(id)
 		static client_name[128]
 		get_user_name(id,client_name,charsmax(client_name))
 		sh_chat_message(0,gHeroID,"%s LOST IT!!!!!",client_name)
-		yandere_psychosis_user(id)
+		grief_drive_psychosis_user(id)
 	}
 	else{
 		
@@ -919,7 +915,7 @@ public yandere_kd(id)
 				return
 				
 			}
-			yandere_jet_charge_user(id)
+			grief_drive_jet_charge_user(id)
 		
 		
 		}
@@ -936,7 +932,7 @@ public yandere_kd(id)
 	}
 }
 //----------------------------------------------------------------------------------------------
-public yandere_ku(id)
+public grief_drive_ku(id)
 {
 	
 	if ( !is_user_alive(id) ||!sh_get_user_has_hero(id,gHeroID)  ||Get_BitVar(gTransTimerStartedMask,id) ) {
@@ -948,7 +944,7 @@ public yandere_ku(id)
 	
 	if(!jet_deployed(id)){
 		
-		yandere_jet_uncharge_user(id)
+		grief_drive_jet_uncharge_user(id)
 	}
 }
 public sh_round_end(){
@@ -969,10 +965,6 @@ public sh_round_end(){
 			}
 		
 		}
-		
-		remove_entity_name(JETPLANE_BOMB_CLASSNAME)
-		remove_entity_name(JETPLANE_SHELL_CLASSNAME)
-		remove_entity_name(JETPLANE_ROCKET_CLASSNAME)
 	}
 	new total_alive,total_dead;
 	sh_get_player_counts(0,0,total_alive,total_dead)
@@ -988,7 +980,7 @@ public sh_round_end(){
 		get_user_name(last_alive,client_name,charsmax(client_name))
 		sh_chat_message(0,gHeroID,"%s : What... have I done...",client_name)
 
-		emit_sound(last_alive, CHAN_AUTO, YANDERE_WARCRIES[curr_player_sound[last_alive]],VOL_NORM,ATTN_NORM,SND_STOP,PITCH_NORM)
+		emit_sound(last_alive, CHAN_AUTO, GRIEF_DRIVE_WARCRIES[curr_player_sound[last_alive]],VOL_NORM,ATTN_NORM,SND_STOP,PITCH_NORM)
 		
 
 		emit_sound(last_alive, CHAN_AUTO, melancholy_sounds[curr_melancholy_sound[last_alive]],VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM);
@@ -1000,27 +992,29 @@ public sh_round_end(){
 	}
 }
 
-public Yandere_Fire_Weapon(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
+public grief_drive_fire_Weapon(Victim, Attacker, Float:Damage, Float:Direction[3], Ptr, DamageBits)
 {
 	generic_weapon_tracer_logic(Attacker,bool:Get_BitVar(gSuperAngryMask,Attacker),_,gHeroID,sh_custom_color:{RED,RED,RED})
 
 }
 
-killyandere(id,bool:dropping=false){
+killgrief_drive(id,bool:dropping=false){
 	
 	if(!is_user_connected(id)||!sh_is_active()) return
 	if(sh_get_user_has_hero(id,gHeroID) ||dropping){
 		
 		if(Get_BitVar(gSuperAngryMask,id)){
-			static Float:origin[3]
-			entity_get_vector(id,EV_VEC_origin,origin)
-			fx_invisible(id)
-			anime_kill_fx(origin)
+			if(sh_get_user_has_hero(id,gHeroID)){
+				static Float:origin[3]
+				entity_get_vector(id,EV_VEC_origin,origin)
+				fx_invisible(id)
+				anime_kill_fx(origin)
+			}
 			for(new i=1;i< sh_maxplayers()+1;i++){
 				UnSet_BitVar(g_is_cursed_masks[i],id)
 			}
 			if(sh_get_id_bit(id,SH_IS_PSYCHOSIS)){
-				yandere_unpsychosis_user(id)
+				grief_drive_unpsychosis_user(id)
 			}
 		}
 		else if(jet_deployed(id)&&can_jet_here){
@@ -1035,7 +1029,7 @@ killyandere(id,bool:dropping=false){
 	}
 	g_is_cursed_masks[id]=0
 }
-public notify_yanderes_about_life(id,bool:died_true_or_spawned_false){
+public notify_grief_drives_about_life(id,bool:died_true_or_spawned_false){
 
 	static CsTeams:the_team; the_team = cs_get_user_team(id)
 	
@@ -1044,14 +1038,14 @@ public notify_yanderes_about_life(id,bool:died_true_or_spawned_false){
 	id_to_exclude = (sh_get_user_has_hero(id,gHeroID)?id:-1)
 
 
-	update_yanderes_stats(the_team,died_true_or_spawned_false,id_to_exclude)
+	update_grief_drives_stats(the_team,died_true_or_spawned_false,id_to_exclude)
 
 }
 public sh_client_death(id){
 	
 
-	notify_yanderes_about_life(id, true)
-	killyandere(id)
+	notify_grief_drives_about_life(id, true)
+	killgrief_drive(id)
 }
 
 //----------------------------------------------------------------------------------------------
@@ -1075,19 +1069,19 @@ public weaponChange(id)
 	
 	new wpnid = read_data(2)
 	
-	if (wpnid == YANDERE_WEAPON_CLASSID) {
-		set_pev(id, pev_viewmodel2,YANDERE_SHOTGUN_V_MODEL)
-		set_pev(id, pev_weaponmodel2,YANDERE_SHOTGUN_P_MODEL)
+	if (wpnid == GRIEF_DRIVE_WEAPON_CLASSID) {
+		set_pev(id, pev_viewmodel2,GRIEF_DRIVE_SHOTGUN_V_MODEL)
+		set_pev(id, pev_weaponmodel2,GRIEF_DRIVE_SHOTGUN_P_MODEL)
 	}
 	else if (wpnid == CSW_KNIFE) {
 		if(sh_get_id_bit(id,SH_IS_PSYCHOSIS)){
-			set_pev(id, pev_viewmodel2,YANDERE_PSYCHO_KNIFE_V_MODEL)
-			set_pev(id, pev_weaponmodel2,YANDERE_PSYCHO_KNIFE_P_MODEL)
+			set_pev(id, pev_viewmodel2,GRIEF_DRIVE_PSYCHO_KNIFE_V_MODEL)
+			set_pev(id, pev_weaponmodel2,GRIEF_DRIVE_PSYCHO_KNIFE_P_MODEL)
 		}
 		else{
 		
-			set_pev(id, pev_viewmodel2,YANDERE_KNIFE_V_MODEL)
-			set_pev(id, pev_weaponmodel2,YANDERE_KNIFE_P_MODEL)
+			set_pev(id, pev_viewmodel2,GRIEF_DRIVE_KNIFE_V_MODEL)
+			set_pev(id, pev_weaponmodel2,GRIEF_DRIVE_KNIFE_P_MODEL)
 		
 		}
 	}

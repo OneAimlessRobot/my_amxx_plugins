@@ -90,7 +90,7 @@ enum player_stat_struct{
 
 #define EVASIVENESS_TASK_PERIOD 0.1
 
-static const DEBUG = 1
+static const DEBUG = 0
 
 static const stat_change_notifications[2][5][] = {
 	

@@ -327,6 +327,20 @@ public sh_client_death(id)
 	if(!is_user_connected(id)||!sh_is_active()){
 		return
 	}
+	remove_task(id+GRACIETE_CHARGE_TASKID)
 	uncharge_user(id)
+	
+}
+
+public client_disconnected(id){
+
+
+	remove_task(id+GRACIETE_CHARGE_TASKID)
+	
+}
+public client_connect(id){
+
+
+	remove_task(id+GRACIETE_CHARGE_TASKID)
 	
 }

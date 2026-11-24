@@ -56,8 +56,6 @@ static const sh_hero_property_structs_array[hero_property_flags_id][hero_propert
 			
 			{"Parasite hero I hate them", "I hate these heroes", 25},
 			
-			{"Yandere hero", "Heroes with too much passion", 5},
-			
 			{"Fire retardant hero", "Heroes with fire resistance", 25},
 			
 			{"Radio detector hero", "Heroes that can detect radioactivity", 25},

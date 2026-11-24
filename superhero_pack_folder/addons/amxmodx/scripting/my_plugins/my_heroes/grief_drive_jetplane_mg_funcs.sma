@@ -9,16 +9,39 @@
 #include "jetplane_inc/sh_jetplane_funcs.inc"
 #include "jetplane_inc/sh_jetplane_mg_funcs.inc"
 #include "jetplane_inc/sh_jetplane_rocket_funcs.inc"
-#include "jetplane_inc/sh_yandere_get_set.inc"
+#include "jetplane_inc/sh_grief_drive_get_set.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 
 
-#define PLUGIN "Superhero yandere JETGATLING funcs"
+#define PLUGIN "Superhero grief_drive JETGATLING funcs"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
+#define LAUNCH_SAFETY_DIST 100
+
+#define P_MACHINEGUN_MODEL "models/shmod/grief_drive/jetplane/gunz/mountgun/mountgun.mdl"
+#define GUN_SHELL "models/shmod/grief_drive/jetplane/projectiles/rshell.mdl"
+#define MACHINE_GUN_SOUND "shmod/grief_drive/jetsounds/weapons/mg/m60-1.wav"
+
+
+#define MG_THINK_PERIOD 0.05
+
+
+#define JETPLANE_MG_CLASSNAME "grief_drive_mg"
+
+#define JETPLANE_SHELL_CLASSNAME "grief_drive_bullet"
+
+#define MG_SHELL_PERIOD 0.05
+
+
+#define MG_SHELL_HEADSHOT_DIST_THRESHOLD 30.0
+
+stock Float:jetplane_mg_min_dims[3]={-30.0,-30.0,-30.0}
+stock Float:jetplane_mg_max_dims[3]={30.0,30.0,30.0}
+
+stock const Float:jetplane_origin_mg_offsets[3]={0.0,0.0,10.0}
 
 new user_mg[SH_MAXSLOTS+1]
 
@@ -28,17 +51,17 @@ pcvar_jetplane_mg_bulletspeed,
 pcvar_jetplane_mg_ammo;
 
 
-new dmg_source_name_short_mg_gatling[SAFE_BUFFER_SIZE+1]="yandere_bullet"
-new dmg_source_name_log_mg_gatling[SAFE_BUFFER_SIZE+1]="yandere_bullet"
+new dmg_source_name_short_mg_gatling[SAFE_BUFFER_SIZE+1]="grief_drive_bullet"
+new dmg_source_name_log_mg_gatling[SAFE_BUFFER_SIZE+1]="grief_drive_bullet"
 new custom_dmg_id_mg_gatling
 
 public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
-	pcvar_jetplane_mg_ammo = create_cvar("yandere_jetplane_mg_ammo", "5")
-	pcvar_jetplane_mg_dmg = create_cvar("yandere_jetplane_mg_dmg", "5")
-	pcvar_jetplane_mg_bulletspeed = create_cvar("yandere_jetplane_mg_bulletspeed", "5")
+	pcvar_jetplane_mg_ammo = create_cvar("grief_drive_jetplane_mg_ammo", "5")
+	pcvar_jetplane_mg_dmg = create_cvar("grief_drive_jetplane_mg_dmg", "5")
+	pcvar_jetplane_mg_bulletspeed = create_cvar("grief_drive_jetplane_mg_bulletspeed", "5")
 	register_forward(FM_CmdStart, "CmdStart");
 	register_think(JETPLANE_MG_CLASSNAME, "mg_think")
 
@@ -59,12 +82,19 @@ public plugin_natives(){
 }
 public plugin_cfg(){
 
-	gHeroID = yandere_get_hero_id()
+	gHeroID = grief_drive_get_hero_id()
 
 	custom_dmg_id_mg_gatling=sh_log_custom_damage_source(gHeroID,
 				dmg_source_name_short_mg_gatling,
 				dmg_source_name_log_mg_gatling,
 				0)
+}
+
+public sh_round_end(){
+
+
+	remove_entity_name(JETPLANE_SHELL_CLASSNAME)
+
 }
 get_jet_shells(jet_id){
 

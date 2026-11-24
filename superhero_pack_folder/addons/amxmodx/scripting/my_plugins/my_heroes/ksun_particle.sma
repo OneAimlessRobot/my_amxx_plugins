@@ -39,7 +39,33 @@ new dmg_source_name_short_slay[SAFE_BUFFER_SIZE+1]="dream_eater"
 new dmg_source_name_log_slay[SAFE_BUFFER_SIZE+1]="dream_eater"
 new slay_wpn_id
 
-//cvar_val(float, pcvar_
+#define SPORE_TRAVEL_SFX "roach/rch_smash.wav"
+
+
+
+
+#define SPORE_THINK_PERIOD 0.2
+
+#define KSUN_HEAL_GLOW_TIME 0.2
+
+#define PHASE_IDLE 0
+#define PHASE_DEPLOY 1
+#define PHASE_HOLD 2
+#define PHASE_SEND 3
+#define PHASE_DONE 4
+
+#define SPORE_CLASSNAME "ksun_spore"
+
+#define SPORE_SIZE 10.0
+#define SPORE_RADIUS (5.0)
+
+#define WALL_BUMP_LENGTH ((CENTER_CUBE_VEX_DISTANCE(SPORE_RADIUS)))
+
+#define SPORE_SEND_SFX "shmod/ksun/launcher/eject_send.wav"
+
+#define UNITS_ABOVE 80
+
+#define SPORE_DEAD_HP 1000.0
 
 public plugin_init()
 {

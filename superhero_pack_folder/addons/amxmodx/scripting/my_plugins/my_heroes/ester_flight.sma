@@ -153,7 +153,7 @@ new ESTER_REBORN_CALCULATION_LOOP_TASKID,
 		ESTER_FLIGHT_MOVEMENT_TASKID
 
 
-new const DEBUG = 1
+new const DEBUG = 0
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -551,6 +551,13 @@ public plugin_precache()
 
 	precache_null_terminated_resource_list(ester_blowup_sounds,PRECACHE_SOUNDS, DEBUG)
 	
+}
+
+public sh_client_spawn(id){
+
+
+	emit_sound(id, CHAN_AUTO,ester_blowup_sounds[curr_player_sound[id]] , VOL_NORM, ATTN_NONE, SND_STOP, PITCH_NORM);
+
 }
 //---------------------------------------------------------------------------------------------- 
 

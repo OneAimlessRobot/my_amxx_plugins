@@ -15,21 +15,49 @@
 #include "jetplane_inc/sh_jetplane_rocket_funcs.inc"
 #include "jetplane_inc/sh_jetplane_radio_funcs.inc"
 #include "jetplane_inc/sh_jetplane_mg_funcs.inc"
-#include "jetplane_inc/sh_yandere_get_set.inc"
+#include "jetplane_inc/sh_grief_drive_get_set.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 
 
 
-#define PLUGIN "Superhero yandere jetty funcs"
+#define PLUGIN "Superhero grief_drive jetty funcs"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
 
-new dmg_source_name_short_yandere_mayday[SAFE_BUFFER_SIZE+1]="yandere_mayday"
-new dmg_source_name_log_yandere_mayday[SAFE_BUFFER_SIZE+1]="yandere_mayday"
-new custom_dmg_id_yandere_mayday
+
+
+#define JETPLANE_MODEL "models/shmod/grief_drive/jetplane/fuselage/airattack_plane.mdl"
+#define JETPLANE_CAMERA_MODEL "models/shmod/camman/camera/camera.mdl"
+#define ROCKET_MODEL "models/shmod/grief_drive/jetplane/projectiles/GradRocket.mdl"
+
+
+
+// GLOBAL VARIABLES
+
+#define JET_CHARGE_PERIOD 0.15
+#define JET_HUD_PERIOD 0.1666667
+#define JET_SOUND_PERIOD 0.166667
+
+#define JET_THINK_PERIOD 0.0333
+#define JET_MINIMUM_SPEED 50.0
+#define JET_RESTITUTION_COEFF 0.40
+#define JET_TRAIL_LIFE_PERIOD 1.0
+#define JET_TRAIL_LIFE_INPUT_VALUE (floatround(JET_TRAIL_LIFE_PERIOD*10.0)+1)
+
+#define JET_AVG_SPEED_CALC_PERIOD 0.1666667
+#define JET_CHARGE_RATE 1000.0
+
+#define CAMERA_DIST 300.0
+stock const jetplane_color[4]={100,100,100,50}
+
+
+
+new dmg_source_name_short_grief_drive_mayday[SAFE_BUFFER_SIZE+1]="grief_drive_mayday"
+new dmg_source_name_log_grief_drive_mayday[SAFE_BUFFER_SIZE+1]="grief_drive_mayday"
+new custom_dmg_id_grief_drive_mayday
 
 stock hud_sync_jetplane
 stock ham_is_here=0
@@ -74,19 +102,19 @@ public plugin_init()
 	// Plugin Info
 	register_plugin(PLUGIN, VERSION, AUTHOR)
 
-	pcvar_jetplane_hp = create_cvar("yandere_jetplane_hp", "5")
-	pcvar_jetplane_cooldown = create_cvar("yandere_jetplane_cooldown", "5")
-	pcvar_jet_init_speed = create_cvar("yandere_jetplane_init_speed", "5")
-	pcvar_jetplane_enable_gravity = create_cvar("yandere_jetplane_enable_gravity", "0")
-	pcvar_jetplane_enable_air_drag = create_cvar("yandere_jetplane_enable_air_drag", "1")
-	pcvar_jetplane_enable_speed_limiter = create_cvar("yandere_jetplane_enable_speed_limiter", "1")
+	pcvar_jetplane_hp = create_cvar("grief_drive_jetplane_hp", "5")
+	pcvar_jetplane_cooldown = create_cvar("grief_drive_jetplane_cooldown", "5")
+	pcvar_jet_init_speed = create_cvar("grief_drive_jetplane_init_speed", "5")
+	pcvar_jetplane_enable_gravity = create_cvar("grief_drive_jetplane_enable_gravity", "0")
+	pcvar_jetplane_enable_air_drag = create_cvar("grief_drive_jetplane_enable_air_drag", "1")
+	pcvar_jetplane_enable_speed_limiter = create_cvar("grief_drive_jetplane_enable_speed_limiter", "1")
 	
-	pcvar_jetplane_speed = create_cvar("yandere_jetplane_speed", "5")
-	pcvar_accelerate_const = create_cvar("yandere_jetplane_accelerate_const", "5")
-	pcvar_brake_const = create_cvar("yandere_jetplane_brake_const", "5")
-	pcvar_turn_inc_const = create_cvar("yandere_jetplane_turn_inc_const","5")
-	pcvar_max_turn_const = create_cvar("yandere_jetplane_max_turn_const","5")
-	pcvar_stabilizer_mushyness = create_cvar("yandere_jetplane_stabilizer_mushyness","0.25");
+	pcvar_jetplane_speed = create_cvar("grief_drive_jetplane_speed", "5")
+	pcvar_accelerate_const = create_cvar("grief_drive_jetplane_accelerate_const", "5")
+	pcvar_brake_const = create_cvar("grief_drive_jetplane_brake_const", "5")
+	pcvar_turn_inc_const = create_cvar("grief_drive_jetplane_turn_inc_const","5")
+	pcvar_max_turn_const = create_cvar("grief_drive_jetplane_max_turn_const","5")
+	pcvar_stabilizer_mushyness = create_cvar("grief_drive_jetplane_stabilizer_mushyness","0.25");
 	
 	hud_sync_jetplane=CreateHudSyncObj()
 	register_think(JETPLANE_FUSELAGE_CLASSNAME, "jet_think")
@@ -104,8 +132,8 @@ public plugin_init()
 }
 public plugin_natives(){
 	
-	register_native("yandere_jet_uncharge_user","_yandere_jet_uncharge_user");
-	register_native("yandere_jet_charge_user","_yandere_jet_charge_user");
+	register_native("grief_drive_jet_uncharge_user","_grief_drive_jet_uncharge_user");
+	register_native("grief_drive_jet_charge_user","_grief_drive_jet_charge_user");
 	register_native("jet_loaded","_jet_loaded");
 	register_native("jet_deployed","_jet_deployed");
 	register_native("jet_destroy","_jet_destroy");
@@ -115,7 +143,7 @@ public plugin_natives(){
 	
 }
 explode_jet_entity(jet){
-	explosion(gHeroID,jet,cvar_val(float, pcvar_jetplane_hp),cvar_val(float, pcvar_jetplane_hp),-1.0,1,_,1.1,_,_,_,custom_dmg_id_yandere_mayday)
+	explosion(gHeroID,jet,cvar_val(float, pcvar_jetplane_hp),cvar_val(float, pcvar_jetplane_hp),-1.0,1,_,1.1,_,_,_,custom_dmg_id_grief_drive_mayday)
 	explosion_custom_entity(jet,cvar_val(float, pcvar_jetplane_hp),cvar_val(float, pcvar_jetplane_hp),JETPLANE_FUSELAGE_CLASSNAME,
 				_,
 				explosion_sfx_show_nothing)
@@ -130,11 +158,11 @@ explode_jet_entity(jet){
 }
 public plugin_cfg(){
 
-	gHeroID = yandere_get_hero_id()
+	gHeroID = grief_drive_get_hero_id()
 
-	custom_dmg_id_yandere_mayday = sh_log_custom_damage_source(gHeroID,
-				dmg_source_name_short_yandere_mayday,
-				dmg_source_name_log_yandere_mayday,
+	custom_dmg_id_grief_drive_mayday = sh_log_custom_damage_source(gHeroID,
+				dmg_source_name_short_grief_drive_mayday,
+				dmg_source_name_log_grief_drive_mayday,
 				0)
 }
 public plugin_precache(){
@@ -195,7 +223,7 @@ public _jet_deployed(iPlugin,iParams){
 	
 	
 }
-public _yandere_jet_charge_user(iPlugin, iParams){
+public _grief_drive_jet_charge_user(iPlugin, iParams){
 	
 	new id= get_param(1)
 
@@ -305,7 +333,7 @@ public jet_itself_Damage(this, idinflictor, idattacker, Float:damage, damagebits
 	return HAM_IGNORED;
 }
 
-public _yandere_jet_uncharge_user(iPlugin,iParams){
+public _grief_drive_jet_uncharge_user(iPlugin,iParams){
 	new id=get_param(1)
 	
 	uncharge_user(id)
@@ -951,7 +979,7 @@ jet_destroy_aux(id,kill_user=false,inflictor=-1){
 				if(kill_user){
 
 					if(is_user_connected(inflictor)){
-						sh_extra_damage(id,inflictor, floatround(cvar_val(float,pcvar_jetplane_hp)),MY_HIT_HEAD,SH_DMG_KILL,_,_,_,SH_NEW_DMG_HEALTH_SET,custom_dmg_id_yandere_mayday)
+						sh_extra_damage(id,inflictor, floatround(cvar_val(float,pcvar_jetplane_hp)),MY_HIT_HEAD,SH_DMG_KILL,_,_,_,SH_NEW_DMG_HEALTH_SET,custom_dmg_id_grief_drive_mayday)
 					}
 				}
 			}

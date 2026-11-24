@@ -24,6 +24,12 @@
 #define MIN_KSUN_PAYCUT 0.01
 #define MAX_KSUN_PAYCUT 0.6
 
+
+
+
+#define SEARCH_MSG "loading targets!"
+
+
 new pcvar_cooldown
 new pcvar_ksun_kill_type_broadness_level
 new pcvar_ksun_spores_per_kill

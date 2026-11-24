@@ -3,10 +3,8 @@
 #endif
 #define sh_ksun_ultimate_funcs
 
+
 #define KSUN_WEAPON_ID CSW_GALIL
-
-
-#define KSUN_ULTIMATE_SOUND "shmod/ksun/ultimate/ksun_ultimate_deploy_sound.wav"
 
 native ksun_player_is_ultimate_ready(id)
 

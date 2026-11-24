@@ -19,6 +19,46 @@
 #include "../my_include/my_author_header.inc"
 
 
+stock const BALL_BOUNCE_GROUND[ ] = "shmod/roberto_carlos/kickball/bounce.wav";
+stock const g_szBallModel[ ]     = "models/shmod/roberto_carlos/kickball/ball.mdl";
+
+stock kicked[] = "shmod/roberto_carlos/kickball/superkick.wav"
+stock gotball[] = "shmod/roberto_carlos/kickball/gotball.wav"
+
+stock beamspr
+stock ballbeam[3] = { 20,50,255 }
+
+#define BALL_RETRIEVE true
+#define BALL_CLASSNAME "soccer_ball"
+
+#define BALL_SPEED 1600.0
+
+#define BALL_DMG 100
+
+
+#define BALL_KNOCKBACK 600.0
+
+#define AVG_FACTOR 3
+
+#define BALL_REM_TIME 20.0
+#define BALL_THINK_TIME 0.05
+
+
+#define CURVE_APEX_DIST 500
+
+
+#define BALL_GRAVITY_MULT 0.3
+#define BALL_PHYS_UPDATE_TIME 0.05
+
+#define BALL_MASS 1.8
+#define BALL_CAR 0.2146
+#define BALL_DIAMETER 2.0
+#define BALL_AREA ((BALL_DIAMETER*BALL_DIAMETER)*M_PI)
+#define BALL_AIR_RESISTANCE 0.125
+#define BALL_DRAG_CONST (BALL_AREA*BALL_CAR*BALL_AIR_RESISTANCE)
+
+
+
 new cheers[] = "shmod/roberto_carlos/cheers/big_goal.wav"
 
 new dmg_source_name_short_free_kick[SAFE_BUFFER_SIZE+1]="thunderous_free_kick"
@@ -75,6 +115,11 @@ public FwdTouchWorld( Ball, World ) {
 }
 //
 
+public sh_round_end(){
+	
+	remove_entity_name(BALL_CLASSNAME)
+	
+}
 public ball_touch_player(Ball, Player ) {
 
 	if(!is_valid_ent(Ball)) return
