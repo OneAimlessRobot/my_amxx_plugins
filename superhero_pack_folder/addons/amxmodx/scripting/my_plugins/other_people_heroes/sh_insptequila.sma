@@ -11,7 +11,7 @@ insptequila_level 0
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
-new HeroName[] = "Inspector Tequila"
+#define HeroName  "Inspector Tequila"
 
 
 // Temp lookup table (from csdm), will be in next sh version

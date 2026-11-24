@@ -37,7 +37,7 @@
 #define MODEL_PLAYER_T "models/player/thrash/thrashT.mdl"
 #define Model_Weapon_P "models/shmod/thrashteen/p_superak47.mdl"
 #define Model_Weapon_V "models/shmod/thrashteen/v_superak47.mdl"
-new gHeroName[]="Thrashy Thrash"
+#define gHeroName "Thrashy Thrash"
 new gThrashyExplosionAmmo[SH_MAXSLOTS+1]
 new bool:gHasThrashZoom[SH_MAXSLOTS+1]
 
@@ -387,7 +387,8 @@ public BlowUp(id,bool:died)
 	explosion(gHeroID,id,
 					float(damradius),
 					float(maxdamage),
-					_,1,1)
+					_,1,1,
+					_,_,_,_,_,_,true)
 	
 	return PLUGIN_CONTINUE;
 }

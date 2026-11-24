@@ -14,11 +14,11 @@ htorch_burndamage 10		//How much damage each burn does
 
 // GLOBAL VARIABLES
 
-new const gHeroName[] = "Human Torch"
+#define gHeroName "Human Torch"
 new bool:gIsBurning[SH_MAXSLOTS+1]
-new const gSoundBurning[] = "ambience/burning1.wav"
-new const gSoundScream[] = "scientist/c1a0_sci_catscream.wav"
-new const gSoundFlameBlast[] = "ambience/flameburst1.wav"
+#define gSoundBurning  "ambience/burning1.wav"
+#define gSoundScream  "scientist/c1a0_sci_catscream.wav"
+#define gSoundFlameBlast  "ambience/flameburst1.wav"
 new gSpriteSmoke, gSpriteFire, gSpriteBurning
 new pCvarArmorCost, pCvarNumBurns, pCvarBurnDamage
 //----------------------------------------------------------------------------------------------

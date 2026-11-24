@@ -47,7 +47,7 @@ ghostface_healpoints 5		//The # of HP healed per second, Default 5
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
 // GLOBAL VARIABLES
-new HeroName[] = "Ghostface (Scream)"
+#define HeroName  "Ghostface (Scream)"
 
 new HealPoints
 new CvarKnifeDmgMult, CvarHealPoints

@@ -14,9 +14,9 @@ kamikaze_maxdamage 125			//Maximum damage to deal to a player
 
 // GLOBAL VARIABLES
 
-new const gHeroName[] = "Kamikaze"
+#define gHeroName "Kamikaze"
 new gFuseTime[SH_MAXSLOTS+1]
-new const gSoundCountdown[] = "buttons/blip2.wav"
+#define gSoundCountdown  "buttons/blip2.wav"
 new const gSoundFvox[11][] = {"", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"}
 new gSpriteSmoke, gSpriteWhite, gSpriteFire
 new pCvarRadius, pCvarFuse, pCvarMaxDamage

@@ -159,9 +159,11 @@ enum server_slot_idx
 
 #define PDATA_SAFE  2
 
-#define client_is_within_range(%1) ((%1>0 && %1<=(SH_MAXSLOTS)))
+#define client_is_within_custom_range(%1,%2) ((((%1)>0)&&((%1)<=(%2))))
 
-#define client_is_within_custom_range(%1,%2) ((%1>0 && %1<=(%2)))
+#define client_is_within_range(%1) client_is_within_custom_range(%1,SH_MAXSLOTS)
+
+
 
 #define ent_check(%1,%2) if(pev_valid(%1)!=PDATA_SAFE) return %2
 

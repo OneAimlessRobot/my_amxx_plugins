@@ -14,9 +14,9 @@ mystique_toggle 1				//Should the key be a toggle or do they need to hold it dow
 
 // GLOBAL VARIABLES
 
-new const gHeroName[] = "Mystique"
+#define gHeroName "Mystique"
 new bool:gMorphed[SH_MAXSLOTS+1]
-new const gMystiqueSound[] = "ambience/disgusting.wav"
+#define gMystiqueSound  "ambience/disgusting.wav"
 new const CTSkins[4][10] = {"sas", "gsg9", "urban", "gign"}
 new const TSkins[4][10] = {"arctic", "leet", "guerilla", "terror"}
 new pCvarCooldown, pCvarMaxTime, pCvarToggle

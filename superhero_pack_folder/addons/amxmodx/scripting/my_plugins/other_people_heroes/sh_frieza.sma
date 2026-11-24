@@ -30,7 +30,7 @@ new frieza_disk_wpn_short_name[SAFE_BUFFER_SIZE+1]="frieza_disk"
 new frieza_disk_wpn_log_name[SAFE_BUFFER_SIZE+1]="frieza_disk"
 new frieza_disk_wpn_id = -1
 
-new gHeroName[] = "Frieza"
+#define gHeroName "Frieza"
 
 new diskTimer[SH_MAXSLOTS+1] 
 //This variable will represent the disk being made. 

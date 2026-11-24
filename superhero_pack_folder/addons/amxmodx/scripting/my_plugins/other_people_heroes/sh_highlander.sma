@@ -6,7 +6,7 @@ highlander_level 0
 #include "../my_include/superheromod.inc"
 
 
-new const gHeroName[] = "Highlander"
+#define gHeroName "Highlander"
 
 //-------------------------------------------------------------
 public plugin_init()

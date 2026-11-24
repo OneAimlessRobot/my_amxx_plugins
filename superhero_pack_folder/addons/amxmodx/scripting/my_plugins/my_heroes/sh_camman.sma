@@ -8,6 +8,7 @@
 #include "camera_inc/sh_camera_funcs.inc"
 #include "../my_include/my_author_header.inc"
 
+#define gHeroName "Camman"
 
 // GLOBAL VARIABLES
 new gHasCameraMask = 0

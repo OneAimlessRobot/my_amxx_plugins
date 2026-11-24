@@ -31,7 +31,7 @@ arcticPredator_explode_maxdamage 250
 // GLOBAL VARIABLES
 new g_discID[SH_MAXSLOTS+1]
 new g_huntTimer[SH_MAXSLOTS+1]
-new gHeroName[]="Arctic Predator"
+#define gHeroName "Arctic Predator"
 new gAlphaInvis
 new lastweap[33]
 new lastammo[33]

@@ -34,7 +34,7 @@ veronika_m203dmg 120
 #define veronika_ak_p_mdl "models/shmod/veronika/p_9mmar.mdl"
 
 // VARIABLES
-new gHeroName[]="Veronika"
+#define gHeroName "Veronika"
 
 new dmg_source_name_short_ak[SAFE_BUFFER_SIZE+1]="ak_gl"
 new dmg_source_name_log_ak[SAFE_BUFFER_SIZE+1]="ak47_glauncher"

@@ -42,7 +42,7 @@ SuperAlien_knifemode 0	//1-knife only can't change weapons, 0-SuperAlien Vision 
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 
 // GLOBAL VARIABLES
-new HeroName[] = "SuperAlien"
+#define HeroName  "SuperAlien"
 
 new SuperAlienModeOn[SH_MAXSLOTS+1]
 new MsgSetFOV

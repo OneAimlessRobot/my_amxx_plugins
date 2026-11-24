@@ -64,7 +64,7 @@ new const DEBUG = 0
 stock SHINOBU_POISON_KICK_DELAYED_TASKID
 
 // GLOBAL VARIABLES
-new gHeroName[]="Shinobu Kocho"
+#define gHeroName "Shinobu Kocho"
 new g_shinobu_tagged_player[SH_MAXSLOTS+1]
 
 new dmg_source_name_short_poison_kick[SAFE_BUFFER_SIZE+1]="poison_kick"
@@ -143,6 +143,7 @@ public client_disconnected(id){
 		}	
 
 	}
+	task_safeguard_macro_for_player_task(id,SHINOBU_POISON_KICK_DELAYED_TASKID,SH_MAXSLOTS)
 	g_shinobu_tagged_player[id]=0
 }
 
@@ -242,6 +243,12 @@ shinobu_burst_damage_task_bootstrap(attacker,tg,is_attacking=1){
 	set_task(cvar_val(float, pcvar_shinobu_poison_kick_delay),
 				"shinobu_burst_damage_task",attacker+SHINOBU_POISON_KICK_DELAYED_TASKID,parm,sizeof parm)
 
+}
+public client_connect(id){
+
+
+	task_safeguard_macro_for_player_task(id,SHINOBU_POISON_KICK_DELAYED_TASKID,SH_MAXSLOTS)
+	
 }
 public shinobu_burst_damage_task(array[1],attacker){
 	attacker-=SHINOBU_POISON_KICK_DELAYED_TASKID

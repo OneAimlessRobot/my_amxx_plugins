@@ -17,11 +17,11 @@ ironman_fuelcost 1		//How much armor does it cost per firing, set 0 to not use a
 
 // GLOBAL VARIABLES
 
-new const gHeroName[] = "Iron Man"
+#define gHeroName "Iron Man"
 new bool:gRegenAllowed[SH_MAXSLOTS+1]
 new bool:gJetPackRunning[SH_MAXSLOTS+1]
-new const gSoundJetpack[] = "ambience/flameburst1.wav"
-new const gSoundJpStop[] = "debris/beamstart11.wav"
+#define gSoundJetpack  "ambience/flameburst1.wav"
+#define gSoundJpStop  "debris/beamstart11.wav"
 new gSpriteFire
 
 // BECAUSE THIS LOOP IS CALLED SO MUCH - INSTEAD OF READING CVARS OVER AND OVER

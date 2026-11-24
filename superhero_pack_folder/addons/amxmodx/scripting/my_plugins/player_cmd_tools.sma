@@ -8,8 +8,8 @@
 #include "my_include/my_author_header.inc"
 
 
-stock const player_click_cmd[]="player_cmdclick"
-stock const player_hold_cmd[]="player_cmdhold"
+#define player_click_cmd "player_cmdclick"
+#define player_hold_cmd "player_cmdhold"
 
 
 new CMD_RELEASE_TASKID

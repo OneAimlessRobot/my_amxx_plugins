@@ -96,7 +96,8 @@ native explosion(hero_id,ent_id,Float:explosion_radius,
 					sh_custom_color:color_const=WHITE,
 					const custom_sound_sample[128]=GENERIC_EXPLOSION_SFX,
 					custom_weapon_id=-1,
-					sh_thrash_brat_dmg_type:dmg_type_to_use= SH_NEW_DMG_FRAG_BLAST);
+					sh_thrash_brat_dmg_type:dmg_type_to_use= SH_NEW_DMG_FRAG_BLAST,
+					bool:gore_on_kill = false);
 
 native explosion_custom_entity(ent_id,Float:explosion_radius,
 					Float:peak_power,
@@ -119,7 +120,8 @@ native explosion_with_origin(hero_id,explosion_author_id, Float:origin[3],Float:
 					explosion_sfx_flags:sfx_mask=(DEFAULT_EXPLOSION_SFX_MASK),
 					sh_custom_color:color_const=WHITE,
 					custom_weapon_id=-1,
-					sh_thrash_brat_dmg_type:dmg_type_to_use= SH_NEW_DMG_FRAG_BLAST);
+					sh_thrash_brat_dmg_type:dmg_type_to_use= SH_NEW_DMG_FRAG_BLAST,
+					bool:gore_on_kill = false);
 
 
 native explosion_custom_entity_with_origin(explosion_owner_id,Float:origin[3],Float:explosion_radius,

@@ -19,13 +19,13 @@ spiderman_maxhooks 60		//Max ammout of hooks allowed (-1 is an unlimited ammount
 #define HOOK_DELTA_T  0.1  // units per second
 
 
-new const gHeroName[] = "Spider-Man"
+#define gHeroName "Spider-Man"
 new bool:gHooked[SH_MAXSLOTS+1]
 new gHookLocation[SH_MAXSLOTS+1][3]
 new gHookLength[SH_MAXSLOTS+1]
 new Float:gHookCreated[SH_MAXSLOTS+1]
 new gHooksLeft[SH_MAXSLOTS+1]
-new const gSoundWeb[] = "bullchicken/bc_bite2.wav"
+#define gSoundWeb  "bullchicken/bc_bite2.wav"
 new gSpriteWeb
 new pCvarMoveAcc, pCvarReelSpeed, pCvarHookStyle
 new pCvarMaxHooks, pCvarTeamColored, pCvarSvGravity

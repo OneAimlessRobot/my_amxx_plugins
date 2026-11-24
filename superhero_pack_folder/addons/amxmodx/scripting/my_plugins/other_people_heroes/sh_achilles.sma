@@ -26,7 +26,7 @@ achilles_dmgmult 3.0 - multiplier of the damage he takes in the left leg; set to
 */
 
 // VARIABLES 
-new gHeroName[] = "Achilles"
+#define gHeroName "Achilles"
 
 //----------------------------------------------------------------------------------------------
 public plugin_init() 

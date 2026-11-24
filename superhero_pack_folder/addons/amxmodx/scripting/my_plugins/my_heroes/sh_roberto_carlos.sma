@@ -9,12 +9,12 @@
 
 
 
-new const gHeroName[] = "Roberto Carlos"
+#define gHeroName "Roberto Carlos"
 
 new gNumBalls[SH_MAXSLOTS+1]
 
-new round_win[] = "shmod/roberto_carlos/cheers/round_win.wav"
-new round_lose[] = "shmod/roberto_carlos/cheers/round_lose.wav"
+#define round_win  "shmod/roberto_carlos/cheers/round_win.wav"
+#define round_lose  "shmod/roberto_carlos/cheers/round_lose.wav"
 
 new pcvar_num_balls
 new pcvar_ball_cooldown

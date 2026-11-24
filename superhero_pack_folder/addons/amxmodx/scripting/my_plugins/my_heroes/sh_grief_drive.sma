@@ -3,6 +3,7 @@
 #define I_WANT_MISC_FUNCS
 #define I_WANT_MISC_FUNCS_2
 #define I_WANT_BASIC_MACROS
+#define I_WANT_CUSTOM_WEAPONS
 #define I_WANT_PDATA_ALIASES
 #define I_WANT_RESOURCE_ALIASES
 #define I_WANT_CUSTOM_COLORS
@@ -18,6 +19,7 @@
 #include "./superheromod_help_files_includes/superheromod_help_files.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt14.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt12.inc"
@@ -40,14 +42,13 @@ new grief_drive_sentences[][]={
 
 
 
-static const DEBUG = 0
+static const DEBUG = 1
 
 
 #define GRIEF_DRIVE_CYCLE "shmod/grief_drive/grief_drive_cycle3.wav"
 #define GRIEF_DRIVE_PAIN "shmod/grief_drive/grief_drive_pain.wav"
 
 #define GRIEF_DRIVE_SHOTGUN_V_MODEL "models/shmod/grief_drive/shotgun/v_grief_drive_shotgun.mdl"
-#define GRIEF_DRIVE_SHOTGUN_P_MODEL "models/shmod/grief_drive/shotgun/w_xm1014.mdl"
 
 #define GRIEF_DRIVE_KNIFE_V_MODEL "models/shmod/grief_drive/knife/v_knife.mdl"
 #define GRIEF_DRIVE_KNIFE_P_MODEL "models/shmod/grief_drive/knife/p_knife.mdl"
@@ -100,13 +101,14 @@ stock dmg_source_name_short_senpai_avenger[SAFE_BUFFER_SIZE+1]="senpai_avgr",
 // GLOBAL VARIABLES
 //Replacing with bitmasks...
 
-stock const gHeroName[] = "Grief Drive"
+#define gHeroName "Grief Drive"
 
 
 stock gSuperAngryMask
 stock gIdleAngryMask
 stock gPlayedSoundMask
 stock g_is_cursed_masks[SH_MAXSLOTS+1]
+stock bool:is_weapon_glowing[SH_MAXSLOTS+1]
 stock gTransTimerStartedMask
 
 
@@ -191,10 +193,7 @@ public plugin_init()
 				"No access was granted")
 
 
-	static hero_name_arr[STRLEN_FOR_NAMES];
-	arrayset(hero_name_arr,0,sizeof hero_name_arr)
-	add(hero_name_arr,charsmax(hero_name_arr),gHeroName,charsmax(gHeroName))
-	superheromod_help_link_hero(gHeroID, "Grief Drive: Help file","grief_drive_folder/","grief_drive_help_file.html",hero_name_arr)
+	superheromod_help_link_hero(gHeroID, "Grief Drive: Help file","grief_drive_folder/","grief_drive_help_file.html")
 	
 	sh_register_superheromod_model(gHeroID,
 								"models/player/yanderu/yanderu.mdl",
@@ -645,6 +644,7 @@ public grief_drive_timer_transform(id){
 			if(!sh_is_freezetime()){
 				if(!user_has_weapon(id,GRIEF_DRIVE_WEAPON_CLASSID)){
 					sh_give_weapon(id, GRIEF_DRIVE_WEAPON_CLASSID,true)
+					is_weapon_glowing[id]=false
 				}
 			}
 		}
@@ -741,7 +741,8 @@ public grief_drive_damage(id, idinflictor, attacker, Float:damage, damagebits)
 			new Float:extraDamage = damage * cvar_val(float, pcvar_angry_dmg_mult) - damage
 			if (floatround(extraDamage) > 0){
 
-				sh_extra_damage(id, attacker, floatround(extraDamage),
+				static sh_extra_damage_result:dmg_result; dmg_result =
+							sh_extra_damage(id, attacker, floatround(extraDamage),
 							the_hitpoint,
 							_,_,_,_,
 							SH_NEW_DMG_DARK_ARTS,
@@ -755,7 +756,7 @@ public grief_drive_damage(id, idinflictor, attacker, Float:damage, damagebits)
 				generic_heal(attacker,extraDamage*
 					cvar_val(float,pcvar_angry_hitheal_pct),
 					cvar_val(num,pcvar_overheal_hp_max),RED,1,_,70,1)
-				if(!is_user_alive(id)){
+				if(dmg_result == SH_DMG_RESULT_DMG_KILLED_OPPONENT){
 					static Float:origin[3];
 					// player fades.. 
 					set_user_rendering(id, kRenderFxFadeSlow, 255, 255, 255, kRenderTransColor, 4); 
@@ -838,7 +839,6 @@ public plugin_precache()
 	engfunc(EngFunc_PrecacheSound,GRIEF_DRIVE_PAIN)
 	
 	engfunc(EngFunc_PrecacheModel,GRIEF_DRIVE_SHOTGUN_V_MODEL)
-	engfunc(EngFunc_PrecacheModel,GRIEF_DRIVE_SHOTGUN_P_MODEL)
 	engfunc(EngFunc_PrecacheModel,GRIEF_DRIVE_KNIFE_V_MODEL)
 	engfunc(EngFunc_PrecacheModel,GRIEF_DRIVE_KNIFE_P_MODEL)
 	engfunc(EngFunc_PrecacheModel,GRIEF_DRIVE_PSYCHO_KNIFE_V_MODEL)
@@ -1054,7 +1054,8 @@ public BlowUp(id)
 	explosion(gHeroID,id,
 		cvar_val(float,pcvar_explode_radius),
 		cvar_val(float,pcvar_explode_maxdamage)
-		,_,1)
+		,_,1,
+		_,_,_,_,_,_,_,true)
 	
 }
 //----------------------------------------------------------------------------------------------
@@ -1067,22 +1068,36 @@ public weaponChange(id)
 	
 	if (!Get_BitVar(gSuperAngryMask,id)) return
 	
-	new wpnid = read_data(2)
+	static wpnid; wpnid = read_data(2)
 	
 	if (wpnid == GRIEF_DRIVE_WEAPON_CLASSID) {
+
 		set_pev(id, pev_viewmodel2,GRIEF_DRIVE_SHOTGUN_V_MODEL)
-		set_pev(id, pev_weaponmodel2,GRIEF_DRIVE_SHOTGUN_P_MODEL)
-	}
-	else if (wpnid == CSW_KNIFE) {
-		if(sh_get_id_bit(id,SH_IS_PSYCHOSIS)){
-			set_pev(id, pev_viewmodel2,GRIEF_DRIVE_PSYCHO_KNIFE_V_MODEL)
-			set_pev(id, pev_weaponmodel2,GRIEF_DRIVE_PSYCHO_KNIFE_P_MODEL)
+		if(!is_weapon_glowing[id]){
+			trail(id,PINK,3,5,160)
+			set_render_with_color_const(id, PINK,1,24,
+							30,
+							_,_,
+							1.0,_,_,kRenderNormal,PRIO_RENDER_INFORMATIVE)
+							
+			is_weapon_glowing[id] = true
 		}
-		else{
+	}
+	else{
+		kill_all_entity_beams(id)
+		is_weapon_glowing[id] = false
 		
-			set_pev(id, pev_viewmodel2,GRIEF_DRIVE_KNIFE_V_MODEL)
-			set_pev(id, pev_weaponmodel2,GRIEF_DRIVE_KNIFE_P_MODEL)
-		
+		if (wpnid == CSW_KNIFE) {
+			if(sh_get_id_bit(id,SH_IS_PSYCHOSIS)){
+				set_pev(id, pev_viewmodel2,GRIEF_DRIVE_PSYCHO_KNIFE_V_MODEL)
+				set_pev(id, pev_weaponmodel2,GRIEF_DRIVE_PSYCHO_KNIFE_P_MODEL)
+			}
+			else{
+			
+				set_pev(id, pev_viewmodel2,GRIEF_DRIVE_KNIFE_V_MODEL)
+				set_pev(id, pev_weaponmodel2,GRIEF_DRIVE_KNIFE_P_MODEL)
+			
+			}
 		}
 	}
 }

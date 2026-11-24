@@ -33,7 +33,7 @@ stick_enemyonly 0		//0=rings on all players 1=rings on enemy only
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
-new gHeroName[]="Stick"
+#define gHeroName "Stick"
 
 new gSpriteWhite, gRadius, gBright
 //----------------------------------------------------------------------------------------------

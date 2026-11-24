@@ -5,7 +5,7 @@
 #define TE_EXPLOSION2 12
 
 
-new gHeroName[]="Pesk"
+#define gHeroName "Pesk"
 
 new Beam,Fire
 new bool:InBeam[33] = false

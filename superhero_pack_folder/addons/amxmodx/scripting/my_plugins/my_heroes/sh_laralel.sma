@@ -14,7 +14,7 @@
 
 // GLOBAL VARIABLES
 
-new const gHeroName[] = "Laralel"
+#define gHeroName "Laralel"
 
 
 new pcvar_num_spears

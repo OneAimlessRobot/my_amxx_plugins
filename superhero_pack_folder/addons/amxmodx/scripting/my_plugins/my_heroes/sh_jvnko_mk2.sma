@@ -19,7 +19,7 @@
 
 
 
-stock const gHeroName[] = "Jvnko Mk. II"
+#define gHeroName "Jvnko Mk. II"
 
 
 

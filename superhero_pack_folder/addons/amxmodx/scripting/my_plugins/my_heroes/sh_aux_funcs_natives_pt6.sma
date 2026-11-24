@@ -21,8 +21,8 @@
 
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt6.inc"
 
-stock const extra_help_cmd[]="extra_help"
-stock const general_help_cmd[]="general_help"
+#define extra_help_cmd "extra_help"
+#define general_help_cmd "general_help"
 stock help_files_directory[STRLEN_FOR_FILES+1]
 
 #define HELP_FILE_URL_BASE "http://lenasattic.ddns.net:11020/webcrookedstuff/cstrike_folder/addons/amxmodx/configs/shero_extra_help/"

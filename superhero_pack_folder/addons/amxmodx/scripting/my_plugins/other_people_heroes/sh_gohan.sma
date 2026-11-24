@@ -27,7 +27,7 @@ gohan_healmax 400		//Max # HP gohan can heal to
 
 // GLOBAL VARIABLES
 #define TASKID 100000
-new gHeroName[]="Gohan"
+#define gHeroName "Gohan"
 new gHealPoints, gHealAmount
 
 //----------------------------------------------------------------------------------------------
@@ -58,20 +58,14 @@ public plugin_init()
 	//Set Varibles when plugin loads
 	gHealPoints = get_cvar_num("gohan_healpoints")
 	gHealAmount = get_cvar_num("gohan_healmax")
-}
-//----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, sh_init_mode:mode){
-	if(heroID!=gHeroID) return
 	
-	remove_task(id+TASKID)
-	set_task(1.0, "gohan_loop", id+TASKID, "", 0, "b")
 
-	//Sets this variable to the current status
+	set_task(1.0, "gohan_loop", _,_,_,"b")
+
 }
 //----------------------------------------------------------------------------------------------
 public gohan_loop(id)
 {
-		id-=TASKID
 		if ( sh_get_user_has_hero(id,gHeroID) && is_user_alive(id) ) {
 			// Let the server add the hps back since the # of max hps is controlled by it
 			// I.E. Superman has more than 100 hps etc.

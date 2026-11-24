@@ -19,7 +19,7 @@ solid_ration_health 50		// How many health you have per ration?
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
 
-new gHeroName[] = "Solid Snake"
+#define gHeroName "Solid Snake"
 
 new gMaxHealth[SH_MAXSLOTS+1]
 new Rations[SH_MAXSLOTS+1]

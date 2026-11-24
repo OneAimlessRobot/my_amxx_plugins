@@ -8,7 +8,7 @@
 
 // VARIABLES
 
-new gHeroName[]="Luke Skywalker"
+#define gHeroName "Luke Skywalker"
 
 new saber 
 new ls_stat[33]

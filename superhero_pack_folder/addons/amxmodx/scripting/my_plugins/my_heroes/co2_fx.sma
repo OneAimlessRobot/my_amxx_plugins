@@ -18,6 +18,15 @@
 
 new UNCO2_TASKID
 
+enum CO2_struct{
+
+	Float:the_damage_res
+}
+
+new player_CO2_structs[SH_MAXSLOTS+1][CO2_struct]
+
+
+
 public plugin_init(){
 	
 	
@@ -55,8 +64,9 @@ public _sh_co2_user(iPlugin,iParams){
 	}
 	
 	new Float:the_time = get_param_f(2)
+	new Float:fire_damage_res = get_param_f(3)
 	if(!sh_get_id_bit(user,SH_IS_CO2)){
-		co2_user(user,the_time)
+		co2_user(user,the_time,fire_damage_res)
 	}
 	
 	
@@ -92,15 +102,14 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_h
 	}
 
 	if(sh_get_id_bit(victim, SH_IS_CO2)){
-		damage = 0
-		return DMG_FWD_BLOCK
+		damage = floatround(max_macro(0.0, float(damage) -(float(damage) * player_CO2_structs[victim][the_damage_res])))
 	}
 
 	return DMG_FWD_PASS
 }
 
 
-co2_user(id, Float:the_time){
+co2_user(id, Float:the_time, Float:fire_damage_res){
 	if(!sh_is_active()||!is_user_alive(id)||sh_get_id_bit(id,SH_IS_CO2)) return
 	
 	if(sh_get_id_bit(id,SH_IS_BURNING)){
@@ -112,6 +121,8 @@ co2_user(id, Float:the_time){
 	new bool:is_tomie_user=bool:sh_get_user_has_hero(id,gHeroID)
 
 	new Float:time_to_apply_mult= (is_tomie_user?2.0:1.0)
+
+	player_CO2_structs[id][the_damage_res] = fire_damage_res
 	
 	set_render_with_color_const(id,LTGREEN,1,50,50,1,_,
 							the_time*time_to_apply_mult,_,_,kRenderNormal,PRIO_RENDER_EFFECT_ACTIVE)
@@ -142,5 +153,19 @@ unco2_user(id){
 public sh_client_death(id)
 {
 	unco2_user(id)
+	
+}
+
+
+
+public client_disconnected(id){
+
+	task_safeguard_macro_for_player_task(id,UNCO2_TASKID,SH_MAXSLOTS)
+	
+}
+public client_connect(id){
+
+
+	task_safeguard_macro_for_player_task(id,UNCO2_TASKID,SH_MAXSLOTS)
 	
 }

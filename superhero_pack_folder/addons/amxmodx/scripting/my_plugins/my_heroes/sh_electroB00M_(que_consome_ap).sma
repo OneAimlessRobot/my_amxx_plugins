@@ -11,10 +11,10 @@
 // VARIABLES
 
 new generic_dmg_shock
-new gHeroName[]="ElectroB00M"
+#define gHeroName "ElectroB00M"
 new gSpriteLightning
-new const gTeslaCoilRevvingSound[] = "ambience/techamb2.wav"
-new const gTeslaCoilOff[] = "weapons/egon_off1.wav"
+#define gTeslaCoilRevvingSound  "ambience/techamb2.wav"
+#define gTeslaCoilOff  "weapons/egon_off1.wav"
 new bool:g_teslacoilRunning[SH_MAXSLOTS+1]
 new bool:gRechargeAllowed[SH_MAXSLOTS+1]
 new pcvarArmor, pCvarPeriod, pCvarPowerCost, pcvarTimeToStun, pcvarElectroB00MStunSpeed, pCvarElectroB00MRadius,pCvarElectroB00MDamage

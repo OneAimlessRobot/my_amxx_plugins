@@ -23,7 +23,7 @@ cola_speed 500		//Running Speed (default is 500)
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
-new HeroName[] = "Cola Lover"
+#define HeroName  "Cola Lover"
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {

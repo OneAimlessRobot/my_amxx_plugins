@@ -17,10 +17,10 @@ skeletor_maxsnarks 10			// maximum amount of snarks to spawn on a player
 
 // GLOBAL VARIABLES
 
-new const gHeroName[] = "Skeletor"
+#define gHeroName "Skeletor"
 new gPlayerPosition[SH_MAXSLOTS+1][3]  // keeps track of last known origin
 new gMoveTimer[SH_MAXSLOTS+1]          // incremented if player didn't move far enough
-new const gSoundSummon[] = "ambience/port_suckin1.wav"
+#define gSoundSummon  "ambience/port_suckin1.wav"
 new pCvarCooldown, pCvarCampTime, pCvarMoveDist, pCvarMaxSnarks
 //----------------------------------------------------------------------------------------------
 public plugin_init()

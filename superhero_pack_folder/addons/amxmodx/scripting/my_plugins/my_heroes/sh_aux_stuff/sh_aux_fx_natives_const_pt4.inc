@@ -5,4 +5,4 @@
 
 
 
-stock const check_what_damage_types_exist[]="sh_check_existing_damage_types"
+#define check_what_damage_types_exist "sh_check_existing_damage_types"

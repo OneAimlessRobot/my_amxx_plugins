@@ -11,7 +11,7 @@
 
 
 // VARIABLES
-new gHeroName[]="Rom"
+#define gHeroName "Rom"
 
 new beam
 new gRomTimer[SH_MAXSLOTS+1]

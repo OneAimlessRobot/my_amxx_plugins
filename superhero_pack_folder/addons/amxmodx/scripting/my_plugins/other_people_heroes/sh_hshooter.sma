@@ -4,7 +4,7 @@
 #include "../my_include/superheromod.inc"
 
 
-new const gHeroName[] = "Head Shooter"
+#define gHeroName "Head Shooter"
 new gStartHealth[SH_MAXSLOTS+1]
 
 

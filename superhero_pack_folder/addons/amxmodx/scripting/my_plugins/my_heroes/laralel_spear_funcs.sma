@@ -72,13 +72,23 @@ new spear_armed_mask
 new Float:curr_charge[SH_MAXSLOTS+1]
 
 
-new Float:min_charge_time,Float:max_charge_time
 
 
 stock SPEAR_CHARGE_TASKID,
 	UNSPEAR_CHARGE_TASKID
 
 new PLUGIN_ID_HERE;
+
+/*
+
+
+	float pcvars!
+
+*/
+
+new pcvar_max_charge_time,
+	pcvar_min_charge_time
+	
 public plugin_init(){
 
 
@@ -87,8 +97,8 @@ public plugin_init(){
 
 	register_forward(FM_CmdStart, "CmdStart");
 	register_think(SPEAR_CLASSNAME, "spaar_thaank");
-	create_cvar("lara_spear_max_charge_time", "5.0")
-	create_cvar("lara_spear_min_charge_time", "1.0")
+	pcvar_max_charge_time = create_cvar("laralel_spear_max_charge_time", "5.0")
+	pcvar_min_charge_time = create_cvar("laralel_spear_min_charge_time", "1.0")
 	RegisterHam(Ham_Weapon_SecondaryAttack, "weapon_knife", "Ham_Weapon_Stab",_,true)
 	
 	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
@@ -245,7 +255,7 @@ public spaar_thaank(ent){
 }
 Float:get_charge_index_from_id(id){
 
-	return (curr_charge[id]/max_charge_time)
+	return (curr_charge[id]/cvar_val(float, pcvar_max_charge_time))
 }
 //----------------------------------------------------------------------------------------------
 public CmdStart(id, uc_handle)
@@ -311,7 +321,7 @@ public CmdStart(id, uc_handle)
 			}
 		}
 		else if(Get_BitVar(spear_armed_mask,id)){
-			if(curr_charge[id]>=min_charge_time){
+			if(curr_charge[id]>=cvar_val(float, pcvar_min_charge_time)){
 				
 				lara_spear_decide_func(id)
 				
@@ -348,9 +358,6 @@ public loadCVARS()
 	custom_dmg_id_laralel_spear=sh_log_custom_damage_source(gHeroID,
 		dmg_source_name_short_laralel_spear,
 		dmg_source_name_log_laralel_spear,1)
-		
-	max_charge_time=get_cvar_float("lara_spear_max_charge_time")
-	min_charge_time=get_cvar_float("lara_spear_min_charge_time")
 }
 
 
@@ -359,12 +366,12 @@ public charge_task(id){
 	static hud_msg[128];
 	curr_charge[id]=floatadd(curr_charge[id],SPEAR_CHARGE_PERIOD)
 	formatex(hud_msg,127,"[SH]: Curr charge: %0.2f^n",
-					100.0*(curr_charge[id]/max_charge_time)
+					100.0*(curr_charge[id]/cvar_val(float, pcvar_max_charge_time))
 					);
 	client_print(id,print_center,"%s",hud_msg)
 	
 	if(Get_BitVar(spear_armed_mask,id)){
-		if((100.0*(curr_charge[id]/max_charge_time))>100.0){
+		if((100.0*(curr_charge[id]/cvar_val(float, pcvar_max_charge_time)))>100.0){
 				
 				lara_spear_decide_func(id)
 				uncharge_user(id)
@@ -451,7 +458,7 @@ launch_spear(id)
 
 
 	launch_projectile_native(id,
-		SPEAR_SPEED*(curr_charge[id]/max_charge_time),
+		SPEAR_SPEED*(get_charge_index_from_id(id)),
 		SPEAR_SHOOT_PERIOD,
 		SPEAR_CLASSNAME,
 		SPEAR_W_MODEL,
@@ -564,7 +571,8 @@ public spaaaaeer_touch_player(pToucher, pTouched)
 
 			entity_get_vector(pToucher, EV_VEC_origin, here_origin_of_explosion)
 
-			explosion_with_origin(gHeroID,oid,here_origin_of_explosion,charge_index*SPEAR_LAUNCH_EXPLODE_RADIUS,charge_index*SPEAR_LAUNCH_DAMAGE, charge_index*SPEAR_LAUNCH_FORCE,0)
+			explosion_with_origin(gHeroID,oid,here_origin_of_explosion,charge_index*SPEAR_LAUNCH_EXPLODE_RADIUS,charge_index*SPEAR_LAUNCH_DAMAGE, charge_index*SPEAR_LAUNCH_FORCE,0,
+									_,_,_,_,_,_,true)
 			
 			if(!is_valid_ent(pToucher)){
 

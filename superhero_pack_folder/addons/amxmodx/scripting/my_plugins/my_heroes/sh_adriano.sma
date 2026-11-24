@@ -18,7 +18,7 @@
 
 // GLOBAL VARIABLES
 
-new const gHeroName[] = "Adriano"
+#define gHeroName "Adriano"
 new g_adriano_points[SH_MAXSLOTS+1]
 new Float:g_base_speed[SH_MAXSLOTS+1]
 new Float:g_normal_speed[SH_MAXSLOTS+1]

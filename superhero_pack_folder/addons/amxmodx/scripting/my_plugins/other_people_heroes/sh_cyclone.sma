@@ -27,7 +27,7 @@ UPDATES::
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
-new gHeroName[]="Cyclone"
+#define gHeroName "Cyclone"
 new gCycloneTimer, gCurrentCyclone				// Allow only 1 cyclone at the time for now ( I don't know what happens if 2 cyclones get caucht in each other )
 new white, gSpriteLightning
 new gRange, gForce

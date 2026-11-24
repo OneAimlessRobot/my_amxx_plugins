@@ -13,7 +13,7 @@ polaris_range 300		// How close the grenades have to be before polaris reacts
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
-new gHeroName[]="Polaris"
+#define gHeroName "Polaris"
 
 new gSpriteLightning
 new gRange, gBoost

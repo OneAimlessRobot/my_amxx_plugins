@@ -22,7 +22,7 @@ meteorix_shotmult 0.5		// Delay for multishots on holding key down.
 #define h4_dam 100  // arm
 #define h6_dam 90  // leg
 
-new gHeroName[]="Meteorix"
+#define gHeroName "Meteorix"
 
 new dmg_source_name_short_meteorix_bolt[SAFE_BUFFER_SIZE+1]="meteorix_bolt"
 new dmg_source_name_log_meteorix_bolt[SAFE_BUFFER_SIZE+1]="meteorix_bolt"

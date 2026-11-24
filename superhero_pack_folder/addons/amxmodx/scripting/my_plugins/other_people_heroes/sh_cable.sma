@@ -31,7 +31,7 @@ new custom_dmg_id_cable_bullet
 // GLOBAL VARIABLES
 new smoke, laser, laser_shots[SH_MAXSLOTS+1]
 new gLastWeapon[SH_MAXSLOTS+1]
-new gHeroName[]="Cable"
+#define gHeroName "Cable"
 
 new decal_id
 

@@ -18,10 +18,10 @@ bomberman_maxdamage 100		//Maximum Damage to deal		(def=100)
 
 // GLOBAL VARIABLES
 
-new const gHeroName[] = "Bomberman"
+#define gHeroName "Bomberman"
 new gBombEntity[SH_MAXSLOTS+1]
 new gBombAmmo[SH_MAXSLOTS+1]
-new const gSoundBombPlant[] = "weapons/c4_plant.wav"
+#define gSoundBombPlant  "weapons/c4_plant.wav"
 new gBombModel[32] = "models/shmod/bomberman_bomb.mdl"
 new gSpriteSmoke, gSpriteWhite, gSpriteFire, gSpriteExplode
 new gPcvarLevel, gPcvarCooldown, gPcvarBombs

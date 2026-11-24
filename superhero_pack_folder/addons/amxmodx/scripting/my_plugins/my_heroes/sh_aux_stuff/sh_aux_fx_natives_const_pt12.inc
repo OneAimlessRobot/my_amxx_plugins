@@ -5,4 +5,4 @@
 
 
 
-stock const hero_healthcaps_print[]="sh_hero_healthcaps_print"
+#define hero_healthcaps_print "sh_hero_healthcaps_print"

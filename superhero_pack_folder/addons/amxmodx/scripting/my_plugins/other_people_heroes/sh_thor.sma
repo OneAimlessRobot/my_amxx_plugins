@@ -25,10 +25,10 @@ thor_cooldown 45		//Amount of time before next available use (def 45)
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
-#include "../shock_fx_inc/shock_fx.inc"
+#include "../my_heroes/shock_fx_inc/shock_fx.inc"
 
 // GLOBAL VARIABLES
-new g_heroName[]="Thor"
+#define g_HeroName "Thor"
 
 new g_spriteLightning
 
@@ -38,8 +38,8 @@ new thors_hammer_wpn_id
 new dmg_source_name_short_thors_hammer[SAFE_BUFFER_SIZE+1]="thors_hammer"
 new dmg_source_name_log_thors_hammer[SAFE_BUFFER_SIZE+1]="thors_hammer"
 
-new const gSoundThunder[] = "shmod/zeus_lightningbolt.wav"
-new const gSoundSearch[] = "turret/tu_ping.wav"
+#define gSoundThunder  "shmod/zeus_lightningbolt.wav"
+#define gSoundSearch  "turret/tu_ping.wav"
 
 new gPcvarSearchTime,
 	pcvar_cooldown,
@@ -57,7 +57,7 @@ public plugin_init()
 	gPcvarSearchTime = create_cvar("thor_searchtime", "45")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	gHeroID=shCreateHero(g_heroName, "Thunder Bolt", "Strike Attackers with a Mighty Lightning Bolt from Thor's uru hammer Mjolnir.", true, "thor_level")
+	gHeroID=shCreateHero(g_HeroName, "Thunder Bolt", "Strike Attackers with a Mighty Lightning Bolt from Thor's uru hammer Mjolnir.", true, "thor_level")
 	
 	sh_set_hero_bind(gHeroID)
 	

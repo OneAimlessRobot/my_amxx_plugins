@@ -58,7 +58,7 @@ blade_gunburndmg 3	//Amount of damage per burn from gun burn (Default 3)
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
 // GLOBAL VARIABLES
-new HeroName[] = "Blade"
+#define HeroName "Blade"
 new gBladeeMac10Model[STRING_SIZE] = "models/shmod/blade_v_mac10.mdl";
 
 

@@ -12,7 +12,7 @@ Bunny_level 5
 
 #include "../my_include/superheromod.inc"
 
-new gHeroName[]="Bunny hop"
+#define gHeroName "Bunny hop"
 
 //-------------------------------------------------------------------------------------
 public plugin_init()

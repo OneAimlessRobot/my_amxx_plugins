@@ -587,7 +587,7 @@ public bulletina_touque_playor(pToucher, pTouched)
 	new CsTeams:att_team=cs_get_user_team(owner)
 	new CsTeams:vic_team=cs_get_user_team(pTouched)
 	if(att_team!=vic_team){
-		sh_extra_damage(pTouched,owner,floatround(damage),
+		static sh_extra_damage_result:dmg_result; dmg_result = sh_extra_damage(pTouched,owner,floatround(damage),
 			the_hitpoint,
 			_,_,_,
 			DMG_BULLET,
@@ -617,7 +617,7 @@ public bulletina_touque_playor(pToucher, pTouched)
 			send_poem_function(pTouched, poem_idx:random_number);
 		}
 		
-		if(!is_user_alive(pTouched)){
+		if(dmg_result == SH_DMG_RESULT_DMG_KILLED_OPPONENT){
 
 			gross_kill_gibs_fx(pTouched,origin,origin)
 

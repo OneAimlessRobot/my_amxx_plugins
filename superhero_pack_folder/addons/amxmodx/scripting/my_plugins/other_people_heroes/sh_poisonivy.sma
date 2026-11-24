@@ -48,7 +48,7 @@ new dmg_source_name_log_poison_ivy_drain[SAFE_BUFFER_SIZE+1]="poison_ivy_drain"
 new custom_dmg_id_poison_ivy_drain
 
 // GLOBAL VARIABLES
-new gHeroName[]="Poison Ivy"
+#define gHeroName "Poison Ivy"
 
 new gIsPoisonedMask[SH_MAXSLOTS+1] = {0, ...}
 new gPoisonDamage[SH_MAXSLOTS+1]

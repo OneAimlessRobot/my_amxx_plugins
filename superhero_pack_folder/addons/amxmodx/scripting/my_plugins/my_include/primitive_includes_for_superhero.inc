@@ -20,6 +20,7 @@
   #tryinclude "../../include/amxmodx.inc"
   #tryinclude "../../include/fun.inc"
 
+  #define AUX_STUFF_GIVE_SAFEGUARD_STOCKS
   #define AUX_STUFF_GIVE_ENT_STOCKS
   #define AUX_STUFF_GIVE_MACROS
   #define AUX_STUFF_GIVE_WEAPONS

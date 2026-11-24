@@ -19,7 +19,7 @@ blink_delaystuck 0			//Is the user stuck in place during the delay?
 
 
 // GLOBAL VARIABLES
-new gHeroName[]="Blink"
+#define gHeroName "Blink"
 new blinkAmount[SH_MAXSLOTS+1]
 new checkCount[SH_MAXSLOTS+1]
 new blinkSpot[SH_MAXSLOTS+1][3]

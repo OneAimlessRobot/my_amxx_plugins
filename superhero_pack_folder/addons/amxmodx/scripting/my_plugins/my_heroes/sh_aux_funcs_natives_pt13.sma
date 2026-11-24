@@ -488,8 +488,18 @@ public sh_client_spawn(id,bool:newRound){
 	}
 	new array[1];
 	array[0] = false
-	set_task(5.0, "strip_all_player_weapons",id + REMOVE_WEAPONS_TASKID,array,1)
+	set_task(5.0, "strip_all_player_weapons",id + REMOVE_WEAPONS_TASKID,array,sizeof(array))
 
+}
+public client_disconnected(id){
+
+	task_safeguard_macro_for_player_task(id,REMOVE_WEAPONS_TASKID,SH_MAXSLOTS)
+}
+public client_connect(id){
+
+
+	task_safeguard_macro_for_player_task(id,REMOVE_WEAPONS_TASKID,SH_MAXSLOTS)
+	
 }
 public fw_Ethereal_unnarmed(id, uc_handle)
 {

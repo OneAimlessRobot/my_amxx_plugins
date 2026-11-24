@@ -28,8 +28,8 @@ electro_jumpradius 500		//Radius to search for a lightning jump (Default 500)
 
 new bool:gLightningHit[SH_MAXSLOTS+1]
 new bool:gIsSearching[SH_MAXSLOTS+1]
-new const gSoundSearch[] = "turret/tu_ping.wav"
-new const gSoundLightning[] = "weapons/gauss2.wav"
+#define gSoundSearch  "turret/tu_ping.wav"
+#define gSoundLightning  "weapons/gauss2.wav"
 new gSpriteLightning
 new gPcvarCooldown, gPcvarSearchTime, gPcvarMaxDamage, gPcvarJumpDecay, gPcvarJumpRadius
 //----------------------------------------------------------------------------------------------

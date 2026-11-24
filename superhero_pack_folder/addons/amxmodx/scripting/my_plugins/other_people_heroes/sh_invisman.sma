@@ -24,7 +24,7 @@ invisman_checkonground 0	//Must player be on ground to be invisible (Default 0 =
 // GLOBAL VARIABLES
 
 #define INVISMAN_TICK_PERIOD 0.555
-new const gHeroName[] = "Invisible Man"
+#define gHeroName "Invisible Man"
 new gIsInvisible[SH_MAXSLOTS+1]
 new gUserStoredAlpha[SH_MAXSLOTS+1]
 new Float:gStillTime[SH_MAXSLOTS+1]

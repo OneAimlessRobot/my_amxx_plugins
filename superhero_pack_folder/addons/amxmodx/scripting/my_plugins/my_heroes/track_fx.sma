@@ -47,6 +47,8 @@ new dmg_source_name_short_tracked_vuln[SAFE_BUFFER_SIZE+1]="tracked_vuln"
 new dmg_source_name_log_tracked_vuln[SAFE_BUFFER_SIZE+1]="tracked_vuln"
 new custom_dmg_id_tracked_vuln
 
+new Float:player_damage_vulns_mults[SH_MAXSLOTS+1]
+
 public plugin_init(){
 	
 	
@@ -96,7 +98,7 @@ public tracked_damage(id, idinflictor, attacker, Float:damage, damagebits)
 	switch(fx_num_vic){
 
 		case RADIOACTIVE:{
-			new Float:extraDamage = damage * RADIOACTIVE_DAMAGE_VULNERABILITY_COEFF - damage
+			new Float:extraDamage = (damage * player_damage_vulns_mults[id]) - damage
 			if (floatround(extraDamage)>0){
 				sh_extra_damage(id, attacker, floatround(extraDamage),
 											the_hitpoint,
@@ -124,7 +126,7 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_h
 	switch(fx_num_vic){
 
 		case RADIOACTIVE:{
-			new Float:extraDamage = float(damage) * RADIOACTIVE_DAMAGE_VULNERABILITY_COEFF - float(damage)
+			new Float:extraDamage = (float(damage) * player_damage_vulns_mults[victim]) - float(damage)
 			if (floatround(extraDamage)>0){
 				
 				damage+=floatround(extraDamage)
@@ -245,7 +247,9 @@ public _track_user(iPlugins, iParams){
 		Float:period=get_param_f(5),
 		Float:the_time=get_param_f(6),
 		sh_custom_color:track_color=sh_custom_color:get_param(7),
-		bool:detectors_only=bool:get_param(8)
+		bool:detectors_only=bool:get_param(8),
+		Float:track_damage_vuln_mult = get_param_f(9)
+
 
 	
 	if(!is_user_connected(id)||!is_user_connected(attacker)) return 
@@ -256,6 +260,7 @@ public _track_user(iPlugins, iParams){
 	new player_count;
 	gatling_set_fx_num(id, RADIOACTIVE)
 	
+	player_damage_vulns_mults[id] = track_damage_vuln_mult
 
 	get_user_team(attacker,team_name,32)
 	get_players(players,player_count,"eah",team_name)
@@ -273,8 +278,21 @@ public _track_user(iPlugins, iParams){
 		
 		array[NUM_INIT_TRACK_PARAMS+i]=players[i]
 	}
-	set_task(period,"track_task",id+RADIOACTIVE_TASK_ID,array, sizeof(array))
+	track_task(array,id+RADIOACTIVE_TASK_ID)
 
 
 
+}
+
+
+public client_disconnected(id){
+
+	task_safeguard_macro_for_player_task(id,RADIOACTIVE_TASK_ID,SH_MAXSLOTS)
+	
+}
+public client_connect(id){
+
+
+	task_safeguard_macro_for_player_task(id,RADIOACTIVE_TASK_ID,SH_MAXSLOTS)
+	
 }

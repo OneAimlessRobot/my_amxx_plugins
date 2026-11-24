@@ -28,7 +28,7 @@ afterburn_burndmg 5		//How much damage each burn does
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
-new gHeroName[]="AfterBurn"
+#define gHeroName "AfterBurn"
 new gIsBurning[SH_MAXSLOTS+1]
 new gSpriteSmoke, gSpriteFire, gSpriteBurning
 

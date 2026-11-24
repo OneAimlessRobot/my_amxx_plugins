@@ -26,7 +26,7 @@ new custom_dmg_id_thanks
 
 new gHeroID_chikoi = -1
 
-new const gHeroName[] = "Yowai"
+#define gHeroName "Yowai"
 new g_hits[SH_MAXSLOTS+1] = {0, ...}
 new g_yowai_mode_mask = 0
 new g_max_hits_player[SH_MAXSLOTS+1]

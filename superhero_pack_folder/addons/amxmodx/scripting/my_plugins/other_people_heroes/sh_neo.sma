@@ -23,7 +23,7 @@ neo_toggle 0		//Def=0
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
 // GLOBAL VARIABLES
-new gHeroName[]="Neo"
+#define gHeroName "Neo"
 
 #define TE_USERNEO	127
 

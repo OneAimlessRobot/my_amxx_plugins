@@ -17,7 +17,7 @@ Thing_knife_percent 1.00	// Percent chance to ignore knife hits (headshots alway
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
 
-new gHeroName[]="Thing" 
+#define gHeroName "Thing" 
 
 //----------------------------------------------------------------------------------------------
 public plugin_init()

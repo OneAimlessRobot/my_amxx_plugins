@@ -76,7 +76,6 @@ models/player/t800/t800.mdl
 sprites/shmod/blue_flame.spr
 sprites/zbeam5.spr
 models/shmod/grief_drive/shotgun/v_grief_drive_shotgun.mdl
-models/shmod/grief_drive/shotgun/w_xm1014.mdl
 models/shmod/grief_drive/knife/v_knife.mdl
 models/shmod/grief_drive/knife/p_knife.mdl
 models/shmod/grief_drive/knife/v_psycho_knife.mdl
@@ -266,9 +265,9 @@ sprites/rifle_smoke2.spr
 sprites/rifle_smoke3.spr
 models/hgibs.mdl
 models/agibs.mdl
-models/metalplategibs_green.mdl
+models/metalplategibs.mdl
 models/woodgibs.mdl
-models/glassgibs.mdl
+sprites/flare1.spr
 models/w_squeak.mdl
 models/shmod/ksun/ksun_rifle/v_r5rifle.mdl
 models/shmod/ksun/ksun_rifle/p_r5rifle.mdl

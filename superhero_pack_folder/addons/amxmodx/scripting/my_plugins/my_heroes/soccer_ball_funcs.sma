@@ -22,8 +22,8 @@
 stock const BALL_BOUNCE_GROUND[ ] = "shmod/roberto_carlos/kickball/bounce.wav";
 stock const g_szBallModel[ ]     = "models/shmod/roberto_carlos/kickball/ball.mdl";
 
-stock kicked[] = "shmod/roberto_carlos/kickball/superkick.wav"
-stock gotball[] = "shmod/roberto_carlos/kickball/gotball.wav"
+#define kicked  "shmod/roberto_carlos/kickball/superkick.wav"
+#define gotball  "shmod/roberto_carlos/kickball/gotball.wav"
 
 stock beamspr
 stock ballbeam[3] = { 20,50,255 }
@@ -59,7 +59,7 @@ stock ballbeam[3] = { 20,50,255 }
 
 
 
-new cheers[] = "shmod/roberto_carlos/cheers/big_goal.wav"
+#define cheers  "shmod/roberto_carlos/cheers/big_goal.wav"
 
 new dmg_source_name_short_free_kick[SAFE_BUFFER_SIZE+1]="thunderous_free_kick"
 new dmg_source_name_log_free_kick[SAFE_BUFFER_SIZE+1]="free_kick"

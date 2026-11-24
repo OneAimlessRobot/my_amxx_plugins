@@ -25,7 +25,7 @@
 #define ALWAYS_GUIDEABLE
 
 // GLOBAL VARIBLES
-new g_heroName[]="Vegetto"
+#define g_heroName "Vegetto"
 
 new bool:g_weaponSwitched[SH_MAXSLOTS+1]
 new g_isSaiyanLevel[SH_MAXSLOTS+1]
@@ -639,15 +639,15 @@ public vegetto_power_touch(pToucher, pTouched) {
 				damage = floatround(damage / 2.0)
 			}
 		
-			sh_extra_damage(vic, id, damage,
+			static sh_extra_damage_result:dmg_result; dmg_result = sh_extra_damage(vic, id, damage,
 								_,_,_,_,_,
 								SH_NEW_DMG_ENERGY_BLAST,
 								vegetto_dmgs_arr[g_powerNum[id]][the_wpn_id])
 
 
-			if((g_powerNum[id]>=3)&&is_user_connected(vic)&&!is_user_alive(vic)){
+			if((g_powerNum[id]>=3)&&is_user_connected(vic)&&(dmg_result == SH_DMG_RESULT_DMG_KILLED_OPPONENT)){
 
-					new Float:vic_origin_f[3]
+					static Float:vic_origin_f[3]
 					IVecFVec(vicOrigin,vic_origin_f)
 					gross_kill_gibs_fx(vic,vic_origin_f,fl_vExplodeAt)
 			}
@@ -934,7 +934,7 @@ public shake_n_stun(id)
 	}
 
 	explosion(gHeroID,id,float(cvar_val(num,pcvar_powerup_explode_radius_ssj4)),100.0,_,_,1,
-			_,_,_,_,_,SH_NEW_DMG_ENERGY_BLAST)
+			_,_,_,_,_,SH_NEW_DMG_ENERGY_BLAST,true)
 }
 //----------------------------------------------------------------------------------------------
 public powerup_effect(parm[])

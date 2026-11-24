@@ -10,21 +10,23 @@
 #include "../my_include/my_author_header.inc"
 
 stock help_files_directory[STRLEN_FOR_FILES+1]
-stock const help_cmd[]="help_of"
+#define help_cmd "help_of"
 stock const config_directory_name[128]="/shero_help_files/"
 stock const default_directory_name[128]="shero_def_dir/"
 stock const default_index_name[128]="shero_no_help_found.html"
 stock const default_title[128]="No Help Found for the specified hero."
-stock const default_hero_name[128]={0};
+
 stock default_directory[STRLEN_FOR_FILES+1]
 stock default_file[STRLEN_FOR_FILES+1]
-enum{
-	TITLE=0,
-	INDEX_NAME=1,
-	DIR_NAME=2,
-	HERO_NAME=3
+enum superhero_help_struct{
+
+	TITLE[STRLEN_FOR_FILES+1],
+	INDEX_NAME[STRLEN_FOR_FILES+1],
+	DIR_NAME[STRLEN_FOR_FILES+1],
+	HERO_NAME[MAX_HERO_NAME_LENGTH]
+
 };
-stock superhero_help_files[SH_MAXHEROS][4][STRLEN_FOR_FILES+1];
+stock superhero_help_files[SH_MAXHEROS][superhero_help_struct];
 
 public plugin_init()
 {
@@ -84,12 +86,24 @@ set_hero_id_entry_to_default(hero_id){
 	arrayset(superhero_help_files[hero_id][INDEX_NAME],0,STRLEN_FOR_FILES)
 	arrayset(superhero_help_files[hero_id][DIR_NAME],0,STRLEN_FOR_FILES)
 	arrayset(superhero_help_files[hero_id][TITLE],0,STRLEN_FOR_FILES)
-	arrayset(superhero_help_files[hero_id][HERO_NAME],0,STRLEN_FOR_FILES)
 	add(superhero_help_files[hero_id][INDEX_NAME],STRLEN_FOR_FILES,default_file, charsmax(default_file))
 	add(superhero_help_files[hero_id][DIR_NAME],STRLEN_FOR_FILES,default_directory, charsmax(default_directory))
 	add(superhero_help_files[hero_id][TITLE],STRLEN_FOR_FILES,default_title, charsmax(default_title))
-	add(superhero_help_files[hero_id][HERO_NAME],STRLEN_FOR_NAMES,default_hero_name, charsmax(default_hero_name))
 }
+
+public sh_on_create_hero_post(const heroID,const heroName[]){
+
+	if (heroID<0 || heroID >=SH_MAXHEROS){
+		return
+	}
+
+	
+	add(superhero_help_files[heroID][HERO_NAME],STRLEN_FOR_FILES,heroName, 24)
+
+
+
+}
+
 //----------------------------------------------------------------------------------------------
 public cl_say(id)
 {
@@ -118,9 +132,12 @@ public cl_say(id)
 //----------------------------------------------------------------------------------------------
 public show_hero_help(id, const said[])
 {
-	new heroName[32]
-	new heroIndex=-1;
-	new spaceIdx = contain(said, " ")
+	static heroName[MAX_HERO_NAME_LENGTH],
+			heroIndex=-1,
+			spaceIdx; 
+	
+	heroIndex = -1
+	spaceIdx = contain(said, " ")
 	if ( spaceIdx > 0 && strlen(said) > spaceIdx+2 ) {
 		copy(heroName, charsmax(heroName), said[spaceIdx+1] )
 	}
@@ -129,12 +146,10 @@ public show_hero_help(id, const said[])
 		return
 	}
 
-	
-	for ( heroIndex= 0; heroIndex <SH_MAXHEROS; heroIndex++ ) {
-		if ( containi( superhero_help_files[heroIndex][HERO_NAME], heroName ) != -1 ) {
-			sh_chat_message(id, heroIndex, "Arrived at help for hero: %s", superhero_help_files[heroIndex][HERO_NAME])			
-			break
-		}
+	heroIndex = sh_match_string_with_hero_name(id,heroName)
+
+	if (heroIndex<0 || heroIndex >=SH_MAXHEROS){
+		return
 	}
 	superheromod_help_show_hero_help(id, heroIndex)
 }
@@ -166,7 +181,6 @@ public _superheromod_help_link_hero(iPlugins,iParams){
 	new dir_name[STRLEN_FOR_FILES+1]
 	new index_name[STRLEN_FOR_FILES+1]
 	new title[STRLEN_FOR_FILES+1]
-	new hero_name[STRLEN_FOR_NAMES+1]
 	if((hero_id<0)||(hero_id>=SH_MAXHEROS)){
 		return
 	}
@@ -176,15 +190,10 @@ public _superheromod_help_link_hero(iPlugins,iParams){
 			
 	arrayset(superhero_help_files[hero_id][TITLE],0,STRLEN_FOR_FILES)
 			
-	arrayset(superhero_help_files[hero_id][HERO_NAME],0,STRLEN_FOR_FILES)
-			
-	get_array(2, title, STRLEN_FOR_FILES);
-	get_array(3, dir_name, STRLEN_FOR_FILES);
-	get_array(4, index_name, STRLEN_FOR_FILES);
-	get_array(5, hero_name, STRLEN_FOR_NAMES);
-	/*server_print("Trying to register help file of hero named %s!!!!^n",hero_name)*/
+	get_string(2, title, charsmax(title));
+	get_string(3, dir_name, charsmax(dir_name));
+	get_string(4, index_name, charsmax(index_name));
 	add(superhero_help_files[hero_id][TITLE],STRLEN_FOR_FILES,title, charsmax(title))
-	add(superhero_help_files[hero_id][HERO_NAME],STRLEN_FOR_NAMES,hero_name, charsmax(hero_name))
 	add(superhero_help_files[hero_id][DIR_NAME],STRLEN_FOR_FILES,help_files_directory, charsmax(help_files_directory))
 	add(superhero_help_files[hero_id][DIR_NAME],STRLEN_FOR_FILES,dir_name, charsmax(dir_name))
 	add(superhero_help_files[hero_id][INDEX_NAME],STRLEN_FOR_FILES,help_files_directory, charsmax(help_files_directory))

@@ -30,7 +30,7 @@ casper_stuckcheck 1		//Kill user if stuck in wall/ground after noclip, 0=no 1=ye
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 
 // GLOBAL VARIABLES
-new gHeroName[]="Casper"
+#define gHeroName "Casper"
 new bool:gInGhostMode[SH_MAXSLOTS+1]
 new gUserHealth[SH_MAXSLOTS+1]
 new gUserArmor[SH_MAXSLOTS+1]

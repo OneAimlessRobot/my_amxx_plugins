@@ -14,7 +14,7 @@ daredevil_bright 192		//How bright to make the rings
 
 // GLOBAL VARIABLES
 
-new const gHeroName[] = "Daredevil"
+#define gHeroName "Daredevil"
 new gSpriteWhite
 new gPcvarRadius, gPcvarBright
 //----------------------------------------------------------------------------------------------

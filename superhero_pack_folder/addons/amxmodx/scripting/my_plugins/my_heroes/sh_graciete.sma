@@ -13,7 +13,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt17.inc"
 
 
-new const gHeroName[] = "Graciete"
+#define gHeroName "Graciete"
 
 new dmg_source_name_short_shard_cannon[SAFE_BUFFER_SIZE+1]="shard_cannon"
 new dmg_source_name_log_shard_cannon[SAFE_BUFFER_SIZE+1]="shard_cannon"

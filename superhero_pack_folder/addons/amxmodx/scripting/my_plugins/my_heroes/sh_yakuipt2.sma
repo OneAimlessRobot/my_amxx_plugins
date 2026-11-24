@@ -19,7 +19,7 @@
 
 
 
-new const gHeroName[] = "Yakui Mk2"
+#define gHeroName "Yakui Mk2"
 
 
 new pcvar_max_pills
@@ -38,10 +38,8 @@ public plugin_init()
 	pcvar_max_rockets = create_cvar("yakui_rockets","5")
 	
 	gHeroID=shCreateHero(gHeroName, "Yakui the Maid Mk2", "NARCOTIC ARTILLERY", true, "yakui_level" )
-	static hero_name_arr[STRLEN_FOR_NAMES];
-	arrayset(hero_name_arr,0,sizeof hero_name_arr)
-	add(hero_name_arr,charsmax(hero_name_arr),gHeroName,charsmax(gHeroName))
-	superheromod_help_link_hero(gHeroID, "Yakui the maid: Help file","yakui_folder/","yakui_help_file.html",hero_name_arr)
+	
+	superheromod_help_link_hero(gHeroID, "Yakui the maid: Help file","yakui_folder/","yakui_help_file.html")
 	
 	sh_assign_hero_bit(gHeroID, SH_BOT_RESTRICTED, true)
 	

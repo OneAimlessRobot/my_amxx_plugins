@@ -49,7 +49,7 @@ new fury_swipes_wpn_id
 new dmg_source_name_short_fury_swipes[SAFE_BUFFER_SIZE+1]="pester strikes!"
 new dmg_source_name_log_fury_swipes[SAFE_BUFFER_SIZE+1]="pester strikes!"
 
-stock const gHeroName[] = "Zatana"
+#define gHeroName "Zatana"
 
 static const DEBUG = 0
 
@@ -834,6 +834,17 @@ public zatana_hurt_task(array[2],task_id){
     }
     
 
+}
+public client_disconnected(id){
+
+	task_safeguard_macro_for_player_task(id,ZATANA_HURT_TASKID,SH_MAXSLOTS)
+	
+}
+public client_connect(id){
+
+
+	task_safeguard_macro_for_player_task(id,ZATANA_HURT_TASKID,SH_MAXSLOTS)
+	
 }
 set_zatana_user_cooldown(id){
 

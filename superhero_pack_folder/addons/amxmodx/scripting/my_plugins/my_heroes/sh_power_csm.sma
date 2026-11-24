@@ -17,7 +17,7 @@
 
 
 
-stock const gHeroName[] = "Power (CSM)"
+#define gHeroName "Power (CSM)"
 
 new Float:g_power_points[SH_MAXSLOTS+1]
 

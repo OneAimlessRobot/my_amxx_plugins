@@ -28,12 +28,12 @@
 #define SABLINA_STONE_SPIKE_TICK_LENGTH_SECS 0.166667
 #define SABLINA_STONE_SPIKE_DIE_DELAY 4.0
 
-stock const gHeroName[] = "Sablina"
+#define gHeroName "Sablina"
 
 stock const Float:spike_min_dims[3] = {-8.0 ,-8.0 , 0.0},
 			Float:spike_max_dims[3] = {8.0,8.0,40.0}
 
-new const sablina_rock_spike_mdl_name[] = "models/shmod/sablina/rockgibs/rockgibs.mdl"
+#define sablina_rock_spike_mdl_name  "models/shmod/sablina/rockgibs/rockgibs.mdl"
 
 
 new const gRockCrashSounds[3][128] = {"shmod/sablina/sablina_light_attack.wav",
@@ -411,6 +411,17 @@ public increase_dmg_task(id){
 
 }
 
+public client_disconnected(id){
+
+	task_safeguard_macro_for_player_task(id,SH_SABLINA_SPIKE_CHARGE_TASKID,SH_MAXSLOTS)
+	
+}
+public client_connect(id){
+
+
+	task_safeguard_macro_for_player_task(id,SH_SABLINA_SPIKE_CHARGE_TASKID,SH_MAXSLOTS)
+	
+}
 //----------------------------------------------------------------------------------------------
 // RESPOND TO KEYDOWN
 public sablina_kd(id)

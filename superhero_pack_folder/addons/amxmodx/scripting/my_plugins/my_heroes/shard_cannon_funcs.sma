@@ -12,7 +12,7 @@
 
 
 
-new const Shard_Cannon_Sound[] = "weapons/shard_cannon-1.wav"
+#define Shard_Cannon_Sound  "weapons/shard_cannon-1.wav"
 
 #define PLUGIN "Superhero adriano shard_cannon"
 #define VERSION "1.0.0"

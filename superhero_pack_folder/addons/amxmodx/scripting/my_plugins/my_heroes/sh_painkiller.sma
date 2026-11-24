@@ -15,7 +15,7 @@ painkiller_life 4.0	//The amount of seconds Painkiller will live once his hp rea
 
 // GLOBAL VARIABLES
 
-new const gHeroName[] = "Painkiller"
+#define gHeroName "Painkiller"
 new bool:DeathNotice[SH_MAXSLOTS+1]
 new AttackerInfo[SH_MAXSLOTS+1]
 new pCvarSeconds
@@ -139,6 +139,17 @@ public Death_Notice(id, attacker)
 	}
 }
 
+public client_disconnected(id){
+
+	task_safeguard_macro_for_player_task(id,PAINKILLER_TASKID,SH_MAXSLOTS)
+	
+}
+public client_connect(id){
+
+
+	task_safeguard_macro_for_player_task(id,PAINKILLER_TASKID,SH_MAXSLOTS)
+	
+}
 public Painkiller_Death(id)
 {	
 	id-=PAINKILLER_TASKID

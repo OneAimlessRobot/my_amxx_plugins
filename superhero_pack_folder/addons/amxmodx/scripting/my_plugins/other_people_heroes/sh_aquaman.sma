@@ -15,12 +15,12 @@ aquaman_bubbledamage 10			//How much damage each bubble does
 
 // GLOBAL VARIABLES
 
-new const gHeroName[] = "Aquaman"
+#define gHeroName "Aquaman"
 new bool:gIsBubbling[SH_MAXSLOTS+1]
 new gSpriteBubble
-new const gSoundBubbleShot[] = "player/pl_swim3.wav"
-new const gSoundBubbling[] = "ambience/waterrun.wav"
-new const gSoundBubblePain[] = "scientist/scream1.wav"
+#define gSoundBubbleShot  "player/pl_swim3.wav"
+#define gSoundBubbling  "ambience/waterrun.wav"
+#define gSoundBubblePain  "scientist/scream1.wav"
 new gPcvarArmorCost, gPcvarNumBubbles, gPcvarBubbleDamage
 //----------------------------------------------------------------------------------------------
 public plugin_init()

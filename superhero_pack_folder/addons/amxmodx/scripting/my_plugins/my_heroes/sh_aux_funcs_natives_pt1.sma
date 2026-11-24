@@ -830,10 +830,10 @@ public _glow(iPlugins, iParams){
 		on=get_param(6)
 
 	if(on) {
-		sh_set_rendering(id, r, g, b, a, kRenderFxGlowShell, kRenderTransColor )
+		return sh_set_rendering(id, r, g, b, a, kRenderFxGlowShell, kRenderTransColor )
 	}
 	else{
-		sh_set_rendering(id, r, g, b, a, kRenderFxNone, kRenderTransColor )
+		return sh_set_rendering(id, r, g, b, a, kRenderFxNone, kRenderTransColor )
 	}
 }
 

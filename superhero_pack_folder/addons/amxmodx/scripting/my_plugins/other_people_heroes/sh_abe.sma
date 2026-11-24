@@ -10,7 +10,7 @@ abe_level 10
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
 
-new gHeroName[] = "Abe"
+#define gHeroName "Abe"
 new bool:AbePowerUsed[SH_MAXSLOTS+1]
 new gMorphed[SH_MAXSLOTS+1]
 new LightSprite

@@ -22,7 +22,7 @@ static NITRO_MOVEMENT_TASKID
 #define NITRO_DUCKING_STANDING_HEIGHT_RATIO 0.87
 
 // GLOBAL VARIABLES
-new gHeroName[]="Nitro"
+#define gHeroName "Nitro"
 new g_is_running[SH_MAXSLOTS+1]
 
 

@@ -12,7 +12,7 @@
 
 // GLOBAL VARIABLES
 
-new gHeroName[]="Girl B"
+#define gHeroName "Girl B"
 new gNumGlobs[SH_MAXSLOTS+1] = {0, ...}
 new girlb_held_down_mask = 0
 new girlb_projectile_ammo_pcvar,
@@ -134,6 +134,16 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
     }
 }
 
+public client_disconnected(id){
+
+	task_safeguard_macro_for_player_task(id,REGEN_GLOB_TASKID,SH_MAXSLOTS)
+}
+public client_connect(id){
+
+
+	task_safeguard_macro_for_player_task(id,REGEN_GLOB_TASKID,SH_MAXSLOTS)
+	
+}
 //----------------------------------------------------------------------------------------------
 public sh_hero_key(id, heroID, sh_key_mode:key)
 {

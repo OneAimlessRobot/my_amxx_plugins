@@ -24,6 +24,8 @@ new mdl_gib_head,mdl_gib_meat,mdl_gib_flesh,spr_blood_spray,spr_blood_drop,mdl_g
 
 new fwd_gore_pre;
 
+new const DEBUG = 0
+
 public plugin_init(){
 
 
@@ -52,7 +54,6 @@ public plugin_natives(){
 	register_native("fx_extra_blood","_fx_extra_blood");
 	register_native("fx_headshot","_fx_headshot");
 	register_native("anime_kill_fx","_anime_kill_fx");
-	register_native("precache_gibs","_precache_gibs");
 	register_native("draw_view_cone","_draw_view_cone");
 	register_native("gross_kill_gibs_fx","_gross_kill_gibs_fx")
 	register_native("precache_native_fx_pt2","_precache_native_fx_pt2")
@@ -419,9 +420,9 @@ public _gross_kill_gibs_fx(iPlugins,iParm){
 			fx_blood_small(ivicOrigin,4)
 		}
 		default:{
-			
-			sh_chat_message(id,_,"Gore blocked!")
-
+			if(DEBUG){
+				sh_chat_message(id,_,"Gore blocked!")
+			}
 		}
 	}
 
@@ -458,7 +459,7 @@ public _blood_spray(iPlugins, iParams){
 	}
 }
 
-public _precache_gibs(iPlugins, iParams){
+precache_gibs(){
 
 	spr_blood_drop = engfunc(EngFunc_PrecacheModel,"sprites/blood.spr")
 	spr_blood_spray = engfunc(EngFunc_PrecacheModel,"sprites/bloodspray.spr")

@@ -39,7 +39,7 @@ penguin_nadespeed 900		//Speed of Penguin grenades when seeking (def 900)
 #define NUM_ENTITIES 6000
 
 // GLOBAL VARIABLES
-new gHeroName[]="Penguin"
+#define gHeroName "Penguin"
 
 new Float:gNadeSpeed
 new gSpriteTrail

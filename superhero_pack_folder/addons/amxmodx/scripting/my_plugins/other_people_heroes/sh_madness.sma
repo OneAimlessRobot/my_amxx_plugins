@@ -26,7 +26,7 @@ madness_m3mult 2.0		//Damage multiplyer for his M3
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 #include "../my_heroes/bleed_knife_inc/sh_bknife_fx.inc"
 // GLOBAL VARIABLES
-new gHeroName[]="Madness"
+#define gHeroName "Madness"
 
 
 

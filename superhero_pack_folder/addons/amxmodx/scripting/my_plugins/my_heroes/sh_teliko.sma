@@ -29,6 +29,11 @@
 
 
 
+#define TELIKO_RIFLE_CLASSID CSW_FAMAS
+
+
+#define gHeroName "Teliko"
+
 new g_counter_bullets[SH_MAXSLOTS+1]
 new g_max_counter_bullets[SH_MAXSLOTS+1]
 new g_num_mega_counters_enemy[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
@@ -228,7 +233,7 @@ Teliko_counter_drop_weapon(enemy){
 			
 			continue
 		}
-		new my_weapon_slots:slot = wlt_get_def_slot(weapons[i])
+		new my_weapon_slots:slot = wlt_get_def_slot(my_weapon_ids:weapons[i])
 		if (( slot == MY_SLOT_PRIMARY)||(slot == MY_SLOT_SECONDARY)){
 				
 			wpn_to_drop=weapons[i];

@@ -13,7 +13,7 @@ captaina_godsecs 1.0		//# of seconds of god mode
 
 // GLOBAL VARIABLES
 
-new const gHeroName[] = "Captain America"
+#define gHeroName "Captain America"
 new Float:gMaxLevelFactor
 new gPcvarPctPerLev, gPcvarGodSecs
 //----------------------------------------------------------------------------------------------

@@ -10,7 +10,7 @@ slayer_level 6     - level at which he's available
 slayer_cooldown 40 - cooldown between god removals
 slayer_chance 0.05 - chance of assassination
 */
-new gHeroName[]="Slayer"
+#define gHeroName "Slayer"
 
 
 

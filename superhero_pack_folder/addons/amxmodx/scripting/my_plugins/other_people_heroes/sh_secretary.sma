@@ -40,7 +40,7 @@ enum {
 
 // GLOBAL VARIABLES
 
-new const gHeroName[] = "Secretary of Defense"
+#define gHeroName "Secretary of Defense"
 new bool:gHasRadio[SH_MAXSLOTS+1]
 new gLastModelKnife[SH_MAXSLOTS+1][64]
 new g_Target[SH_MAXSLOTS+1]
@@ -53,16 +53,16 @@ new Float:g_degrees[SH_MAXSLOTS+1][8]
 new Float:g_distance[SH_MAXSLOTS+1]
 new Float:g_Speed[SH_MAXSLOTS+1]
 
-new const gModelKnife[] = "models/shmod/ion_v_radio.mdl"
-new const gModelBeacon[] = "models/w_battery.mdl"
-new const gSoundRadioDraw[] = "shmod/ion/radio_draw.wav"
-new const gSoundRadioUse[] = "shmod/ion/radio_use.wav"
-new const gSoundBeacon[] = "shmod/ion/beacon_set.wav"
-new const gSoundPlant[] = "shmod/ion/beacon_plant.wav"
-new const gSoundBeep[] = "shmod/ion/beacon_beep.wav"
-new const gSoundApproach[] = "shmod/ion/approaching.wav"
-new const gSoundReady[] = "shmod/ion/ready.wav"
-new const gSoundAttack[] = "shmod/ion/attack.wav"
+#define gModelKnife  "models/shmod/ion_v_radio.mdl"
+#define gModelBeacon  "models/w_battery.mdl"
+#define gSoundRadioDraw  "shmod/ion/radio_draw.wav"
+#define gSoundRadioUse  "shmod/ion/radio_use.wav"
+#define gSoundBeacon  "shmod/ion/beacon_set.wav"
+#define gSoundPlant  "shmod/ion/beacon_plant.wav"
+#define gSoundBeep  "shmod/ion/beacon_beep.wav"
+#define gSoundApproach  "shmod/ion/approaching.wav"
+#define gSoundReady  "shmod/ion/ready.wav"
+#define gSoundAttack  "shmod/ion/attack.wav"
 new gSpriteIonBeam, gSpriteBlueFire, gSpriteShockwave, gSpriteReadyFire, gSpriteBlueFlare, gSpriteLaserFlame
 new gBigShotDecal, gScorchDecal
 new gPcvarRadius, gPcvarMaxDamage, gPcvarCooldown, gPcvarBurnDecals, gPcvarWorkInside, gPcvarDelay

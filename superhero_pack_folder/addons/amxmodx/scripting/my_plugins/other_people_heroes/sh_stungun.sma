@@ -3,7 +3,7 @@
 #include "../my_include/superheromod.inc"
 
 
-new const gHeroName[] = "Stun Gun"
+#define gHeroName "Stun Gun"
 new bool:gHasStunned[SH_MAXSLOTS+1]
 
 //cvars

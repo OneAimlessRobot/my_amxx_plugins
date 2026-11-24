@@ -23,7 +23,7 @@ lancer_blast_decals 1			//Show the burn decals from blast (Default 1)
 
 // GLOBAL VARIBLES
 
-new g_heroName[]="BEA-03 Lancer"
+#define g_HeroName "BEA-03 Lancer"
 new bool:g_usingPower[SH_MAXSLOTS+1]
 new bool:g_chargeOver[SH_MAXSLOTS+1]
 new bool:g_powerKeyUsed[SH_MAXSLOTS+1]
@@ -46,7 +46,7 @@ public plugin_init()
 	create_cvar("lancer_blast_decals", "1")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	gHeroID=shCreateHero(g_heroName, "Torpedo", "Hold Keydown to charge, Release to fire your torpedo.", true, "lancer_level")
+	gHeroID=shCreateHero(g_HeroName, "Torpedo", "Hold Keydown to charge, Release to fire your torpedo.", true, "lancer_level")
 
 
 	register_entity_as_wall_touchable("lancer_lancerz","torpedo_touch")

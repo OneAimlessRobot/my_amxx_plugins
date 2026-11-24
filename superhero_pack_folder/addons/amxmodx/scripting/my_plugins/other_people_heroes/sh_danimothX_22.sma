@@ -34,7 +34,7 @@
 
 // VARIABLES
 
-new const gHeroName[] = "Danimoth X"
+#define gHeroName "Danimoth X"
 new bool:is_frozen[SH_MAXSLOTS+1]
 new gIsInvisible[SH_MAXSLOTS+1]
 new gLastWeapon[SH_MAXSLOTS+1]

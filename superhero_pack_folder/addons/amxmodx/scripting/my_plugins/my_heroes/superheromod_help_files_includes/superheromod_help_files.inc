@@ -4,7 +4,7 @@
 #define sh_superheromod_help_files_funcs
 
 
-native superheromod_help_link_hero(hero_id, title[STRLEN_FOR_FILES],dir_path[STRLEN_FOR_FILES],index_path[STRLEN_FOR_FILES],hero_name[STRLEN_FOR_NAMES])
+native superheromod_help_link_hero(hero_id, title[STRLEN_FOR_FILES],dir_path[STRLEN_FOR_FILES],index_path[STRLEN_FOR_FILES])
 native superheromod_help_show_hero_help(id,hero_id)
 
 

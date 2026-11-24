@@ -474,14 +474,15 @@ public zenitsu_ele_cuerte_de_la_spada(pToucher, pTouched) {
 		}
 	}
 
-	sh_extra_damage(pTouched,pToucher,floatround(damage_to_do),
+	
+	static sh_extra_damage_result:dmg_result; dmg_result = sh_extra_damage(pTouched,pToucher,floatround(damage_to_do),
 				MY_HIT_HEAD,
 				_,_,_,_,
 				SH_NEW_DMG_ENERGY_BLADE,
 				generic_super_emo)
 
-	if(!is_user_alive(pTouched)){
-		new Float:vic_origin[3],Float:origin[3]
+	if((dmg_result == SH_DMG_RESULT_DMG_KILLED_OPPONENT)){
+		static Float:vic_origin[3],Float:origin[3]
 		entity_get_vector(pTouched,EV_VEC_origin,vic_origin)
 		entity_get_vector(pToucher,EV_VEC_origin,origin)
 		gross_kill_gibs_fx(pTouched,vic_origin,origin)

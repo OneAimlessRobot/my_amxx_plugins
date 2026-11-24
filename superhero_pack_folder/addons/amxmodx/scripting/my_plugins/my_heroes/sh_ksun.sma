@@ -24,6 +24,12 @@
 #define MIN_KSUN_PAYCUT 0.01
 #define MAX_KSUN_PAYCUT 0.6
 
+#define KSUN_WPN_MODEL_V "models/shmod/ksun/ksun_rifle/v_r5rifle.mdl"
+#define KSUN_WPN_MODEL_P "models/shmod/ksun/ksun_rifle/p_r5rifle.mdl"
+
+#define KSUN_PLAYER_MODEL "models/player/ksun/ksun.mdl"
+
+
 
 
 
@@ -40,12 +46,14 @@ new pcvar_ksun_max_victims
 new pcvar_ksun_when_reset_spores;
 
 // GLOBAL VARIABLES
-new gHeroName[]="ksun"
+#define gHeroName "ksun"
 new gMaxSporesUsable[SH_MAXSLOTS+1]
 new gWeaponPlayerKilledPlayerWith[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
 
 new gHeroID_chikoi = -1
 
+stock const OVERT_ABUSE_ENABLED=1
+stock const COVERT_ABUSE_ENABLED=1
 
 //cvar_val(float, pcvar_
 
@@ -103,10 +111,7 @@ public plugin_init()
 	sh_assign_hero_damage_bit(gHeroID,SH_NEW_DMG_DRAIN,true)
 	sh_assign_hero_damage_heal_mult(gHeroID,SH_NEW_DMG_DRAIN,0.4)
 
-	static hero_name_arr[STRLEN_FOR_NAMES];
-	arrayset(hero_name_arr,0,sizeof hero_name_arr)
-	add(hero_name_arr,charsmax(hero_name_arr),gHeroName,charsmax(gHeroName))
-	superheromod_help_link_hero(gHeroID, "ksun: Help file","ksun_folder/","ksun_help_file.html",hero_name_arr)
+	superheromod_help_link_hero(gHeroID, "ksun: Help file","ksun_folder/","ksun_help_file.html")
 	
 	custom_dmg_id_ksun_debt=
 		sh_log_custom_damage_source(gHeroID,dmg_source_name_short_ksun_debt,

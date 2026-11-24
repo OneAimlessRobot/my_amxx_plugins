@@ -7,7 +7,7 @@
 #include "../my_include/my_author_header.inc"
 
 // GLOBAL VARIABLES
-new HeroName[] = "Master Chief"
+#define HeroName  "Master Chief"
 
 new CvarP90DmgMult
 

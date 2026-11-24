@@ -15,7 +15,7 @@ hulk_stunspeed 70		//Speed of stunned players
 
 // GLOBAL VARIABLES
 
-new const gHeroName[] = "The Hulk"
+#define gHeroName "The Hulk"
 new gPcvarRadius, gPcvarCooldown, gPcvarStunTime, gPcvarStunSpeed
 
 #define gHulkSoundCount 3

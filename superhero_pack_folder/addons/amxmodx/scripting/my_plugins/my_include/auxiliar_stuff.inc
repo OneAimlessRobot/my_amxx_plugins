@@ -36,6 +36,9 @@ DEFINES FOR COMPILE TIME OPTIMIZATION:
 #if defined AUX_STUFF_GIVE_ENT_STOCKS
 #include "auxiliar_stuff_ent_stocks.inc"
 #endif
+#if defined AUX_STUFF_GIVE_SAFEGUARD_STOCKS
+#include "auxiliar_stuff_safeguard_stocks.inc"
+#endif
 
 #if defined AUX_STUFF_GIVE_STRUCTS
 #include "auxiliar_stuff_structs.inc"

@@ -13,8 +13,8 @@ dazzler_cooldown 15		//# of seconds before Dazzler can flash
 
 // GLOBAL VARIABLES
 
-new const gHeroName[] = "Dazzler"
-new const gSoundFlash[] = "debris/beamstart15.wav"
+#define gHeroName "Dazzler"
+#define gSoundFlash  "debris/beamstart15.wav"
 new gSprite[4]
 new gPcvarRadius, gPcvarCooldown
 //----------------------------------------------------------------------------------------------

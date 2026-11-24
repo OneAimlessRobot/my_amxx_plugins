@@ -24,7 +24,7 @@ Version History:
 
 //Global Variables
 
-new gHeroName[]="Rattler"
+#define gHeroName "Rattler"
 
 new gSpriteLightning
 

@@ -3,7 +3,6 @@
 #endif
 #define sh_camman_get_set
 
-stock const gHeroName[] = "Camman"
 
 native camman_set_has_camera(id,value_to_set)
 native camman_get_has_camera(id)

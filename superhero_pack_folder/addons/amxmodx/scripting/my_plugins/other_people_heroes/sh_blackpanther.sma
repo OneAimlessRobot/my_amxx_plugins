@@ -12,7 +12,7 @@ blackpanther_level 0
 
 // GLOBAL VARIABLES
 
-new const gHeroName[] = "Black Panther"
+#define gHeroName "Black Panther"
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {

@@ -1,8 +1,8 @@
 
 #include "../my_include/superheromod.inc"
 
-new const SOUND_SMOKESCREEN[]	= "weapons/sg_explode.wav"
-new const MODEL_SHURIKEN[]	= "models/rshell_big.mdl"
+#define SOUND_SMOKESCREEN  "weapons/sg_explode.wav"
+#define MODEL_SHURIKEN  "models/rshell_big.mdl"
 
 new g_heroID
 new bool:g_hasShinobi[SH_MAXSLOTS+1]

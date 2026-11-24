@@ -17,7 +17,7 @@ t800_paramult 5		    //how strong is the para
 
 #define TASKID 800
 // VARIABLES
-new gHeroName[]="T-800"
+#define gHeroName "T-800"
 
 new gT800Timer[SH_MAXSLOTS+1]
 new bool:gMorphed[SH_MAXSLOTS+1]

@@ -24,7 +24,7 @@
 
 // GLOBAL VARIABLES
 
-new gHeroName[]="Reika Fukuda"
+#define gHeroName "Reika Fukuda"
 new reika_is_parrying_mask = 0
 new mode_change_button_pressed_mask = 0
 /*
@@ -146,6 +146,18 @@ prepare_parry(id){
     
     }
     
+}
+
+public client_disconnected(id){
+
+	task_safeguard_macro_for_player_task(id,REIKA_PARRY_TURN_OFF_DELAY_TASKID,SH_MAXSLOTS)
+	
+}
+public client_connect(id){
+
+
+	task_safeguard_macro_for_player_task(id,REIKA_PARRY_TURN_OFF_DELAY_TASKID,SH_MAXSLOTS)
+	
 }
 absorb_user(id, Float:the_damage, tg){
 

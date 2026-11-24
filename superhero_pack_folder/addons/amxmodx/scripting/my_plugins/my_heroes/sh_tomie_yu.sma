@@ -8,7 +8,7 @@
 
 #define TOMIE_YU_RADIUS 400.0
 
-new gHeroName[]="Tomie Yu"
+#define gHeroName "Tomie Yu"
 
 //----------------------------------------------------------------------------------------------
 public plugin_init()

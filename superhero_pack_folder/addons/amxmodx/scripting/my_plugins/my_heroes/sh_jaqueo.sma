@@ -9,7 +9,7 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
 
-new const gHeroName[] = "Jaqueo"
+#define gHeroName "Jaqueo"
 
 new dmg_source_name_short_badass_scout[SAFE_BUFFER_SIZE+1]= "jaqueo_scout"
 new dmg_source_name_log_badass_scout[SAFE_BUFFER_SIZE+1]= "jaqueo_scout"

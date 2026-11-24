@@ -19,7 +19,7 @@ steel_maxaps 100		//Max Armor regenerated per second when suit is on (def 100)
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt15.inc"
 
 // GLOBAL VARIABLES
-new gHeroName[]="Steel"
+#define gHeroName "Steel"
 
 new bool:g_hasSuit[SH_MAXSLOTS+1]
 new pcvarg_hpSetSuit

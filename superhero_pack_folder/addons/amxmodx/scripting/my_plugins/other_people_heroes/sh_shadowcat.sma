@@ -14,9 +14,9 @@ shadowcat_cliptime 6		//# of seconds Shadowcat has in noclip mode.
 
 // GLOBAL VARIABLES
 
-new const gHeroName[] = "Shadowcat"
+#define gHeroName "Shadowcat"
 new gShadowcatTimer[SH_MAXSLOTS+1]
-new const gSoundShadowcat[] = "ambience/alien_zonerator.wav"
+#define gSoundShadowcat  "ambience/alien_zonerator.wav"
 new gPcvarCooldown, gPcvarClipTime
 //----------------------------------------------------------------------------------------------
 public plugin_init()

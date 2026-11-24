@@ -29,7 +29,7 @@ new dmg_source_name_log_chinese_laser[SAFE_BUFFER_SIZE+1]="chinese_laser"
 new custom_dmg_id_chinese_laser
 
 // GLOBAL VARIABLES
-new gHeroName[]="styropyro"
+#define gHeroName "styropyro"
 new bool:gLaserFired[SH_MAXSLOTS+1]
 new gLaserShots[SH_MAXSLOTS+1]
 new smoke, laser

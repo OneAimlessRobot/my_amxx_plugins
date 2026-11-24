@@ -16,7 +16,7 @@ pitch_cooldown 60			//Seconds till next available use of power
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
 // GLOBAL VARIABLES
-new gHeroName[]="Pitch Black"
+#define gHeroName "Pitch Black"
 
 new PitchTimer[SH_MAXSLOTS+1]
 new bool:NightVisionUse[SH_MAXSLOTS+1]

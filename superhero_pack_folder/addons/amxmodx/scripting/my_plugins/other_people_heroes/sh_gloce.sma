@@ -21,7 +21,7 @@ new gloce_time
 
 
 
-new g_HeroName[] = "Gloce"
+#define g_HeroName  "Gloce"
 
 
 new times_id[SH_MAXSLOTS+1]

@@ -9,6 +9,7 @@
 #include "sh_damage_sources_inc/sh_damage_sources_aux_code.inc"
 #include "sh_aux_stuff/sh_aux_fx_natives_const_pt3.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 
@@ -278,6 +279,12 @@ public _explosion_with_origin(iPlugins,iParams){
 		return 
 
 	}
+
+
+	static bool:gore_on_kill;
+	
+	gore_on_kill = bool:get_param(13)
+
 	static Float:fOrigin[3];
 	get_array_f(3,fOrigin,3)
 
@@ -309,7 +316,7 @@ public _explosion_with_origin(iPlugins,iParams){
 		else if(ignore_owner){
 			continue
 		}
-		damage_player_origin(hero_id,fOrigin,explosion_author_id,pid,explosion_radius,peak_power,optional_force,set_stun,damage_frac_ignore_owner,custom_weapon_id,dmg_type_to_use)
+		damage_player_origin(hero_id,fOrigin,explosion_author_id,pid,explosion_radius,peak_power,optional_force,set_stun,damage_frac_ignore_owner,custom_weapon_id,dmg_type_to_use, gore_on_kill)
 
 	}
 }
@@ -341,12 +348,17 @@ public _explosion(iPlugins,iParams){
 
 	new custom_weapon_id = get_param(12)
 	new sh_thrash_brat_dmg_type:dmg_type_to_use = sh_thrash_brat_dmg_type:get_param(13)
-
+	
 	if((pev_valid(ent_id)!=2)){
 
 		return 
 
 	}
+	
+	static bool:gore_on_kill;
+	
+	gore_on_kill = bool:get_param(13)
+	
 	static Float:fOrigin[3];
 	entity_get_vector( ent_id, EV_VEC_origin, fOrigin);
 
@@ -387,7 +399,7 @@ public _explosion(iPlugins,iParams){
 				continue
 			}
 		}
-		damage_player(hero_id,ent_id,owner_id,pid,explosion_radius,peak_power,optional_force,set_stun,damage_frac_ignore_owner,custom_weapon_id,dmg_type_to_use)
+		damage_player(hero_id,ent_id,owner_id,pid,explosion_radius,peak_power,optional_force,set_stun,damage_frac_ignore_owner,custom_weapon_id,dmg_type_to_use,gore_on_kill)
 
 	}
 }
@@ -511,7 +523,7 @@ public _explosion_custom_entity_with_origin(iPlugins,iParams){
 		damage_entity_origin(fOrigin,explosion_owner_id,eid,explosion_radius,peak_power,_,optional_force)
 	}
 }
-damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,Float:optional_force=0.0,set_stun=0,Float:damage_frac_ignore_owner=SH_DEFAULT_DAMAGE_FRAC_EXPLOSION_IGNORE_OWNER,custom_weapon_id=-1, sh_thrash_brat_dmg_type:dmg_type_to_use = SH_NEW_DMG_FRAG_BLAST){
+damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,Float:optional_force=0.0,set_stun=0,Float:damage_frac_ignore_owner=SH_DEFAULT_DAMAGE_FRAC_EXPLOSION_IGNORE_OWNER,custom_weapon_id=-1, sh_thrash_brat_dmg_type:dmg_type_to_use = SH_NEW_DMG_FRAG_BLAST, bool:gore_on_kill = false){
 	
 	
 	if((pev_valid(ent_id)!=2)){
@@ -541,7 +553,7 @@ damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,Float:op
 	static attacker_name[128];
 	get_user_name(pid,client_name,127);
 	get_user_name(owner_id,attacker_name,127);
-	new Float:vic_origin[3],Float:mine_origin[3];
+	static Float:vic_origin[3],Float:mine_origin[3];
 	entity_get_vector(pid,EV_VEC_origin,vic_origin);
 	entity_get_vector(ent_id,EV_VEC_origin,mine_origin);
 	new Float:distance=vector_distance(vic_origin,mine_origin);
@@ -567,19 +579,28 @@ damage_player(hero_id,ent_id,owner_id,pid,Float:radius,Float:peak_power,Float:op
 	
 	}
 	
-	sh_extra_damage(pid,owner_id,idamage,
+	static sh_extra_damage_result:dmg_result; dmg_result = sh_extra_damage(pid,owner_id,idamage,
 			_,_,_,_,_,
 			dmg_type_to_use,
 			custom_weapon_id)
-	
-	set_velocity_from_origin(pid,mine_origin,force)
 
-	if(set_stun){
-		sh_set_stun(pid,3.0)
-		sh_screen_shake(pid,10.0,3.0,10.0)
+	if((dmg_result == SH_DMG_RESULT_DMG_KILLED_OPPONENT)){
+
+		if(gore_on_kill){
+			gross_kill_gibs_fx(pid,vic_origin,mine_origin)
+			return
+		}
 	}
-	
-	unfade_screen_user(pid)
+	if(dmg_result> enum_zero){
+		set_velocity_from_origin(pid,mine_origin,force)
+
+		if(set_stun){
+			sh_set_stun(pid,3.0)
+			sh_screen_shake(pid,10.0,3.0,10.0)
+		}
+		
+		unfade_screen_user(pid)
+	}
 }
 damage_entity(ent_id,owner_id,tg_id,Float:radius,Float:peak_power,ignore_owner=1,Float:optional_force=0.0){
 
@@ -635,7 +656,7 @@ damage_entity(ent_id,owner_id,tg_id,Float:radius,Float:peak_power,ignore_owner=1
 }
 
 
-damage_player_origin(hero_id,Float:mine_origin[3],owner_id,pid,Float:radius,Float:peak_power,Float:optional_force=0.0,set_stun=0,Float:damage_frac_ignore_owner=SH_DEFAULT_DAMAGE_FRAC_EXPLOSION_IGNORE_OWNER,custom_weapon_id=-1, sh_thrash_brat_dmg_type:dmg_type_to_use = SH_NEW_DMG_FRAG_BLAST){
+damage_player_origin(hero_id,Float:mine_origin[3],owner_id,pid,Float:radius,Float:peak_power,Float:optional_force=0.0,set_stun=0,Float:damage_frac_ignore_owner=SH_DEFAULT_DAMAGE_FRAC_EXPLOSION_IGNORE_OWNER,custom_weapon_id=-1, sh_thrash_brat_dmg_type:dmg_type_to_use = SH_NEW_DMG_FRAG_BLAST, bool:gore_on_kill = false){
 	
 	if(!is_user_connected(owner_id)){
 	
@@ -659,7 +680,7 @@ damage_player_origin(hero_id,Float:mine_origin[3],owner_id,pid,Float:radius,Floa
 	static attacker_name[128];
 	get_user_name(pid,client_name,127);
 	get_user_name(owner_id,attacker_name,127);
-	new Float:vic_origin[3]
+	static Float:vic_origin[3]
 	entity_get_vector(pid,EV_VEC_origin,vic_origin);
 	new Float:distance=vector_distance(vic_origin,mine_origin);
 	new Float:falloff_coeff= min_macro(1.0,distance/radius);
@@ -684,19 +705,28 @@ damage_player_origin(hero_id,Float:mine_origin[3],owner_id,pid,Float:radius,Floa
 	
 	}
 	
-	sh_extra_damage(pid,owner_id,idamage,
+	static sh_extra_damage_result:dmg_result; dmg_result = sh_extra_damage(pid,owner_id,idamage,
 			_,_,_,_,_,
 			dmg_type_to_use,
 			custom_weapon_id)
-	
-	set_velocity_from_origin(pid,mine_origin,force)
 
-	if(set_stun){
-		sh_set_stun(pid,3.0)
-		sh_screen_shake(pid,10.0,3.0,10.0)
+	if((dmg_result == SH_DMG_RESULT_DMG_KILLED_OPPONENT)){
+
+		if(gore_on_kill){
+			gross_kill_gibs_fx(pid,vic_origin,mine_origin)
+			return
+		}
 	}
-	
-	unfade_screen_user(pid)
+	if(dmg_result> enum_zero){
+		set_velocity_from_origin(pid,mine_origin,force)
+
+		if(set_stun){
+			sh_set_stun(pid,3.0)
+			sh_screen_shake(pid,10.0,3.0,10.0)
+		}
+		
+		unfade_screen_user(pid)
+	}
 }
 damage_entity_origin(Float:mine_origin[3],owner_id,tg_id,Float:radius,Float:peak_power,ignore_owner=1,Float:optional_force=0.0){
 
@@ -718,7 +748,7 @@ damage_entity_origin(Float:mine_origin[3],owner_id,tg_id,Float:radius,Float:peak
 		
 	
 	}
-	new Float:vic_origin[3]
+	static Float:vic_origin[3]
 	entity_get_vector(tg_id,EV_VEC_origin,vic_origin);
 	new Float:distance=vector_distance(vic_origin,mine_origin);
 	new Float:falloff_coeff= min_macro(1.0,distance/radius);

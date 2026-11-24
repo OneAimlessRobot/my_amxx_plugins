@@ -19,14 +19,14 @@ batgirl_maxhooks -1		//Max ammout of hooks allowed (-1 is an unlimited ammount)
 #define HOOKBEAMLIFE  100
 #define HOOK_DELTA_T  0.1  // units per second
 
-new gHeroName[]="Batgirl"
+#define gHeroName "Batgirl"
 new gHookLocation[SH_MAXSLOTS+1][3]
 new gHookLength[SH_MAXSLOTS+1]
 new bool:gHooked[SH_MAXSLOTS+1]
 new Float:gHookCreated[SH_MAXSLOTS+1]
 new gHooksLeft[SH_MAXSLOTS+1]
 new gSpriteHookLine
-new const gSoundHook[] = "weapons/xbow_hit2.wav"
+#define gSoundHook  "weapons/xbow_hit2.wav"
 new gPcvarMoveAcc, gPcvarReelSpeed, gPcvarHookStyle, gPcvarHookSky
 new gPcvarTeamColored, gPcvarMaxHooks, gPcvarSvGravity
 

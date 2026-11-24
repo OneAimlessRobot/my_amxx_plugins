@@ -278,6 +278,19 @@ set_task(ROCKET_SHOOT_PERIOD,"reload_rocket_task",id+RPSYRINGE_RELOAD_TIMER_TASK
 
 return PLUGIN_HANDLED
 }
+
+public client_disconnected(id){
+
+	task_safeguard_macro_for_player_task(id,RPSYRINGE_RELOAD_TIMER_TASKID,SH_MAXSLOTS)
+	has_rocket[id] = 0
+}
+public client_connect(id){
+
+
+	task_safeguard_macro_for_player_task(id,RPSYRINGE_RELOAD_TIMER_TASKID,SH_MAXSLOTS)
+	has_rocket[id] = 0
+	
+}
 public reload_rocket_task(id){
 
 	id-=RPSYRINGE_RELOAD_TIMER_TASKID
@@ -287,11 +300,6 @@ public reload_rocket_task(id){
 	}
 
 
-}
-//----------------------------------------------------------------------------------------------
-public client_disconnected(id)
-{
-has_rocket[id] = 0
 }
 //----------------------------------------------------------------------------------------------
 

@@ -48,7 +48,7 @@ new ANNIHILATION_wpn_id
 new dmg_source_name_short_ANNIHILATION[SAFE_BUFFER_SIZE+1]="ANNIHILATION"
 new dmg_source_name_log_ANNIHILATION[SAFE_BUFFER_SIZE+1]="ANNIHILATION"
 
-stock const gHeroName[] = "Sequoia"
+#define gHeroName "Sequoia"
 
 static const DEBUG = 0
 
@@ -492,6 +492,17 @@ public sequoia_spam_task(taskid){
     g_sequoia_spamming_left[id]--
     set_task(SPAM_PERIOD,"sequoia_spam_task",taskid)
 
+}
+public client_disconnected(id){
+
+	task_safeguard_macro_for_player_task(id,SEQUOIA_SPAM_TASKID,SH_MAXSLOTS)
+	
+}
+public client_connect(id){
+
+
+	task_safeguard_macro_for_player_task(id,SEQUOIA_SPAM_TASKID,SH_MAXSLOTS)
+	
 }
 //----------------------------------------------------------------------------------------------
 public sequoia_passive_loop(taskid)

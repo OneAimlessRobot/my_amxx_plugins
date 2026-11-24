@@ -63,7 +63,7 @@ gokukt_health 800 // How much HP does goku have in kaioken mode.
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 
 // GLOBAL VARIABLES
-new HeroName[] = "Saiyan Kaioken Technic"
+#define HeroName  "Saiyan Kaioken Technic"
 
 #define KAIOKEN_FX_TASK_PERIOD 0.10
 

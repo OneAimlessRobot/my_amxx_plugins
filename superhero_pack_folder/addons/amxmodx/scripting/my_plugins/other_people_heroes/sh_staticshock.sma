@@ -15,7 +15,7 @@ shock_armor 250			//Armor Starts with (def=250)
 #include "../my_include/superheromod.inc" 
 
 // GLOBAL VARIABLES
-new gHeroName[]="Static Shock"
+#define gHeroName "Static Shock"
 
 new g_jetPackRunning[SH_MAXSLOTS+1]
 new g_endLocation[SH_MAXSLOTS+1][3]
@@ -26,7 +26,7 @@ new ice[32]
 // I'LL KEEP IN GLOBAL - FOR ANTI-LAG HOPEFULLY
 new Float:gMaxSpeed, gUseFuel, gFuelCost, gshockArmor
 new g_szRocketModel[1][] = { "models/shmod/trashstatic.mdl" }
-new g_Sound[]="roach/rch_smash.wav"
+#define g_Sound "roach/rch_smash.wav"
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {

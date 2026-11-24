@@ -16,7 +16,7 @@ dracula_pctperlev 0.03	//What percent of damage to give back per level of player
 
 // GLOBAL VARIABLES
 
-new const gHeroName[] = "Dracula"
+#define gHeroName "Dracula"
 new gPcvarPctPerLev
 //----------------------------------------------------------------------------------------------
 public plugin_init()

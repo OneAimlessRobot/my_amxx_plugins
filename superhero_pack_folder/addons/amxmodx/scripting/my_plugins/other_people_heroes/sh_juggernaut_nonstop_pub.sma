@@ -11,7 +11,7 @@ juggernaut_level 2
 
 // GLOBAL VARIABLES
 
-new const gHeroName[] = "Juggernaut"
+#define gHeroName "Juggernaut"
 new bool:gRestoreVel
 new Float:vecVel[3]
 new fm_PreThink

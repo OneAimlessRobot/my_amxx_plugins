@@ -4,7 +4,7 @@
 
 
 // VARIABLES
-new gHeroName[]="Emperor Palpatine"
+#define gHeroName "Emperor Palpatine"
 new g_palpatineTimer[SH_MAXSLOTS+1]
 new gSpriteLightning
 

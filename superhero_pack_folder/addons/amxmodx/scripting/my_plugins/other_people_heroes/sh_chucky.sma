@@ -63,7 +63,7 @@ chucky_knifespeed 720    //User speed when knife is out
 
 
 // GLOBAL VARIABLES
-new HeroName[] = "Chucky"
+#define HeroName "Chucky"
 new bool:HasStabbedWithKnife[SH_MAXSLOTS+1]
 new bool:ChuckyPowerUsed[SH_MAXSLOTS+1]
 new CsTeams:UserTeam[SH_MAXSLOTS+1]

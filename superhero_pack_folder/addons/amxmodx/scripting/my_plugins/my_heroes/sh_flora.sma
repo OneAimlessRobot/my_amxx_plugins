@@ -13,7 +13,7 @@ stock const debug_hud_mode= false
 
 
 // GLOBAL VARIABLES
-new gHeroName[]="Flora"
+#define gHeroName "Flora"
 new g_flora_num_of_fields[SH_MAXSLOTS+1]
 new pcvar_gFloraHeroLvl
 
@@ -39,10 +39,7 @@ public plugin_init()
 							"Flora",
 							"",
 							"")
-	static hero_name_arr[STRLEN_FOR_NAMES];
-	arrayset(hero_name_arr,0,sizeof hero_name_arr)
-	add(hero_name_arr,charsmax(hero_name_arr),gHeroName,charsmax(gHeroName))
-	superheromod_help_link_hero(gHeroID, "Flora: Help file","flora_folder/","flora_help_file.html",hero_name_arr)
+	superheromod_help_link_hero(gHeroID, "Flora: Help file","flora_folder/","flora_help_file.html")
 
 	sh_assign_hero_bit(gHeroID,SH_NEURODIVERGENT_HERO,true)
 	

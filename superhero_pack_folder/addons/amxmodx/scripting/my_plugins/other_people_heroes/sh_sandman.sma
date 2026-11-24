@@ -27,7 +27,7 @@ sandman_cooldown 20		//Seconds before you can use quicksand again (Default 20)
 #endif
 
 // GLOBAL VARIABLES
-new HeroName[]="Sandman"
+#define HeroName "Sandman"
 
 new MSGSetFOV
 //----------------------------------------------------------------------------------------------

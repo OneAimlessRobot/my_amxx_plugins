@@ -6,7 +6,6 @@
 
 #define TELIKO_RIFLE_CLASSID CSW_FAMAS
 
-stock const gHeroName[] = "Teliko"
 
 
 native teliko_get_hero_id()

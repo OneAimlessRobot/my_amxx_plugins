@@ -113,6 +113,17 @@ wet_user(id,attacker, Float:the_time){
 	
 	
 }
+public client_disconnected(id){
+
+	task_safeguard_macro_for_player_task(id,UNWET_TASKID,SH_MAXSLOTS)
+	
+}
+public client_connect(id){
+
+
+	task_safeguard_macro_for_player_task(id,UNWET_TASKID,SH_MAXSLOTS)
+	
+}
 unwet_user(id){
 	
 	if(!sh_is_active()||!is_user_connected(id)) return

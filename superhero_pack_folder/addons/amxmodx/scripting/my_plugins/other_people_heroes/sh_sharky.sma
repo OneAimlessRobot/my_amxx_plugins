@@ -8,11 +8,11 @@
 
 
 // VARIABLES
-new gHeroName[]="sharky's-confusion"
+#define gHeroName "sharky's-confusion"
 
 new g_sharkyTimer[SH_MAXSLOTS+1]
 new gSharkyMode[33]
-new g_sharkySound[]="ambience/alien_zonerator.wav"
+#define g_sharkySound "ambience/alien_zonerator.wav"
 new smoke
 //----------------------------------------------------------------------------------------------
 public plugin_init()

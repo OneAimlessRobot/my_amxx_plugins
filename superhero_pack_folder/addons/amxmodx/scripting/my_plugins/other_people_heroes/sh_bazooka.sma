@@ -86,7 +86,7 @@ new is_scan_rocket[SH_MAXSLOTS+1]
 new is_heat_rocket[SH_MAXSLOTS+1]
 new radar_batt[SH_MAXSLOTS+1]
 
-new gHeroName[]="Bazooka"
+#define gHeroName "Bazooka"
 
 
 new dmg_source_name_short_bazooka_warhead[SAFE_BUFFER_SIZE+1]="bazooka_shot"

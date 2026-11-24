@@ -23,7 +23,7 @@
 #include "../my_include/my_author_header.inc"
 
 
-stock MOLLY_FX_TASKID, BURN_TASKID_MAIN
+stock MOLLY_FX_TASKID
 
 #define BURN_PERIOD 0.33
 #define BURN_DAMAGE_VULNERABILITY_COEFF 1.8
@@ -61,7 +61,6 @@ public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
 	RegisterHam(Ham_TakeDamage, "player", "molotov_damage_vulnerability",1,true)
-	BURN_TASKID_MAIN=allocate_typed_task_id(player_task)
 	MOLLY_FX_TASKID= allocate_typed_task_id(generic_task)
 	set_task(MOLLY_FX_TASK_PERIOD,"global_molly_fx_task",MOLLY_FX_TASKID,_,_,"b")
 

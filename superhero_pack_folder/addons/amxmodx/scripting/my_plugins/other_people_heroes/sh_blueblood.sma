@@ -18,7 +18,7 @@
 #define VERSION 1.1
 
 // VARIABLES
-new gHeroName[]="Blue Blood"
+#define gHeroName "Blue Blood"
 new gHasWeapons[SH_MAXSLOTS+1]
 new gSpriteLightning
 

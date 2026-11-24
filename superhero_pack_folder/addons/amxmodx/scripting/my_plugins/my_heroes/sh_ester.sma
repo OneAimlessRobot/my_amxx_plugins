@@ -55,7 +55,7 @@ stock ester_death_sounds[][]={
 
 
 
-new const gHeroName[] = "Ester"
+#define gHeroName "Ester"
 new generic_dmg_shock = -1
 
 
@@ -163,11 +163,8 @@ public plugin_init()
 	sh_assign_hero_bit(gHeroID, SH_BOT_RESTRICTED, true)
 
 	sh_assign_hero_bit(gHeroID,SH_SMALL_HERO, true)
-	
-	static hero_name_arr[STRLEN_FOR_NAMES];
-	arrayset(hero_name_arr,0,sizeof hero_name_arr)
-	add(hero_name_arr,charsmax(hero_name_arr),gHeroName,charsmax(gHeroName))
-	superheromod_help_link_hero(gHeroID, "Ester: Help file","ester_folder/","ester_help_file.html",hero_name_arr)
+
+	superheromod_help_link_hero(gHeroID, "Ester: Help file","ester_folder/","ester_help_file.html")
 	
 	RegisterHam(Ham_TakeDamage, "player", "fw_HamTakeDamage",1,true)
 	RegisterHam(Ham_TraceAttack, "player", "fw_HamTraceAttack",_,true)

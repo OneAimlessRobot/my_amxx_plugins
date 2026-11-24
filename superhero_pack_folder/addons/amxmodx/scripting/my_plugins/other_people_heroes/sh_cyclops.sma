@@ -26,12 +26,12 @@ new const lDamage[7] = {
 
 // GLOBAL VARIABLES
 
-new const gHeroName[] = "Cyclops"
+#define gHeroName "Cyclops"
 new bool:gUsingLaser[SH_MAXSLOTS+1]
 new gLaserShots[SH_MAXSLOTS+1]
 new gLastWeapon[SH_MAXSLOTS+1]
-new const gSoundLaser[] = "weapons/electro5.wav"
-new const gSoundHit[] = "weapons/xbow_hitbod2.wav"
+#define gSoundLaser  "weapons/electro5.wav"
+#define gSoundHit  "weapons/xbow_hitbod2.wav"
 //cs decals = 199, 200, 201, 202, 203
 //cz decals = 211, 212, 213, 214, 215
 new gBurnDecal

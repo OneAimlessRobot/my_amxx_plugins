@@ -43,7 +43,7 @@ Version History:
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
 // GLOBAL VARIABLES
-new g_heroName[]="Tri-Edge"
+#define g_HeroName "Tri-Edge"
 
 new bool:Falling[SH_MAXSLOTS+1]
 new g_hooked[SH_MAXSLOTS+1]

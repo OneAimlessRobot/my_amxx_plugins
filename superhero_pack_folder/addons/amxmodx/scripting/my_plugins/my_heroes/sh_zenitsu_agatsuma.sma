@@ -6,7 +6,7 @@
 
 
 // GLOBAL VARIABLES
-new gHeroName[]="Zenitsu Agatsuma"
+#define gHeroName "Zenitsu Agatsuma"
 
 new pcvar_after_spawn_cooldown
 

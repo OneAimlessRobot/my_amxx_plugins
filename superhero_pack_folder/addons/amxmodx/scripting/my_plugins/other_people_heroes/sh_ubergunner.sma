@@ -23,7 +23,7 @@ UberGunner_speed 600		//-1 = no extra speed, this cvar is for all weapons (for f
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
 // GLOBAL VARIABLES
-new gHeroName[]="UberGunner"
+#define gHeroName "UberGunner"
 
 
 new dmg_source_name_short_super_m4[SAFE_BUFFER_SIZE+1]="uber_m4a1"

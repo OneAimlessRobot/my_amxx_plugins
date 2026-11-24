@@ -12,6 +12,7 @@
 new gNumMines[SH_MAXSLOTS+1]
 
 
+#define gHeroName "Sapper"
 
 new pcvar_num_mines
 new pcvar_disarmable

@@ -29,7 +29,7 @@ new GrenOldOrigin[3]
 new bool:FloodOn=false
 new svgravity, leviathan_gravity, leviathan_swimspeed, leviathan_othersspeed, Float:leviathan_underwaterdmg, Float:leviathan_threshold
 
-new gHeroName[] = "Leviathan"
+#define gHeroName "Leviathan"
 new bool:gHasLeviathanPowers[SH_MAXSLOTS + 1]
 
 public plugin_init()

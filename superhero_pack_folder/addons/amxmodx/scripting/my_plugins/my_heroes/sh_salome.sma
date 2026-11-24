@@ -14,7 +14,7 @@
 #define PLUGIN_NAME "SUPERHERO Salomé Freitas"
 
 // GLOBAL VARIABLES
-new gHeroName[] = "Salomé"
+#define gHeroName "Salomé"
 
 new salome_max_bullets
 

@@ -22,7 +22,7 @@ batman_armor 125		//defualt 125
 
 // GLOBAL VARIABLES
 
-new const gHeroName[] = "Batman"
+#define gHeroName "Batman"
 new gCurrentWeapon[SH_MAXSLOTS+1]
 new gmsgSetFOV
 

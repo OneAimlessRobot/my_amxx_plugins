@@ -34,7 +34,7 @@ phoenix_maxdamage 90	//Maximum damage dealt spread over radius (Default 90)
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
 
-new g_heroName[]="Phoenix"
+#define g_HeroName "Phoenix"
 
 new gPhoenixHudSync
 
@@ -58,7 +58,7 @@ public plugin_init()
 	create_cvar("phoenix_maxdamage", "90")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	gHeroID=shCreateHero(g_heroName, "Re-Birth", "As the Phoenix you shall Rise Again from your Burning Ashes.", false, "phoenix_level")
+	gHeroID=shCreateHero(g_HeroName, "Re-Birth", "As the Phoenix you shall Rise Again from your Burning Ashes.", false, "phoenix_level")
 
 	sh_assign_hero_bit(gHeroID,SH_RESPAWN_HERO, true)
 	sh_assign_hero_bit(gHeroID,SH_BOT_RESTRICTED, true)

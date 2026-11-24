@@ -50,7 +50,7 @@ drstrange_cooldown 0.0			//Cooldown timer between bolt power use
 
 // GLOBAL VARIABLES
 
-new gHeroName[]="Dr. Strange"
+#define gHeroName "Dr. Strange"
 new bool:gDrStrangeReviveUsed[SH_MAXSLOTS+1]
 new bool:gUsingLaser[SH_MAXSLOTS+1]
 new gLaserShots[SH_MAXSLOTS+1]

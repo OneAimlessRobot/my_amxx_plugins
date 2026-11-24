@@ -38,7 +38,7 @@ vash_gravity 1.0		//Default 1.0 = normal gravity (0.50 is 50% of normal gravity,
 
 #define vash_v_deagle_model "models/shmod/vash_deagle_zk.mdl"
 // GLOBAL VARIABLES
-new gHeroName[]="Vash the Stampede"
+#define gHeroName "Vash the Stampede"
 
 
 

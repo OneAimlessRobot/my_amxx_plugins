@@ -15,7 +15,7 @@ kenshin_knifemult 3.0		//Multiplier for knife damage (Default 3.0)
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
-new g_heroName[]="Kenshin"
+#define g_HeroName "Kenshin"
 
 //----------------------------------------------------------------------------------------------
 public plugin_init()
@@ -29,7 +29,7 @@ public plugin_init()
 	create_cvar("kenshin_knifemult", "3.0")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	gHeroID=shCreateHero(g_heroName, "Kenshin Sword", "Extra Knife Damage, Extra Knife Speed", false, "kenshin_level")
+	gHeroID=shCreateHero(g_HeroName, "Kenshin Sword", "Extra Knife Damage, Extra Knife Speed", false, "kenshin_level")
 
 	// EXTRA KNIFE DAMAGE
 	register_event("Damage", "kenshin_damage", "b", "2!0")
@@ -37,7 +37,7 @@ public plugin_init()
 	register_event("CurWeapon", "weaponChange","be","1=1")
 
 	// Let Server know about Kenshins max knife speed
-	shSetMaxSpeed(g_heroName, "kenshin_knifespeed", "[29]")
+	shSetMaxSpeed(g_HeroName, "kenshin_knifespeed", "[29]")
 }
 //----------------------------------------------------------------------------------------------
 public plugin_precache()

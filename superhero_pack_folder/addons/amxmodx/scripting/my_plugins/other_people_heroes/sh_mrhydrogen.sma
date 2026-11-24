@@ -39,7 +39,7 @@ mrhydrogen_floattime 8.0	// Time Before Victim Drops
 //--------------------------------------------------------------------------------------------------
 // GLOBAL VARIABLES
 //--------------------------------------------------------------------------------------------------
-	new gHeroName[]="Mr. Hydrogen"
+	#define gHeroName "Mr. Hydrogen"
 	
 	new Float:HydroVelocity[SH_MAXSLOTS+1][3]
 	new gIsHitByMrHydrogen[SH_MAXSLOTS+1]

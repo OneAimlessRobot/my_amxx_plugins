@@ -15,7 +15,7 @@
 
 // GLOBAL VARIABLES
 
-new const gHeroName[] = "Grim Reaper pt2"
+#define gHeroName "Grim Reaper pt2"
 new gJustResetRenderingMask = 0 
 new gScytheSwings[SH_MAXSLOTS+1]
 
@@ -23,7 +23,7 @@ new dmg_source_name_short_scythe[SAFE_BUFFER_SIZE+1]="death_scythe"
 new dmg_source_name_log_scythe[SAFE_BUFFER_SIZE+1]="death_scythe"
 new custom_dmg_id_scythe
 
-new const gModelScythe[] = "models/shmod/v_scythe.mdl"
+#define gModelScythe  "models/shmod/v_scythe.mdl"
 new num_swings,Float:g_reaper_range,inf_swings
 
 //----------------------------------------------------------------------------------------------
@@ -158,7 +158,7 @@ add_3d_vectors(att_orig_f,aim_beam_f,att_aim_f);
 
 new num_ents=SH_MAXSLOTS+1
 new ent_list[SH_MAXSLOTS+1];
-new className[]="player"
+#define className "player"
 find_sphere_class(-1, className, (g_reaper_range), ent_list, num_ents,att_aim_f);
 new att_team=get_user_team(Att);
 for(new i=0;i<num_ents;i++){

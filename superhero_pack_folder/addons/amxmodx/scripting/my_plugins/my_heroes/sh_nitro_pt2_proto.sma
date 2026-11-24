@@ -18,7 +18,7 @@
 #define NITRO_CAR_CLASSNAME "nitro_car"
 
 // GLOBAL VARIABLES
-new gHeroName[]="Nitro"
+#define gHeroName "Nitro"
 new g_is_running[SH_MAXSLOTS+1]
 
 

@@ -76,7 +76,7 @@ new custom_dmg_id_bass_energy_beam
 
 
 // GLOBAL VARIABLES
-new gHeroName[]="Bass"
+#define gHeroName "Bass"
 new bool:gLaserFired[SH_MAXSLOTS+1]
 new gLaserShots[SH_MAXSLOTS+1]
 new smoke, laser

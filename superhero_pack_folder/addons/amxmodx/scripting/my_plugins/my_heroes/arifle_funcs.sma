@@ -42,7 +42,7 @@ enum
 }
 
 
-new const Arifle_Sound[] = "weapons/m60-1.wav"
+#define Arifle_Sound  "weapons/m60-1.wav"
 
 
 new g_Arifle_Clip[33], Float:g_Recoil[33][3]

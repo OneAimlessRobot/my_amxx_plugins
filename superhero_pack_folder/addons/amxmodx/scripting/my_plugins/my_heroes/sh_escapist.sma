@@ -10,7 +10,7 @@
 
 
 // GLOBAL VARIABLES
-new gHeroName[]="Escapist"
+#define gHeroName "Escapist"
 new g_is_climbing[SH_MAXSLOTS+1]
 new g_was_cloaked[SH_MAXSLOTS+1]
 new g_is_cloaked[SH_MAXSLOTS+1]

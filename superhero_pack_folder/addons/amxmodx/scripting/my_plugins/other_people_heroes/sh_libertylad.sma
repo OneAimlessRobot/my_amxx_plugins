@@ -37,7 +37,7 @@ libertylad_blue 255				//Blue color of the flare light (0: None)(255: Brightest)
 //--------------------------------------------------------------------------------------------------
 // GLOBAL VARIABLES
 //--------------------------------------------------------------------------------------------------
-	new gHeroName[] = "Liberty Lad"
+	#define gHeroName "Liberty Lad"
 	new Float: LibertyLadFlareOrigin[3]
 	new flareentity
 	

@@ -18,7 +18,7 @@ new victim_drain_aura_weapon_id
 new dmg_source_name_short_victim_drain_aura[SAFE_BUFFER_SIZE+1]="victim_drain_aura"
 new dmg_source_name_log_victim_drain_aura[SAFE_BUFFER_SIZE+1]="victim_drain_aura"
 
-new g_heroName[]="Victim 15/21"
+#define g_HeroName "Victim 15/21"
 
 new already_respawn_died = 0
 new bool:g_vic15PowerUsed[SH_MAXSLOTS+1]

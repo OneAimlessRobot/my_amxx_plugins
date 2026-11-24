@@ -25,7 +25,7 @@ new Testnr = 0
 #endif
 
 // VARIABLES
-new gHeroName[]="Jaws"
+#define gHeroName "Jaws"
 
 public plugin_init() {
 	register_plugin("SUPERHERO Jaws", "1.01", "K-OS")

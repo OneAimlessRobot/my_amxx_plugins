@@ -828,6 +828,18 @@ public field_deploy_task(id,field_id){
 	entity_set_float(field_id,EV_FL_nextthink,floatadd(get_gametime(),FLORA_THINK_PERIOD))
 	
 }
+public client_disconnected(id){
+
+	task_safeguard_macro_for_player_task(id,FLORA_COOLDOWN_TASKID,SH_MAXSLOTS)
+	
+}
+public client_connect(id){
+
+
+	task_safeguard_macro_for_player_task(id,FLORA_COOLDOWN_TASKID,SH_MAXSLOTS)
+	
+}
+
 public apply_teleport(id,field_inside) {
 	
 	if(pev_valid(field_inside)!=2){

@@ -139,7 +139,7 @@
 #endif
 
 new MonitorHudSync
-new const TaskClassname[] = "monitorloop"
+#define TaskClassname  "monitorloop"
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {

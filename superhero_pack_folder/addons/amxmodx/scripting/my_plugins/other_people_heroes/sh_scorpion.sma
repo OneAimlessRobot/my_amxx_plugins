@@ -7,7 +7,7 @@
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
 // GLOBAL VARIABLES
-new g_heroName[]="Scorpion"
+#define g_HeroName "Scorpion"
 
 new bool:g_knifeFight[SH_MAXSLOTS+1][SH_MAXSLOTS+1]
 new bool:g_inKnifeFight[SH_MAXSLOTS+1]
@@ -33,7 +33,7 @@ public plugin_init()
 	create_cvar("scorpion_stuntime", "2")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	gHeroID=shCreateHero(g_heroName, "Get Over Here!", "Hold +power key to Harpoon and Drag opponents to you.", true, "scorpion_level")
+	gHeroID=shCreateHero(g_HeroName, "Get Over Here!", "Hold +power key to Harpoon and Drag opponents to you.", true, "scorpion_level")
 
 	register_custom_touchable("player","scorpion_shank",player_vector,1)
 

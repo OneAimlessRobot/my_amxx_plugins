@@ -20,7 +20,7 @@
 
 
 
-stock const gHeroName[] = "Larissa (Guts n Heroin)"
+#define gHeroName "Larissa (Guts n Heroin)"
 
 new g_larissa_points[SH_MAXSLOTS+1]
 new g_larissa_kills[SH_MAXSLOTS+1]

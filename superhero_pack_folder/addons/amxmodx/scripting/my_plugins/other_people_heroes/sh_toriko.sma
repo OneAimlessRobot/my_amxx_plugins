@@ -23,7 +23,7 @@ toriko_hpgained 20    // How much health is gained on a streak
 
 // GLOBAL VARIABLES
 
-new const gHeroName[] = "Toriko"
+#define gHeroName "Toriko"
 new gKillCount[SH_MAXSLOTS+1]
 new pCvarKills, pCvarGain
 //----------------------------------------------------------------------------------------------

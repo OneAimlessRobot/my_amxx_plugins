@@ -4,22 +4,6 @@
 #define sh_ksun_global_funcs
 
 
-#define KSUN_WPN_MODEL_V "models/shmod/ksun/ksun_rifle/v_r5rifle.mdl"
-#define KSUN_WPN_MODEL_P "models/shmod/ksun/ksun_rifle/p_r5rifle.mdl"
-
-#define KSUN_PLAYER_MODEL "models/player/ksun/ksun.mdl"
-
-
-
-
-
-#define COOLDOWN_UPDATE_PERIOD 0.5
-
-#define STATUS_UPDATE_PERIOD 0.5
-
-
-stock const OVERT_ABUSE_ENABLED=1
-stock const COVERT_ABUSE_ENABLED=1
 
 enum ksun_reset_occasions{
 	never_reset=0,

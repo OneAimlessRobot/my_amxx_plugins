@@ -21,7 +21,7 @@ new spr_laser_impact
 new spr_blast_shroom 
 
 // VARIABLES
-new gHeroName[]="Predator"
+#define gHeroName "Predator"
 
 new gLastWeapon[SH_MAXSLOTS+1]
 new gDLaserFired[33] = 0

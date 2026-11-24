@@ -225,7 +225,8 @@ if((pTouched==jet_get_user_jet(the_owner))){
 
 explosion(gHeroID,pToucher,
 	cvar_val(float, pcvar_jetplane_bomb_radius),
-	cvar_val(float, pcvar_jetplane_bomb_dmg))
+	cvar_val(float, pcvar_jetplane_bomb_dmg),
+		_,_,_,_,_,_,_,_,_,true)
 	
 explosion_custom_entity(pToucher,
 	cvar_val(float, pcvar_jetplane_bomb_radius),

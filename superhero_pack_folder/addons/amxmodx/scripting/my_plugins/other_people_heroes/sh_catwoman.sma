@@ -44,7 +44,7 @@ catwoman_minrounds 5		//Min rounds to wait until you can sneak, no matter your l
 //ok happy now jtp? lol
 
 // GLOBAL VARIABLES
-new gHeroName[]="Catwoman"
+#define gHeroName "Catwoman"
 new bool:gCatWomanmns[SH_MAXSLOTS+1] = true //im using mns = message not shown, im doing this because of the double respawn
 new bool:gCatWomanSneak[SH_MAXSLOTS+1]
 new bool:spawnPointsused[2][SH_MAXSLOTS+1]

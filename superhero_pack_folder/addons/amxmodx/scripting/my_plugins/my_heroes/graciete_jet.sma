@@ -167,7 +167,7 @@ public Ham_Think_Post(id) {
 			if(Get_BitVar(g_graciete_power_landing_mask,id)){
 				
 				explosion(gHeroID,id,
-						cvar_val(float,pcvar_land_explosion_radius),g_graciete_land_power[id],_,1)
+						cvar_val(float,pcvar_land_explosion_radius),g_graciete_land_power[id],_,1,1,_,_,_,_,_,_,true)
 				UnSet_BitVar(g_graciete_power_landing_mask,id);
 				g_graciete_land_power[id]=0.0
 				
@@ -332,15 +332,15 @@ public sh_client_death(id)
 	
 }
 
+
 public client_disconnected(id){
 
-
-	remove_task(id+GRACIETE_CHARGE_TASKID)
+	task_safeguard_macro_for_player_task(id,GRACIETE_CHARGE_TASKID,SH_MAXSLOTS)
 	
 }
 public client_connect(id){
 
 
-	remove_task(id+GRACIETE_CHARGE_TASKID)
+	task_safeguard_macro_for_player_task(id,GRACIETE_CHARGE_TASKID,SH_MAXSLOTS)
 	
 }

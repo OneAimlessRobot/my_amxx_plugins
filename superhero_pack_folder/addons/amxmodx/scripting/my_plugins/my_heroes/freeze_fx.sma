@@ -1,6 +1,7 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_CUSTOM_COLORS
 #define I_WANT_PDATA_ALIASES
+#define I_WANT_MISC_FUNCS
 #define I_WANT_RESOURCE_ALIASES
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
@@ -12,24 +13,48 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "tranq_gun_inc/sh_tranq_fx.inc"
 
+#define FREEZE_DAMAGE_MULTIPLIER 2.0
 
 #define PLUGIN "Superhero freeze fx"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-new Float:g_fMaxSpeed[SH_MAXSLOTS+1]
 new FREEZE_TASK_ID
 
 new custom_dmg_source_blunt_trauma = -1
+
+enum frozen_struct{
+
+	Float:damage_mult,
+	Float:the_maxspeed
+}
+
+new player_frozen_structs[SH_MAXSLOTS+1][frozen_struct]
+
+
 public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	FREEZE_TASK_ID=allocate_typed_task_id(player_task)
 	RegisterHam(Ham_TakeDamage, "player", "frozen_damage",1,true)
+	register_event("CurWeapon", "weaponChange", "be", "1=1")	
     
 	
 }
+
+
+public weaponChange(id)
+{
+	if ( !is_user_alive(id)||!sh_is_active()) return
+	
+	if(sh_get_id_bit(id, SH_IS_FROZEN)){
+		
+		set_user_maxspeed_controlled(id,player_frozen_structs[id][the_maxspeed],true,false)
+	}
+	
+}
+
 public plugin_cfg(){
 	custom_dmg_source_blunt_trauma = get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_BLUNT_FORCE_TRAUMA)
 }
@@ -40,7 +65,6 @@ public sh_client_spawn(id)
 		if(sh_get_id_bit(id,SH_IS_FROZEN)){
 			unfreeze_user(id)
 		}
-		g_fMaxSpeed[id] = get_user_maxspeed(id)
 
 	}
 	
@@ -71,7 +95,7 @@ public frozen_damage(id, idinflictor, attacker, Float:damage, damagebits)
 	
 	if(sh_get_id_bit(id, SH_IS_FROZEN)){
 
-		new Float:extraDamage = damage * FREEZE_DAMAGE_MULTIPLIER - damage
+		new Float:extraDamage =( damage * player_frozen_structs[id][damage_mult] ) - damage
 		if (floatround(extraDamage)>0){
 			sh_extra_damage(id, attacker, floatround(extraDamage),
 										the_hitpoint ,
@@ -99,7 +123,7 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_h
 	}
 	
 	if(sh_get_id_bit(victim, SH_IS_FROZEN)){
-		new Float:extraDamage = float(damage) * FREEZE_DAMAGE_MULTIPLIER + float(damage)
+		new Float:extraDamage = (float(damage) * player_frozen_structs[victim][damage_mult]) - float(damage)
 		if (floatround(extraDamage)>0){
 			
 			damage+=floatround(extraDamage)
@@ -146,14 +170,8 @@ public _sh_freeze_user(iPlugins,iParams){
 
 	new Float:speed=get_param_f(3)
 
+	new Float:damage_vuln_mult=get_param_f(4)
 
-	new Float:fMaxSpeed
-	pev(id, pev_maxspeed, fMaxSpeed)
-
-	if(fMaxSpeed != g_fMaxSpeed[id] && fMaxSpeed != speed)
-	{
-		g_fMaxSpeed[id] = fMaxSpeed
-	}
 
 	if(task_exists(id+FREEZE_TASK_ID)){
 		remove_task(id+FREEZE_TASK_ID)
@@ -162,7 +180,12 @@ public _sh_freeze_user(iPlugins,iParams){
 	new Float:origin[3]
 	entity_get_vector(id,EV_VEC_origin, origin)
 
-	set_pev(id, pev_maxspeed, 130.0)
+	player_frozen_structs[id][damage_mult] = damage_vuln_mult
+
+	player_frozen_structs[id][the_maxspeed] = speed
+	
+	set_user_maxspeed_controlled(id,speed,false,false)
+
 	set_render_with_color_const(id,FROZEN_BLUE,1,50,50,1,_,
 							the_time,_,_,kRenderNormal,PRIO_RENDER_EFFECT_ACTIVE)
 
@@ -191,7 +214,7 @@ unfreeze_user(id){
 	}
 	if(sh_get_id_bit(id, SH_IS_FROZEN))
 	{
-		set_pev(id, pev_maxspeed, g_fMaxSpeed[id])
+		sh_reset_max_speed(id)
 		
 		remove_glow_user(id,PRIO_RENDER_EFFECT_ACTIVE,_,kRenderNormal);
 
@@ -228,5 +251,16 @@ public sh_client_death(id)
 		unfreeze_user(id)
 	
 	}
+	
+}
+public client_disconnected(id){
+
+	task_safeguard_macro_for_player_task(id,FREEZE_TASK_ID,SH_MAXSLOTS)
+	
+}
+public client_connect(id){
+
+
+	task_safeguard_macro_for_player_task(id,FREEZE_TASK_ID,SH_MAXSLOTS)
 	
 }

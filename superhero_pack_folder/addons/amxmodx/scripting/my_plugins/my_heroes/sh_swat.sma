@@ -30,7 +30,7 @@ new dmg_source_name_short_tactical_knife[SAFE_BUFFER_SIZE+1]="tactical_knife"
 new dmg_source_name_log_tactical_knife[SAFE_BUFFER_SIZE+1]="tactical_knife"
 
 
-new gHeroName[]="S.W.A.T."
+#define gHeroName "S.W.A.T."
 new has_rocket[33]
 
 
@@ -275,7 +275,8 @@ public nuke_hit(pToucher, pTouched) {
 	if(has_rocket[id] == pToucher)
 	has_rocket[id] = 0
 
-	explosion(gHeroID,pToucher,float(damradius),float(maxdamage), _,_,1,_,_,RED)
+	explosion(gHeroID,pToucher,float(damradius),float(maxdamage), _,_,1,_,_,RED,
+		_,_,_,true)
 	
 
 	emit_sound(pToucher, CHAN_WEAPON, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)

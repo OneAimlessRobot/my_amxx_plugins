@@ -18,8 +18,8 @@ gmaster_cooldown 600		//# of seconds for Grandmaster cooldown
 
 // GLOBAL VARIABLES
 
-new const gHeroName[] = "Grandmaster"
-new const gSoundGmaster[] = "ambience/port_suckin1.wav"
+#define gHeroName "Grandmaster"
+#define gSoundGmaster  "ambience/port_suckin1.wav"
 new gPcvarCooldown
 //----------------------------------------------------------------------------------------------
 public plugin_init()

@@ -43,7 +43,7 @@ hawk_freewpn 1		//Free Aug if CT / Sig if T [def=1]
 
 
 // GLOBAL VARIABLES
-new g_heroName[]="Hawkeye"
+#define g_HeroName "Hawkeye"
 
 new g_bodyPart[7] = {
 	HEAD,
@@ -69,7 +69,7 @@ public plugin_init()
 	create_cvar("hawk_freewpn", "1")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	gHeroID=shCreateHero(g_heroName, "Sig/Aug Auto-shoot", "Auto-shoot and run faster with Sig as T or Aug as CT. Also, see Damage.", false, "hawk_level")
+	gHeroID=shCreateHero(g_HeroName, "Sig/Aug Auto-shoot", "Auto-shoot and run faster with Sig as T or Aug as CT. Also, see Damage.", false, "hawk_level")
 
 
 	// DAMAGE
@@ -79,9 +79,9 @@ public plugin_init()
 	set_task(0.1, "hawkeye_aim", 0, "", 0, "b")
 
 	// Let Server know about Hawkeye's variables
-	shSetMaxHealth(g_heroName, "hawk_health")
-	shSetMaxArmor(g_heroName, "hawk_armor")
-	shSetMaxSpeed(g_heroName, "hawk_speed", "[8][27]")
+	shSetMaxHealth(g_HeroName, "hawk_health")
+	shSetMaxArmor(g_HeroName, "hawk_armor")
+	shSetMaxSpeed(g_HeroName, "hawk_speed", "[8][27]")
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, sh_init_mode:mode){

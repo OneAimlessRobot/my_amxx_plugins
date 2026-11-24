@@ -16,7 +16,7 @@ speed_hight 60.0	//how high can he jump?!
 */
 #include "../my_include/superheromod.inc"
 
-new gHeroName[] = "Speed Racer";
+#define gHeroName "Speed Racer"
 
 new bool:gCanJump[SH_MAXSLOTS+1];
 

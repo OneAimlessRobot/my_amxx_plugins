@@ -153,7 +153,7 @@ naruto_hitchance 65	//How often the shadow clone hits its target the given perce
 new const DEBUG_MODE = 0
 // GLOBAL VARIABLES
 
-new const gHeroName[] = "Naruto Uzumaki"
+#define gHeroName "Naruto Uzumaki"
 new bool:aimtargetfound[SH_MAXSLOTS+1] = false
 new bool:doingrasengan[SH_MAXSLOTS+1] = false
 new bool:rasenganover[SH_MAXSLOTS+1] = false

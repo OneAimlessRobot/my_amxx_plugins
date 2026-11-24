@@ -5,10 +5,10 @@
 
 
 
-stock const player_damage_recoveries_print[]="sh_print_player_hero_damage_recoveries"
+#define player_damage_recoveries_print "sh_print_player_hero_damage_recoveries"
 
-stock const hero_damage_recoveries_print[]="sh_print_hero_damage_recoveries"
+#define hero_damage_recoveries_print "sh_print_hero_damage_recoveries"
 
-stock const player_unhealable_hero_skip_flags[]="sh_print_player_unhealable_hero_skip_flags"
+#define player_unhealable_hero_skip_flags "sh_print_player_unhealable_hero_skip_flags"
 
-stock const hero_unhealable_hero_skip_flags[]="sh_print_hero_unhealable_hero_skip_flags"
+#define hero_unhealable_hero_skip_flags "sh_print_hero_unhealable_hero_skip_flags"

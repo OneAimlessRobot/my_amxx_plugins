@@ -12,9 +12,9 @@
 #include "my_include/my_author_header.inc"
 
 
-stock const num_ents_print_cmd[]="print_num_ents"
+#define num_ents_print_cmd "print_num_ents"
 
-stock const num_ents_cycle_print_toggle_cmd[]="toggle_print_num_ents_cycle"
+#define num_ents_cycle_print_toggle_cmd "toggle_print_num_ents_cycle"
 
 #define name_of_default_map "de_dust4ever"
 

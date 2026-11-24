@@ -22,15 +22,15 @@ zeus_workinside 0		//Allow zeus to work inside buidings and so on
 
 // GLOBAL VARIABLES
 
-new const gHeroName[] = "Zeus"
+#define gHeroName "Zeus"
 new bool:gIsInvisible[SH_MAXSLOTS+1]
 new gBurnDecal
 new gSpriteLightning, gSpriteSmoke
 
 #if defined USE_AZTEC_THUNDER_SOUND
-new const gSoundThunder[] = "ambience/thunder_clap.wav"
+#define gSoundThunder  "ambience/thunder_clap.wav"
 #else
-new const gSoundThunder[] = "shmod/zeus_lightningbolt.wav"
+#define gSoundThunder  "shmod/zeus_lightningbolt.wav"
 #endif
 
 new gPcvarChance, gPcvarWorkInside, gPcvarBurnDecals

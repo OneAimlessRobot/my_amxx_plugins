@@ -26,14 +26,14 @@ demoman_minehealth 80		// health of mines (determines how many shots blow them u
 
 // GLOBAL VARIABLES
 
-new const gHeroName[] = "Demolition Man"
+#define gHeroName "Demolition Man"
 new bool:gBombPlanted
 new gPlayerMines[SH_MAXSLOTS+1][MAX_MINES]
 new gPlayerMinesCount[SH_MAXSLOTS+1]
-new const gSoundActivate[] = "weapons/mine_activate.wav"
-new const gSoundCharge[] = "weapons/mine_charge.wav"
-new const gSoundDeploy[] = "weapons/mine_deploy.wav"
-new const gModelMine[] = "models/v_tripmine.mdl"
+#define gSoundActivate  "weapons/mine_activate.wav"
+#define gSoundCharge  "weapons/mine_charge.wav"
+#define gSoundDeploy  "weapons/mine_deploy.wav"
+#define gModelMine  "models/v_tripmine.mdl"
 new gSpriteBeam, gSpriteFire, gSpriteSmoke
 new gPcvarRadius, gPcvarMaxDamage, gPcvarMaxMines, gPcvarMineHealth
 //----------------------------------------------------------------------------------------------

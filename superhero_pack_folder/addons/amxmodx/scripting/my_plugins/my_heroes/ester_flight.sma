@@ -642,6 +642,19 @@ public ester_reborn_loop_task(parm[2]){
 	
 	
 }
+
+
+public client_disconnected(id){
+
+	task_safeguard_macro_for_player_task(id,ESTER_REBORN_CALCULATION_LOOP_TASKID,SH_MAXSLOTS)
+	
+}
+public client_connect(id){
+
+
+	task_safeguard_macro_for_player_task(id,ESTER_REBORN_CALCULATION_LOOP_TASKID,SH_MAXSLOTS)
+	
+}
 //----------------------------------------------------------------------------------------------
 public ester_respawn(parm[2])
 {

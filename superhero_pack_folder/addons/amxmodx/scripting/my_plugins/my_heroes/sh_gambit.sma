@@ -40,12 +40,12 @@ gambit_cooldown 120.0		//How many seconds until extra grenade damage can be used
 #define NUM_ENTITIES 6000
 
 // GLOBAL VARIABLES
-new gHeroName[]="Gambit"
+#define gHeroName "Gambit"
 new bool:gWillHit[SH_MAXSLOTS+1]
 new gGrenTrail
 new bool:gambit_grande_flag[NUM_ENTITIES]
 new Float:gTotalChance
-new const HEGRENADE_MODEL[] = "models/w_hegrenade.mdl"
+#define HEGRENADE_MODEL  "models/w_hegrenade.mdl"
 new pcvar_dmg_mult
 
 

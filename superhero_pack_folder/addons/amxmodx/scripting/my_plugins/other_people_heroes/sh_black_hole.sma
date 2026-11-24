@@ -16,7 +16,7 @@ black_thinktime 2 //how long victims get to pray to their god
 #include "../my_include/superheromod.inc"
 
 // GLOBAL VARIABLES
-new g_heroName[]="Black Hole"
+#define g_HeroName "Black Hole"
 new gBHTimer, gCurrentBH
 new ppl[SH_MAXSLOTS], pnum
 new gRange, gForce
@@ -38,7 +38,7 @@ public plugin_init()
 	create_cvar("black_thinktime", "2")
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	gHeroID=shCreateHero(g_heroName, "Black Hole(Admin Only!)", "+power key for a black hole to suck up ur enemies", true, "black_level")
+	gHeroID=shCreateHero(g_HeroName, "Black Hole(Admin Only!)", "+power key for a black hole to suck up ur enemies", true, "black_level")
 
 	// LOOP
 	set_task(1.0, "black_loop", 0, "", 0, "b")

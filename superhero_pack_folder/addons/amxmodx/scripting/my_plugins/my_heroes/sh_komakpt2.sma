@@ -23,7 +23,7 @@ new const RESET_ON_MISS = 1
 
 // GLOBAL VARIABLES
 
-new const gHeroName[] = "Komak the Maid Mk. II"
+#define gHeroName "Komak the Maid Mk. II"
 new g_komak_hits[SH_MAXSLOTS+1]
 new g_komak_gear[SH_MAXSLOTS+1]
 new Float:komakeria_recoil_vector[SH_MAXSLOTS+1][3]

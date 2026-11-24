@@ -22,7 +22,7 @@ new gHealthDrainValveTimerStartedMask = 0
 
 // GLOBAL VARIABLES
 
-new const gHeroName[] = "Maria"
+#define gHeroName "Maria"
 new Float:gHealthDrainValveTimer[SH_MAXSLOTS+1]
 new g_maria_points[SH_MAXSLOTS+1]
 new Float:g_base_radius[SH_MAXSLOTS+1]

@@ -16,7 +16,7 @@
 
 
  // GLOBAL VARIABLES
- new gHeroName[]="Storm"
+ #define gHeroName "Storm"
  
  new gStormTimer[SH_MAXSLOTS+1]
  new lightning,Fire

@@ -31,7 +31,7 @@ new bool:g_czero = false
 
 // GLOBAL VARIABLES
 
-new const gHeroName[] = "Ricochet"
+#define gHeroName "Ricochet"
 new gPcvarExtraDmg
 new gPcvarShowRebound
 

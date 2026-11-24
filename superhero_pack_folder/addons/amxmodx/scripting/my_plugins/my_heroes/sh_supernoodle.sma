@@ -21,7 +21,7 @@ supernoodle_g3sg1mult 2.5 //damage for his precision rifle
 #include "../my_include/my_author_header.inc"
 
 // GLOBAL VARIABLES
-new gHeroName[]="SuperNoodle"
+#define gHeroName "SuperNoodle"
 
 
 

@@ -521,7 +521,7 @@ public rrrrroovvetoooo_touque_playor(pToucher, pTouched)
 									is_direct_hit,
 									is_direct_hit,
 									_,_,_,_,
-									maria_riveter_wpn_id)
+									maria_riveter_wpn_id,_,true)
 	explosion_custom_entity(pToucher,
 									MARIA_PROJECTILE_EXPLODE_RADIUS,damage,
 									"func_breakable",

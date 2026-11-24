@@ -143,7 +143,8 @@ public plugin_natives(){
 	
 }
 explode_jet_entity(jet){
-	explosion(gHeroID,jet,cvar_val(float, pcvar_jetplane_hp),cvar_val(float, pcvar_jetplane_hp),-1.0,1,_,1.1,_,_,_,custom_dmg_id_grief_drive_mayday)
+	explosion(gHeroID,jet,cvar_val(float, pcvar_jetplane_hp),cvar_val(float, pcvar_jetplane_hp),-1.0,1,_,1.1,_,_,_,custom_dmg_id_grief_drive_mayday,_,true)
+
 	explosion_custom_entity(jet,cvar_val(float, pcvar_jetplane_hp),cvar_val(float, pcvar_jetplane_hp),JETPLANE_FUSELAGE_CLASSNAME,
 				_,
 				explosion_sfx_show_nothing)
@@ -818,6 +819,18 @@ public charge_task(id){
 	
 	
 	
+	
+}
+
+public client_disconnected(id){
+
+	task_safeguard_macro_for_player_task(id,JET_LOAD_TASKID,SH_MAXSLOTS)
+	
+}
+public client_connect(id){
+
+
+	task_safeguard_macro_for_player_task(id,JET_LOAD_TASKID,SH_MAXSLOTS)
 	
 }
 public sh_round_end(){

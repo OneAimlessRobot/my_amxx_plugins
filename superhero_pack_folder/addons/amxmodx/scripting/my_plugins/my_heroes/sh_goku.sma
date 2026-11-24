@@ -81,7 +81,7 @@ goku_blast_decals 1		//Show the burn decals on the walls (0-no 1-yes)
 
 
 // GLOBAL VARIBLES
-new g_heroName[]="SSJ Goku"
+#define g_HeroName "SSJ Goku"
 new g_isSaiyanLevel[SH_MAXSLOTS+1]
 new g_powerNum[SH_MAXSLOTS+1]
 new g_powerID[SH_MAXSLOTS+1]
@@ -152,7 +152,7 @@ public plugin_init()
 	pcvar_powerup_explode_radius_ssj4 = create_cvar("goku_powerup_explode_radius_ssj4", "300")
 
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
-	gHeroID=shCreateHero(g_heroName, "Super Saiyan Powers", "Generate KI/Armor to transform into Super Saiyan forms. Get a Special Power plus an HP/Speed boost for each SSJ Level.", true, "goku_level")
+	gHeroID=shCreateHero(g_HeroName, "Super Saiyan Powers", "Generate KI/Armor to transform into Super Saiyan forms. Get a Special Power plus an HP/Speed boost for each SSJ Level.", true, "goku_level")
 
 	sh_register_superheromod_model(gHeroID,
 								"models/player/goku/goku.mdl",
@@ -696,14 +696,14 @@ public goku_power_touch(pToucher, pTouched) {
 			if ( vic == id ){
 				damage = floatround(damage / 2.0)
 			}
-			sh_extra_damage(vic, id, damage,
+			static sh_extra_damage_result:dmg_result; dmg_result = sh_extra_damage(vic, id, damage,
 								_,_,_,_,_,
 								SH_NEW_DMG_ENERGY_BLAST,
 								goku_dmgs_arr[g_powerNum[id]][the_wpn_id])
 			
-			if((g_powerNum[id]>=3)&&is_user_connected(vic)&&!is_user_alive(vic)){
+			if((g_powerNum[id]>=3)&&is_user_connected(vic)&&(dmg_result == SH_DMG_RESULT_DMG_KILLED_OPPONENT)){
 
-					new Float:vic_origin_f[3]
+					static Float:vic_origin_f[3]
 					IVecFVec(vicOrigin,vic_origin_f)
 					gross_kill_gibs_fx(vic,vic_origin_f,fl_vExplodeAt)
 			}
@@ -989,7 +989,7 @@ public shake_n_stun(id)
 		}
 	}
 	explosion(gHeroID,id,float(cvar_val(num, pcvar_powerup_explode_radius_ssj4)),100.0,_,_,1,
-			_,_,_,_,_,SH_NEW_DMG_ENERGY_BLAST)
+			_,_,_,_,_,SH_NEW_DMG_ENERGY_BLAST,true)
 }
 //----------------------------------------------------------------------------------------------
 public powerup_effect(parm[])

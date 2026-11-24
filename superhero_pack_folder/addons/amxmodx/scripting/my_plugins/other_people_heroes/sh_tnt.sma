@@ -13,7 +13,7 @@ tnt_radius 100		//damage radius from mine explosion
 
 #include "../my_include/superheromod.inc"
 
-new gHeroName[] = "TNT";
+#define gHeroName "TNT"
 
 new gMinesLeft[SH_MAXSLOTS+1];
 new gPlanter[SH_MAXSLOTS+1];

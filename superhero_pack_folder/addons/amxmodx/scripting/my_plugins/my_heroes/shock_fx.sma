@@ -169,3 +169,14 @@ public sh_client_death(id){
 	unshock_user(id)
 	
 }
+public client_disconnected(id){
+
+	task_safeguard_macro_for_player_task(id,UNSHOCK_TASKID,SH_MAXSLOTS)
+	
+}
+public client_connect(id){
+
+
+	task_safeguard_macro_for_player_task(id,UNSHOCK_TASKID,SH_MAXSLOTS)
+	
+}

@@ -11,11 +11,11 @@
 
 
 // VARIABLES
-new gHeroName[]="Shade"
+#define gHeroName "Shade"
 
 new g_shadeTimer[SH_MAXSLOTS+1]
 new gShadeMode[33]
-new g_shadeSound[]="ambience/sandfall1.wav"
+#define g_shadeSound "ambience/sandfall1.wav"
 new smoke
 //----------------------------------------------------------------------------------------------
 public plugin_init()

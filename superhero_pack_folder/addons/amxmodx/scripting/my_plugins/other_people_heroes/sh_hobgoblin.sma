@@ -15,7 +15,7 @@ goblin_grenadetimer 10		//How many second delay for new grenade
 
 // GLOBAL VARIABLES
 
-new const gHeroName[]= "Hobgoblin"
+#define gHeroName  "Hobgoblin"
 new bool:gBlockGiveTask[SH_MAXSLOTS+1]
 new gPcvarGrenadeTimer
 

@@ -54,7 +54,4 @@ forward sh_gore_effect_pre(&gored_id, Float:vic_origin[3],Float:origin[3]);
 
 native gross_kill_gibs_fx(id, Float:vic_origin[3],Float:origin[3])
 
-native precache_gibs()
-
-
 native draw_view_cone(player_id, Float:fov_to_contain, Float:distance_limit)

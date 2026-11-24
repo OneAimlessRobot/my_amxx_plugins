@@ -16,7 +16,7 @@
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
  // VARIABLES
- new gHeroName[]="Green Arrow"
+ #define gHeroName "Green Arrow"
 
  
  new gArrows[SH_MAXSLOTS+1]

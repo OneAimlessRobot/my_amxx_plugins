@@ -473,7 +473,7 @@ if(sh_get_user_has_hero(attacker,gHeroID)&&!(cs_get_user_team(id)==att_team)&&is
 					get_user_name(attacker,att_name,127)
 					get_user_name(id,vic_name,127)
 						
-					sh_extra_damage(target,attacker,floatround(1.0+damage*cvar_val(float,gutting_dmg_mult_pcvar)),
+					static sh_extra_damage_result:dmg_result; dmg_result = sh_extra_damage(target,attacker,floatround(1.0+damage*cvar_val(float,gutting_dmg_mult_pcvar)),
 								MY_HIT_HEAD
 								,_,_,_,_,
 								SH_NEW_DMG_SUPER_MELEE,
@@ -499,7 +499,7 @@ if(sh_get_user_has_hero(attacker,gHeroID)&&!(cs_get_user_team(id)==att_team)&&is
 
 					fx_blood_large(tg_i_origin,2)
 
-					if(!is_user_alive(target)){
+					if((dmg_result == SH_DMG_RESULT_DMG_KILLED_OPPONENT)){
 						process_manhook_manslaughter( attacker, target)
 					}
 				}
@@ -544,7 +544,7 @@ public sh_client_death(id)
 }
 process_manhook_manslaughter(iAgressor, iVictim)
 {
-	new Float:Origin[3], Float:Origin2[3]
+	static Float:Origin[3], Float:Origin2[3]
 	//Check to make sure its a valid entity
 	if (!pev_valid(iAgressor)) {
 		iAgressor = iVictim

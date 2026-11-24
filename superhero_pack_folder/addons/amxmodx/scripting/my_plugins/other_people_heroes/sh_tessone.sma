@@ -28,7 +28,7 @@ tessone_cooldown 45
 #include "../my_include/superheromod.inc"
 
 new g_HeroID
-new const g_HeroName[] = "TESS-One"
+#define g_HeroName  "TESS-One"
 new bool:g_IsImmune[SH_MAXSLOTS+1]
 new g_TessTimer[SH_MAXSLOTS+1]
 new g_TessCooldown, g_TessAbsorbTime

@@ -147,7 +147,7 @@ new sh_anubisdmg_check, gAnubisHero[25]
 
 //Forwards
 new fwdReturn
-new fwd_HeroInit, fwd_HeroInit_Pre, fwd_HeroKey, fwd_Spawn, fwd_Death
+new fwd_HeroInit, fwd_HeroInit_Pre, fwd_HeroKey, fwd_Spawn, fwd_Death, fwd_CreatedHeroPost
 
 new fwd_RoundStart, fwd_RoundEnd, fwd_NewRound
 new fwd_ShDamagePre
@@ -280,9 +280,11 @@ public plugin_init()
 	fwd_RoundEnd = CreateMultiForward("sh_round_end", ET_IGNORE)
 	
 	
-	fwd_ShDamagePre= CreateMultiForward("sh_extra_damage_fwd_pre",ET_STOP2 ,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_ARRAY,FP_VAL_BYREF,FP_CELL,FP_CELL)
-	fwd_ShDamagePost= CreateMultiForward("sh_extra_damage_fwd_post",ET_IGNORE ,FP_CELL,FP_CELL,FP_CELL,FP_CELL,FP_CELL,FP_CELL,FP_ARRAY,FP_CELL,FP_CELL,FP_CELL)
-	fwd_ShXpPost= CreateMultiForward("sh_set_user_xp_fwd_post",ET_IGNORE ,FP_CELL,FP_CELL,FP_CELL)
+	fwd_ShDamagePre = CreateMultiForward("sh_extra_damage_fwd_pre",ET_STOP2 ,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_ARRAY,FP_VAL_BYREF,FP_CELL,FP_CELL)
+	fwd_ShDamagePost = CreateMultiForward("sh_extra_damage_fwd_post",ET_IGNORE ,FP_CELL,FP_CELL,FP_CELL,FP_CELL,FP_CELL,FP_CELL,FP_ARRAY,FP_CELL,FP_CELL,FP_CELL)
+	fwd_ShXpPost = CreateMultiForward("sh_set_user_xp_fwd_post",ET_IGNORE ,FP_CELL,FP_CELL,FP_CELL)
+	fwd_CreatedHeroPost = CreateMultiForward("sh_on_create_hero_post",ET_IGNORE, FP_CELL, FP_ARRAY)
+
 
 	// Init saving method commands/cvars/variables
 	saving_init()
@@ -1183,6 +1185,14 @@ public _sh_create_hero()
 	gSuperHeros[idx][availableLevel] = heroLevel
 
 	++gSuperHeroCount
+
+	
+	new prepared_array_pointer_thing = PrepareArray(pHero,25)
+	if(!ExecuteForward(fwd_CreatedHeroPost, fwdReturn, idx, prepared_array_pointer_thing)){
+
+		server_print("Hero init post forward execution error!!!")
+		return idx
+	}
 
 	return idx
 }
@@ -2971,7 +2981,8 @@ public sh_extra_damage_result:_sh_extra_damage()
 	/*
 		this damage cannot be blocked!
 	*/
-	new passed_preparedWpnDmgOriginInt;
+	new passed_preparedWpnDmgOriginIntPre,
+		passed_preparedWpnDmgOriginIntPost
 	
 	if((thrashbrat_dmg_type != SH_NEW_DMG_HEALTH_SET)){
 
@@ -3003,7 +3014,7 @@ public sh_extra_damage_result:_sh_extra_damage()
 		
 
 
-		new passed_preparedWpnDmgOriginInt=PrepareArray(_:passed_dmgOrigin,3)
+		passed_preparedWpnDmgOriginIntPre=PrepareArray(_:passed_dmgOrigin,3,1)
 
 		static dmg_fwd_ret_id:the_dmg_return_value;
 		
@@ -3018,7 +3029,7 @@ public sh_extra_damage_result:_sh_extra_damage()
 						passed_bodypart,
 						passed_mode,
 						passed_sh_extra_dmg_flags,
-						passed_preparedWpnDmgOriginInt,
+						passed_preparedWpnDmgOriginIntPre,
 						passed_dmg_type,
 						passed_thrashbrat_dmg_type,
 						passed_custom_wpn_id)){
@@ -3293,6 +3304,8 @@ public sh_extra_damage_result:_sh_extra_damage()
 		engfunc(EngFunc_WriteCoord, dmgOrigin[2])	// damageOrigin.z
 		message_end()
 		
+		passed_preparedWpnDmgOriginIntPost=PrepareArray(_:dmgOrigin,3)
+
 		(thrashbrat_dmg_type != SH_NEW_DMG_HEALTH_SET)?
 
 		(
@@ -3304,7 +3317,7 @@ public sh_extra_damage_result:_sh_extra_damage()
 						bodypart,
 						mode,
 						sh_extra_dmg_flags,
-						passed_preparedWpnDmgOriginInt,
+						passed_preparedWpnDmgOriginIntPost,
 						dmg_type,
 						thrashbrat_dmg_type,
 						custom_wpn_id))?

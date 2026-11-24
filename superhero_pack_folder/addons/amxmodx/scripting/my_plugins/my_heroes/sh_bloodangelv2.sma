@@ -25,7 +25,7 @@ angel_m4a1mult 1.3	//Damage multiplyer for his m4a1
 #include "../my_include/my_author_header.inc"
 
 // GLOBAL VARIABLES
-new HeroName[] = "Dark angel v2"
+#define HeroName  "Dark angel v2"
 
 new Float: MEGA_DARK_KNOCKBACK
 new Float:m4dmgmult

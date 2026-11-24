@@ -38,7 +38,7 @@ warmachine_armor 150		//How much armor does war machine start with/regen to
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt15.inc"
 
 // GLOBAL VARIABLES
-new gHeroName[]="War Machine"
+#define gHeroName "War Machine"
 
 new bool:gJetPackRunning[SH_MAXSLOTS+1]
 new bool:gRegenAllowed[SH_MAXSLOTS+1]

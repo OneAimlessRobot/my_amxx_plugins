@@ -21,9 +21,9 @@ wildcard_damage 20		//Damage AK47 burst fire does
 
 // GLOBAL VARIABLES
 
-new const gHeroName[] = "Wildcard"
-new const gEntAKBurst[] = "akBurst"
-new const gModelShell[] = "models/rshell_big.mdl"
+#define gHeroName "Wildcard"
+#define gEntAKBurst  "akBurst"
+#define gModelShell  "models/rshell_big.mdl"
 new g_burst_waittime[33] = 0
 new g_burst_reloadtime[33] = 0
 new pCvarAK47Mult, gPcvarMaxDamage, gPcvarSpeed

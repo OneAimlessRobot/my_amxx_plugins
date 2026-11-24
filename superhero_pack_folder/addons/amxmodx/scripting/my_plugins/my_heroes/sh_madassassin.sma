@@ -38,13 +38,13 @@ madassassin_healpoints 5	//The # of HP healed per second
 #define I_WANT_CONSTANTS
 #define I_WANT_BASIC_MACROS
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
-#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt15.inc"
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt15.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
 // GLOBAL VARIABLES
-new HeroName[] = "Mad Assassin"
+#define HeroName  "Mad Assassin"
 new CvarAwpDmgMult, CvarHealPoints
 
 #define Model_V_Awp "models/shmod/madassassin_v_awp.mdl"

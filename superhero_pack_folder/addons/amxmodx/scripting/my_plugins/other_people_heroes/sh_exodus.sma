@@ -31,7 +31,7 @@ exodus_toggle 1		//0-hold keydown to use, 1-toggles the grab (Default 1)
 
 // GLOBAL VARIABLES
 
-new g_heroName[]="Exodus"
+#define g_heroName "Exodus"
 new bool:g_inSearch[SH_MAXSLOTS+1]
 new g_grabbedID[SH_MAXSLOTS+1]
 new g_grabTimer[SH_MAXSLOTS+1]

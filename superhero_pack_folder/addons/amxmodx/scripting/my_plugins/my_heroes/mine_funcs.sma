@@ -175,7 +175,8 @@ public blow_mine_up(ent, id)
 		new Float:fOrigin[3];
 		entity_get_vector( ent, EV_VEC_origin, fOrigin);
 		
-		explosion(gHeroID,ent,EXPLODE_RADIUS,MINE_DAMAGE)
+		explosion(gHeroID,ent,EXPLODE_RADIUS,MINE_DAMAGE,
+		_,_,_,_,_,_,_,_,_,true)
 		
 		remove_entity(ent)
 }

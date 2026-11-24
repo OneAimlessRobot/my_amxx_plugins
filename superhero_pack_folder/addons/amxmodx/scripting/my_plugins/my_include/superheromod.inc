@@ -288,6 +288,8 @@ native bool:sh_remove_user_power_without_menu(id, heroID)
  */
 native sh_create_hero(const heroName[], pcvarMinLevel);
 
+forward sh_on_create_hero_post(const heroID,const heroName[])
+
 /**
  * Sets the hero's power description and help info. (Required)
  *

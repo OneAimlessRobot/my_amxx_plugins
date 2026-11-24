@@ -15,7 +15,7 @@ xavier_refreshtimer 5.0			//How often do the trails refresh
 
 // GLOBAL VARIABLES
 
-new const gHeroName[] = "Xavier"
+#define gHeroName "Xavier"
 new gSpriteLaserBeam
 new gPcvarTrailLength, gPcvarShowTeam, gPcvarShowEnemy, gPcvarRefreshTimer
 //----------------------------------------------------------------------------------------------

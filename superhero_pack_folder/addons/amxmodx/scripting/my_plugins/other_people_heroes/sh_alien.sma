@@ -41,7 +41,7 @@ alien_knifemode 0	//1-knife only can't change weapons, 0-Alien Vision on only wh
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 
 // GLOBAL VARIABLES
-new HeroName[] = "Alien"
+#define HeroName "Alien"
 new AlienModeOn[SH_MAXSLOTS+1]
 new MsgSetFOV
 new CvarKnifeMult, CvarZoomVision, CvarTint, CvarAlphaValue, CvarMode

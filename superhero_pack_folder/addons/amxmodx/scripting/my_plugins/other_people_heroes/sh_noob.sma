@@ -8,7 +8,7 @@
 
 
 // VARIABLES
-new gHeroName[]="Noob"
+#define gHeroName "Noob"
 
 new gArrowsFired[33] = 0
 // Test

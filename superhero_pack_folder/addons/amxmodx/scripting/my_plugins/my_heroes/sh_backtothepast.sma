@@ -14,7 +14,7 @@
 
 new is_rehlds_avail
 // GLOBAL VARIABLES
-new gHeroName[]="Jeremy"
+#define gHeroName "Jeremy"
 new gJeremyPowerUsedTimes[SH_MAXSLOTS+1] = {0, ...},
 	g_player_deaths[SH_MAXSLOTS+1] = {0, ...},
 	g_player_frags[SH_MAXSLOTS+1] = {0, ...}

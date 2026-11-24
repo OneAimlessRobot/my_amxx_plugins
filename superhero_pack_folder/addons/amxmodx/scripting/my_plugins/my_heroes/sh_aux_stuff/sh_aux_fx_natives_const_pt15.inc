@@ -5,6 +5,6 @@
 
 
 
-stock const player_projectile_weapons_print[]="sh_print_player_projectile_weapons"
+#define player_projectile_weapons_print "sh_print_player_projectile_weapons"
 
-stock const hero_projectile_weapons_print[]="sh_print_hero_projectile_weapons"
+#define hero_projectile_weapons_print "sh_print_hero_projectile_weapons"

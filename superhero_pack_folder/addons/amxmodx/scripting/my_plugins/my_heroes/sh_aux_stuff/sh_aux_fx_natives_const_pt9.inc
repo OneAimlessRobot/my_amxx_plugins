@@ -4,4 +4,4 @@
 #define sh_aux_fx_natives_consts_pt9
 
 
-stock const admin_compatibility_print[]="sh_admin_compatibility_print"
+#define admin_compatibility_print "sh_admin_compatibility_print"

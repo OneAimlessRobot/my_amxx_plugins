@@ -263,7 +263,7 @@ stock set_user_maxspeed_controlled(id, Float:the_speed_to_set, bool:penetrate_fl
 		return;
 		
 	}
-	if((sh_get_stun(id)||sh_get_id_bit(id, SH_IS_CHARGING_HEAVY_ATTACK))&&!penetrate_flags){
+	if((sh_get_stun(id)||sh_get_id_bit(id, SH_IS_CHARGING_HEAVY_ATTACK)||sh_get_id_bit(id, SH_IS_SLEEPING))&&!penetrate_flags){
 
 		return
 

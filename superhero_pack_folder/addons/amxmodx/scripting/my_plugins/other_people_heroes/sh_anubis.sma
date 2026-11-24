@@ -24,7 +24,7 @@ anibus_showchat 1		//(0|1) - hide|show ghostchat messages..
 
 // GLOBAL VARIABLES
 
-new const gHeroName[] = "Anubis"
+#define gHeroName "Anubis"
 new gmsgSayText
 new gPcvarShowDamage, gPcvarShowChat
 //----------------------------------------------------------------------------------------------
