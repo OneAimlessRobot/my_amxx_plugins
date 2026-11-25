@@ -60,7 +60,7 @@
 new g_last_weapon[SH_MAXSLOTS+1]
 enum fx_task_parameter_id{
 	Float:fx_task_period,
-	Float:fx_rarity_weight,
+	fx_rarity_weight,
 	fx_task_apply_id,
 	fx_task_apply_func_name[128],
 	fx_task_remove_func_name[128],
@@ -74,30 +74,30 @@ enum fx_task_parameter_id{
 }
 
 stock fx_task_parameters[fx_id][fx_task_parameter_id]={	
-					{-1.0,0.0,-1,"","","no drug","We have removed nothing!",0,damage_icon_types:-1,PRIO_RENDER_NONE, kRenderNormal,0},
+	{-1.0,0,-1,"","","no drug","We have removed nothing!",0,damage_icon_types:-1,PRIO_RENDER_NONE, kRenderNormal,0},
 
-					
-					{-1.0,1.0,-1,"","","cyanide","We have removed nothing! You should be dead...",0,damage_icon_types:-1,PRIO_RENDER_EFFECT_ACTIVE, kRenderNormal,0},
-					
-					{1.0,20.0,-1,"task_cycle","uneffect_task_generic","glowstick juice","Removed ur glow bro!",-1,damage_icon_types:-1,PRIO_RENDER_DELETE_INVISIBILITY, kRenderNormal,16},
-					
-					{0.5,30.0,-1,"poison_task","uneffect_task_generic","poison","Removed ur poisan!",1,DMG_ICON_POISON,PRIO_RENDER_EFFECT_ACTIVE, kRenderNormal,16},
-					
-					{0.5,40.0,-1,"task_cycle","uneffect_task_generic","stunner","Removed ur stun bro!",1,DMG_ICON_DROWN,PRIO_RENDER_EFFECT_ACTIVE, kRenderNormal,16},
-					
-					{1.0,50.0,-1,"radioactive_task","","uranium","Removed ur chernobyl!",1,damage_icon_types:-1,PRIO_RENDER_DELETE_INVISIBILITY, kRenderNormal,0},
-					
-					{1.0,60.0,-1,"morphine_task","uneffect_task_generic","morphine","Removed ur heals!",1,DMG_ICON_HEALTH,PRIO_RENDER_EFFECT_ACTIVE, kRenderNormal,16},
-					
-					{1.0,71.0,-1,"weed_task","unweed_task","weed","Removed ur weed!",0,DMG_ICON_LONGJUMP,PRIO_RENDER_EFFECT_ACTIVE, kRenderNormal,16},
-					
-					{1.0,79.0,-1,"cocaine_task","uncocaine_task","cocaine","Removed ur 80s!",1,DMG_ICON_POISON,PRIO_RENDER_EFFECT_ACTIVE, kRenderNormal},
-					
-					{0.5,85.0,-1,"blind_task","uneffect_task_generic","blindness","Removed ur blindess!",1,damage_icon_types:-1,PRIO_RENDER_EFFECT_ACTIVE, kRenderNormal,255},
-					
-					{0.5,90.0,-1,"task_cycle","uneffect_task_generic","metylphenidate","Removed ur college pills!",0,DMG_ICON_SHOCK,PRIO_RENDER_EFFECT_ACTIVE, kRenderNormal,16},
-					
-					{0.5,100.0,-1,"task_cycle","uneffect_task_generic","bath salts","Removed ur spicy college pills!",0,DMG_ICON_ARMOR,PRIO_RENDER_EFFECT_ACTIVE, kRenderNormal,16}
+	
+	{-1.0,1,-1,"","","cyanide","We have removed nothing! You should be dead...",0,damage_icon_types:-1,PRIO_RENDER_EFFECT_ACTIVE, kRenderNormal,0},
+	
+	{1.0,20,-1,"task_cycle","uneffect_task_generic","glowstick juice","Removed ur glow bro!",-1,damage_icon_types:-1,PRIO_RENDER_DELETE_INVISIBILITY, kRenderNormal,16},
+	
+	{0.5,30,-1,"poison_task","uneffect_task_generic","poison","Removed ur poisan!",1,DMG_ICON_POISON,PRIO_RENDER_EFFECT_ACTIVE, kRenderNormal,16},
+	
+	{0.5,40,-1,"task_cycle","uneffect_task_generic","stunner","Removed ur stun bro!",1,DMG_ICON_DROWN,PRIO_RENDER_EFFECT_ACTIVE, kRenderNormal,16},
+	
+	{1.0,50,-1,"radioactive_task","","uranium","Removed ur chernobyl!",1,damage_icon_types:-1,PRIO_RENDER_DELETE_INVISIBILITY, kRenderNormal,0},
+	
+	{1.0,60,-1,"morphine_task","uneffect_task_generic","morphine","Removed ur heals!",1,DMG_ICON_HEALTH,PRIO_RENDER_EFFECT_ACTIVE, kRenderNormal,16},
+	
+	{1.0,71,-1,"weed_task","unweed_task","weed","Removed ur weed!",0,DMG_ICON_LONGJUMP,PRIO_RENDER_EFFECT_ACTIVE, kRenderNormal,16},
+	
+	{1.0,79,-1,"cocaine_task","uncocaine_task","cocaine","Removed ur 80s!",1,DMG_ICON_POISON,PRIO_RENDER_EFFECT_ACTIVE, kRenderNormal},
+	
+	{0.5,85,-1,"blind_task","uneffect_task_generic","blindness","Removed ur blindess!",0,damage_icon_types:-1,PRIO_RENDER_DELETE_INVISIBILITY, kRenderNormal,255},
+	
+	{0.5,90,-1,"task_cycle","uneffect_task_generic","metylphenidate","Removed ur college pills!",0,DMG_ICON_SHOCK,PRIO_RENDER_EFFECT_ACTIVE, kRenderNormal,16},
+	
+	{0.5,100,-1,"task_cycle","uneffect_task_generic","bath salts","Removed ur spicy college pills!",0,DMG_ICON_ARMOR,PRIO_RENDER_EFFECT_ACTIVE, kRenderNormal,16}
 
 }
 
@@ -528,10 +528,10 @@ public _get_fx_num(iPlugin,iParams){
 fx_id:get_fx_num_aux(){
 
 
-	new Float:chance=generate_float(0.0,(fx_task_parameters[fx_id-fx_id:1][fx_rarity_weight])*0.02,60)
+	new chance=generate_int(0,(fx_task_parameters[fx_id-fx_id:1][fx_rarity_weight]))
 
 	for(new fx_id:i=KILL;i<fx_id;i++){
-		new Float:compared=fx_task_parameters[i][fx_rarity_weight]*0.01;
+		new compared=fx_task_parameters[i][fx_rarity_weight];
 		if(chance<compared){
 
 			return i;
@@ -665,7 +665,7 @@ public blind_task(any:array[3],id){
 	id-=fx_task_parameters[array[0]][fx_task_apply_id]
 	if ( !sh_is_active() ||!is_user_alive(id)) return
 	set_render_with_color_const(id,FX_COLOR_OFFSET(array[0]),0,_,
-				255,fx_task_parameters[BLIND][fx_task_will_glow_user_screen],_,
+				255,1,_,
 				fx_task_parameters[BLIND][fx_task_period],
 				0,_,
 				fx_task_parameters[BLIND][render_mode],

@@ -82,8 +82,12 @@ new g_prevWeapon[SH_MAXSLOTS+1]
 //reset variables
 new bool:reset_speed[SH_MAXSLOTS+1], bool:reset_health[SH_MAXSLOTS+1], bool:reset_armor[SH_MAXSLOTS+1]
 new goku_kt_dmg_boost_wpn_short_name[SAFE_BUFFER_SIZE+1]="goku_kt_dmg_boost"
-new goku_kt_dmg_boost_dmg_boost_wpn_log_name[SAFE_BUFFER_SIZE+1]="goku_kt_dmg_boost"
+new goku_kt_dmg_boost_wpn_log_name[SAFE_BUFFER_SIZE+1]="goku_kt_dmg_boost"
 new goku_kt_dmg_boost_wpn_id = -1
+
+new goku_kt_dmg_boost_melee_wpn_short_name[SAFE_BUFFER_SIZE+1]="goku_kt_dmg_boost_melee"
+new goku_kt_dmg_boost_melee_wpn_log_name[SAFE_BUFFER_SIZE+1]="goku_kt_dmg_boost_melee"
+new goku_kt_dmg_boost_melee_wpn_id = -1
 
 //pcvar holders
 new goku_speed, goku_hp, goku_ap, goku_time, goku_cooldown
@@ -119,8 +123,14 @@ public plugin_init()
 	goku_kt_dmg_boost_wpn_id=sh_log_custom_damage_source(
 							gHeroID,
 							goku_kt_dmg_boost_wpn_short_name,
-							goku_kt_dmg_boost_dmg_boost_wpn_log_name,
+							goku_kt_dmg_boost_wpn_log_name,
 							0)
+
+	goku_kt_dmg_boost_melee_wpn_id=sh_log_custom_damage_source(
+							gHeroID,
+							goku_kt_dmg_boost_melee_wpn_short_name,
+							goku_kt_dmg_boost_melee_wpn_log_name,
+							1)
 	
 	RegisterHam(Ham_TakeDamage,"player","Kaioken_Damage",1,true)
 
@@ -147,23 +157,22 @@ public Kaioken_Damage(id, idinflictor, attacker, Float:damage, damagebits){
 	
 	pev(id, pev_dmg_take, damage)
 
-	new bool:has_hero= bool:sh_get_user_has_hero(attacker,gHeroID) 
+	new bool:has_hero= bool:sh_get_user_has_hero(attacker,gHeroID)
 
-	//I had to tell her not to bleed her teammates
+	new weapon = get_user_weapon(attacker)
+
 	if ( has_hero && ( GokuKTTimer[attacker][the_time] > 0 ) &&  !sh_clients_are_same_team(attacker,id)) {
 		
 		
-		new rounded_dmg = floatround(damage)
-
-		if(rounded_dmg > 0){
-			sh_extra_damage(id, attacker, rounded_dmg,
-											the_hitpoint,
-											SH_DMG_NORM,
-											SH_EXTRA_DMG_FLAG_STUN,
-											_,_,
-											SH_NEW_DMG_ENERGY_BLAST,
-											goku_kt_dmg_boost_wpn_id)
-		}
+		new rounded_dmg = 5
+		//to trigger GokuKT's energy weapon bonus
+		sh_extra_damage(id, attacker, rounded_dmg,
+										the_hitpoint,
+										SH_DMG_NORM,
+										SH_EXTRA_DMG_FLAG_STUN,
+										_,_,
+										(weapon==CSW_KNIFE)?SH_NEW_DMG_ENERGY_BLADE:SH_NEW_DMG_ENERGY_BLAST,
+										(weapon==CSW_KNIFE)?goku_kt_dmg_boost_melee_wpn_id:goku_kt_dmg_boost_wpn_id)
 	}
 	
 	return HAM_IGNORED

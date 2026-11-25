@@ -47,6 +47,10 @@ new pcvar_reika_speed
 
 new REIKA_PARRY_TURN_OFF_DELAY_TASKID
 
+new reika_counter_strike_wpn_short_name[SAFE_BUFFER_SIZE+1]="reika_counter"
+new reika_counter_strike_wpn_log_name[SAFE_BUFFER_SIZE+1]="reika_counter"
+new reika_counter_strike_wpn_id = -1
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -72,9 +76,17 @@ public plugin_init()
 
     sh_assign_hero_bit(gHeroID,SH_EXPLOSION_POWERS, true)
 
+    reika_counter_strike_wpn_id=sh_log_custom_damage_source(
+                            gHeroID,
+                            reika_counter_strike_wpn_short_name,
+                            reika_counter_strike_wpn_log_name,
+                            1)
+
     RegisterHam(Ham_TakeDamage,"player","reika_parry_damage_timer_trigger",_,true)
 
     register_forward(FM_CmdStart, "reika_parry_switch_cmdstart_hook");
+
+    RegisterHam(Ham_TakeDamage,"player","Reika_Damage",1,true)
 
     REIKA_PARRY_TURN_OFF_DELAY_TASKID=allocate_typed_task_id(player_task)
 
@@ -150,13 +162,60 @@ prepare_parry(id){
 
 public client_disconnected(id){
 
-	task_safeguard_macro_for_player_task(id,REIKA_PARRY_TURN_OFF_DELAY_TASKID,SH_MAXSLOTS)
+    task_safeguard_macro_for_player_task(id,REIKA_PARRY_TURN_OFF_DELAY_TASKID,SH_MAXSLOTS)
+    clear_retaliate(id)
 	
 }
 public client_connect(id){
 
 
-	task_safeguard_macro_for_player_task(id,REIKA_PARRY_TURN_OFF_DELAY_TASKID,SH_MAXSLOTS)
+    task_safeguard_macro_for_player_task(id,REIKA_PARRY_TURN_OFF_DELAY_TASKID,SH_MAXSLOTS)
+    clear_retaliate(id)
+	
+}
+/*
+
+    defaults to absorbing into normal damage
+    absorb_normal_or_shero =true -> absorb normal
+    absorb_normal_or_shero =false -> absorb shero
+
+*/
+public Reika_Damage(id, idinflictor, attacker, Float:damage, damagebits){
+	
+    if(damage<=0.0){
+        return HAM_IGNORED
+    }
+
+    if ( !sh_is_active() || !is_user_alive(id) ) return HAM_IGNORED
+
+
+    if (!is_user_connected(attacker) || (id == attacker)) return HAM_IGNORED
+
+
+    new my_hitpoint_enum:the_hitpoint = my_hitpoint_enum:get_pdata_int(id, m_iLastHitGroup, XO_PLAYER)
+
+    pev(id, pev_dmg_take, damage)
+
+    new bool:has_hero= bool:sh_get_user_has_hero(attacker,gHeroID)
+
+    new weapon = get_user_weapon(attacker)
+
+
+    if ( has_hero && (weapon==CSW_KNIFE) && (id==reika_parried_tg[attacker]) &&  !sh_clients_are_same_team(attacker,id) &&((floatround(reika_stored_damage[attacker])>0))) {
+        
+        
+        sh_extra_damage(id, attacker, floatround(max_macro(0.0,(3*reika_stored_damage[attacker]))),
+                                        the_hitpoint,
+                                        SH_DMG_NORM,
+                                        SH_EXTRA_DMG_FLAG_STUN,
+                                        _,_,
+                                        SH_NEW_DMG_SUPER_MELEE,
+                                        reika_counter_strike_wpn_id)
+    } 
+
+    return HAM_IGNORED
+	
+	
 	
 }
 absorb_user(id, Float:the_damage, tg){
@@ -168,13 +227,17 @@ absorb_user(id, Float:the_damage, tg){
     reika_stored_damage[id]=the_damage
     reika_parried_tg[id]=tg
 
+
     sh_chat_message(id,gHeroID,
                         "You parried their melee strike and stored %0.1f damage!",
                         the_damage)
+    
     emit_sound(id,CHAN_WEAPON,reika_parry_successful_sfx,VOL_NORM,ATTN_NORM,0,PITCH_NORM)
+
     sh_chat_message(tg,gHeroID,
                         "Your melee attack got parried! %0.1f damage was blocked",
                         the_damage)
+    
     emit_sound(tg,CHAN_WEAPON,reika_parry_knife_blocked_sfx,VOL_NORM,ATTN_NORM,0,PITCH_NORM)
                 
 
@@ -186,9 +249,17 @@ unparry_user(id){
     remove_task(id + REIKA_PARRY_TURN_OFF_DELAY_TASKID)
     
     UnSet_BitVar(reika_is_parrying_mask,id);
-    
-
 }
+/*
+
+    clear_normal_or_shero is true when normal
+    and false when shero
+
+    the last should be false if we want to choose which to clear
+
+    and not simply clear everything
+
+*/
 clear_retaliate(id){
 
     reika_stored_damage[id]=0.0
@@ -223,30 +294,11 @@ public reika_parry_damage_timer_trigger(id, idinflictor, attacker, Float:damage,
                 SetHamParamFloat(4,damage-blocked_damage)
                 
                 absorb_user(id, blocked_damage, attacker)
-
+                
                 unparry_user(id)
                 
                 result=HAM_HANDLED
             }
-        }
-    }
-
-    if(sh_get_user_has_hero(attacker,gHeroID)){
-
-    
-        if((weapon==CSW_KNIFE)&&(id==reika_parried_tg[attacker])){
-            
-            new Float:total_damage = damage+3.0*reika_stored_damage[attacker]
-
-            SetHamParamFloat(4,total_damage)
-            
-            sh_chat_message(attacker,gHeroID,
-                            "Counter strike! %0.1f xtra dmg dealt on strike",
-                            reika_stored_damage[attacker])
-
-            clear_retaliate(attacker)
-
-            result= HAM_HANDLED
         }
     }
     return result
@@ -262,6 +314,7 @@ public parry_mode_turn_off_task(id){
 
     sh_chat_message(id,gHeroID,"You missed your parry!")
     
+
     unparry_user(id)
 
 }
@@ -275,6 +328,7 @@ public sh_client_spawn(id)
     if ( sh_get_user_has_hero(id,gHeroID) ) {
         
         give_custom_grenades(id,GREN_CONC,5)
+        
         unparry_user(id)
 
     }
@@ -303,7 +357,7 @@ switch(key)
 //----------------------------------------------------------------------------------------------
 public reika_kd(id)
 {
-    if(!sh_is_active()||!sh_is_inround()) return
+    if(!sh_is_active()||!sh_is_inround()||sh_is_freezetime()) return
 
     if ( !is_user_alive(id) ) return
 
@@ -383,7 +437,7 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_
                 damage-=blocked_damage
 
                 absorb_user(victim, float(blocked_damage), attacker)
-
+                
                 unparry_user(victim)
 
                 return_result = DMG_FWD_HANDLED
@@ -394,15 +448,12 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_
 
     if(sh_get_user_has_hero(attacker,gHeroID)){
 
-        if(is_melee&&(victim==reika_parried_tg[attacker])){
+        if(is_melee&&(victim==reika_parried_tg[attacker])&&(custom_weapon_id==reika_counter_strike_wpn_id)){
             
-            new total_damage = damage+3*floatround(reika_stored_damage[attacker])
 
-            damage = total_damage
-            
             sh_chat_message(attacker,gHeroID,
-                            "Counter strike! %d xtra dmg dealt on strike",
-                            floatround(reika_stored_damage[attacker]))
+                            "Counter strike! %d xtra shero dmg dealt on strike",
+                            damage)
 
             clear_retaliate(attacker)
 

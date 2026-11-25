@@ -291,7 +291,7 @@ public plugin_natives(){
 public _zenitsu_init_battery(iPlugin,iParams){
 	
 	new id= get_param(1)
-	sh_sleep_user(id,id,5.0,gHeroID)
+	sh_sleep_user(id,id,8.0,gHeroID)
 
 
 }

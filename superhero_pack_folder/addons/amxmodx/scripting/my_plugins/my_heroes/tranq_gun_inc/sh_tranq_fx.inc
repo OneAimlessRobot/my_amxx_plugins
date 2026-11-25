@@ -9,9 +9,7 @@
 
 #define SLEEP_SFX "shmod/larissa/sleep/snore.wav"
 
-#define SLEEP_PERIOD 0.25
 #define SLEEP_TIME 15.0
-#define SLEEP_TIMES floatround(floatdiv(the_time,SLEEP_PERIOD))
 
 
 forward sh_on_sleep_start_fwd(id, attacker, Float:the_time, heroID)

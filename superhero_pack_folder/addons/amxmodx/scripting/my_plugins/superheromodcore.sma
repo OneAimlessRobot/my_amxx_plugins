@@ -2337,8 +2337,8 @@ public powerKeyDown(id)
 		sh_sound_deny(id)
 		return PLUGIN_HANDLED
 	}
-	// Make sure player isn't stunned
-	if ( gPlayerStunTimer[id] > 0 ) {
+	// Make sure player isn't stunned or asleep or frozen
+	if ( (sh_get_id_bit(id, SH_IS_SLEEPING) || sh_get_id_bit(id, SH_IS_FROZEN) || (gPlayerStunTimer[id] > 0))  ) {
 		sh_sound_deny(id)
 		return PLUGIN_HANDLED
 	}
@@ -2377,8 +2377,8 @@ public powerKeyUp(id)
 
 	if ( id == gXpBounsVIP && getVipFlags() & VIP_BLOCK_POWERKEYS ) return PLUGIN_HANDLED
 
-	// Make sure player isn't stunned (unless they were in keydown when stunned)
-	if ( gPlayerStunTimer[id] > 0 && !gInPowerDown[id][whichKey] )  return PLUGIN_HANDLED
+	// Make sure player isn't stunned (unless they were in keydown when stunned (or slept (or frozen!)))
+	if ( (sh_get_id_bit(id, SH_IS_SLEEPING) || sh_get_id_bit(id, SH_IS_FROZEN) || (gPlayerStunTimer[id] > 0)) && !gInPowerDown[id][whichKey] )  return PLUGIN_HANDLED
 
 	//Set this key as NOT in use anymore
 	gInPowerDown[id][whichKey] = false
@@ -2959,6 +2959,8 @@ public sh_extra_damage_result:_sh_extra_damage()
 	static Float:flArmor; flArmor = 0.0
 
 	static wpnDescription[32]
+
+	arrayset(wpnDescription,0,sizeof(wpnDescription))
 
 	bodypart = my_hitpoint_enum:get_param(4)
 	mode = sh_damage_mode:get_param(5)

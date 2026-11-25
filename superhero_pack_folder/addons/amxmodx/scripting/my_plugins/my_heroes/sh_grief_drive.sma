@@ -42,7 +42,7 @@ new grief_drive_sentences[][]={
 
 
 
-static const DEBUG = 1
+static const DEBUG = 0
 
 
 #define GRIEF_DRIVE_CYCLE "shmod/grief_drive/grief_drive_cycle3.wav"

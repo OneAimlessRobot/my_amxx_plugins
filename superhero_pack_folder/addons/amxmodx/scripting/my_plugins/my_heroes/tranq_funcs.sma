@@ -563,7 +563,7 @@ public chorazy_II_toumpaeeeehm(pToucher, pTouched)
 
 			if(!stat_applied){
 
-				sh_sleep_user(pTouched,oid,3.0,gHeroID)
+				sh_sleep_user(pTouched,oid,6.0,gHeroID)
 
 			}
 			sh_apply_staged_stat_boost(oid,oid,STAT_ATTACK_MULT,stages_to_apply,true)

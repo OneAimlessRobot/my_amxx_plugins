@@ -162,7 +162,7 @@ larissa_new_spawn_hooks(id){
 if (  sh_is_active() && is_user_alive(id)&& sh_get_user_has_hero(id,gHeroID)) {
 	g_hook_kills[id]=cvar_val(num,max_hook_kills_per_life_pcvar);
 }
-stop_dragging(id,-1)
+stop_dragging(id)
 
 }
 public plugin_natives(){
@@ -171,13 +171,10 @@ public plugin_natives(){
 	register_native( "hook_set_hook","_hook_set_hook")
 	
 }
-stop_dragging(id,target=-1,bool:deduct=false){
+stop_dragging(id,bool:deduct=false){
 
-		new client_is_here=is_user_alive( target)
 		new attacker_is_here=is_user_alive( id )
-		if(client_is_here){
-			entity_set_int( target, EV_INT_fixangle, 0 );
-		}
+
 		if(attacker_is_here){
 
 			set_user_maxspeed_controlled(id,g_prev_max_speed[id],false,true)
@@ -214,25 +211,25 @@ public hook_think(ent)
 		vic=pev(ent,pev_euser1),
 		times_left=pev(ent,pev_iuser1)
 	if (!is_user_alive(id)){
-		stop_dragging(id,vic)
+		stop_dragging(id)
 		return
 	
 	}
 	if (!sh_get_user_has_hero(id,gHeroID)){
 
-		stop_dragging(id,vic)
+		stop_dragging(id)
 		return
 	
 	}
 	if(!is_user_alive( vic)){
 		
 
-		stop_dragging(id,vic,true)
+		stop_dragging(id,true)
 		return
 	}
 	if(times_left<=0){
 		
-		stop_dragging(id,vic,true)
+		stop_dragging(id,true)
 		return
 	
 	
@@ -406,7 +403,7 @@ public CmdStart(attacker, uc_handle)
 					
 					new target=entity_get_edict(g_player_hook[attacker],EV_ENT_euser1)
 					if(is_user_alive(target)){
-						stop_dragging(attacker,target)
+						stop_dragging(attacker)
 					}
 				}
 			}
@@ -438,7 +435,7 @@ if(sh_get_user_has_hero(attacker,gHeroID)&&!(cs_get_user_team(id)==att_team)&&is
 	if((weapon==CSW_KNIFE)){
 		if((id!=target)||!(is_user_alive(target))){
 
-			stop_dragging(attacker,target,true)
+			stop_dragging(attacker,true)
 			return HAM_IGNORED
 		}
 		new button = pev(attacker, pev_button);
@@ -503,7 +500,7 @@ if(sh_get_user_has_hero(attacker,gHeroID)&&!(cs_get_user_team(id)==att_team)&&is
 						process_manhook_manslaughter( attacker, target)
 					}
 				}
-				stop_dragging(attacker,target,true)
+				stop_dragging(attacker,true)
 			}	
 		}
 	}

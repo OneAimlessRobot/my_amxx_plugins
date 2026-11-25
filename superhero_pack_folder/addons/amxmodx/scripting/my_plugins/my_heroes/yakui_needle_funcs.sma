@@ -89,8 +89,6 @@ public weaponChange(id)
 		}
 	}
 	else if(Get_BitVar(needle_on_mask, id)){
-
-		Assign_BitVar(needle_on_mask,id,false_for_macro)
 		kill_trails_on_user(id)
 	}
 	return PLUGIN_CONTINUE

@@ -15,28 +15,53 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-stock SLEEP_TASKID,
-		FULLY_WAKE_UP_TASKID
+stock SLEEP_TASKID
+
+#define SLEEP_PERIOD 0.25
+#define SLEEP_TIMES floatround(floatdiv(the_time,SLEEP_PERIOD))
 
 new Float:gKeepAngles[SH_MAXSLOTS+1][3]
 
 new on_sleep_start_fwd,
 	on_sleep_end_fwd
+	
 
 public plugin_init(){
-
 
 register_plugin(PLUGIN, VERSION, AUTHOR);
 register_forward(FM_CmdStart, "CmdStart");
 RegisterHam(Ham_Player_PreThink,"player","Ham_PlayerPreThink",_,true)
 register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
-register_event("CurWeapon", "weaponChange", "be", "1=1")	
+register_event("CurWeapon", "weaponChange", "be", "1=1")
 
 on_sleep_start_fwd = CreateMultiForward("sh_on_sleep_start_fwd",ET_CONTINUE ,FP_CELL,FP_CELL, FP_FLOAT, FP_CELL)
 on_sleep_end_fwd = CreateMultiForward("sh_on_sleep_end_fwd",ET_CONTINUE ,FP_CELL,FP_CELL, FP_FLOAT, FP_CELL)
 
 SLEEP_TASKID=allocate_typed_task_id(player_task)
-FULLY_WAKE_UP_TASKID=allocate_typed_task_id(player_task)
+
+}
+public weaponChange(id){
+
+	if(!sh_is_active()) return 
+
+
+	weapon_change_routine(id)
+
+}
+
+weapon_change_routine(id){
+
+	if(!sh_is_active()) return 
+
+	
+	if(sh_get_id_bit(id, SH_IS_SLEEPING)){
+
+		if(user_has_weapon(id,CSW_KNIFE)){
+			sh_switch_weapon(id, CSW_KNIFE)
+		}
+		
+	}
+
 }
 //https://forums.alliedmods.net/showthread.php?t=258006
 public Ham_PlayerPreThink(id)
@@ -50,10 +75,11 @@ public Ham_PlayerPreThink(id)
 	if(!sh_get_id_bit(id,SH_IS_SLEEPING)){
 		return HAM_IGNORED
 	}
+	
 	entity_set_vector( id, EV_VEC_angles, gKeepAngles[id] )
 	entity_set_vector( id, EV_VEC_v_angle, gKeepAngles[id] )
 	entity_set_int( id, EV_INT_fixangle, 1 )
-	return HAM_SUPERCEDE
+	return HAM_IGNORED
 }
 
 public fm_UpdateClientDataPost(player, sendWeapons, cd)
@@ -91,6 +117,7 @@ public CmdStart(id, uc_handle)
 
 	if ( sh_get_id_bit(id,SH_IS_SLEEPING)) {
 		set_uc(uc_handle, UC_Buttons, 0);
+		set_pev(id, pev_flags, pev(id, pev_flags) | FL_FROZEN);
 		return FMRES_SUPERCEDE
 	}
 	
@@ -101,17 +128,6 @@ public plugin_natives(){
 
 	register_native("sh_sleep_user","_sh_sleep_user");
 	register_native("sh_unsleep_user","_sh_unsleep_user");
-}
-stock sleep_user_switch_weapon(id){
-
-	if ( !is_user_alive(id)||!sh_is_active()) return
-	
-	new wpnid = read_data(2)
-	if(wpnid!=CSW_KNIFE){
-		sh_switch_weapon(id,CSW_KNIFE)
-		set_user_maxspeed_controlled(id,0.1,true,false)
-	}
-	
 }
 public _sh_sleep_user(iPlugin,iParams){
 
@@ -174,42 +190,61 @@ public _sh_unsleep_user(iPlugin,iParams){
 
 
 }
-public sleep_task(any:array[4],id){
+public sleep_task(any:array[5],id){
 	id-=SLEEP_TASKID
 	if(!sh_get_id_bit(id, SH_IS_SLEEPING)){
 
 		return
 		
 	}
+	static Float:the_time; the_time = Float:array[2]
+
 	if ( !sh_is_active() ||!is_user_alive(id)){
 
 		unsleep_user(id)
 		return
 	}
-	set_render_with_color_const(id,BLACK,1,255,255,1,1,SLEEP_PERIOD,_,_,kRenderNormal,PRIO_RENDER_DELETE_ASLEEP)
 
+	set_render_with_color_const(id,BLACK,1,255,255,(array[4]<=0),1,SLEEP_PERIOD,_,_,kRenderNormal,PRIO_RENDER_DELETE_ASLEEP)
+	
 	if(sh_get_id_bit(id,SH_IS_SLEEPING)&&(array[0]>0)){
 		array[0]--
+
+		if((array[4]<=0)&&(array[0]<=1)){
+
+			array[4] = 1
+			array[0] = SLEEP_TIMES/2
+		}
 		set_task(SLEEP_PERIOD,"sleep_task",id+SLEEP_TASKID,array, sizeof(array))
 	}
 	else if(sh_get_id_bit(id,SH_IS_SLEEPING)){
-		set_task(Float:array[2],"fully_wake_up_task",id+FULLY_WAKE_UP_TASKID,array,sizeof(array))
+		
+		set_pev(id, pev_flags, pev(id, pev_flags) & ~FL_FROZEN);
+		unsleep_user(id)
+		if (!ExecuteForward(on_sleep_end_fwd, _,
+								id,
+									array[1],
+									Float:array[2],
+									array[3])){
+
+			server_print("Sh on sleep end forward execute error.");
+		}
 	}
 
 
 }
 sleep_user(id,attacker, Float:the_time,heroID){
 	if ( !sh_is_active() ||!is_user_alive(id)||!is_user_alive(attacker)) return
-	new any:array[4]
+	static any:array[5]
 	array[0] = SLEEP_TIMES
 	array[1] = attacker
 	array[2] = the_time
 	array[3] = heroID
+	array[4] = 0
 
-	entity_get_vector( id, EV_VEC_angles, gKeepAngles[id] )
+	entity_get_vector( id, EV_VEC_v_angle, gKeepAngles[id] )
 	sh_assign_id_bit(id,SH_IS_SLEEPING,true)
-	sleep_user_switch_weapon(id)
-	sh_set_stun(id,the_time*2.0)
+	weapon_change_routine(id)
 	emit_sound(id, CHAN_VOICE, SLEEP_SFX, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	if (!ExecuteForward(on_sleep_start_fwd, _,
 								id,
@@ -224,41 +259,13 @@ sleep_user(id,attacker, Float:the_time,heroID){
 
 
 }
-public fully_wake_up_task(any:array[4],id){
-	id-=FULLY_WAKE_UP_TASKID
-	if (!ExecuteForward(on_sleep_end_fwd, _,
-								id,
-								array[1],
-								Float:array[2],
-								array[3])){
-
-		server_print("Sh on sleep end forward execute error.");
-	}
-
-	unsleep_user(id)
-	
-
-
-}
 unsleep_user(id){
 	if ( !sh_is_active() ||!is_user_connected(id)) return
-	
-	if(task_exists(id+FULLY_WAKE_UP_TASKID)){
-		remove_task(id+FULLY_WAKE_UP_TASKID)
-	}
+
 
 	if(sh_get_id_bit(id,SH_IS_SLEEPING)){
 		remove_glow_user(id,PRIO_RENDER_DELETE_ASLEEP,255,kRenderNormal)
 		sh_assign_id_bit(id,SH_IS_SLEEPING,false)
-	}
-}
-
-public weaponChange(id)
-{
-	if ( !sh_is_active()) return
-
-	if(sh_get_id_bit(id,SH_IS_SLEEPING)){
-		sleep_user_switch_weapon(id)
 	}
 }
 public sh_client_death(id){

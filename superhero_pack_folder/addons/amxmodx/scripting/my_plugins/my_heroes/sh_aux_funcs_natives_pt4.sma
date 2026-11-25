@@ -46,7 +46,7 @@ stock const new_dmg_type_descriptions_arr[sh_thrash_brat_dmg_type][extra_dmg_des
 	
 	{"SH_Tr45H_Gun", "Damage from recycled weapons. Only a few heroes use this", false},
 
-	{"SH_Energy_Blade", "Damage from energy swords, disks... (Melee version of energy blast)", false},
+	{"SH_Energy_Blade", "Damage from energy swords, disks... (Melee version of energy blast)", true},
 
 	{"SH_Health_Set", "Damage source used to set the health of people to a value while still rewarding for damage", false}
 	

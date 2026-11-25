@@ -415,7 +415,7 @@ public sequoia_active_loop(taskid)
             }
             point_player_towards_other_player(id,g_sequoia_current_aimed_at_player[id])
         }
-        entity_set_vector( id, EV_VEC_angles, g_sequoia_look_direction[id] )
+        
         entity_set_vector( id, EV_VEC_v_angle, g_sequoia_look_direction[id] )
         entity_set_int( id, EV_INT_fixangle, 1 )
 

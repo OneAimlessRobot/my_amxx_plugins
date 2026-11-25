@@ -105,13 +105,10 @@ public plugin_init(){
 
 }
 
-stop_dragging(id,target=-1,bool:deduct=false){
+stop_dragging(id,bool:deduct=false){
 
-		new client_is_here=is_user_alive( target)
 		new attacker_is_here=is_user_alive( id )
-		if(client_is_here){
-			entity_set_int( target, EV_INT_fixangle, 0 );
-		}
+
 		if(attacker_is_here){
 			set_user_maxspeed_controlled(id,g_prev_max_speed[id],false,true)
 			g_prev_max_speed[id] = 0.0
@@ -140,7 +137,7 @@ teliko_new_spawn_slits(id){
 if (  sh_is_active() && is_user_alive(id)&& sh_get_user_has_hero(id,gHeroID)) {
 	g_slit_kills[id]=cvar_val(num,pcvar_max_slitter_kills_per_life);
 }
-stop_dragging(id,-1)
+stop_dragging(id)
 
 }
 public weaponChange(id)
@@ -213,25 +210,25 @@ public slitter_think(ent)
 		vic=entity_get_edict(ent,EV_ENT_euser1),
 		times_left=entity_get_int(ent,EV_INT_iuser1)
 	if (!is_user_alive(id)){
-		stop_dragging(id,vic)
+		stop_dragging(id)
 		return
 	
 	}
 	if (!sh_get_user_has_hero(id,gHeroID)){
 
-		stop_dragging(id,vic)
+		stop_dragging(id)
 		return
 	
 	}
 	if(!is_user_alive( vic)){
 		
 
-		stop_dragging(id,vic,true)
+		stop_dragging(id,true)
 		return
 	}
 	if(times_left<=0){
 		
-		stop_dragging(id,vic,true)
+		stop_dragging(id,true)
 		return
 	
 	
@@ -244,7 +241,6 @@ public slitter_think(ent)
 	pev(id,pev_origin,vOrigin)
 	pev(vic,pev_origin,eOrigin)
 	entity_get_vector(id, EV_VEC_v_angle, vAngle)
-	entity_get_vector(id, EV_VEC_angles, vAngles)
 	new Float:direction[3],Float:fl_Velocity[3], Float:length
 	velocity_by_aim(id,9999,aimvec)
 	
@@ -403,7 +399,7 @@ public CmdStart(attacker, uc_handle)
 				else {
 					new target=entity_get_edict(g_player_slitter[attacker],EV_ENT_euser1)
 					if(is_user_alive(target)){
-						stop_dragging(attacker,target)
+						stop_dragging(attacker)
 					}
 				
 				}
@@ -431,7 +427,7 @@ if(sh_get_user_has_hero(attacker,gHeroID) &&!(cs_get_user_team(id)==att_team)&&i
 	if((weapon==CSW_KNIFE)){
 		if((id!=target)||!(is_user_alive(target))){
 
-			stop_dragging(attacker,target,true)
+			stop_dragging(attacker,true)
 			return HAM_IGNORED
 		}
 		static button = 0; button = pev(attacker, pev_button);
@@ -490,7 +486,7 @@ if(sh_get_user_has_hero(attacker,gHeroID) &&!(cs_get_user_team(id)==att_team)&&i
 								cvar_val(num, pcvar_max_slitter_kills_per_life));
 					}
 				}
-				stop_dragging(attacker,target,true)
+				stop_dragging(attacker,true)
 			}	
 		}
 	}

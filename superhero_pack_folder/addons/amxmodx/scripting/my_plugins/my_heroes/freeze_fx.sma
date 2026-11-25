@@ -38,22 +38,10 @@ public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 	FREEZE_TASK_ID=allocate_typed_task_id(player_task)
 	RegisterHam(Ham_TakeDamage, "player", "frozen_damage",1,true)
-	register_event("CurWeapon", "weaponChange", "be", "1=1")	
     
 	
 }
 
-
-public weaponChange(id)
-{
-	if ( !is_user_alive(id)||!sh_is_active()) return
-	
-	if(sh_get_id_bit(id, SH_IS_FROZEN)){
-		
-		set_user_maxspeed_controlled(id,player_frozen_structs[id][the_maxspeed],true,false)
-	}
-	
-}
 
 public plugin_cfg(){
 	custom_dmg_source_blunt_trauma = get_weapon_id_for_generic_dmg_source(SH_NEW_DMG_BLUNT_FORCE_TRAUMA)
@@ -177,14 +165,14 @@ public _sh_freeze_user(iPlugins,iParams){
 		remove_task(id+FREEZE_TASK_ID)
 	}
 
-	new Float:origin[3]
+	static Float:origin[3]
 	entity_get_vector(id,EV_VEC_origin, origin)
 
 	player_frozen_structs[id][damage_mult] = damage_vuln_mult
 
 	player_frozen_structs[id][the_maxspeed] = speed
 	
-	set_user_maxspeed_controlled(id,speed,false,false)
+	sh_set_stun(id,the_time*0.5,speed)
 
 	set_render_with_color_const(id,FROZEN_BLUE,1,50,50,1,_,
 							the_time,_,_,kRenderNormal,PRIO_RENDER_EFFECT_ACTIVE)
@@ -214,7 +202,6 @@ unfreeze_user(id){
 	}
 	if(sh_get_id_bit(id, SH_IS_FROZEN))
 	{
-		sh_reset_max_speed(id)
 		
 		remove_glow_user(id,PRIO_RENDER_EFFECT_ACTIVE,_,kRenderNormal);
 

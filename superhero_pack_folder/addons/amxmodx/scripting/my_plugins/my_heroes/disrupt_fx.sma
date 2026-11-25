@@ -55,7 +55,7 @@ public disorient_user(array[1],id)
 	xMoveDir[1]=clamp_macro(generate_float(-DISRUPT_MOVE_RANDOMNESS,DISRUPT_MOVE_RANDOMNESS)*xMoveDir[1],-floatmul(velocity,floatsqroot(2.0)/2.0),floatmul(velocity,floatsqroot(2.0)/2.0))
 	set_pev(id, pev_velocity, xMoveDir)
 	set_pev(id, pev_angles, xAngles)
-	set_pev(id, pev_fixangle, 1);
+	entity_set_int( id, EV_INT_fixangle, 1 );
 	if(array[0]>0){
 		array[0]--
 		set_task(DISORIENT_PERIOD,"disorient_user",id+DISORIENT_TASKID,array, sizeof(array))
