@@ -760,6 +760,7 @@ public sh_client_spawn(id)
 	}
 	
 	Assign_BitVar(can_fire_mask,id,false_for_macro);
+	UnSet_BitVar(mode_change_button_pressed_mask, id);
 	g_plAction[id]=act_none;
 }
 //----------------------------------------------------------------------------------------------

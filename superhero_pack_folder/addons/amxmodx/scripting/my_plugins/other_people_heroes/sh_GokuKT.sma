@@ -164,7 +164,7 @@ public Kaioken_Damage(id, idinflictor, attacker, Float:damage, damagebits){
 	if ( has_hero && ( GokuKTTimer[attacker][the_time] > 0 ) &&  !sh_clients_are_same_team(attacker,id)) {
 		
 		
-		new rounded_dmg = 5
+		new rounded_dmg = floatround(damage)
 		//to trigger GokuKT's energy weapon bonus
 		sh_extra_damage(id, attacker, rounded_dmg,
 										the_hitpoint,

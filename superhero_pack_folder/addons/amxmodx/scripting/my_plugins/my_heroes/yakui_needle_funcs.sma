@@ -242,7 +242,10 @@ public _gatling_set_needle(iPlugin,iParams){
 
 }
 
+public sh_client_spawn(id){
 
+	UnSet_BitVar(mode_change_button_pressed_mask, id);
+}
 public plugin_precache()
 {
 engfunc(EngFunc_PrecacheModel,NEEDLE_V_MODEL)

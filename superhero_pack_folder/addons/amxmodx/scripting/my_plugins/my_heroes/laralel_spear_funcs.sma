@@ -253,6 +253,11 @@ public spaar_thaank(ent){
 
 
 }
+public sh_client_spawn(id){
+
+	UnSet_BitVar(player_mode_button_pressed_mask,id)
+
+}
 Float:get_charge_index_from_id(id){
 
 	return (curr_charge[id]/cvar_val(float, pcvar_max_charge_time))
