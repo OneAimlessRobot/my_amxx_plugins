@@ -88,7 +88,7 @@ enum player_stat_struct{
 
 }
 
-#define EVASIVENESS_TASK_PERIOD 0.1
+#define EVASIVENESS_TASK_PERIOD 0.14
 
 static const DEBUG = 0
 
@@ -133,8 +133,7 @@ static const stat_consts[stat_struct_ids][stat_constants_struct] = {
 	{"Attack", POKEMON_DAMAGE_RELATION_BALLAST_VAL, "Physical attack"},
 	{"Defense", POKEMON_DAMAGE_RELATION_BALLAST_VAL, "Physical defense"},
 	{"Sp. Attack", POKEMON_DAMAGE_RELATION_BALLAST_VAL, "Special attack"},
-	{"Sp. Defense", POKEMON_DAMAGE_RELATION_BALLAST_VAL, "Special defense"},
-	{"Evasiveness", 40.0, "Transaparency"}
+	{"Sp. Defense", POKEMON_DAMAGE_RELATION_BALLAST_VAL, "Special defense"}
 
 
 }
@@ -143,13 +142,6 @@ static g_player_stats[SH_MAXSLOTS+1][stat_struct_ids][player_stat_struct]
 
 
 static enable_pokemon_dmg_cvar = -1
-
-
-#define POKEMON_EVASIVENESS_MONITOR_ENTITY_CLASSNAME "Pokemon_evasiveness_Monitor_Entity"
-
-new pokemon_evasiveness_monitor_entity = -1
-
-new pokemon_evasiveness_monitor_forward_id = -1
 
 
 public plugin_init(){
@@ -173,10 +165,6 @@ public plugin_init(){
 
 
 	RegisterHam(Ham_TakeDamage,"player","ham_sh_stat_management_physical_damage",_, true)
-
-	init_monitor_entity_based_global(POKEMON_EVASIVENESS_MONITOR_ENTITY_CLASSNAME, "apply_evasiveness", EVASIVENESS_TASK_PERIOD,
-											pokemon_evasiveness_monitor_entity,
-											pokemon_evasiveness_monitor_forward_id)
 
 	register_event("CurWeapon", "curweapon", "be", "1=1")
 
@@ -444,71 +432,12 @@ public notify_stat_change(id, attacker, stat_struct_ids:the_stat, bool:go_up_or_
 		}
 		if(num_stages){
 			emit_sound(id, CHAN_AUTO, go_up_or_go_down? STAT_UP_SFX:STAT_DOWN_SFX,VOL_NORM, ATTN_NORM,0,PITCH_NORM)
-			set_render_with_color_const(id,go_up_or_go_down?ORANGE:PURPLE,1,35,_,0,_,1.5,1,_,kRenderNormal,PRIO_RENDER_DELETE_INVISIBILITY)
+			set_render_with_color_const(id,go_up_or_go_down?ORANGE:PURPLE,1,35,_,0,_,1.5,1,_,kRenderNormal,PRIO_RENDER_EFFECT_ACTIVE)
 		}
 	}
 
 }
-public apply_evasiveness(entity_id){
 
-
-	if(!is_valid_ent(entity_id)){
-		
-		return PLUGIN_CONTINUE
-	
-	}
-	if(!sh_is_active()){
-
-		entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + EVASIVENESS_TASK_PERIOD)
-		return PLUGIN_CONTINUE
-	}
-	if(sh_is_freezetime()){
-		
-		entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + EVASIVENESS_TASK_PERIOD)
-		return PLUGIN_CONTINUE
-	}
-	if( !sh_is_inround()){
-		entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + EVASIVENESS_TASK_PERIOD)
-		return PLUGIN_CONTINUE
-	}
-	if( !pokemon_dmg_enabled()){
-		entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + EVASIVENESS_TASK_PERIOD)
-		return PLUGIN_CONTINUE
-	}
-
-	
-	static the_players[SH_MAXSLOTS], pnum, id		
-	get_players(the_players, pnum, "ah")
-	for (new k = 0; k < pnum; k++) {
-		
-		id = the_players[k]
-
-		if(!is_user_alive(id)){
-
-			continue
-		}
-		if(g_player_stats[id][STAT_EVASIVENESS_MULT][the_number_of_stages]<=0){
-			
-			continue
-
-		}
-		static const Float:get_rid_of_annoying_warning = 0.87
-
-		static Float:stat_clamp_evasiveness_frac;
-		
-		stat_clamp_evasiveness_frac = clamp_macro((float(g_player_stats[id][STAT_EVASIVENESS_MULT][the_number_of_stages])/float(MAX_PLAYER_STAT_STAGES) ), 0.1,get_rid_of_annoying_warning);
-
-
-
-		set_render_with_color_const(id,FX_NONE,1, floatround(255.0* (1.0 - stat_clamp_evasiveness_frac)),_,
-		
-									0,0,EVASIVENESS_TASK_PERIOD,0,_,kRenderTransAlpha,PRIO_RENDER_INVISIBILITY)
-
-		
-	}
-	entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + EVASIVENESS_TASK_PERIOD)
-	return PLUGIN_CONTINUE
-}
 public plugin_cfg(){
 
 	server_print("%s innited!^n",PLUGIN)

@@ -593,11 +593,7 @@ public bulletina_touque_playor(pToucher, pTouched)
 			DMG_BULLET,
 			SH_NEW_DMG_SUPER_BULLET,
 			custom_dmg_id_l96);
-
-
-		sh_apply_staged_stat_boost(pTouched,owner,STAT_EVASIVENESS_MULT,1,false)
-		
-		sh_apply_staged_stat_boost(owner,owner,STAT_EVASIVENESS_MULT,1,true)
+			
 
 		sh_screen_shake(pTouched,14.5,the_time/3.0,20.0)
 

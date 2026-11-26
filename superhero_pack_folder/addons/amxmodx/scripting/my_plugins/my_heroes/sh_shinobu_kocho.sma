@@ -212,7 +212,6 @@ public sh_hero_init(id, heroID, sh_init_mode:mode){
 	else{
 
 		shinobu_unweapons(id)
-		uncloak_shinobu(id)
 
 
 	}

@@ -13,6 +13,7 @@
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt3.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt13.inc"
 #include "custom_grenades/custom_grenades.inc"
 
@@ -21,6 +22,7 @@
 #define reika_parry_successful_sfx "shmod/reika/parry_sfx.wav"
 #define reika_parry_knife_blocked_sfx "shmod/reika/sword_break.wav"
 #define reika_parry_equip_sfx "shmod/reika/parry_on_sound.wav"
+#define reika_latch_on_sfx "shmod/pokemon_bide.wav"
 
 // GLOBAL VARIABLES
 
@@ -46,10 +48,17 @@ new pcvar_reika_ap
 new pcvar_reika_speed
 new pcvar_reika_max_melee_dmg_mult
 new pcvar_reika_battery_saturation_value
+new pcvar_reika_recharge_threshold_after_counter
 
 new REIKA_COUNTER_TURN_OFF_DELAY_TASKID
 
-new const DEBUG = 0
+new const DEBUG = 1
+
+
+new GLOW_TASKID
+
+#define GLOW_PERIOD 0.33
+
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -64,6 +73,7 @@ public plugin_init()
     pcvar_reika_explosion_damage = create_cvar("reika_explosion_damage","80.0")
     pcvar_reika_counter_mode_time = create_cvar("reika_counter_mode_time","20.0")
     pcvar_reika_battery_saturation_value = create_cvar("reika_battery_saturation_value","2000.0",_,_,true,500.0,true,5000.0)
+    pcvar_reika_recharge_threshold_after_counter = create_cvar("reika_recharge_threshold_after_counter","0.0",_,_,true,0.0,true,800.0)
 
     pcvar_reika_max_melee_dmg_mult = create_cvar("reika_max_melee_dmg_mult","2.0",_,_,true,1.5,true,10.0)
 
@@ -80,6 +90,7 @@ public plugin_init()
 
     sh_assign_hero_bit(gHeroID,SH_EXPLOSION_POWERS, true)
 
+    register_event("CurWeapon", "weaponChange", "be", "1=1")
 
     RegisterHam(Ham_TakeDamage,"player","reika_parry_damage_timer_trigger",_,true)
 
@@ -87,6 +98,88 @@ public plugin_init()
 
     REIKA_COUNTER_TURN_OFF_DELAY_TASKID=allocate_typed_task_id(player_task)
 
+    GLOW_TASKID=allocate_typed_task_id(generic_task)
+
+    set_task(GLOW_PERIOD,"reika_latch_glow_task",GLOW_TASKID,_,_,"b")
+
+
+}
+//----------------------------------------------------------------------------------------------
+public weaponChange(id)
+{
+
+    if(!sh_is_active()) return
+
+    if(!sh_get_user_has_hero(id,gHeroID)) return
+
+    if(!sh_get_id_bit(id, SH_REIKA_IS_LATCHED_ON)) return
+
+    if(user_has_weapon(id,CSW_KNIFE)){
+        
+        sh_switch_weapon(id, CSW_KNIFE)
+
+    }
+
+}
+
+public reika_latch_glow_task(task_id){
+
+	
+	static the_players[SH_MAXSLOTS], pnum, id		
+	get_players(the_players, pnum, "ah")
+	for (new i = 0; i < pnum; i++) {
+
+        id = the_players[i]
+
+        if(!sh_get_user_has_hero(id,gHeroID)) continue
+
+        if(!sh_get_id_bit(id, SH_REIKA_IS_LATCHED_ON)) continue
+
+        set_render_with_color_const(id,RED,1,INVISIBLE_MAN_GREY,_,0,_,GLOW_PERIOD,0,_,kRenderNormal,PRIO_RENDER_INFORMATIVE,gHeroID)
+
+
+	}
+
+
+}
+Float:reika_spend_energy_primitive(id, Float:spent){
+
+    static Float:damage_to_actually_do,
+        Float:previous_battery = 0.0
+
+    previous_battery = reika_stored_damage[id]
+    
+    damage_to_actually_do = clamp_macro((cvar_val(float, pcvar_reika_max_melee_dmg_mult)*spent)-spent,0.0,reika_stored_damage[id])
+    
+    if(floatround(damage_to_actually_do)>0){
+
+        reika_stored_damage[id]-=damage_to_actually_do
+        
+        if(reika_stored_damage[id]<=cvar_val(float, pcvar_reika_recharge_threshold_after_counter)){
+
+
+            sh_assign_id_bit(id, SH_REIKA_IS_LATCHED_ON, false)
+
+        }
+        
+        if(DEBUG){
+            sh_chat_message(id,gHeroID,"The multiplied damage was: %0.2f",
+                            (cvar_val(float, pcvar_reika_max_melee_dmg_mult)*spent))
+
+            sh_chat_message(id,gHeroID,"The raw damage was: %0.2f",
+                            spent)
+
+            sh_chat_message(id,gHeroID,"The extra damage delivered was: %0.2f",
+                            (cvar_val(float, pcvar_reika_max_melee_dmg_mult)*spent)-spent)
+
+
+            sh_chat_message(id,gHeroID,"Your current battery is: %0.2f",reika_stored_damage[id])
+
+            sh_chat_message(id,gHeroID,"Your previous battery was: %0.2f",previous_battery)
+        }
+        return damage_to_actually_do
+    }
+    return -1.0
 
 }
 //----------------------------------------------------------------------------------------------
@@ -189,7 +282,14 @@ Float:absorb_user(id, Float:the_damage, tg){
     
     battery_left_to_fill_up = max_macro(0.0,cvar_val(float,pcvar_reika_battery_saturation_value)-reika_stored_damage[id])
     damage_to_absorb = clamp_macro(the_damage,0.0,battery_left_to_fill_up)
+    if(floatround(battery_left_to_fill_up)<=0){
 
+        sh_chat_message(id,gHeroID,
+                        "Your battery is fulll!")
+
+        counter_mode_turn_off_task(id + REIKA_COUNTER_TURN_OFF_DELAY_TASKID)
+    
+    }
     if(floatround(damage_to_absorb)<=0){
 
         sh_chat_message(id,gHeroID,
@@ -280,40 +380,17 @@ public reika_parry_damage_timer_trigger(id, idinflictor, attacker, Float:damage,
     }
 
 
-    if ( sh_get_user_has_hero(attacker,gHeroID) && (weapon==CSW_KNIFE) &&((floatround(reika_stored_damage[attacker])>0))) {
+    if ( sh_get_user_has_hero(attacker,gHeroID) && (weapon==CSW_KNIFE) &&((floatround(reika_stored_damage[attacker])>0)) && sh_get_id_bit(attacker, SH_REIKA_IS_LATCHED_ON)) {
         
-        static Float:damage_to_actually_do,
-                Float:previous_battery = 0.0
+            static Float:damage_consumed;
 
-        previous_battery = reika_stored_damage[attacker]
-        damage_to_actually_do = clamp_macro((cvar_val(float, pcvar_reika_max_melee_dmg_mult)*damage)-damage,0.0,reika_stored_damage[attacker])
+            damage_consumed = reika_spend_energy_primitive(attacker, damage)
+            if(floatround(damage_consumed)>0){
 
-        if(floatround(damage_to_actually_do)>0){
-        
-            SetHamParamFloat(4,damage+damage_to_actually_do) // the very end is here. we shouldnt set ham params too early
-            
-            reika_stored_damage[attacker]-=damage_to_actually_do
+                SetHamParamFloat(4,damage+damage_consumed)
 
-            if(DEBUG){
-
-                sh_chat_message(attacker,gHeroID,"The multiplied damage was: %0.2f",
-                                (cvar_val(float, pcvar_reika_max_melee_dmg_mult)*damage))
-
-                sh_chat_message(attacker,gHeroID,"The raw damage was: %0.2f",
-                                (damage))
-
-                sh_chat_message(attacker,gHeroID,"The extra damage delivered was: %0.2f",
-                                (cvar_val(float, pcvar_reika_max_melee_dmg_mult)*damage)-damage)
-
-
-                sh_chat_message(attacker,gHeroID,"Your current battery is: %0.2f",reika_stored_damage[attacker])
-
-                sh_chat_message(attacker,gHeroID,"Your previous battery was: %0.2f",previous_battery)
-            
+                result=HAM_HANDLED
             }
-
-            result=HAM_HANDLED
-        }
     }
     return result
    
@@ -385,19 +462,38 @@ public reika_kd(id)
         sh_sound_deny(id)
         return
     }
+    if(get_user_weapon(id)!=CSW_KNIFE){
+
+        sh_sound_deny(id)
+        return
+
+    }
     new bool:curr_mode = bool:Get_BitVar(mode_mask, id)
     static pcvar_to_use;
     pcvar_to_use = pcvar_reika_post_explosion_cooldown
 
     if(!curr_mode){
-        
-        static Float:damage_to_actually_do
+        if(!sh_get_id_bit(id, SH_REIKA_IS_LATCHED_ON)){
+
+
+            sh_chat_message(id,gHeroID,"Get your battery saturated and activate counter mode before using explosions!")
+            sh_sound_deny(id)
+            return
+
+
+        }
+        static Float:damage_to_actually_do;
         damage_to_actually_do = clamp_macro((cvar_val(float, pcvar_reika_explosion_damage)),0.0,reika_stored_damage[id])
 
-        if(floatround(damage_to_actually_do)>0){
+        static Float:damage_consumed;
+
+        damage_consumed = reika_spend_energy_primitive(id, damage_to_actually_do)
+        
+        if(floatround(damage_consumed)>0){
+        
             explosion(gHeroID,id,
                             cvar_val(float, pcvar_reika_explosion_radius),
-                            damage_to_actually_do,
+                            damage_consumed,
                             cvar_val(float, pcvar_reika_explosion_force)
                             ,1,1)
             
@@ -413,10 +509,20 @@ public reika_kd(id)
     
     }
     else if(!sh_get_id_bit(id, SH_REIKA_IS_STORING_ENERGY)){
+        if(sh_get_id_bit(id, SH_REIKA_IS_LATCHED_ON)){
+
+            sh_chat_message(id,gHeroID,"You now cannot use this mode! Unload some battery first!")
+            sh_sound_deny(id)
+            return
+
+
+        }
         if(floatround(cvar_val(float, pcvar_reika_battery_saturation_value))<=floatround(reika_stored_damage[id])){
 
-            sh_chat_message(id,gHeroID,"You cannot counter while your battery is saturated! Go unload it first!")
-            sh_sound_deny(id)
+            sh_chat_message(id,gHeroID,"Latch on!")
+            sh_assign_id_bit(id, SH_REIKA_IS_LATCHED_ON, true)
+            emit_sound(id,CHAN_WEAPON, reika_latch_on_sfx,VOL_NORM,ATTN_NORM,0,PITCH_NORM)
+            sh_switch_weapon(id, CSW_KNIFE)
             return
 
 
@@ -439,8 +545,12 @@ public reika_kd(id)
 public plugin_precache(){
 
     engfunc(EngFunc_PrecacheSound, reika_parry_successful_sfx)
+    
     engfunc(EngFunc_PrecacheSound, reika_parry_knife_blocked_sfx)
+    
     engfunc(EngFunc_PrecacheSound, reika_parry_equip_sfx)
+    
+    engfunc(EngFunc_PrecacheSound, reika_latch_on_sfx)
 
 }
 public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,const sh_thrash_brat_dmg_type:new_dmg_type,const custom_weapon_id){
@@ -499,38 +609,15 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_
     if(sh_get_user_has_hero(attacker,gHeroID)){
 
 
-        if(is_melee &&((floatround(reika_stored_damage[attacker])>0))){
-            
-            static Float:damage_to_actually_do,
-                Float:previous_battery = 0.0
+        if(is_melee &&((floatround(reika_stored_damage[attacker])>0))&& sh_get_id_bit(attacker, SH_REIKA_IS_LATCHED_ON)){
 
-            previous_battery = reika_stored_damage[attacker]
-            
-            damage_to_actually_do = clamp_macro((cvar_val(float, pcvar_reika_max_melee_dmg_mult)*float(damage))-float(damage),0.0,reika_stored_damage[attacker])
-            
-            if(floatround(damage_to_actually_do)>0){
+                static Float:damage_consumed;
 
-                damage+=floatround(damage_to_actually_do)
-
-                reika_stored_damage[attacker]-=damage_to_actually_do
-                if(DEBUG){
-                    sh_chat_message(attacker,gHeroID,"The multiplied damage was: %0.2f",
-                                    (cvar_val(float, pcvar_reika_max_melee_dmg_mult)*damage))
-
-                    sh_chat_message(attacker,gHeroID,"The raw damage was: %0.2f",
-                                    float(damage))
-
-                    sh_chat_message(attacker,gHeroID,"The extra damage delivered was: %0.2f",
-                                    (cvar_val(float, pcvar_reika_max_melee_dmg_mult)*damage)-damage)
-
-
-                    sh_chat_message(attacker,gHeroID,"Your current battery is: %0.2f",reika_stored_damage[attacker])
-
-                    sh_chat_message(attacker,gHeroID,"Your previous battery was: %0.2f",previous_battery)
+                damage_consumed = reika_spend_energy_primitive(attacker, float(damage))
+                if(floatround(damage_consumed)>0){
+                    damage+=floatround(damage_consumed)
+                    return_result = DMG_FWD_HANDLED
                 }
-
-                return_result = DMG_FWD_HANDLED
-            }
             
         }
     }

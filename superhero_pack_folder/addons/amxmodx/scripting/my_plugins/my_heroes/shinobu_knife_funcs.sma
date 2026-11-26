@@ -67,9 +67,7 @@ new Float:g_shinobu_v_angles[SH_MAXSLOTS+1][3],
 	Float:g_shinobu_dst_v_angles[SH_MAXSLOTS+1][3]
 
 
-new g_prev_shinobu_cloaked_mask=0,
- 	g_curr_shinobu_cloaked_mask=0,
-	g_shinobu_using_knife_mask = 0
+new g_shinobu_using_knife_mask = 0
 
 enum{
 	
@@ -78,6 +76,8 @@ enum{
 }
 
 new const DEBUG = 0
+
+#define TASK_PERIOD 0.333
 
 public plugin_init(){
 	
@@ -93,7 +93,7 @@ public plugin_init(){
 	register_event("CurWeapon", "on_Knife_Weapon_Change", "be", "1=1")
 
     
-	set_task(1.0,"shinobu_cloak_apply",SHINOBU_GLOBAL_KNIFE_CLOAK_TASKID,_,_,"b")
+	set_task(TASK_PERIOD,"shinobu_cloak_apply",SHINOBU_GLOBAL_KNIFE_CLOAK_TASKID,_,_,"b")
 }
 
 public plugin_precache(){
@@ -133,21 +133,8 @@ public plugin_natives(){
 
 
 	register_native("nani_behind_player","_nani_behind_player")
-	register_native("uncloak_shinobu","_uncloak_shinobu")
 }
 
-public _uncloak_shinobu(iPlugins, iParams){
-
-	new id= get_param(1)
-
-	if ( !is_user_alive(id)||!sh_is_active()) return
-
-	
-	Assign_BitVar(g_curr_shinobu_cloaked_mask, id, false_for_macro);
-	Assign_BitVar(g_prev_shinobu_cloaked_mask, id, true_for_macro);
-
-	apply_cloak(id)
-}
 public shinobu_cloak_apply(task_id){
 
 
@@ -157,42 +144,24 @@ public shinobu_cloak_apply(task_id){
 	for (new k = 0; k < pnum; k++) {
 		
 		id = the_players[k]
-		if(sh_get_user_has_hero(id,gHeroID) ){
 
 
-			Assign_BitVar(g_prev_shinobu_cloaked_mask, id, Get_BitVar(g_curr_shinobu_cloaked_mask, id));
+		if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)) continue
 
-			new button = entity_get_int(id, EV_INT_button)
-			
-			Assign_BitVar(g_curr_shinobu_cloaked_mask,id, ((button & IN_DUCK ))||Get_BitVar(g_shinobu_using_knife_mask, id))
+
+		apply_cloak(id)
 	
-			apply_cloak(id)
-		}
+	
 	}
 }
 apply_cloak(id){
-	
-	if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)){
-		
-		Assign_BitVar(g_curr_shinobu_cloaked_mask,id,false_for_macro);
-		Assign_BitVar(g_prev_shinobu_cloaked_mask,id,false_for_macro);
-		return 
+
+
+	if(((entity_get_int(id, EV_INT_button) & IN_DUCK ))||Get_BitVar(g_shinobu_using_knife_mask, id)){
+		set_render_with_color_const(id,INVIS,1,cvar_val(num, pcvar_shinobu_alpha),_,0,_,TASK_PERIOD,0,_,_,PRIO_RENDER_INVISIBILITY,gHeroID)
 
 	}
-	if(Get_BitVar(g_curr_shinobu_cloaked_mask,id)==Get_BitVar(g_prev_shinobu_cloaked_mask,id)){
 
-		return
-	}
-
-	if(Get_BitVar(g_curr_shinobu_cloaked_mask,id)){
-		
-		set_render_with_color_const(id,INVIS,1,cvar_val(num, pcvar_shinobu_alpha),_,0,_,_,_,_,_,PRIO_RENDER_INVISIBILITY,gHeroID)
-
-	}
-	else{
-		
-		remove_glow_user(id,PRIO_RENDER_INVISIBILITY,cvar_val(num, pcvar_shinobu_alpha),_,_,gHeroID)
-	}
 }
 
 //----------------------------------------------------------------------------------------------

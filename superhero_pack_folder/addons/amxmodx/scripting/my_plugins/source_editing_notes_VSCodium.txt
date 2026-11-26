@@ -30,6 +30,20 @@
 /*
 
 
+    if ( sh_get_user_has_hero(attacker,gHeroID) && (weapon==CSW_KNIFE) &&((floatround(reika_stored_damage[attacker])>0))) {
+        
+            static Float:damage_consumed;
+
+            damage_consumed = reika_spend_energy_primitive(attacker, float(damage))
+            if(floatround(damage_consumed)>0){
+                damage+=damage_consumed
+
+                SetHamParamFloat(4,damage)
+
+                result=HAM_HANDLED
+            }
+    }
+
     swat
     gokukt
     erica

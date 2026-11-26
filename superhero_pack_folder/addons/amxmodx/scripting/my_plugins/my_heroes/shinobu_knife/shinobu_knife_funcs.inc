@@ -11,5 +11,3 @@
 
 
 native nani_behind_player(tele_player,tg_player,Float: distance_tele_tg=SHINOBU_DEFAULT_TELE_DIST)
-
-native uncloak_shinobu(id)

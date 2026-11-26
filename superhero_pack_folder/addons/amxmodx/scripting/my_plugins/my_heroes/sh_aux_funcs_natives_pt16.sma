@@ -12,7 +12,7 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
-new const DEBUG_MODE = 0
+new const DEBUG = 0
 
 /*
 
@@ -110,7 +110,7 @@ public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
 
-	if(DEBUG_MODE){
+	if(DEBUG){
 
 		DEBUG_HUD_HUD_SYNC_OBJ = CreateHudSyncObj()
 
@@ -136,7 +136,7 @@ public plugin_cfg(){
 }
 public plugin_end() {
 
-	if(DEBUG_MODE){
+	if(DEBUG){
 
 		for( new server_slot_idx:i = server_slot_idx:0; i< server_slot_idx;i++){
 			ArrayDestroy(rendering_attempts_stack_obj[i])
@@ -232,7 +232,7 @@ public _set_render_with_color_const(iPlugins,iParams){
 
 		return
 	}
-	if(DEBUG_MODE){
+	if(DEBUG){
 	
 		if(ArraySize(rendering_attempts_stack_obj[server_slot_idx:id])<1){
 				ArrayPushCell(rendering_attempts_stack_obj[server_slot_idx:id],
@@ -249,12 +249,12 @@ public _set_render_with_color_const(iPlugins,iParams){
 	
 	}
 	
-	if(DEBUG_MODE){
+	if(DEBUG){
 		sh_chat_message(id,heroID,"We are about to try to change glow! The target glow type is: %s",render_priority_names[the_priority])
 	}
 	if(player_rendering_priorities_array[server_slot_idx:id]>the_priority){
 		
-		if(DEBUG_MODE){
+		if(DEBUG){
 			sh_chat_message(id,heroID,"We tried changing glow and nothing happened because of priority!")
 			sh_chat_message(id,heroID,"The priority attempted to be changed out was:  %s",render_priority_names[player_rendering_priorities_array[server_slot_idx:id]])
 		}
@@ -283,7 +283,7 @@ public _set_render_with_color_const(iPlugins,iParams){
 			remove_task(id+REMOVE_GLOW_TASKID)
 		}
 
-		if(DEBUG_MODE){
+		if(DEBUG){
 				
 			sh_chat_message(id,heroID,"We are about to try to change glow! The priority test passed!");
 			sh_chat_message(id,heroID, "The attempted glow type is: %s",render_priority_names[the_priority])
@@ -305,7 +305,7 @@ public _set_render_with_color_const(iPlugins,iParams){
 
 			if((invis_from_player_pct>invis_pct_to_set_pct)&&(player_rendering_heroes_array[server_slot_idx:id]!=heroID)){
 				
-				if(DEBUG_MODE){
+				if(DEBUG){
 				
 					sh_chat_message(id,heroID,"We tried changing glow and nothing happened because of transparency!")
 				
@@ -361,7 +361,7 @@ remove_glow_user_aux(id,
 
 		if((invis_from_player_pct>gating_invis_pct)&&(player_rendering_heroes_array[server_slot_idx:id]!=heroID)){
 			
-			if(DEBUG_MODE){
+			if(DEBUG){
 			
 				sh_chat_message(id,heroID,"We tried removing glow and nothing happened because of transparency!")
 			

@@ -30,8 +30,8 @@ madness_m3mult 2.0		//Damage multiplyer for his M3
 
 
 
-new dmg_source_name_short_madness_dual_shotgun[SAFE_BUFFER_SIZE+1]="madness_dual_shotgun"
-new dmg_source_name_log_madness_dual_shotgun[SAFE_BUFFER_SIZE+1]="madness_dual_shotgun"
+new dmg_source_name_short_madness_dual_shotgun[SAFE_BUFFER_SIZE+1]="madness_dual_m3"
+new dmg_source_name_log_madness_dual_shotgun[SAFE_BUFFER_SIZE+1]="madness_dual_m3"
 new custom_dmg_id_madness_dual_shotgun
 
 

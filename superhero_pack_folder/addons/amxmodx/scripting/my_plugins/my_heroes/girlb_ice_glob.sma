@@ -515,7 +515,7 @@ public FwdTouch( Glob, World ) {
 	//set it as not landed in the ground until it does
 	//and we just did.
 	set_pev(Glob, pev_iuser1, 1)
-	set_pev(Glob, pev_movetype, MOVETYPE_TOSS)
+	set_pev(Glob, pev_movetype, MOVETYPE_NONE)
 
 }
 public player_touch( Glob, Player ) {

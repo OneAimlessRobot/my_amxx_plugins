@@ -22,10 +22,6 @@
 #include "../my_include/my_author_header.inc"
 
 new g_flora_field_loaded_mask=0,
-	
-	g_prev_flora_cloaked_mask=0,
- 	g_curr_flora_cloaked_mask=0,
-
 	g_curr_flora_noclip_mask=0,
 	g_prev_flora_noclip_mask=0;
 
@@ -299,8 +295,6 @@ public _reset_flora_user(iPlugin,iParams){
 	Assign_BitVar(g_flora_field_loaded_mask,id,true_for_macro);
 	g_flora_field_cooldown[id]=0.0;
 	g_flora_num_of_active_fields[id]=0;
-	Assign_BitVar(g_prev_flora_cloaked_mask,id,false_for_macro);
-	Assign_BitVar(g_curr_flora_cloaked_mask,id,false_for_macro);
 	g_flora_curr_charging[id]=-1
 	g_flora_curr_inside[id]=-1
 	g_flora_prev_inside[id]=-1
@@ -435,10 +429,6 @@ destroy_field(field_id,make_sound=0,planting=0, bool:start_of_round= false){
 						}
 					}
 				}
-				if(!Get_BitVar(g_curr_flora_noclip_mask,owner)){
-					Assign_BitVar(g_curr_flora_cloaked_mask,owner, false_for_macro);
-					apply_cloak(owner)
-				}
 				if(field_id==g_flora_curr_inside[owner]){
 			
 					g_flora_curr_inside[owner]=-1;
@@ -530,14 +520,13 @@ public flora_checks(entity_id){
 		g_curr_flora_button[id]=button;
 
 		Assign_BitVar(g_prev_flora_noclip_mask,id,Get_BitVar(g_curr_flora_noclip_mask,id));
-		Assign_BitVar(g_prev_flora_cloaked_mask,id,Get_BitVar(g_curr_flora_cloaked_mask,id));
+		
 
 		new is_on_the_ground = (entity_get_int( id, EV_INT_flags ) & FL_ONGROUND  ),
 			is_crouched= (g_curr_flora_button[id] & IN_DUCK )
 		
 		if((!is_on_the_ground&&!Get_BitVar(g_curr_flora_noclip_mask,id))){
 			g_flora_sheltered_value[id]=enum_zero;
-			Assign_BitVar(g_curr_flora_cloaked_mask,id,false_for_macro);
 			apply_cloak(id)
 			continue
 		}
@@ -545,7 +534,7 @@ public flora_checks(entity_id){
 		new field_id,flora_sheltered_values:flora_sheltered_value=is_flora_user_in_owned_field(id,field_id)
 		g_flora_sheltered_value[id]=flora_sheltered_value;
 		
-		
+
 		new bool:did_we_get_stuck = false
 		
 		if(Get_BitVar(g_curr_flora_noclip_mask,id)){
@@ -584,6 +573,7 @@ public flora_checks(entity_id){
 					new Float:distance_ratio = clamp_macro((the_distance/max_distance),0.01,cvar_val(float, pcvar_bad_resurface_dmg_penalty_max_hp_ratio))
 
 					flora_damage_code_reduction(id,distance_ratio)
+					apply_cloak(id)
 					continue
 				}
 			}
@@ -613,19 +603,10 @@ public flora_checks(entity_id){
 		*/
 		
 		if((g_flora_sheltered_value[id]<SHELTERED)){
-			Assign_BitVar(g_curr_flora_cloaked_mask,id,Get_BitVar(g_curr_flora_noclip_mask,id));
 			apply_cloak(id)
 			continue
 		}
 		
-		/*
-		
-		if she is, either crouch or noclip grant invisibility
-		
-		*/
-		
-		Assign_BitVar(g_curr_flora_cloaked_mask,id,is_crouched||Get_BitVar(g_curr_flora_noclip_mask,id));
-		apply_cloak(id)
 		
 		/*
 
@@ -659,6 +640,8 @@ public flora_checks(entity_id){
 		*/
 
 		if((g_flora_sheltered_value[id]<DUNGEON_DWELLER)){
+
+			apply_cloak(id)
 			continue
 		}
 		/*
@@ -679,6 +662,8 @@ public flora_checks(entity_id){
 
 		*/
 
+		apply_cloak(id)
+
 			
 	}
 	entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + FLORA_MONITOR_THINK_PERIOD)
@@ -688,13 +673,15 @@ flora_sheltered_values:is_flora_user_in_owned_field(player_id,&field_id=-1){
 	
 	new grenada = find_ent_by_owner(-1, FLORA_FIELD_CLASSNAME,player_id)
 	while(grenada) {
-		new Float:distance=entity_range(grenada,player_id)
-		if(distance<cvar_val(float,pcvar_field_radius)){
-			field_id=grenada;
-			if(distance<cvar_val(float,pcvar_field_core_radius)){
-				return DUNGEON_DWELLER
+		if(entity_get_int(grenada,EV_INT_iuser1)){
+			new Float:distance=entity_range(grenada,player_id)
+			if(distance<cvar_val(float,pcvar_field_radius)){
+				field_id=grenada;
+				if(distance<cvar_val(float,pcvar_field_core_radius)){
+					return DUNGEON_DWELLER
+				}
+				return SHELTERED
 			}
-			return SHELTERED
 		}
 		grenada = find_ent_by_owner(grenada, FLORA_FIELD_CLASSNAME,player_id)
 	}
@@ -852,7 +839,7 @@ public apply_teleport(id,field_inside) {
 		return
 
 	}
-	new Float: fOrigin[ 3 ],Float:other_field_origin[3]
+	static Float:fOrigin[ 3 ],Float:other_field_origin[3]
 	entity_get_vector( id, EV_VEC_origin, fOrigin );
 	
 
@@ -860,6 +847,8 @@ public apply_teleport(id,field_inside) {
 		new field_id=find_next_nearest_flora_field(id,field_inside,999999.0)
 		if(is_valid_ent(field_id)){
 			entity_get_vector( field_id, EV_VEC_origin, other_field_origin );
+
+			other_field_origin[2] += 16.0
 			entity_set_origin( id,  other_field_origin );
 			emit_sound(id, CHAN_AUTO, FIELD_TELEPORT, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 			static entlist[33];
@@ -890,27 +879,14 @@ public apply_teleport(id,field_inside) {
 }
 
 apply_cloak(id){
-	
-	if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)){
-		
-		Assign_BitVar(g_curr_flora_cloaked_mask,id,false_for_macro);
-		Assign_BitVar(g_prev_flora_cloaked_mask,id,false_for_macro);
-		return 
-
-	}
-	if(Get_BitVar(g_curr_flora_cloaked_mask,id)==Get_BitVar(g_prev_flora_cloaked_mask,id)){
-
-		return
-	}
 
 	new Float:alpha_to_use=get_player_alpha(id)
+
 	new alpha_value_to_use=floatround(float(255)*alpha_to_use)
-	if(Get_BitVar(g_curr_flora_cloaked_mask,id)){
-		set_render_with_color_const(id,INVIS,1,alpha_value_to_use,_,0,_,_,0,_,_,PRIO_RENDER_INVISIBILITY)
-	}
-	else{
-		
-		remove_glow_user(id,PRIO_RENDER_INVISIBILITY,alpha_value_to_use)
+	if(((g_flora_sheltered_value[id]>=SHELTERED)&&((g_curr_flora_button[id] & IN_DUCK )))||Get_BitVar(g_curr_flora_noclip_mask,id)){
+
+		set_render_with_color_const(id,INVIS,1,alpha_value_to_use,_,0,_,FLORA_MONITOR_THINK_PERIOD,0,_,_,PRIO_RENDER_INVISIBILITY,gHeroID)
+	
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -981,12 +957,12 @@ public field_think(ent)
 				if(actual_damage>0){
 
 					sh_set_stun(pid,cvar_val(float,pcvar_flora_stun_time),cvar_val(float,pcvar_flora_base_stun_speed))
+					set_render_with_color_const(pid,g_flora_dmg_color[owner],1,255,90,1,_,
+									cvar_val(float,pcvar_flora_stun_time),0,_,_,PRIO_RENDER_INFORMATIVE)
+					set_damage_icon(pid,2,DMG_ICON_BIO,LineColors[g_flora_dmg_color[owner]],1.0)
+					generic_heal(owner,fdamage,_,g_flora_dmg_color[owner],FLORA_HEAL_GLOWING_ON,FLORA_HEAL_GLOW_TIME,100,1,1,FIELD_HEAL)
 				
 				}
-				set_render_with_color_const(pid,g_flora_dmg_color[owner],1,255,90,1,_,
-								cvar_val(float,pcvar_flora_stun_time),0,_,_,PRIO_RENDER_INFORMATIVE)
-				set_damage_icon(pid,2,DMG_ICON_BIO,LineColors[g_flora_dmg_color[owner]],1.0)
-				generic_heal(owner,fdamage,_,g_flora_dmg_color[owner],FLORA_HEAL_GLOWING_ON,FLORA_HEAL_GLOW_TIME,100,1,1,FIELD_HEAL)
 			}
 		}
 		entity_set_float(ent,EV_FL_nextthink,floatadd(gametime,FLORA_THINK_PERIOD))
