@@ -4,7 +4,7 @@
 #define sh_damage_sources_aux_code
 
 
-#define MAX_SH_CUSTOM_DMG_LONG_NAME_LEN 31
+#define MAX_SH_CUSTOM_DMG_LOG_NAME_LEN 31
 #define MAX_SH_CUSTOM_DMG_SHORT_NAME_LEN 31
 #define MAX_SH_CUSTOM_DMG_SOURCES 999
 

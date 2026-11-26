@@ -18,6 +18,57 @@
 #define PLUGIN "Superhero camman mk2 pt2"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
+
+// GLOBAL VARIABLES
+new gHasCameraMask = 0
+
+
+
+
+#define CAMERA_WORLD_MDL "models/shmod/camman/camera/camera.mdl"
+
+#define CAMERA_CLICK_SFX "shmod/camman/camera/camera_click.wav"
+#define CAMERA_BOOTING_SFX "shmod/camman/camera/camera_booting.wav"
+#define CAMERA_BOOTED_SFX "shmod/camman/camera/camera_booted.wav"
+
+#define CAMERA_WORLD_MDL "models/shmod/camman/camera/camera.mdl"
+
+
+#define CAMERA_DAMAGE_FALLOFF_DIST 750.0
+
+#define CAMERA_PLANT_PERIOD 1.0
+
+
+
+#define CAMERA_ARMING_TIME 4.0
+
+#define CAMERA_DAMAGE 200
+
+
+#define ALPHA_INC 20
+#define CAMERA_WAIT_TIME 1.0
+
+#define CAMERA_CHARGE_PERIOD 0.1
+
+#define MAX_CAMERAS 10
+
+
+
+#define HALF_CAMERA_SIZE 8.0
+#define CAMERA_SIZE (HALF_CAMERA_SIZE*2.0)
+#define CAMERA_DISARM_PERIOD 0.1
+
+#define CAMERA_FRAMERATE 60.0
+
+
+#define ZOOM_INC 2.0
+
+#define MAX_ZOOM 160.0
+
+#define MIN_ZOOM 45.0
+
+
+
 const m_iFOV = 363;
 new camera_loaded_mask = exhausted_bitsum
 new camera_planting_mask = 0
@@ -59,13 +110,13 @@ public plugin_init(){
 	CAMERA_DISARM_TASKID=allocate_typed_task_id(player_task)
 
 }
+
 public plugin_natives(){
 	
 	
 	register_native( "clear_cameras","_clear_cameras")
 	register_native( "camera_get_camera_loaded","_camera_get_camera_loaded")
 	register_native( "user_can_plant_camera","_user_can_plant_camera")
-	register_native( "camera_clear_user_camera","_camera_clear_user_camera")
 	register_native( "toggle_camera_view","_toggle_camera_view")
 	register_native( "camera_get_camera_armed","_camera_get_camera_armed")
 	register_native( "camera_get_camera_planted","_camera_get_camera_planted")
@@ -77,7 +128,55 @@ public plugin_natives(){
 	register_native( "camera_set_camera_disarmer_on","_camera_set_camera_disarmer_on")
 	register_native( "camera_set_camera_planting", "_camera_set_camera_planting")
 	register_native( "camera_get_camera_planting", "_camera_get_camera_planting")
+	register_native("camman_get_has_camera","_camman_get_has_camera")
+	register_native("camman_set_has_camera","_camman_set_has_camera")
 	
+}
+
+
+//----------------------------------------------------------------------------------------------
+public sh_hero_init(id, heroID, sh_init_mode:mode){
+	if(heroID!=gHeroID) return
+
+	if(sh_get_user_has_hero(id, gHeroID)){
+		reset_camman_user(id)
+	}
+
+	
+}
+reset_camman_user(id){
+	
+	
+	remove_camera(id)
+	UnSet_BitVar(gHasCameraMask,id)
+	
+	
+	
+}
+public sh_client_spawn(id)
+{
+	if (sh_get_user_has_hero(id,gHeroID)  ) {
+		reset_camman_user(id)
+	}
+	
+}
+public _camman_set_has_camera(iPlugin,iParams){
+	new id= get_param(1)
+	new bool:value_to_set=bool:get_param(2)
+	if (value_to_set){
+		
+		Set_BitVar(gHasCameraMask,id)
+	}
+	else{
+
+		UnSet_BitVar(gHasCameraMask,id)
+	}
+}
+public _camman_get_has_camera(iPlugin,iParams){
+	
+	
+	new id= get_param(1)
+	return Get_BitVar(gHasCameraMask,id)
 	
 }
 public plugin_cfg(){
@@ -125,7 +224,7 @@ public camera_controls(id, uc_handle)
 
 	if(!sh_get_user_has_hero(id,gHeroID)) return FMRES_IGNORED
 
-	if(!camman_get_has_camera(id)) return FMRES_IGNORED
+	if(!Get_BitVar(gHasCameraMask,id)) return FMRES_IGNORED
 	
 	if(sh_get_stun(id)) return FMRES_IGNORED
 
@@ -156,24 +255,6 @@ public camera_controls(id, uc_handle)
 		
 	}
 	return FMRES_SUPERCEDE;
-}
-public _camera_get_curr_camera(iPlugins,iParams){
-	
-	new id=get_param(1)
-	return user_camera[id]
-	
-	
-	
-	
-}
-public _camera_clear_user_camera(iPlugins,iParams){
-	
-	new id=get_param(1)
-	remove_camera(id)
-	
-	
-	
-	
 }
 public _camera_get_camera_charging(iPlugins,iParams){
 	
@@ -223,7 +304,7 @@ public _camera_get_camera_planting(iPlugins,iParams){
 public _camera_get_camera_planted(iPlugins,iParams){
 	
 	new id=get_param(1);
-	return camman_get_has_camera(id)
+	return Get_BitVar(gHasCameraMask,id)
 	
 	
 }
@@ -559,7 +640,7 @@ public remove_camera(pid){
 
 public disarm_task(id){
 	id-=CAMERA_DISARM_TASKID
-	if(!camman_get_has_camera(id)){
+	if(!Get_BitVar(gHasCameraMask,id)){
 		return;
 
 	}

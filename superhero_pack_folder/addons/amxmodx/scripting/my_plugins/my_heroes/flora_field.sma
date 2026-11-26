@@ -21,6 +21,42 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
+
+
+
+
+#define FLORA_CHARGE_PERIOD 0.1
+#define FLORA_THINK_PERIOD 0.35
+
+#define FLORA_CHARGE_RATE 100.0
+#define FIELD_ACTIVE_TIME_BUFFER 10.0
+
+#define FIELD_DEPLOYED "shmod/flora/fields/flora_deployed.wav"
+#define FIELD_HUM "shmod/flora/fields/flora_fieldambience.wav"
+#define FIELD_HEAL "shmod/flora/fields/flora_heal.wav"
+#define FIELD_DESTROYED "shmod/flora/fields/field_destroy.wav"
+#define FIELD_CHARGING "shmod/flora/fields/field_charging.wav"
+#define FIELD_TELEPORT "shmod/flora/fields/flora_teleport.wav"
+#define FIELD_DIG_SOUND "ambience/port_suckin1.wav"
+
+
+#define FLORA_HEAL_GLOW_TIME 3.0
+enum flora_sheltered_values{
+  NONE=0,
+  OUTSIDE,
+  SHELTERED,
+  DUNGEON_DWELLER
+}
+
+stock const sh_custom_color:flora_damage_colors[flora_sheltered_values]={
+  GREEN,
+  GREEN,
+  YELLOW,
+  RED
+
+}
+
+
 new g_flora_field_loaded_mask=0,
 	g_curr_flora_noclip_mask=0,
 	g_prev_flora_noclip_mask=0;
@@ -57,6 +93,7 @@ new pcvar_flora_invis_alpha_dec_per_lvl
 new pcvar_flora_teleport_reach_max_distance
 new pcvar_flora_field_max_active_ammount
 new pcvar_bad_resurface_dmg_penalty_max_hp_ratio
+new pcvar_flora_field_start_ammount
 
 new field_drain_wpn_id
 new dmg_source_name_short_field_drain[SAFE_BUFFER_SIZE+1]="field_drain"
@@ -64,6 +101,10 @@ new dmg_source_name_log_field_drain[SAFE_BUFFER_SIZE+1]="field_drain"
 
 stock FLORA_COOLDOWN_TASKID,
 		FLORA_LOAD_TASKID
+
+
+
+new g_flora_num_of_fields[SH_MAXSLOTS+1]
 
 
 new cut_her_some_slack_start_of_round_mask = 0
@@ -88,6 +129,8 @@ public plugin_init()
 	pcvar_bad_resurface_dmg_penalty_max_hp_ratio =
 					create_cvar("flora_bad_resurface_max_hp_penalty_ratio" ,"0.75")
 
+	pcvar_flora_field_start_ammount = create_cvar("flora_field_start_ammount", "10" )
+	pcvar_flora_field_max_active_ammount = create_cvar("flora_field_max_active_ammount", "10" )
 	pcvar_flora_field_time = create_cvar("flora_field_time" ,"30.0" )
 	pcvar_flora_dmg_coeff = create_cvar("flora_dmg_coeff" ,"0.5" )
 	pcvar_flora_field_heal_mult = create_cvar("flora_field_heal_mult" ,"0.5" )
@@ -112,21 +155,6 @@ public plugin_init()
 
 
 
-}
-
-public plugin_end(){
-
-	if(thinker_forward_id>=0){
-
-		unregister_think(thinker_forward_id)
-
-	}
-
-
-	if(is_valid_ent(flora_monitor_proximity_thinker_entity)){
-
-		remove_entity(flora_monitor_proximity_thinker_entity)
-	}
 }
 
 public flora_noclip_control(id, uc_handle)
@@ -159,6 +187,16 @@ public sh_round_end(){
 	cut_her_some_slack_start_of_round_mask = exhausted_bitsum
 
 }
+public sh_round_start(){
+	
+	cut_her_some_slack_start_of_round_mask = exhausted_bitsum
+
+}
+public sh_round_new(){
+	
+	cut_her_some_slack_start_of_round_mask = exhausted_bitsum
+
+}
 public plugin_natives(){
 
 	register_native("reset_flora_user","_reset_flora_user");
@@ -167,14 +205,9 @@ public plugin_natives(){
 	register_native("form_field","_form_field")
 	register_native("field_loaded","_field_loaded")
 	register_native("flora_get_user_num_active_fields","_flora_get_user_num_active_fields")
-	register_native("flora_set_user_num_active_fields","_flora_set_user_num_active_fields")
-	register_native("flora_dec_user_num_active_fields","_flora_dec_user_num_active_fields")
-	register_native("flora_inc_user_num_active_fields","_flora_inc_user_num_active_fields")
-
-
-	
 
 }
+
 public plugin_cfg(){
 
 	gHeroID = flora_get_hero_id()
@@ -207,20 +240,6 @@ public _flora_get_user_num_active_fields(iPlugin,iParams){
 	new id=get_param(1)
 	
 	return g_flora_num_of_active_fields[id]
-
-}
-public _flora_set_user_num_active_fields(iPlugin,iParams){
-	new id=get_param(1)
-	new value=get_param(2)
-
-	g_flora_num_of_active_fields[id]= value
-
-}
-public _flora_dec_user_num_active_fields(iPlugin,iParams){
-	new id=get_param(1)
-	new value=get_param(2)
-
-	g_flora_num_of_active_fields[id]= (g_flora_num_of_active_fields[id]>0)? (g_flora_num_of_active_fields[id]-value):0
 
 }
 public _flora_inc_user_num_active_fields(iPlugin,iParams){
@@ -298,6 +317,8 @@ public _reset_flora_user(iPlugin,iParams){
 	g_flora_curr_charging[id]=-1
 	g_flora_curr_inside[id]=-1
 	g_flora_prev_inside[id]=-1
+	g_flora_num_of_fields[id]=cvar_val(num,pcvar_flora_field_start_ammount)
+	unoclip_flora(id)
 	
 	
 }
@@ -577,9 +598,10 @@ public flora_checks(entity_id){
 					continue
 				}
 			}
-			else{
-				emit_sound(id,CHAN_BODY, FIELD_DIG_SOUND, VOL_NORM, ATTN_NONE, 0, 70)
+			else if(!(CSW_KNIFE==get_user_weapon(id))){
+			
 				engclient_cmd(id, "weapon_knife")
+			
 			}
 		}
 		
@@ -627,7 +649,7 @@ public flora_checks(entity_id){
 			flags&= (~FL_DUCKING)
 			entity_set_int(id,EV_INT_flags,flags)
 
-
+			emit_sound(id,CHAN_BODY, FIELD_DIG_SOUND, VOL_NORM, ATTN_NONE, 0, 70)
 			
 			noclip_flora(id)
 
@@ -713,7 +735,7 @@ public _form_field(iPlugin,iParams)
 
 	if(!sh_get_user_has_hero(id,gHeroID)) return
 	
-	if(!flora_get_user_num_fields(id)){
+	if(!g_flora_num_of_fields[id]){
 		
 		client_print(id,print_center,"You ran out of fields")
 		return
@@ -799,10 +821,13 @@ public field_deploy_task(id,field_id){
 	entity_set_int(field_id,EV_INT_solid, SOLID_BBOX)
 	entity_set_vector(field_id,EV_VEC_velocity,null_vector)
 	entity_set_int(field_id,EV_INT_movetype, MOVETYPE_FLY)
-	flora_dec_user_num_fields(id,1)
-	flora_inc_user_num_active_fields(id,1)
+	g_flora_num_of_fields[id]= (g_flora_num_of_fields[id]>0)? (g_flora_num_of_fields[id]-1):0
 	
-	client_print(id,print_center,"You have %d fields left!",flora_get_user_num_fields(id))
+	g_flora_num_of_active_fields[id]=((g_flora_num_of_active_fields[id]+1)>=
+		cvar_val(num,pcvar_flora_field_max_active_ammount))?
+		cvar_val(num,pcvar_flora_field_max_active_ammount):g_flora_num_of_active_fields[id]+1
+	
+	client_print(id,print_center,"You have %d fields left!",g_flora_num_of_fields[id])
 	g_flora_field_cooldown[id]=cvar_val(float,pcvar_field_cooldown)
 	set_task(FLORA_CHARGE_PERIOD,"cooldown_update_task",id+FLORA_COOLDOWN_TASKID,"", 0,  "a",
 			floatround(cvar_val(float,pcvar_field_cooldown)/FLORA_CHARGE_PERIOD)+1)
@@ -1039,7 +1064,10 @@ public charge_iteration(owner,field_id){
 	entity_set_vector(field_id, EV_VEC_velocity,  velocity)
 	
 	// switch to knife
-	engclient_cmd(owner, "weapon_knife")
+	
+	if(!(CSW_KNIFE==get_user_weapon(owner))){
+		engclient_cmd(owner, "weapon_knife")
+	}
 	
 	static hud_msg[128];
 	entity_set_float(field_id,EV_FL_fuser1,floatadd(entity_get_float(field_id,EV_FL_fuser1),FLORA_CHARGE_PERIOD))

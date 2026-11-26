@@ -91,6 +91,14 @@ public plugin_init(){
 
 }
 
+public on_Knife_Weapon_Change(id)
+{
+	if ( !sh_is_active()) return
+	if(!sh_get_user_has_hero(id,gHeroID)) return
+	if(Get_BitVar(g_zenitsu_is_charging_mask, id)&&!sh_get_id_bit(id, SH_ZENITSU_HAS_STRUCK)){
+		engclient_cmd(id, "weapon_knife")
+	}
+}
 public zenitsu_flight_loop(task_id){
 
 	if(!sh_is_active()) return
@@ -243,14 +251,6 @@ public plugin_precache(){
 
 	engfunc(EngFunc_PrecacheSound,FLIGHT_IGNITION );
 	engfunc(EngFunc_PrecacheSound,SLICERISTA_HIT_MEAT_SFX)
-}
-public on_Knife_Weapon_Change(id)
-{
-	if ( !sh_is_active()) return
-	if(!sh_get_user_has_hero(id,gHeroID)) return
-	if(Get_BitVar(g_zenitsu_is_charging_mask, id)&&!sh_get_id_bit(id, SH_ZENITSU_HAS_STRUCK)){
-		engclient_cmd(id, "weapon_knife")
-	}
 }
 
 //----------------------------------------------------------------------------------------------

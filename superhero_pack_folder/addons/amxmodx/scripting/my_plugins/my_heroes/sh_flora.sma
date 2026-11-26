@@ -14,12 +14,10 @@ stock const debug_hud_mode= false
 
 // GLOBAL VARIABLES
 #define gHeroName "Flora"
-new g_flora_num_of_fields[SH_MAXSLOTS+1]
 new pcvar_gFloraHeroLvl
 
 
-new pcvar_flora_field_start_ammount,
-	pcvar_flora_field_max_active_ammount
+new pcvar_flora_field_max_active_ammount
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -27,9 +25,7 @@ public plugin_init()
 	register_plugin("SUPERHERO flora","1.1",AUTHOR)
 	
 	pcvar_gFloraHeroLvl = create_cvar("flora_level", "39" )
-	pcvar_flora_field_start_ammount = create_cvar("flora_field_start_ammount", "10" )
 	pcvar_flora_field_max_active_ammount = create_cvar("flora_field_max_active_ammount", "10" )
- 
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
 	gHeroID=shCreateHero(gHeroName, "Sprawling Garden", "Create biohazard fields which weaken enemies!", true, "flora_level")
@@ -46,15 +42,9 @@ public plugin_init()
 }
 
 
-
-
-
 public plugin_natives(){
 
 	register_native("flora_get_hero_id","_flora_get_hero_id");
-	register_native("flora_get_user_num_fields","_flora_get_user_num_fields")
-	register_native("flora_set_user_num_fields","_flora_set_user_num_fields")
-	register_native("flora_dec_user_num_fields","_flora_dec_user_num_fields")
 	register_native("flora_get_hero_lvl","_flora_get_hero_lvl")
 	
 
@@ -67,26 +57,6 @@ public _flora_get_hero_lvl(iPlugins,iParams){
 	return cvar_val(num, pcvar_gFloraHeroLvl)
 	
 	
-}
-
-public _flora_get_user_num_fields(iPlugin,iParams){
-	new id=get_param(1)
-	
-	return g_flora_num_of_fields[id]
-}
-public _flora_set_user_num_fields(iPlugin,iParams){
-	new id=get_param(1)
-	new value=get_param(2)
-	
-	g_flora_num_of_fields[id]=value
-
-}
-public _flora_dec_user_num_fields(iPlugin,iParams){
-	new id=get_param(1)
-	new value=get_param(2)
-
-	g_flora_num_of_fields[id]= (g_flora_num_of_fields[id]>0)? (g_flora_num_of_fields[id]-value):0
-
 }
 public _flora_get_hero_id(iPlugin,iParams){
 	
@@ -102,17 +72,12 @@ public sh_client_spawn(id)
 	}
 	if ( sh_get_user_has_hero(id,gHeroID) ) {
 		reset_flora_user(id ,true)
-		g_flora_num_of_fields[id]=cvar_val(num,pcvar_flora_field_start_ammount)
 	}
 }
 //----------------------------------------------------------------------------------------------
 public sh_hero_init(id, heroID, sh_init_mode:mode){
 	if(heroID!=gHeroID) return
 
-	if(sh_get_user_has_hero(id, gHeroID)){
-
-		g_flora_num_of_fields[id]=cvar_val(num,pcvar_flora_field_start_ammount)
-	}
 	reset_flora_user(id, true)
 }
 

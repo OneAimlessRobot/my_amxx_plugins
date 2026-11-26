@@ -85,8 +85,8 @@ new goku_kt_dmg_boost_wpn_short_name[SAFE_BUFFER_SIZE+1]="goku_kt_dmg_boost"
 new goku_kt_dmg_boost_wpn_log_name[SAFE_BUFFER_SIZE+1]="goku_kt_dmg_boost"
 new goku_kt_dmg_boost_wpn_id = -1
 
-new goku_kt_dmg_boost_melee_wpn_short_name[SAFE_BUFFER_SIZE+1]="goku_kt_dmg_boost_melee"
-new goku_kt_dmg_boost_melee_wpn_log_name[SAFE_BUFFER_SIZE+1]="goku_kt_dmg_boost_melee"
+new goku_kt_dmg_boost_melee_wpn_short_name[SAFE_BUFFER_SIZE+1]="goku_kt_melee"
+new goku_kt_dmg_boost_melee_wpn_log_name[SAFE_BUFFER_SIZE+1]="goku_kt_melee"
 new goku_kt_dmg_boost_melee_wpn_id = -1
 
 //pcvar holders

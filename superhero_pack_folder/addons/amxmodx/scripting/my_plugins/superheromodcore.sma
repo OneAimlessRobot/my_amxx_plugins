@@ -162,6 +162,8 @@ new fwd_ShXpPost
 */
 new const HUDSYNC_MODE = 1
 
+new const DEBUG = 0
+
 /*
 
 	Used only if in HUDSYNC_MODE!
@@ -2960,7 +2962,7 @@ public sh_extra_damage_result:_sh_extra_damage()
 
 	static wpnDescription[32]
 
-	arrayset(wpnDescription,0,sizeof(wpnDescription))
+	bzero(wpnDescription);
 
 	bodypart = my_hitpoint_enum:get_param(4)
 	mode = sh_damage_mode:get_param(5)
@@ -3205,8 +3207,13 @@ public sh_extra_damage_result:_sh_extra_damage()
 		}
 		static victim_name[128],
 			attacker_name[128];
-		get_user_name(victim,victim_name,127)
-		get_user_name(attacker,attacker_name,127)
+
+		bzero(victim_name);
+		bzero(attacker_name);
+
+
+		get_user_name(victim,victim_name,charsmax(victim_name))
+		get_user_name(attacker,attacker_name,charsmax(attacker_name))
 		
 		if ( Get_BitVar(gHasAnubisMask, attacker) && get_pcvar_num(sh_anubisdmg_check) && victim != attacker ) {
 			set_hudmessage(0, 100, 200, -1.0, 0.55, 2, 0.1, 2.0, 0.02, 0.02, -1)
@@ -5533,7 +5540,7 @@ memoryTableRead(id, const savekey[])
 {
 	if ( !get_pcvar_num(sv_superheros) ) return false
 
-	static x, p, idLevel, powerCount, heroIndex
+	static x, p, idLevel, powerCount, tmpPowerCount, heroIndex
 
 	for ( x = 1; x < gMemoryTableCount; x++ ) {
 		if ( gMemoryTableKeys[x][0] != '^0' && equal(gMemoryTableKeys[x], savekey) ) {
@@ -5545,13 +5552,45 @@ memoryTableRead(id, const savekey[])
 			// Load the Powers
 			gPlayerPowers[id][0] = 0
 			
-			powerCount = gPlayerPowers[id][0] = gMemoryTablePowers[x][0]
+			tmpPowerCount = gMemoryTablePowers[x][0]
 			
+			powerCount = 0
+
+			for (p = 1; p <= idLevel && p <= tmpPowerCount; p++ ) {
+				heroIndex =  gMemoryTablePowers[x][p]
+				if(DEBUG){
+
+					server_print("Someone tried to pick a hero from a memory table!")
+				}
+				new init_fwd_ret_id:fwd_result=INIT_FWD_PASS
+				if(!ExecuteForward(fwd_HeroInit_Pre, fwd_result, id, heroIndex, SH_HERO_ADD)){
+
+					server_print("Hero init pre forward execution error!!!")
+					continue
+				}
+				if(fwd_result!=INIT_FWD_PASS){
+					
+					if(DEBUG){
+
+						server_print("They failed!")
+					}
+
+					continue
+				}
+
+				initHero(id, heroIndex, SH_HERO_ADD)
+				gPlayerPowers[id][powerCount+1] = heroIndex
+				powerCount++
+
+			}
 
 			for (p = 1; p <= idLevel && p <= powerCount; p++ ) {
-				heroIndex =  gMemoryTablePowers[x][p]
-				gPlayerPowers[id][p] = heroIndex
-				initHero(id, heroIndex, SH_HERO_ADD)
+				if(DEBUG){
+
+					server_print("Lets try and restore the table in case something changed")
+				}
+				heroIndex =  gPlayerPowers[x][p]
+				gMemoryTablePowers[x][p] = heroIndex
 
 			}
 			gPlayerPowers[id][0] = gMemoryTablePowers[x][0] = powerCount

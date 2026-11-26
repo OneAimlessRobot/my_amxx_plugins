@@ -8,18 +8,25 @@
 #include "../my_include/my_author_header.inc"
 
 stock generic_dmg_source_wpn_id;
-const generic_dmg_source_is_melee=0;
+const bool:generic_dmg_source_is_melee=false;
 stock generic_dmg_hero_name[MAX_HERO_NAME_LENGTH]="some_hero"
 stock const generic_dmg_source_name[SAFE_BUFFER_SIZE+1]="sh_generic_dmg";
 stock const generic_dmg_source_log_name[SAFE_BUFFER_SIZE+1]="sh_generic_dmg";
 
 //These are indexed by "SH_CUSTOM_DMG_WPN_ID"
 //and the max number of weapons is "MAX_SH_CUSTOM_DMG_SOURCES"
+enum damage_source_struct{
 
-stock sh_damage_source_hero_ids[MAX_SH_CUSTOM_DMG_SOURCES]
-stock sh_damage_source_is_a_melee[MAX_SH_CUSTOM_DMG_SOURCES]
-stock sh_damage_source_short_names[MAX_SH_CUSTOM_DMG_SOURCES][SAFE_BUFFER_SIZE+1]
-stock sh_damage_source_log_names[MAX_SH_CUSTOM_DMG_SOURCES][SAFE_BUFFER_SIZE+1]
+    the_hero_id,
+    bool:is_damage_source_a_melee,
+    dmg_source_short_name[SAFE_BUFFER_SIZE+1],
+    dmg_source_log_name[SAFE_BUFFER_SIZE+1]
+
+
+}
+
+new sh_damage_source_arrays[MAX_SH_CUSTOM_DMG_SOURCES][damage_source_struct]
+
 
 //returns wpn_id to be used in calls to sh_extra_damage if desired
 
@@ -27,11 +34,8 @@ stock sh_damage_source_log_names[MAX_SH_CUSTOM_DMG_SOURCES][SAFE_BUFFER_SIZE+1]
 public plugin_init(){
 
     register_plugin(PLUGIN, VERSION, AUTHOR);
-    arrayset(sh_damage_source_hero_ids,0,sizeof(sh_damage_source_hero_ids))
-    for(new i=0;i<MAX_SH_CUSTOM_DMG_SOURCES;i++){
-        arrayset(sh_damage_source_short_names[i],0,sizeof(sh_damage_source_short_names[]))
-        arrayset(sh_damage_source_log_names[i],0,sizeof(sh_damage_source_log_names[]))
-    }
+    
+
     generic_dmg_source_wpn_id=sh_log_custom_damage_source();
 }
 
@@ -50,11 +54,15 @@ public _sh_log_custom_damage_source(iPlugin,iParams){
 
     new hero_id= get_param(1)
 
-    new short_name_arr[SAFE_BUFFER_SIZE+1]
-    new long_name_arr[SAFE_BUFFER_SIZE+1]
-    get_array(2,short_name_arr,SAFE_BUFFER_SIZE+1)
-    get_array(3,long_name_arr,SAFE_BUFFER_SIZE+1)
-    new is_a_melee=get_param(4)
+    static short_name_arr[SAFE_BUFFER_SIZE+1],
+        log_name_arr[SAFE_BUFFER_SIZE+1]
+    
+    bzero(short_name_arr);
+    bzero(log_name_arr);
+
+    get_string(2,short_name_arr,charsmax(short_name_arr))
+    get_string(3,log_name_arr,charsmax(log_name_arr))
+    new bool:is_a_melee= bool:get_param(4)
     new is_generic_hero=0;
     if((hero_id<-1 )|| (hero_id >=SH_MAXHEROS+1)){
         is_generic_hero=1;
@@ -62,12 +70,12 @@ public _sh_log_custom_damage_source(iPlugin,iParams){
         server_print("Invalid hero id %d at _sh_log_custom_damage_source!^nHero id must be between exactly %d and %d!^nGeneric damage source will be logged^n",hero_id,-1,SH_MAXHEROS-1)
         */
     }
-    new wpn_id=custom_weapon_add(is_generic_hero?generic_dmg_source_name:short_name_arr, is_generic_hero?generic_dmg_source_is_melee:is_a_melee, is_generic_hero?generic_dmg_source_log_name:long_name_arr)
+    new wpn_id=custom_weapon_add(is_generic_hero?generic_dmg_source_name:short_name_arr, is_generic_hero?generic_dmg_source_is_melee:is_a_melee, is_generic_hero?generic_dmg_source_log_name:log_name_arr)
     if(wpn_id>0){
-        sh_damage_source_hero_ids[wpn_id]=is_generic_hero?-1:hero_id;
-        sh_damage_source_is_a_melee[wpn_id]=is_generic_hero?generic_dmg_source_is_melee:is_a_melee;
-        copy(sh_damage_source_short_names[wpn_id],SAFE_BUFFER_SIZE,is_generic_hero?generic_dmg_source_name:short_name_arr)
-        copy(sh_damage_source_log_names[wpn_id],SAFE_BUFFER_SIZE,is_generic_hero?generic_dmg_source_log_name:long_name_arr)
+        sh_damage_source_arrays[wpn_id][the_hero_id] = is_generic_hero?-1:hero_id;
+        sh_damage_source_arrays[wpn_id][is_damage_source_a_melee]=is_generic_hero?generic_dmg_source_is_melee:is_a_melee;
+        copy(sh_damage_source_arrays[wpn_id][dmg_source_short_name],SAFE_BUFFER_SIZE,is_generic_hero?generic_dmg_source_name:short_name_arr)
+        copy(sh_damage_source_arrays[wpn_id][dmg_source_log_name],SAFE_BUFFER_SIZE,is_generic_hero?generic_dmg_source_log_name:log_name_arr)
         
     }
     else{
@@ -78,28 +86,29 @@ public _sh_log_custom_damage_source(iPlugin,iParams){
     
     /*if(sh_damage_source_is_a_melee[wpn_id]){
         
-        server_print("^nValid wpn_id obtained! %d^n",wpn_id)
+    server_print("^nValid wpn_id obtained! %d^n",wpn_id)
 
-        static hero_name[MAX_HERO_NAME_LENGTH]
-        if(sh_damage_source_hero_ids[wpn_id]>=0){
-            sh_get_hero_name_from_id(hero_id, hero_name)
+    static hero_name[MAX_HERO_NAME_LENGTH]
+    if(sh_damage_source_arrays[wpn_id][the_hero_id]>=0){
+        sh_get_hero_name_from_id(hero_id, hero_name)
 
-        }
-        else{
+    }
+    else{
 
-            server_print("It is for a generic hero!");
-        }
-        server_print("The hero name is: %s",
-                is_generic_hero?generic_dmg_hero_name:hero_name)
+        server_print("It is for a generic hero!");
+    }
+    server_print("The hero name is: %s",
+            is_generic_hero?generic_dmg_hero_name:hero_name)
 
-        server_print("The short name was: %s",
-                                    sh_damage_source_short_names[wpn_id])
+    server_print("The short name was: %s",
+                                sh_damage_source_arrays[wpn_id][dmg_source_short_name])
 
-        server_print("The long name was: %s",
-                                    sh_damage_source_log_names[wpn_id])
+    server_print("The log name was: %s",
+                               sh_damage_source_arrays[wpn_id][dmg_source_log_name])
 
-        server_print("This weapon is%sa melee!",
-                                    sh_damage_source_is_a_melee[wpn_id]?" considered a ":" NOT considered a ")
-    }*/
+    server_print("This weapon is %s a melee!",
+                                sh_damage_source_arrays[wpn_id][is_damage_source_a_melee]?"considered a":"NOT considered a")
+    }
+    */
     return wpn_id
 }

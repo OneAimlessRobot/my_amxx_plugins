@@ -10,8 +10,6 @@
 
 #define gHeroName "Camman"
 
-// GLOBAL VARIABLES
-new gHasCameraMask = 0
 
 new pcvar_camera_cooldown
 new pcvar_disarmable
@@ -32,67 +30,17 @@ public plugin_init()
 
 public plugin_natives(){
 	
-	register_native("camman_set_has_camera","_camman_set_has_camera")
-	register_native("camman_get_has_camera","_camman_get_has_camera")
-	
-	register_native("camman_get_disarmable","_camman_get_disarmable")
 	
 	register_native("camman_get_hero_id","_camman_get_hero_id")
 	
 	
 }
-public _camman_get_disarmable(iPlugin,iParams){
-	
-	return cvar_val(bool, pcvar_disarmable)
-}
 public _camman_get_hero_id(iPlugin,iParams){
 	return gHeroID
-}
-
-public _camman_set_has_camera(iPlugin,iParams){
-	new id= get_param(1)
-	new bool:value_to_set=bool:get_param(2)
-	if (value_to_set){
-		
-		Set_BitVar(gHasCameraMask,id)
-	}
-	else{
-
-		UnSet_BitVar(gHasCameraMask,id)
-	}
-}
-public _camman_get_has_camera(iPlugin,iParams){
-	
-	
-	new id= get_param(1)
-	return Get_BitVar(gHasCameraMask,id)
-	
-}
-
-
-//----------------------------------------------------------------------------------------------
-public sh_hero_init(id, heroID, sh_init_mode:mode){
-	if(heroID!=gHeroID) return
-
-	if(sh_get_user_has_hero(id, gHeroID)){
-		reset_camman_user(id)
-	}
-
-	
-}
-public reset_camman_user(id){
-	
-	
-	camera_clear_user_camera(id)
-	UnSet_BitVar(gHasCameraMask,id)
-	
-	
-	
 }
 public sh_client_spawn(id)
 {
 	if (sh_get_user_has_hero(id,gHeroID)  ) {
-		reset_camman_user(id)
 		sh_end_cooldown(id+SH_COOLDOWN_TASKID)
 	}
 	
@@ -128,7 +76,7 @@ public camman_kd(id){
 				sh_sound_deny(id)
 				return PLUGIN_HANDLED
 			}
-			if(Get_BitVar(gHasCameraMask,id)){
+			if(camman_get_has_camera(id)){
 				sh_chat_message(id,gHeroID,"Camera already planted")
 				sh_sound_deny(id)
 				return PLUGIN_HANDLED;
@@ -140,7 +88,7 @@ public camman_kd(id){
 				
 			}
 		}
-		else if(Get_BitVar(gHasCameraMask,id)){
+		else if(camman_get_has_camera(id)){
 	
 			toggle_camera_view(id)
 	

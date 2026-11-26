@@ -16,6 +16,37 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
+
+
+#define MINE_WORLD_MDL "models/shmod/sapper/mine/mine.mdl"
+
+#define DETECT_RADIUS 500.0
+
+#define EXPLODE_RADIUS 750.0
+
+#define MINE_DAMAGE 200.0
+#define MINE_PLANT_PERIOD 1.0
+
+#define MINE_ARMING_TIME 4.0
+
+
+
+
+#define MINE_WAIT_PERIOD 0.2
+
+#define MINE_CHARGE_PERIOD 0.1
+#define MINE_CHARGE_TIMES floatround(floatdiv(min_charge_time,MINE_CHARGE_PERIOD))
+
+
+#define MINE_DISARM_PERIOD 0.1
+#define MINE_DISARM_TIMES floatround(floatdiv(min_charge_time,MINE_DISARM_PERIOD))
+
+
+
+
+new gNumMines[SH_MAXSLOTS+1]
+
+
 new mine_armed_mask = 0
 new disarmer_on_mask = 0
 new Float:curr_charge[SH_MAXSLOTS+1]
@@ -29,11 +60,14 @@ stock MINE_CHARGE_TASKID,
 		MINE_DISARM_TASKID
 
 
+new pcvar_num_mines
+
 public plugin_init(){
 	
 	
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
+	pcvar_num_mines = create_cvar("sapper_mines", "8")
 	create_cvar("sapper_mine_min_charge_time", "1.0")
 	register_think(MINE_CLASSNAME, "mine_think")
 
@@ -47,6 +81,7 @@ public plugin_natives(){
 	
 
 	register_native( "mine_get_mine_armed","_mine_get_mine_armed")
+	register_native("sapper_get_num_mines","_sapper_get_num_mines")
 	register_native( "mine_set_mine_armed","_mine_set_mine_armed")
 	register_native( "mine_uncharge_mine","_mine_uncharge_mine")
 	register_native( "mine_charge_mine","_mine_charge_mine")
@@ -59,6 +94,41 @@ public plugin_natives(){
 	
 	
 }
+
+//----------------------------------------------------------------------------------------------
+public sh_hero_init(id, heroID, sh_init_mode:mode){
+	if(heroID!=gHeroID) return
+	
+	reset_sapper_user(id)	
+}
+
+public reset_sapper_user(id){
+	
+	uncharge_user(id)
+	Assign_BitVar(disarmer_on_mask,id,false_for_macro)
+	
+	gNumMines[id]= cvar_val(num, pcvar_num_mines)
+	
+	
+}
+
+public sh_client_spawn(id)
+{
+if ( sh_get_user_has_hero(id,gHeroID) ) {
+	reset_sapper_user(id)
+}
+
+}
+
+public sh_client_death(id){
+
+	if(sh_get_user_has_hero(id,gHeroID) ){
+
+		uncharge_user(id)
+		Assign_BitVar(disarmer_on_mask,id,false_for_macro)
+	}
+}
+
 public _mine_get_mine_charging(iPlugins,iParams){
 
 	new id=get_param(1);
@@ -119,12 +189,26 @@ public plant_mine(id){
 
 	glow(ent,1,1,1,120,1)
 	drop_to_floor(ent);
-	sapper_dec_num_mines(id);
+	gNumMines[id]-= (gNumMines[id]>0)? 1:0;
 
 	UnSet_BitVar(disarmer_on_mask,id)
-	sh_chat_message(id,gHeroID,"You have %d mines left",sapper_get_num_mines(id));
+	sh_chat_message(id,gHeroID,"You have %d mines left",gNumMines[id]);
 	entity_set_float(ent,EV_FL_nextthink,get_gametime()+MINE_WAIT_PERIOD)
 	
+}
+
+public _sapper_get_num_mines(iPlugin,iParams){
+
+
+	new id= get_param(1)
+	return gNumMines[id]
+
+}
+
+public sh_round_end(){
+
+	remove_entity_name(MINE_CLASSNAME)
+
 }
 public mine_think(mine_id){
 
@@ -136,7 +220,7 @@ public mine_think(mine_id){
 	}
 	
 	new attacker=entity_get_edict(mine_id,EV_ENT_owner)
-	new entlist[33];
+	static entlist[33];
 	new numfound = find_sphere_class(mine_id,"player", DETECT_RADIUS ,entlist, 32);
 		
 	for (new i=0; i < numfound; i++)
@@ -218,13 +302,13 @@ public disarm_task(param[1],id){
 		return
 	}
 	new bool:result=sapper_update_disarming(id)
-	if(!mine_get_mine_disarming(id)){
+	if((curr_disarm_charge[id]>=min_charge_time)){
 
-		sapper_set_num_mines(id,sapper_get_num_mines(id)+1)
+		gNumMines[id]= (gNumMines[id]+1);
 		remove_entity(param[0]);
 		
 		if(!is_user_bot(id)){
-			client_print(id,print_center,"You retrieved and disarmed 1 mine! %d mines left now!",sapper_get_num_mines(id));
+			client_print(id,print_center,"You retrieved and disarmed 1 mine! %d mines left now!",gNumMines[id]);
 		}
 	}
 	else if(result){
@@ -238,6 +322,8 @@ public disarm_task(param[1],id){
 	
 	
 }
+
+
 public _mine_undisarm_mine(iPlugin,iParams){
 	new id=get_param(1)
 	Assign_BitVar(disarmer_on_mask,id,false_for_macro)
@@ -404,11 +490,12 @@ public charge_task(id){
 		client_print(id,print_center,"%s",hud_msg)
 	}
 	new bool:result=sapper_update_planting(id)
-	if(!mine_get_mine_charging(id)){
+	if(curr_charge[id]>=min_charge_time){
 		plant_mine(id)
+		uncharge_user(id)
 		if(!is_user_bot(id)){
 			client_print(id,print_center,"You have %d mines left",
-			sapper_get_num_mines(id));
+			gNumMines[id]);
 		}
 	}
 	else if(result){

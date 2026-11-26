@@ -4,13 +4,9 @@
 #define sh_sapper_get_set
 
 
-native sapper_set_num_mines(id,value_to_set)
 native sapper_get_num_mines(id)
 
-native sapper_dec_num_mines(id)
 
-
-native sapper_get_disarmable()
 native sapper_get_hero_id()
 
 

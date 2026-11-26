@@ -52,7 +52,9 @@ new pcvar_reika_recharge_threshold_after_counter
 
 new REIKA_COUNTER_TURN_OFF_DELAY_TASKID
 
-new const DEBUG = 1
+new const DEBUG = 0
+
+#define REIKA_KNIFE_ONLY
 
 
 new GLOW_TASKID
@@ -89,8 +91,11 @@ public plugin_init()
     sh_register_hero_with_demonic_prepackage(gHeroID,pcvar_reika_ap, pcvar_reika_hp, pcvar_reika_speed)
 
     sh_assign_hero_bit(gHeroID,SH_EXPLOSION_POWERS, true)
-
-    register_event("CurWeapon", "weaponChange", "be", "1=1")
+    #if defined REIKA_KNIFE_ONLY
+    
+        register_event("CurWeapon", "weaponChange", "be", "1=1")
+    
+    #endif
 
     RegisterHam(Ham_TakeDamage,"player","reika_parry_damage_timer_trigger",_,true)
 
@@ -104,6 +109,9 @@ public plugin_init()
 
 
 }
+
+#if defined REIKA_KNIFE_ONLY
+    
 //----------------------------------------------------------------------------------------------
 public weaponChange(id)
 {
@@ -122,6 +130,7 @@ public weaponChange(id)
 
 }
 
+#endif
 public reika_latch_glow_task(task_id){
 
 	
@@ -482,6 +491,14 @@ public reika_kd(id)
 
 
         }
+        if((floatround(reika_stored_damage[id])>0)&&floatround(reika_stored_damage[id])<floatround(cvar_val(float, pcvar_reika_explosion_damage))){
+
+            sh_chat_message(id,gHeroID,"There is not enough damage in the battery for a full explosion!")
+            sh_sound_deny(id)
+            return
+
+
+        }
         static Float:damage_to_actually_do;
         damage_to_actually_do = clamp_macro((cvar_val(float, pcvar_reika_explosion_damage)),0.0,reika_stored_damage[id])
 
@@ -522,7 +539,14 @@ public reika_kd(id)
             sh_chat_message(id,gHeroID,"Latch on!")
             sh_assign_id_bit(id, SH_REIKA_IS_LATCHED_ON, true)
             emit_sound(id,CHAN_WEAPON, reika_latch_on_sfx,VOL_NORM,ATTN_NORM,0,PITCH_NORM)
-            sh_switch_weapon(id, CSW_KNIFE)
+
+            
+            #if defined REIKA_KNIFE_ONLY
+            
+                sh_switch_weapon(id, CSW_KNIFE)
+            
+            #endif
+
             return
 
 

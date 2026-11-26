@@ -24,6 +24,7 @@ enum sh_hero_priviledges_enum_struct{
 }
 new sh_pickable_hero_struct_arr[SH_MAXHEROS][sh_hero_priviledges_enum_struct];
 
+new const DEBUG = 0
 
 public plugin_init(){
 
@@ -83,9 +84,10 @@ stock sh_admin_compatibility_print_aux(id){
 
 		sh_get_hero_name_from_id(i,hero_name)
 
-		console_print(id,"^"%s^" is registered!^nIt is pickable %d times in total^nAnd its admin flag bitsum is: %d^n",
+		console_print(id,"^"%s^" is registered!^nIt is pickable %d times in total^nCan still be picked %d times^nAnd its admin flag bitsum is: %d^n",
 				hero_name,
 				sh_pickable_hero_struct_arr[i][max_pickable_times],
+				sh_pickable_hero_struct_arr[i][times_pickable_left],
 				sh_pickable_hero_struct_arr[i][required_user_flags])
 		
 		
@@ -121,17 +123,32 @@ public init_fwd_ret_id:sh_hero_init_pre(id,heroID, sh_init_mode:mode){
 	}
 	if(mode==SH_HERO_ADD){
 
+		
 		new flags_of_player = get_user_flags(id)
 
 		if(!(flags_of_player & sh_pickable_hero_struct_arr[heroID][required_user_flags])||
-					!sh_pickable_hero_struct_arr[heroID][times_pickable_left]){
+					(sh_pickable_hero_struct_arr[heroID][times_pickable_left]<=0)){
 
+
+			if(DEBUG){
+
+				server_print("Player with id %d FAILS to pick an admin only hero of id %d! there are %d times left!^n",id,heroID,sh_pickable_hero_struct_arr[heroID][times_pickable_left])
+			}
 		
 			sh_chat_message(id, heroID,"%s",sh_pickable_hero_struct_arr[heroID][unable_to_pick_string])
 			sh_chat_message(id, heroID,"[SH admin only and server-limited hero picking manager] Type %s in the console to get a list of all admin heroes",admin_compatibility_print)
 			
 
 			return INIT_FWD_BLOCK
+		}
+		else{
+
+			if(DEBUG){
+
+				server_print("Player with id %d picks an admin only hero of id %d! there are %d times left!^n",id,heroID,sh_pickable_hero_struct_arr[heroID][times_pickable_left])
+			}
+
+
 		}
 
 	}
@@ -157,16 +174,32 @@ public sh_hero_init(id,heroID, sh_init_mode:mode){
 		if((flags_of_player & sh_pickable_hero_struct_arr[heroID][required_user_flags])){
 
 
+
+
 			sh_chat_message(id, heroID,"Have fun with your admin only hero... You nepo parasite")
-			sh_pickable_hero_struct_arr[heroID][times_pickable_left]--
+			sh_pickable_hero_struct_arr[heroID][times_pickable_left]-=(sh_pickable_hero_struct_arr[heroID][times_pickable_left]>0)?1:0
+
+			if(DEBUG){
+
+				server_print("Player with id %d succeeds in picking an admin only hero of id %d! there are %d times left!^n",id,heroID,sh_pickable_hero_struct_arr[heroID][times_pickable_left])
+			}
 		}
 
 	}
 	else{
 
 		
-		sh_chat_message(id, heroID,"Wow... it took you some time to learn decency... I am not that disappointed, anymore")
-		sh_pickable_hero_struct_arr[heroID][times_pickable_left]++
+
+		sh_chat_message(id, heroID,"Wow... it took you some time to learn decency... I am not that disappointed anymore")
+		
+		sh_pickable_hero_struct_arr[heroID][times_pickable_left]+=(sh_pickable_hero_struct_arr[heroID][times_pickable_left]<
+																	sh_pickable_hero_struct_arr[heroID][max_pickable_times])?1:0
+
+
+		if(DEBUG){
+
+			server_print("Player with id %d drops an admin only hero of id %d! there are %d times left!^n",id,heroID,sh_pickable_hero_struct_arr[heroID][times_pickable_left])
+		}
 
 	}
 

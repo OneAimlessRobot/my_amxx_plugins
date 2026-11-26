@@ -28,12 +28,47 @@ public plugin_init(){
 	register_message(gMessageId_curweapon, "on_CurWeapon_msg")
 	// fix armor display for absurd values
 	register_message(gMessageId_Armor, "on_Battery_msg")
+	register_forward(FM_UpdateClientData, "fm_UpdateClientDataPost", 1)
 	
 }
+
 public plugin_cfg(){
 
 	server_print("%s innited!^n",PLUGIN)
 }
+
+public fm_UpdateClientDataPost(player, sendWeapons, cd)
+{
+	
+	if(!sh_is_active()){
+		return FMRES_IGNORED
+	}
+
+	/*
+	freese time is freeze time.
+	I dont want any "b- but veronika fire grenades in freeze t--"
+	Shut your ASS up with that WEAK shit.
+	Wait until freeze time is over you impatient goon
+	Get actual adult issues
+	*/
+
+	if(!sh_is_freezetime()){
+		return FMRES_IGNORED
+	}
+	if(!is_user_alive(player)){
+			
+		return FMRES_IGNORED
+	}
+	
+
+	
+	set_cd(cd, CD_flNextAttack, get_gametime()+1.0)
+		
+	return FMRES_HANDLED
+
+}
+
+
 //-------
 public on_Battery_msg(msgid, dest, id){
 
