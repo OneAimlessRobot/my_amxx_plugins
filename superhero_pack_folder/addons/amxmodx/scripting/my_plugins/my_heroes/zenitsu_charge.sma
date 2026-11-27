@@ -511,7 +511,7 @@ public sh_client_death(id){
 }
 
 
-public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,const sh_thrash_brat_dmg_type:new_dmg_type,const custom_weapon_id){
+public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,const sh_thrash_brat_dmg_type:new_dmg_type,const custom_weapon_id, &bool:values_should_change){
 	
 	if(damage <= 0){
             
@@ -556,7 +556,8 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_
 						sh_sleep_user(victim,attacker,5.0,-1)
 
 					}
-					result = DMG_FWD_HANDLED
+					values_should_change = true
+					result = DMG_FWD_PASS
 
 				}
 			}
@@ -573,7 +574,8 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_
 					if(!DEBUG){
 						show_points_to_player(attacker)
 					}
-					result = DMG_FWD_HANDLED
+					values_should_change = true
+					result = DMG_FWD_PASS
 				}
 			}
 		

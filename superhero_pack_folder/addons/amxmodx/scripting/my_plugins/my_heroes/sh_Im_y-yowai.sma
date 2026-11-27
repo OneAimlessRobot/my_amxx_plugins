@@ -230,7 +230,7 @@ sh_chat_message(id,gHeroID,"Activated yowai mode.")
 
 }
 
-public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,const sh_thrash_brat_dmg_type:new_dmg_type,const custom_weapon_id){
+public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,const sh_thrash_brat_dmg_type:new_dmg_type,const custom_weapon_id, &bool:values_should_change){
 	
 	if(damage <= 0){
             
@@ -250,7 +250,8 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_
 			set_user_godmode(victim,0)
 			damage=get_user_health(victim)+1;
 			dmgMode=SH_DMG_KILL
-			return DMG_FWD_HANDLED
+			values_should_change = true
+			return DMG_FWD_PASS
 		}
 		else if(damage>=tg_damage){
 			dmg_message(victim,float(damage))

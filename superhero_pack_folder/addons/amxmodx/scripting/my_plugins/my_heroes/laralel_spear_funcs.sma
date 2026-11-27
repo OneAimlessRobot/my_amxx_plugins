@@ -136,8 +136,7 @@ public Laralel_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 
 	return do_bleed_knife_attack(id,attacker,gHeroID,SPEAR_SLASH_DAMAGE,SPEAR_STAB_DAMAGE,
 						client_is_weapon_user(attacker, SH_LARALEL_HARPOON_SPEAR) ,
-								custom_dmg_id_laralel_spear,
-								dmg_source_name_short_laralel_spear,_,_,the_hitpoint);
+								custom_dmg_id_laralel_spear,_,_,the_hitpoint);
 	
 }
 public plugin_natives(){

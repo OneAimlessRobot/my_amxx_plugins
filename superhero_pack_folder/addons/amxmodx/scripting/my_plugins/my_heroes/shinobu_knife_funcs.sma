@@ -67,7 +67,6 @@ new Float:g_shinobu_v_angles[SH_MAXSLOTS+1][3],
 	Float:g_shinobu_dst_v_angles[SH_MAXSLOTS+1][3]
 
 
-new g_shinobu_using_knife_mask = 0
 
 enum{
 	
@@ -90,7 +89,6 @@ public plugin_init(){
 	pcvar_shinobu_alpha = create_cvar("shinobu_alpha","10")
 	set_pcvar_bounds(pcvar_shinobu_alpha,CvarBound_Lower,true,0.0)
 	set_pcvar_bounds(pcvar_shinobu_alpha,CvarBound_Upper,true,255.0)
-	register_event("CurWeapon", "on_Knife_Weapon_Change", "be", "1=1")
 
     
 	set_task(TASK_PERIOD,"shinobu_cloak_apply",SHINOBU_GLOBAL_KNIFE_CLOAK_TASKID,_,_,"b")
@@ -120,15 +118,6 @@ public plugin_cfg(){
 
 	gHeroID = shinobu_get_hero_id()
 }
-public on_Knife_Weapon_Change(id)
-{
-	if ( !sh_is_active()) return
-	if(!sh_get_user_has_hero(id,gHeroID)) return
-
-	new wpnid = read_data(2)
-
-	Assign_BitVar(g_shinobu_using_knife_mask, id, (wpnid == CSW_KNIFE))
-}
 public plugin_natives(){
 
 
@@ -157,7 +146,9 @@ public shinobu_cloak_apply(task_id){
 apply_cloak(id){
 
 
-	if(((entity_get_int(id, EV_INT_button) & IN_DUCK ))||Get_BitVar(g_shinobu_using_knife_mask, id)){
+	if(((entity_get_int(id, EV_INT_button) & IN_DUCK ))||(get_user_weapon(id)==CSW_KNIFE)){
+
+		
 		set_render_with_color_const(id,INVIS,1,cvar_val(num, pcvar_shinobu_alpha),_,0,_,TASK_PERIOD,0,_,_,PRIO_RENDER_INVISIBILITY,gHeroID)
 
 	}

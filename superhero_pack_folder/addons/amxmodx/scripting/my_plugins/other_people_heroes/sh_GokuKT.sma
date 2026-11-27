@@ -81,8 +81,8 @@ new GokuKTTimer[SH_MAXSLOTS+1][goku_timer_enum]
 new g_prevWeapon[SH_MAXSLOTS+1]
 //reset variables
 new bool:reset_speed[SH_MAXSLOTS+1], bool:reset_health[SH_MAXSLOTS+1], bool:reset_armor[SH_MAXSLOTS+1]
-new goku_kt_dmg_boost_wpn_short_name[SAFE_BUFFER_SIZE+1]="goku_kt_dmg_boost"
-new goku_kt_dmg_boost_wpn_log_name[SAFE_BUFFER_SIZE+1]="goku_kt_dmg_boost"
+new goku_kt_dmg_boost_wpn_short_name[SAFE_BUFFER_SIZE+1]="goku_kt_boost"
+new goku_kt_dmg_boost_wpn_log_name[SAFE_BUFFER_SIZE+1]="goku_kt_boost"
 new goku_kt_dmg_boost_wpn_id = -1
 
 new goku_kt_dmg_boost_melee_wpn_short_name[SAFE_BUFFER_SIZE+1]="goku_kt_melee"
@@ -181,7 +181,7 @@ public Kaioken_Damage(id, idinflictor, attacker, Float:damage, damagebits){
 	
 }
 
-public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,const sh_thrash_brat_dmg_type:new_dmg_type,const custom_weapon_id){
+public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,const sh_thrash_brat_dmg_type:new_dmg_type,const custom_weapon_id, &bool:values_should_change){
 	
 	if(damage <= 0){
             
@@ -199,14 +199,16 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_
 	if(CUSTOM_DMG_TYPE_IS_DBZ(new_dmg_type)){
 		if(attacker_is_kaioken ){
 			damage *= (floatround(cvar_val(float,goku_kt_dmg_mult)))
-			result = DMG_FWD_HANDLED
+			values_should_change = true
+			result = DMG_FWD_PASS
 		}
 	}
 	if(CUSTOM_DMG_TYPE_IS_PHYSICAL(new_dmg_type)){
 		if(victim_is_kaioken){
 			new dmg_to_subtract = (floatround(float(damage) * cvar_val(float,goku_kt_dmg_res)))
 			damage -= dmg_to_subtract
-			result = DMG_FWD_HANDLED
+			values_should_change = true
+			result = DMG_FWD_PASS
 		}
 	}
 	return result

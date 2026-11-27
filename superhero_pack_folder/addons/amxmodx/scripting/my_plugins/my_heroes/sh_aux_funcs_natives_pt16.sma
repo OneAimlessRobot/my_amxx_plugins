@@ -252,28 +252,20 @@ public _set_render_with_color_const(iPlugins,iParams){
 	if(DEBUG){
 		sh_chat_message(id,heroID,"We are about to try to change glow! The target glow type is: %s",render_priority_names[the_priority])
 	}
-	if(player_rendering_priorities_array[server_slot_idx:id]>the_priority){
-		
-		if(DEBUG){
-			sh_chat_message(id,heroID,"We tried changing glow and nothing happened because of priority!")
-			sh_chat_message(id,heroID,"The priority attempted to be changed out was:  %s",render_priority_names[player_rendering_priorities_array[server_slot_idx:id]])
-		}
-		return;
-
-
-	}
 
 	
 	if(glow_user_hud){
 		
-		if((sh_get_id_bit(id,SH_IS_SLEEPING)&&is_sleep)||!sh_get_id_bit(id,SH_IS_SLEEPING)){
+		if(player_rendering_priorities_array[server_slot_idx:id]<=the_priority){
+			if((sh_get_id_bit(id,SH_IS_SLEEPING)&&is_sleep)||!sh_get_id_bit(id,SH_IS_SLEEPING)){
 
-			sh_screen_fade(id, 0.1, 0.9,
-				LineColors[the_color_const][0],
-				LineColors[the_color_const][1],
-				LineColors[the_color_const][2],
-				(the_hud_alpha<0)?50:the_hud_alpha)
+				sh_screen_fade(id, 0.1, 0.9,
+					LineColors[the_color_const][0],
+					LineColors[the_color_const][1],
+					LineColors[the_color_const][2],
+					(the_hud_alpha<0)?50:the_hud_alpha)
 
+			}
 		}
 	}
 	
@@ -283,6 +275,16 @@ public _set_render_with_color_const(iPlugins,iParams){
 			remove_task(id+REMOVE_GLOW_TASKID)
 		}
 
+		if(player_rendering_priorities_array[server_slot_idx:id]>the_priority){
+			
+			if(DEBUG){
+				sh_chat_message(id,heroID,"We tried changing glow and nothing happened because of priority!")
+				sh_chat_message(id,heroID,"The priority attempted to be changed out was:  %s",render_priority_names[player_rendering_priorities_array[server_slot_idx:id]])
+			}
+			return;
+
+
+		}
 		if(DEBUG){
 				
 			sh_chat_message(id,heroID,"We are about to try to change glow! The priority test passed!");

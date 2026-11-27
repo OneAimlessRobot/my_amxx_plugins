@@ -142,7 +142,7 @@ public sh_set_user_xp_fwd_post(id, xp,xp_type_bonus_id:xp_type){
 
     if(!sh_is_active()||!is_user_connected(id)){
 
-        return XP_FWD_PASS
+        return
     }
     new bool:is_subtracted_here = xp_extra_earn_struct_arr[xp_type][is_subtracted]
 
@@ -157,7 +157,6 @@ public sh_set_user_xp_fwd_post(id, xp,xp_type_bonus_id:xp_type){
                 (is_subtracted_here?-1:1)*xp_diff,
                 xp_extra_earn_struct_arr[xp_type][xp_extra_earn_string])
     }
-    return XP_FWD_PASS
 
 }
 

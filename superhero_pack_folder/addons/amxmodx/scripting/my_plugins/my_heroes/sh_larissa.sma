@@ -130,7 +130,7 @@ public larissa_ham_damage(id, idinflictor, attacker, Float:damage, damagebits)
 	
 	pev(id, pev_dmg_take, damage)
 
-	return do_bleed_knife_attack(id,attacker,gHeroID,30,40,sh_get_user_has_hero(attacker,gHeroID),_,_,_,1,the_hitpoint)
+	return do_bleed_knife_attack(id,attacker,gHeroID,30,40,sh_get_user_has_hero(attacker,gHeroID),_,_,1,the_hitpoint)
 
 
 	
@@ -162,7 +162,7 @@ add_speed_points(id,Float:damage){
 	
 }
 
-public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,const sh_thrash_brat_dmg_type:new_dmg_type,const custom_weapon_id){
+public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,const sh_thrash_brat_dmg_type:new_dmg_type,const custom_weapon_id, &bool:values_should_change){
 
 
 

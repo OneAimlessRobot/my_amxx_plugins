@@ -934,7 +934,7 @@ public ham_sh_stat_management_physical_damage(id, inflictor, attacker, Float:dam
 	return HAM_HANDLED
 
 } 
-public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,const sh_thrash_brat_dmg_type:new_dmg_type,const custom_weapon_id){
+public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,const sh_thrash_brat_dmg_type:new_dmg_type,const custom_weapon_id, &bool:values_should_change){
 	
 	if(damage<=0){
 		return DMG_FWD_PASS
@@ -950,6 +950,7 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_h
 
 	damage = floatround(get_dmg_between_players(victim,victim,attacker,float(damage),new_dmg_type))
 	
+	values_should_change = true
 
-	return DMG_FWD_HANDLED
+	return DMG_FWD_PASS
 }

@@ -282,7 +282,7 @@ show_points_to_player(id){
 	ShowSyncHudMsg(id, power_hud_msg_sync,"%s",hud_msg_buff)
 }
 
-public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,const sh_thrash_brat_dmg_type:new_dmg_type,const custom_weapon_id){
+public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,const sh_thrash_brat_dmg_type:new_dmg_type,const custom_weapon_id, &bool:values_should_change){
 
 
 	if(damage <= 0){
@@ -304,7 +304,8 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_
 			show_points_to_player(victim)
 
 			damage -= floatround(float(damage)*cvar_val(float, pcvar_bleed_dmg_resi_pct))
-			return DMG_FWD_HANDLED
+			values_should_change = true
+			return DMG_FWD_PASS
 		}
 	}
 

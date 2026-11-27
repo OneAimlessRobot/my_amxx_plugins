@@ -43,7 +43,8 @@ forward dmg_fwd_ret_id:sh_extra_damage_fwd_pre(
 			const Float:dmgOrigin[3],
 			&dmg_type,
 			const const sh_thrash_brat_dmg_type:new_dmg_type,
-			const custom_wpn_id);
+			const custom_wpn_id,
+			&bool:values_should_change);
 /**
 //extra_damage_flags!
 enum sh_extra_damage_flags (<<= 1){

@@ -272,7 +272,7 @@ public plugin_init()
 	bot_quota = get_cvar_pointer("bot_quota")	// For cz bots to register spawn hook
 
 
-	fwd_HeroInit_Pre = CreateMultiForward("sh_hero_init_pre", ET_STOP2, FP_CELL, FP_CELL, FP_CELL)	// id, heroID, mode
+	fwd_HeroInit_Pre = CreateMultiForward("sh_hero_init_pre", ET_STOP, FP_CELL, FP_CELL, FP_CELL)	// id, heroID, mode
 	fwd_HeroInit = CreateMultiForward("sh_hero_init", ET_IGNORE, FP_CELL, FP_CELL, FP_CELL)	// id, heroID, mode
 	fwd_HeroKey = CreateMultiForward("sh_hero_key", ET_IGNORE, FP_CELL, FP_CELL, FP_CELL)	// id, heroID, key
 	fwd_Spawn = CreateMultiForward("sh_client_spawn", ET_IGNORE, FP_CELL, FP_CELL)		// id, newSpawn
@@ -282,7 +282,7 @@ public plugin_init()
 	fwd_RoundEnd = CreateMultiForward("sh_round_end", ET_IGNORE)
 	
 	
-	fwd_ShDamagePre = CreateMultiForward("sh_extra_damage_fwd_pre",ET_STOP2 ,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_ARRAY,FP_VAL_BYREF,FP_CELL,FP_CELL)
+	fwd_ShDamagePre = CreateMultiForward("sh_extra_damage_fwd_pre",ET_STOP,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_VAL_BYREF,FP_ARRAY,FP_VAL_BYREF,FP_CELL,FP_CELL,FP_VAL_BYREF)
 	fwd_ShDamagePost = CreateMultiForward("sh_extra_damage_fwd_post",ET_IGNORE ,FP_CELL,FP_CELL,FP_CELL,FP_CELL,FP_CELL,FP_CELL,FP_ARRAY,FP_CELL,FP_CELL,FP_CELL)
 	fwd_ShXpPost = CreateMultiForward("sh_set_user_xp_fwd_post",ET_IGNORE ,FP_CELL,FP_CELL,FP_CELL)
 	fwd_CreatedHeroPost = CreateMultiForward("sh_on_create_hero_post",ET_IGNORE, FP_CELL, FP_ARRAY)
@@ -3024,6 +3024,9 @@ public sh_extra_damage_result:_sh_extra_damage()
 		
 		the_dmg_return_value =DMG_FWD_PASS
 
+		static bool:values_should_change = false;
+
+		values_should_change = false
 
 		if (!ExecuteForward(fwd_ShDamagePre, 
 						the_dmg_return_value,
@@ -3036,7 +3039,8 @@ public sh_extra_damage_result:_sh_extra_damage()
 						passed_preparedWpnDmgOriginIntPre,
 						passed_dmg_type,
 						passed_thrashbrat_dmg_type,
-						passed_custom_wpn_id)){
+						passed_custom_wpn_id,
+						values_should_change)){
 			
 			server_print("Sh damage forward pre execute error.");
 		}
@@ -3045,7 +3049,7 @@ public sh_extra_damage_result:_sh_extra_damage()
 
 			return SH_DMG_RESULT_DMG_BLOCKED_BY_PRE_FWD
 		}
-		else if(the_dmg_return_value==DMG_FWD_HANDLED){
+		else if(values_should_change){
 			
 			damage_after = passed_damage_after
 			victim = passed_victim;
@@ -3132,8 +3136,8 @@ public sh_extra_damage_result:_sh_extra_damage()
 			new Float:hsmult = get_pcvar_float(sh_hsmult)
 			new xp_to_add=( (headshot && (hsmult > 1.0)))?floatround(gXPGiven[gPlayerLevel[victim]] * hsmult):gXPGiven[gPlayerLevel[victim]]
 			localAddXP(attacker, xp_to_add)
-			new xp_fwd_ret_id:the_xp_return_value=XP_FWD_PASS
-			if (!ExecuteForward(fwd_ShXpPost, the_xp_return_value, attacker,xp_to_add,XP_KILL_XP)){
+			
+			if (!ExecuteForward(fwd_ShXpPost, fwdReturn, attacker,xp_to_add,XP_KILL_XP)){
 				server_print("Sh xp forward execute error.");
 			}
 			set_user_frags(attacker, ++attackerFrags)
@@ -3502,8 +3506,7 @@ public event_DeathMsg()
 			//new headshot = read_data(3)
 			new xp_to_add=( ((read_data(3)) && (hsmult > 1.0)) )?floatround(gXPGiven[gPlayerLevel[victim]] * hsmult):gXPGiven[gPlayerLevel[victim]]
 			localAddXP(killer, xp_to_add)
-			new xp_fwd_ret_id:the_xp_return_value=XP_FWD_PASS
-			if (!ExecuteForward(fwd_ShXpPost, the_xp_return_value, killer,xp_to_add,XP_KILL_XP)){
+			if (!ExecuteForward(fwd_ShXpPost, fwdReturn, killer,xp_to_add,XP_KILL_XP)){
 				server_print("Sh xp forward execute error.");
 			}
 		}
@@ -5083,8 +5086,8 @@ public vip_Escaped()
 	for (new i = 0; i < numplayers; i++) {
 		ct = players[i]
 		if ( ct == gXpBounsVIP || (is_user_alive(ct) && cs_get_user_team(ct) == CS_TEAM_CT) ) {
-			new xp_fwd_ret_id:the_xp_return_value=XP_FWD_PASS
-			if (!ExecuteForward(fwd_ShXpPost, the_xp_return_value, ct,XPtoGive,XP_VIP_PROTECT_XP)){
+			
+			if (!ExecuteForward(fwd_ShXpPost, fwdReturn, ct,XPtoGive,XP_VIP_PROTECT_XP)){
 				server_print("Sh xp forward execute error.");
 			}		
 			localAddXP(ct, XPtoGive)
@@ -5144,8 +5147,8 @@ public host_AllRescued()
 	for (new i = 0; i < numplayers; i++) {
 		ct = players[i]
 		if ( cs_get_user_team(ct) != CS_TEAM_CT ) continue
-		new xp_fwd_ret_id:the_xp_return_value=XP_FWD_PASS
-		if (!ExecuteForward(fwd_ShXpPost, the_xp_return_value, ct,XPtoGive,XP_HOSTAGE_ALL_RESCUED_XP)){
+		
+		if (!ExecuteForward(fwd_ShXpPost, fwdReturn, ct,XPtoGive,XP_HOSTAGE_ALL_RESCUED_XP)){
 			server_print("Sh xp forward execute error.");
 		}
 		localAddXP(ct, XPtoGive)
@@ -5210,8 +5213,8 @@ public bomb_defused(defuser)
 		if ( cs_get_user_team(ct) != CS_TEAM_CT ){
 			continue
 		}
-		new xp_fwd_ret_id:the_xp_return_value=XP_FWD_PASS
-		if (!ExecuteForward(fwd_ShXpPost, the_xp_return_value, ct,XPtoGive,XP_BOMB_TARGET_SAVE_XP)){
+		
+		if (!ExecuteForward(fwd_ShXpPost, fwdReturn, ct,XPtoGive,XP_BOMB_TARGET_SAVE_XP)){
 			server_print("Sh xp forward execute error.");
 		}
 		localAddXP(ct, XPtoGive)
@@ -5242,8 +5245,8 @@ public bomb_explode(planter, defuser)
 		if ( cs_get_user_team(terrorist) != CS_TEAM_T ){
 			continue
 		}
-		new xp_fwd_ret_id:the_xp_return_value=XP_FWD_PASS
-		if (!ExecuteForward(fwd_ShXpPost, the_xp_return_value, terrorist,XPtoGive,XP_BOMB_EXPLODE_XP)){
+		
+		if (!ExecuteForward(fwd_ShXpPost, fwdReturn, terrorist,XPtoGive,XP_BOMB_EXPLODE_XP)){
 			server_print("Sh xp forward execute error.");
 		}
 		localAddXP(terrorist, XPtoGive)
@@ -5556,6 +5559,10 @@ memoryTableRead(id, const savekey[])
 			
 			powerCount = 0
 
+
+			static bool:needs_update = false;
+
+			needs_update = false
 			for (p = 1; p <= idLevel && p <= tmpPowerCount; p++ ) {
 				heroIndex =  gMemoryTablePowers[x][p]
 				if(DEBUG){
@@ -5583,15 +5590,19 @@ memoryTableRead(id, const savekey[])
 				powerCount++
 
 			}
-
-			for (p = 1; p <= idLevel && p <= powerCount; p++ ) {
+			
+			needs_update = (tmpPowerCount!=powerCount)
+			if(needs_update){
 				if(DEBUG){
 
-					server_print("Lets try and restore the table in case something changed")
+					server_print("Update triggered!")
 				}
-				heroIndex =  gPlayerPowers[x][p]
-				gMemoryTablePowers[x][p] = heroIndex
+				for (p = 1; p <= idLevel && p <= powerCount; p++ ) {
+					
+					heroIndex =  gPlayerPowers[x][p]
+					gMemoryTablePowers[x][p] = heroIndex
 
+				}
 			}
 			gPlayerPowers[id][0] = gMemoryTablePowers[x][0] = powerCount
 			

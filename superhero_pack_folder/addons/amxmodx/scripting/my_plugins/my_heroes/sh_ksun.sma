@@ -591,7 +591,7 @@ public sh_client_death(id, killer){
 	}
 	
 }
-public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart ,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,const sh_thrash_brat_dmg_type:new_dmg_type,const custom_weapon_id){
+public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart ,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,const sh_thrash_brat_dmg_type:new_dmg_type,const custom_weapon_id, &bool:values_should_change){
 	
 	if(damage <= 0){
             
@@ -620,7 +620,7 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_
 		new Float:flDamage=float(damage)
 		overt_spike_damage(attacker,flDamage,0,spored_someone_overt)
 		damage=floatround(flDamage)
-		return_result = DMG_FWD_HANDLED
+		values_should_change = true
 	}
 	
 

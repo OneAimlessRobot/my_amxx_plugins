@@ -24,7 +24,6 @@ native do_bleed_knife_attack(id,
           stab_damage,
           optional_bool=1,
           custom_wpn_id=-1,
-          const attack_name_string[SAFE_BUFFER_SIZE+1]="def_melee_bleed",
           const bleed_sound_sample[SAFE_BUFFER_SIZE+1]=PIERCE_WOUND_SFX,
           heal_attacker=1,
           my_hitpoint_enum:hitpoint=MY_HIT_STOMACH);

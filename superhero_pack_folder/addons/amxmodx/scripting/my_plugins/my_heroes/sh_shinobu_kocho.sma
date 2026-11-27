@@ -78,8 +78,6 @@ new pcvar_shinobu_cooldown
 new pcvar_shinobu_poison_kick_delay
 
 
-new pcvar_shinobu_poison_kick_knockback
-
 //----------------------------------------------------------------------------------------------
 public plugin_init()
 {
@@ -91,7 +89,6 @@ public plugin_init()
 	pcvar_shinobu_poison_kick_delay = create_cvar("shinobu_poison_kick_delay","2.0")
 	pcvar_shinobu_poison_kick_stun_time = create_cvar("shinobu_poison_kick_stun_time", "10.0" )
 	pcvar_shinobu_poison_kick_stun_speed = create_cvar("shinobu_poison_kick_stun_speed", "110.0" )
-	pcvar_shinobu_poison_kick_knockback = create_cvar("shinobu_poison_kick_knockback","1")
  
 	
 	// FIRE THE EVENT TO CREATE THIS SUPERHERO!
@@ -167,7 +164,7 @@ public Float:_shinobu_get_cooldown(iPlugins, iParms){
 	return cvar_val(float, pcvar_shinobu_cooldown)
 	
 }
-shinobu_damage_interaction(attacker,victim,my_hitpoint_enum:hitpoint){
+shinobu_damage_interaction(attacker,victim){
 
 	if (sh_get_user_has_hero(victim,gHeroID)  ) {
 		
@@ -176,8 +173,6 @@ shinobu_damage_interaction(attacker,victim,my_hitpoint_enum:hitpoint){
 	}
 	if(sh_get_user_has_hero(attacker,gHeroID) ){
 
-		do_bleed_knife_attack(victim,attacker,gHeroID,10,35,sh_get_user_has_hero(attacker,gHeroID) ,_,_,_,0,
-					hitpoint);
 		shinobu_burst_damage_task_bootstrap(attacker,victim,1)
 	}	
 }
@@ -197,7 +192,11 @@ public shinobuDamage(id, idinflictor, attacker, Float:damage, damagebits)
 		return HAM_IGNORED
 	}	
 	if((weapon==CSW_KNIFE)){
-		shinobu_damage_interaction(attacker,id, the_hitpoint)
+
+		do_bleed_knife_attack(id,attacker,gHeroID,10,35,sh_get_user_has_hero(attacker,gHeroID) ,_,_,0,
+					the_hitpoint);
+		shinobu_damage_interaction(attacker,id)
+
 	}
 	return HAM_IGNORED
 }
@@ -281,7 +280,7 @@ public shinobu_burst_damage_task(array[1],attacker){
 	
 	if(!is_user_alive(tg)) return
 
-	user_slap(tg, cvar_val(num, pcvar_shinobu_poison_kick_knockback),0)
+	user_slap(tg, 0,0)
 
 	generic_heal(attacker,float(damage_to_cause),_,PURPLE,_,_,50,1,1)
 
@@ -420,7 +419,7 @@ public sh_client_death(id,killer)
 	}
 		
 }
-public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,const sh_thrash_brat_dmg_type:new_dmg_type,const custom_weapon_id){
+public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,const sh_thrash_brat_dmg_type:new_dmg_type,const custom_weapon_id, &bool:values_should_change){
 	
 	
 	if(damage <= 0){
@@ -444,7 +443,7 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage, &my_h
 	if(is_valid_custom_dmg_source(custom_weapon_id)){
 		new bool:is_melee = bool:xmod_is_melee_wpn(custom_weapon_id)
 		if(is_melee){
-			shinobu_damage_interaction(attacker,victim,bodypart)
+			shinobu_damage_interaction(attacker,victim)
 		}
 	}
 	

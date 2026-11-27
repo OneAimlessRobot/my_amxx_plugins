@@ -69,12 +69,6 @@ public _chikoi_get_hero_id(iPlugin, iParams){
 
 	return gHeroID
 }
-//----------------------------------------------------------------------------------------------
-public ham_Chikoi_fallDamage(this, inflictor, attacker, Float:damage, damagebits)
-{
-	
-	return HAM_IGNORED
-}
 dmg_message(id, attacker){
 	new attacker_name[128];
 	get_user_name(attacker,attacker_name,127);
@@ -123,7 +117,7 @@ public chikoi_physical_body(id, attacker, Float:damage, Float:direction[3], trac
 	return HAM_IGNORED;
 }
 
-public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,const sh_thrash_brat_dmg_type:new_dmg_type,const custom_weapon_id){
+public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_hitpoint_enum:bodypart,&sh_damage_mode:dmgMode, &sh_extra_damage_flags:sh_extra_dmg_flags, const Float:dmgOrigin[3],&dmg_type,const sh_thrash_brat_dmg_type:new_dmg_type,const custom_weapon_id, &bool:values_should_change){
 	
 	if(damage <= 0){
             
@@ -147,7 +141,8 @@ public dmg_fwd_ret_id:sh_extra_damage_fwd_pre(&victim, &attacker, &damage,  &my_
 			damage=get_user_health(victim)+1;
 			dmgMode=SH_DMG_KILL
 			dmg_message(victim,attacker)
-			return DMG_FWD_HANDLED
+			values_should_change = true
+			return DMG_FWD_PASS
 		}
 		else {
 			return DMG_FWD_BLOCK

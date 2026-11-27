@@ -11,6 +11,7 @@
 #define I_WANT_BASIC_MACROS
 #define I_WANT_PDATA_ALIASES
 #define I_WANT_MATH_VECTORS
+#define I_WANT_INIT_UTILITIES
 #include <float>
 #include <xs>
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -32,7 +33,7 @@
 #define SEQUOIA_START_ANGLE ((45.0))
 #define SEQUOIA_BEAM_THINK_PERIOD 0.05
 #define SEQUOIA_ACTIVE_TASK_TIME_PERIOD 0.3
-#define SEQUOIA_PASSIVE_TASK_TIME_PERIOD 1.0
+#define SEQUOIA_PASSIVE_TASK_TIME_PERIOD 0.333
 #define SEQUOIA_SWEEP_TIME 6.0
 #define SPAM_TIME 2.0
 #define SPAM_PERIOD 0.1
@@ -133,9 +134,10 @@ new pcvar_sequoia_gravity,
 
 new Sequoia_hudsync
 
-new SEQUOIA_PASSIVE_TASKID = -1,
-    SEQUOIA_ACTIVE_TASKID = -1,
-    SEQUOIA_SPAM_TASKID = -1
+new SEQUOIA_SPAM_TASKID = -1
+
+#define SEQUOIA_PASSIVE_ENTITY_CLASSNAME "SABLINA_PASSIVE"
+#define SEQUOIA_ACTIVE_ENTITY_CLASSNAME "SABLINA_ACTIVE"
 
 public plugin_init(){
 
@@ -215,19 +217,18 @@ public plugin_init(){
                                 0)
 
 
-    SEQUOIA_PASSIVE_TASKID = allocate_typed_task_id(generic_task)
-
-    SEQUOIA_ACTIVE_TASKID = allocate_typed_task_id(generic_task)
 
     SEQUOIA_SPAM_TASKID = allocate_typed_task_id(player_task)
 
-    set_task( SEQUOIA_PASSIVE_TASK_TIME_PERIOD, "sequoia_passive_loop", SEQUOIA_PASSIVE_TASKID, _, _, "b")
-    set_task( SEQUOIA_ACTIVE_TASK_TIME_PERIOD, "sequoia_active_loop", SEQUOIA_ACTIVE_TASKID, _, _, "b")
+
+
+    init_monitor_entity_based_global(SEQUOIA_PASSIVE_ENTITY_CLASSNAME, "sequoia_passive_loop", SEQUOIA_PASSIVE_TASK_TIME_PERIOD)
 
 
 
 
-    init_gravity_pcvar()
+    init_monitor_entity_based_global(SEQUOIA_ACTIVE_ENTITY_CLASSNAME, "sequoia_active_loop", SEQUOIA_ACTIVE_TASK_TIME_PERIOD)
+
 
     Sequoia_hudsync = CreateHudSyncObj()
 }
@@ -383,9 +384,27 @@ stop_user_spam(id){
     }
 }
 //----------------------------------------------------------------------------------------------
-public sequoia_active_loop(taskid)
+public sequoia_active_loop(ent_id)
 {	
-    if ( !sh_is_active() || sh_is_freezetime() || !sh_is_inround() ) return
+    if(!is_valid_ent(ent_id)){
+
+        return PLUGIN_CONTINUE
+    }
+    if(!sh_is_active()){
+
+        entity_set_float(ent_id, EV_FL_nextthink, get_gametime() + SEQUOIA_ACTIVE_TASK_TIME_PERIOD)
+        return PLUGIN_CONTINUE
+    }
+    if(sh_is_freezetime()){
+        
+        entity_set_float(ent_id, EV_FL_nextthink, get_gametime() + SEQUOIA_ACTIVE_TASK_TIME_PERIOD)
+        return PLUGIN_CONTINUE
+    }
+    if(!sh_is_inround()){
+        
+        entity_set_float(ent_id, EV_FL_nextthink, get_gametime() + SEQUOIA_ACTIVE_TASK_TIME_PERIOD)
+        return PLUGIN_CONTINUE
+    }
 
     static the_players[SH_MAXSLOTS], pnum, id		
     get_players(the_players, pnum, "ah")
@@ -441,6 +460,7 @@ public sequoia_active_loop(taskid)
             point_player_towards_other_player(id,g_sequoia_current_aimed_at_player[id])
         }
         
+        entity_set_vector( id, EV_VEC_angles, g_sequoia_look_direction[id] )
         entity_set_vector( id, EV_VEC_v_angle, g_sequoia_look_direction[id] )
         entity_set_int( id, EV_INT_fixangle, 1 )
 
@@ -487,6 +507,8 @@ public sequoia_active_loop(taskid)
 
 
     }
+    entity_set_float(ent_id, EV_FL_nextthink, get_gametime() + SEQUOIA_ACTIVE_TASK_TIME_PERIOD)
+    return PLUGIN_CONTINUE
 }
 
 public sequoia_spam_task(taskid){
@@ -530,9 +552,22 @@ public client_connect(id){
 	
 }
 //----------------------------------------------------------------------------------------------
-public sequoia_passive_loop(taskid)
+public sequoia_passive_loop(ent_id)
 {	
-    if ( !sh_is_active() || sh_is_freezetime() ) return
+    if(!is_valid_ent(ent_id)){
+
+        return PLUGIN_CONTINUE
+    }
+    if(!sh_is_active()){
+
+        entity_set_float(ent_id, EV_FL_nextthink, get_gametime() + SEQUOIA_PASSIVE_TASK_TIME_PERIOD)
+        return PLUGIN_CONTINUE
+    }
+    if(sh_is_freezetime()){
+        
+        entity_set_float(ent_id, EV_FL_nextthink, get_gametime() + SEQUOIA_PASSIVE_TASK_TIME_PERIOD)
+        return PLUGIN_CONTINUE
+    }
 
     static the_players[SH_MAXSLOTS], pnum, id
     get_players(the_players, pnum, "ah")
@@ -628,6 +663,8 @@ public sequoia_passive_loop(taskid)
 
 
     }
+    entity_set_float(ent_id, EV_FL_nextthink, get_gametime() + SEQUOIA_PASSIVE_TASK_TIME_PERIOD)
+    return PLUGIN_CONTINUE
 }
 public plugin_natives(){
 

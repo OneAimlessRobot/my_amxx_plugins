@@ -324,7 +324,7 @@ public grief_drive_ham_knife_damage(id, idinflictor, attacker, Float:damage, dam
 	pev(id, pev_dmg_take, damage)
 
 	return do_bleed_knife_attack(id,attacker,gHeroID,15,65,
-				sh_get_user_has_hero(attacker,gHeroID) && Get_BitVar(gSuperAngryMask,attacker),_,_,_,_,the_hitpoint)
+				sh_get_user_has_hero(attacker,gHeroID) && Get_BitVar(gSuperAngryMask,attacker),_,_,_,the_hitpoint)
 
 	
 }

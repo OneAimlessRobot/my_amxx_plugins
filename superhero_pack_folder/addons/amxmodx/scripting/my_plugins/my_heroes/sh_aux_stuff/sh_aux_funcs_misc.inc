@@ -103,7 +103,9 @@ stock register_custom_touchable(const entity_name[], const func_name[], const en
 
 stock sh_get_player_cloak_pct(id){
 
-	new Float:real_alpha,  render_mode
+	static Float:real_alpha = 0.0,  render_mode = 0
+	real_alpha = 0.0
+	render_mode = 0
 
 	real_alpha=entity_get_float(id, EV_FL_renderamt)
 	render_mode=entity_get_int(id, EV_INT_rendermode)

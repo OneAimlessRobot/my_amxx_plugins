@@ -100,12 +100,10 @@ new slash_damage=get_param(4)
 new stab_damage=get_param(5)
 new optional_bool=get_param(6)
 new custom_wpn_id=get_param(7)
-new attack_name_string[128]
-get_string(8,attack_name_string,127)
 new blood_sound_sample[128]
-get_string(9,blood_sound_sample,127)
-new heal_attacker=get_param(10)
-new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_param(11)
+get_string(8,blood_sound_sample,127)
+new heal_attacker=get_param(9)
+new my_hitpoint_enum:the_hitpoint= my_hitpoint_enum:get_param(10)
 
 if(!is_user_alive(attacker)||!is_user_alive(id)) return HAM_IGNORED
 
@@ -131,10 +129,10 @@ if(optional_bool&&!(sh_clients_are_same_team(id,attacker))&&(attacker!=id)){
 			stabbing=false;
 			slashing=true
 		}
-		new Float: vec2LOS[2];
-		new Float: vecForward[3];
-		new Float: vecForward2[3];
-		new Float: vecForward2D[2];
+		static Float:vec2LOS[2],
+				Float:vecForward[3],
+				Float:vecForward2[3],
+				Float:vecForward2D[2];
 	
 		velocity_by_aim( attacker, 1, vecForward );
       
@@ -205,10 +203,10 @@ public _sh_bleed_user(iPlugin,iParams){
 	
 	}
 
-	new attacker_name[128]
-	get_user_name(attacker,attacker_name,127)
-	new user_name[128]
-	get_user_name(user,user_name,127)
+	static attacker_name[128],
+			user_name[128]
+	get_user_name(attacker,attacker_name,charsmax(attacker_name))
+	get_user_name(user,user_name,charsmax(user_name))
 		
 	if(!is_user_bot(user)){
 		sh_chat_message(user,heroID,"%s has bled you!!!",attacker_name)
