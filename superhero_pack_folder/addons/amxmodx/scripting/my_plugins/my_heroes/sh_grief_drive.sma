@@ -545,9 +545,9 @@ update_stats(id, bool:go_up_or_go_down){
 	if(!is_user_alive(id)) return
 	if(!sh_get_user_has_hero(id,gHeroID) ) return
 	if(go_up_or_go_down){
-		if(sh_check_player_boost_stage(id, STAT_SPEED_ID)<GRIEF_DRIVE_STATS_MAX_MAGNITUDE){
+		if(sh_check_player_boost_stage(id, STAT_SPEED_MULT)<GRIEF_DRIVE_STATS_MAX_MAGNITUDE){
 
-			sh_apply_staged_stat_boost(id,id,STAT_SPEED_ID, 1, true)
+			sh_apply_staged_stat_boost(id,id,STAT_SPEED_MULT, 1, true)
 
 		}
 		if(sh_check_player_boost_stage(id, STAT_DEFENSE_MULT)>-GRIEF_DRIVE_STATS_MAX_MAGNITUDE){
@@ -563,9 +563,9 @@ update_stats(id, bool:go_up_or_go_down){
 	}
 	else{
 
-		if(sh_check_player_boost_stage(id, STAT_SPEED_ID)>0){
+		if(sh_check_player_boost_stage(id, STAT_SPEED_MULT)>0){
 
-			sh_apply_staged_stat_boost(id,id,STAT_SPEED_ID, 1, false)
+			sh_apply_staged_stat_boost(id,id,STAT_SPEED_MULT, 1, false)
 
 		}
 		if(sh_check_player_boost_stage(id, STAT_DEFENSE_MULT)<GRIEF_DRIVE_STATS_MAX_MAGNITUDE){
@@ -613,7 +613,7 @@ public grief_drive_timer_transform(id){
 				Set_BitVar(gSuperAngryMask,id)
 				sh_reset_min_gravity(id)
 				sh_reset_player_stat_boosts(id,id)
-				sh_apply_staged_stat_boost(id,id,STAT_SPEED_ID,-GRIEF_DRIVE_STATS_MAX_MAGNITUDE,true)
+				sh_apply_staged_stat_boost(id,id,STAT_SPEED_MULT,-GRIEF_DRIVE_STATS_MAX_MAGNITUDE,true)
 				sh_apply_staged_stat_boost(id,id,STAT_DEFENSE_MULT,GRIEF_DRIVE_STATS_MAX_MAGNITUDE,false)
 				sh_apply_staged_stat_boost(id,id,STAT_ATTACK_MULT,GRIEF_DRIVE_STATS_MAX_MAGNITUDE+1,true)
 				if(!Get_BitVar(gPlayedSoundMask,id)){

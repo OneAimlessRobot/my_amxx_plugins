@@ -212,7 +212,7 @@ public sh_client_death(killed,killer)
 	if(sh_get_user_has_hero(killer,gHeroID)&&(killed!=killer)){
 		
 		g_larissa_kills[killer]++;
-		sh_apply_staged_stat_boost(killer,killer,STAT_SPEED_ID,1,true)
+		sh_apply_staged_stat_boost(killer,killer,STAT_SPEED_MULT,1,true)
 		
 	
 	}

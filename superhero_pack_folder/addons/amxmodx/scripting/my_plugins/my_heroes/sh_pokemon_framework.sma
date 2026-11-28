@@ -46,6 +46,8 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_MATH_FUNCS_PT2
 #define I_WANT_CUSTOM_COLORS
+#define I_WANT_MATH_FUNCS
+#define I_WANT_CUSTOM_WEAPONS
 #define I_WANT_RESOURCE_ALIASES
 #define I_WANT_MISC_FUNCS
 #define I_WANT_QUICK_CHECKS
@@ -63,6 +65,7 @@
 #include "sh_aux_stuff/sh_pokemon_dmg_framework.inc"
 #include "sh_aux_stuff/sh_pokemon_dmg_framework_consts.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
+#include "sh_aux_stuff/sh_aux_stuff_natives_pt15.inc"
 #include "../my_include/auxiliar_stuff.inc"
 
 #define ACTIVATE_POKEMON_DMG_CVAR "sh_use_pokemon_damage"
@@ -88,7 +91,6 @@ enum player_stat_struct{
 
 }
 
-#define EVASIVENESS_TASK_PERIOD 0.14
 
 static const DEBUG = 0
 
@@ -133,12 +135,22 @@ static const stat_consts[stat_struct_ids][stat_constants_struct] = {
 	{"Attack", POKEMON_DAMAGE_RELATION_BALLAST_VAL, "Physical attack"},
 	{"Defense", POKEMON_DAMAGE_RELATION_BALLAST_VAL, "Physical defense"},
 	{"Sp. Attack", POKEMON_DAMAGE_RELATION_BALLAST_VAL, "Special attack"},
-	{"Sp. Defense", POKEMON_DAMAGE_RELATION_BALLAST_VAL, "Special defense"}
+	{"Sp. Defense", POKEMON_DAMAGE_RELATION_BALLAST_VAL, "Special defense"},
+	{"Accuracy", 0.2, "Accuracy"},
+	{"Evasiveness", 1.0, "Evasiveness"}
 
 
 }
 
+new Float:lazagun_vecktor[SH_MAXSLOTS+1][3]
+
 static g_player_stats[SH_MAXSLOTS+1][stat_struct_ids][player_stat_struct]
+
+#define EVASIVENESS_TASK_PERIOD 0.14
+
+#define SPEED_STAT_RELOAD_AND_FIRE_SPEED_MULT_DAMPENER_CUSHION_MULT 0.5
+
+new buff_for_evasiveness_entity_timer_struct[init_timer_entity_struct] = {"Pokemon_evasiveness_entity","evasiveness_loop",EVASIVENESS_TASK_PERIOD,-1,-1}
 
 
 static enable_pokemon_dmg_cvar = -1
@@ -164,11 +176,178 @@ public plugin_init(){
 	register_concmd(print_player_pokemon_stats, print_player_pokemon_stats, ADMIN_IMMUNITY, "Print pokemon stats of a player^n^n^n")
 
 
+	register_ham_for_weapon_bitsum(Ham_Weapon_PrimaryAttack,NO_RECOIL_WEAPONS_BITSUM,"Ham_Weapon_Pokemon_Post_Shoot",1, true, false)
+
+
+	register_ham_for_weapon_bitsum(Ham_Weapon_PrimaryAttack,NO_RECOIL_WEAPONS_BITSUM,"Ham_Weapon_Pokemon_Pre_Shoot",_, true, false)
+	
 	RegisterHam(Ham_TakeDamage,"player","ham_sh_stat_management_physical_damage",_, true)
+
+	register_ham_for_weapon_bitsum(Ham_Weapon_Reload,FAST_RELOAD_BITSUM,"Ham_Weapon_Pokemon_Reload_Speed_Post_Reload",1, true, false)
 
 	register_event("CurWeapon", "curweapon", "be", "1=1")
 
+	init_monitor_entity_based_global_struct(buff_for_evasiveness_entity_timer_struct)
+}
 
+public Ham_Weapon_Pokemon_Reload_Speed_Post_Reload(iEnt)
+{
+	
+	if(pev_valid(iEnt)!=2){
+		return
+	}
+	static id; id = get_pdata_cbase(iEnt, m_pPlayer, XO_WEAPON)
+	if(!is_user_alive(id)){
+		
+		return
+	
+	}
+	if(!pokemon_dmg_enabled() || !sh_is_active() || !sh_is_inround()||sh_is_freezetime()){
+
+		return
+	
+	}
+	static my_weapon_ids:weapon_class_id; weapon_class_id = my_weapon_ids:get_pdata_int(iEnt, m_iId, XO_WEAPON)
+	
+	
+	static raw_number_of_stages,
+			clamped_number_of_stages;
+
+	raw_number_of_stages = g_player_stats[id][STAT_SPEED_MULT][the_number_of_stages]
+
+	clamped_number_of_stages = abs_macro(raw_number_of_stages)
+
+	
+	do_fast_reload(id,iEnt,weapon_class_id,(raw_number_of_stages>0)
+	
+																?
+											
+											1.0+(g_player_stats[id][STAT_SPEED_MULT][the_stat_boost_value]*SPEED_STAT_RELOAD_AND_FIRE_SPEED_MULT_DAMPENER_CUSHION_MULT)
+											
+																:
+											
+											(floatpower(0.5,float(clamped_number_of_stages)))
+											
+											)
+
+}
+//----------------------------------------------------------------------------------------------
+public Ham_Weapon_Pokemon_Post_Shoot(weapon_ent)
+{
+
+	if(!pokemon_dmg_enabled() || !sh_is_active() || !sh_is_inround()||sh_is_freezetime()) return
+
+	if(pev_valid(weapon_ent)!=2){
+
+		return
+	}
+	if ( !sh_is_active() ){
+		return
+	}
+	static owner; owner = get_pdata_cbase(weapon_ent,m_pPlayer,XO_WEAPON)
+	if(!is_user_alive(owner)){
+		return
+	}
+
+	
+	static iClip; iClip= get_pdata_int(weapon_ent,m_iClip,XO_WEAPON)
+	
+	if(iClip<=0){
+
+		return
+
+	}
+	static Float:Push[3]
+	entity_get_vector(owner, EV_VEC_punchangle, Push)
+
+	sub_3d_vectors(Push, lazagun_vecktor[owner], Push)
+	
+	/*
+
+		this is where the pokemon framework will come into play
+
+	*/
+	static	raw_number_of_accuracy_stages,
+			clamped_number_of_accuracy_stages;
+
+	raw_number_of_accuracy_stages = g_player_stats[owner][STAT_ACCURACY_MULT][the_number_of_stages]
+
+	clamped_number_of_accuracy_stages = abs_macro(raw_number_of_accuracy_stages)
+
+	multiply_3d_vector_by_scalar(Push, (raw_number_of_accuracy_stages<0)
+																		
+																		?
+																		
+														(1.0 - g_player_stats[owner][STAT_ACCURACY_MULT][the_stat_boost_value])
+														
+																		:
+																		
+														floatpower(0.78,float(clamped_number_of_accuracy_stages)), Push)
+
+
+
+	add_3d_vectors(Push, lazagun_vecktor[owner], Push)
+	entity_set_vector(owner, EV_VEC_punchangle, Push)
+
+
+}
+//----------------------------------------------------------------------------------------------
+public Ham_Weapon_Pokemon_Pre_Shoot(weapon_ent)
+{
+
+	
+	if(!pokemon_dmg_enabled() || !sh_is_active() || !sh_is_inround()||sh_is_freezetime()) return HAM_IGNORED;
+
+
+	if(pev_valid(weapon_ent)!=2){
+
+		return HAM_IGNORED;
+	}
+	if ( !sh_is_active() ){
+		return HAM_IGNORED
+	}
+	static owner; owner = get_pdata_cbase(weapon_ent,m_pPlayer,XO_WEAPON)
+	if(!is_user_alive(owner)){
+		return HAM_IGNORED
+	}
+
+	static my_weapon_ids:weapon_class_id; weapon_class_id = my_weapon_ids:get_pdata_int(weapon_ent, m_iId, XO_WEAPON)
+	
+	if(sh_get_player_has_hero_projectile_weapon(owner, weapon_class_id)){
+		
+		return HAM_IGNORED
+
+
+	}
+	
+	static raw_number_of_speed_stages,
+			clamped_number_of_speed_stages;
+
+	raw_number_of_speed_stages = g_player_stats[owner][STAT_SPEED_MULT][the_number_of_stages]
+
+	clamped_number_of_speed_stages = abs_macro(raw_number_of_speed_stages)
+
+
+	entity_get_vector(owner, EV_VEC_punchangle,lazagun_vecktor[owner])
+
+
+	if(!clamped_number_of_speed_stages){
+
+
+		return HAM_IGNORED
+	}
+
+	return do_fast_shot(weapon_ent,weapon_class_id,(raw_number_of_speed_stages>0)
+	
+																									?
+																				
+																				1.0+(g_player_stats[owner][STAT_SPEED_MULT][the_stat_boost_value]*SPEED_STAT_RELOAD_AND_FIRE_SPEED_MULT_DAMPENER_CUSHION_MULT)
+																				
+																									:
+																				
+																				(floatpower(0.5,float(clamped_number_of_speed_stages)))
+																				
+																				)
 }
 public curweapon(id){
 	
@@ -217,19 +396,19 @@ pokemon_speed_update(id,my_weapon_ids:wpn_id)
 			Float:speed_stat_boost_coeff,
 			stat_diff
 
-	stat_diff = (g_player_stats[id][STAT_SPEED_ID][the_number_of_stages]-g_player_stats[id][STAT_SPEED_ID][prev_number_of_stages])
+	stat_diff = (g_player_stats[id][STAT_SPEED_MULT][the_number_of_stages]-g_player_stats[id][STAT_SPEED_MULT][prev_number_of_stages])
 
-	speed_stat_boost_coeff = float_abs_macro(g_player_stats[id][STAT_SPEED_ID][the_stat_boost_value])
+	speed_stat_boost_coeff = float_abs_macro(g_player_stats[id][STAT_SPEED_MULT][the_stat_boost_value])
 	
 	curr_speed = max_macro(wlt_get_def_movespeed(wpn_id),sh_get_user_sh_maxspeed(id, _:wpn_id))
 
 
 
-	speed_is_neg = g_player_stats[id][STAT_SPEED_ID][the_number_of_stages] < 0
+	speed_is_neg = g_player_stats[id][STAT_SPEED_MULT][the_number_of_stages] < 0
 	
 	speed_added_thing = speed_is_neg? 
 					
-				-(curr_speed* (1.0 -(1.0/(speed_stat_boost_coeff+stat_consts[STAT_SPEED_ID][step]))))
+				-(curr_speed* (1.0 -(1.0/(speed_stat_boost_coeff+stat_consts[STAT_SPEED_MULT][step]))))
 		
 							:
 		
@@ -380,8 +559,16 @@ public amx_apply_player_pokemon_stat_change(id,level,cid){
 	go_up_or_go_down = clamp_macro(go_up_or_go_down, enum_zero_here, enum_one)
 
 
-	sh_apply_staged_stat_boost_aux(player, id, stat_to_use, num_of_stages,go_up_or_go_down)
+	static playername[128]
+	get_user_name(id,playername, charsmax(playername))
+	if(sh_apply_staged_stat_boost_aux(player, id, stat_to_use, num_of_stages,go_up_or_go_down)){
+		
+		client_print(player,print_chat, "Admin named %s has forced a change to your stats!",playername)
+	}
+	else{
 
+		client_print(player,print_chat, "Admin named %s has failed to force a change to your stats!",playername)
+	}
 	return PLUGIN_HANDLED
 }
 public amx_reset_player_pokemon_stats(id,level,cid){
@@ -404,9 +591,83 @@ public amx_reset_player_pokemon_stats(id,level,cid){
 
 	if (!player) return PLUGIN_HANDLED
 
-	sh_reset_player_stat_boosts_aux(player,id)
+	static playername[128]
+	get_user_name(id,playername, charsmax(playername))
+	if(sh_reset_player_stat_boosts_aux(player,id)){
 
+		client_print(player,print_chat, "Admin named %s has forced a reset of your stats!",playername)
+	}
+	else{
+
+		client_print(player,print_chat, "Admin named %s has failed to force a reset of your stats!",playername)
+	}
 	return PLUGIN_HANDLED
+}
+public evasiveness_loop(entity_id){
+
+
+	if(!is_valid_ent(entity_id)){
+		
+		return PLUGIN_CONTINUE
+	
+	}
+	if(!sh_is_active()){
+
+		entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + EVASIVENESS_TASK_PERIOD)
+		return PLUGIN_CONTINUE
+	}
+	if(sh_is_freezetime()){
+		
+		entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + EVASIVENESS_TASK_PERIOD)
+		return PLUGIN_CONTINUE
+	}
+	if(!pokemon_dmg_enabled()){
+		
+		entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + EVASIVENESS_TASK_PERIOD)
+		return PLUGIN_CONTINUE
+	}
+
+	static the_players[SH_MAXSLOTS], pnum, id		
+	get_players(the_players, pnum, "ah")
+	for (new i = 0; i < pnum; i++) {
+		
+		id = the_players[i]
+
+		
+		static Float:the_alpha_floated = 0.0,
+		the_actual_alpha = 0,
+		the_number_of_stages_to_use;
+
+		the_alpha_floated = 0.0
+		the_actual_alpha = 0
+		the_number_of_stages_to_use = max_macro(0,g_player_stats[id][STAT_EVASIVENESS_MULT][the_number_of_stages])
+        
+		if(!the_number_of_stages_to_use){
+
+			continue
+		}
+                
+
+		the_alpha_floated = (255.0 * max_macro(0.0, (1.0 - ((stat_consts[STAT_EVASIVENESS_MULT][step]/float(MAX_PLAYER_STAT_STAGES))*the_number_of_stages_to_use))))
+
+
+
+
+
+		the_actual_alpha = floatround( the_alpha_floated, floatround_round)
+
+		set_render_with_color_const(id,FX_NONE,1,the_actual_alpha,
+							_,0,_,
+							EVASIVENESS_TASK_PERIOD,0,_,kRenderTransAlpha,PRIO_RENDER_INVISIBILITY)
+
+
+	}
+
+	entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + EVASIVENESS_TASK_PERIOD)
+	return PLUGIN_CONTINUE
+
+
+
 }
 public notify_stat_change(id, attacker, stat_struct_ids:the_stat, bool:go_up_or_go_down, num_stages){
 
@@ -694,7 +955,7 @@ bool:sh_apply_staged_stat_boost_aux(id, attacker, stat_struct_ids:the_stat_to_us
 	g_player_stats[id][the_stat_to_use][prev_number_of_stages] = prev_num_of_stages
 
 	
-	if(the_stat_to_use == STAT_SPEED_ID){
+	if(the_stat_to_use == STAT_SPEED_MULT){
 		static my_weapon_ids:wpn_id;
 		wpn_id = my_weapon_ids:get_user_weapon(id)
 		pokemon_speed_update(id,wpn_id)

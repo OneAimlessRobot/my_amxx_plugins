@@ -19,6 +19,13 @@
 
 
 */
+enum init_timer_entity_struct{
+	s_entity_classname_t[128],
+	s_loop_callback_function_name_t[128],
+	Float:s_monitor_enttiy_think_period_t,
+	s_entity_id_t, s_forward_id_t
+
+}
 stock init_monitor_entity_based_global(const entity_classname[], const loop_callback_function_name[], Float:monitor_enttiy_think_period = 1.0,
 											&entity_id = -1,
 											&forward_id = -1){
@@ -43,5 +50,17 @@ stock init_monitor_entity_based_global(const entity_classname[], const loop_call
 
 	entity_set_float(entity_id, EV_FL_nextthink, get_gametime() + monitor_enttiy_think_period)
 
+
+}
+
+stock init_monitor_entity_based_global_struct(the_struct_sized_buff[init_timer_entity_struct],
+											&entity_id = -1,
+											&forward_id = -1){
+
+	init_monitor_entity_based_global(the_struct_sized_buff[s_entity_classname_t],
+											the_struct_sized_buff[s_loop_callback_function_name_t],
+											the_struct_sized_buff[s_monitor_enttiy_think_period_t],
+											entity_id,forward_id)
+										
 
 }

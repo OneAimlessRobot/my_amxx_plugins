@@ -571,8 +571,12 @@ public sequoia_passive_loop(ent_id)
         id = the_players[i]
 
 
-        new Float:the_alpha_floated  = 0.0,
-            the_actual_alpha = 0
+        static Float:the_alpha_floated = 0.0,
+        the_actual_alpha = 0;
+                
+                
+        the_alpha_floated = 0.0
+        the_actual_alpha = 0
 
         if ( sh_get_user_has_hero(id,gHeroID)){
             
