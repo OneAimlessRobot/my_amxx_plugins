@@ -18,6 +18,15 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt4.inc"
 
 
+
+#define CAN_SELF_MOLLY 1
+
+
+#define gSoundBurning "ambience/burning1.wav"
+#define gSoundScream "scientist/c1a0_sci_catscream.wav"
+#define MOLLY_FIRE_SFX "shmod/larissa/molotov/molotov_fire.wav"
+
+
 #define PLUGIN "Superhero molotov fx"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"

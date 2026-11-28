@@ -18,6 +18,9 @@
 #include "../my_include/my_author_header.inc"
 
 
+#define FLIGHT_IGNITION "shmod/ester/flight/flight_ignition.wav"
+
+
 #define PLUGIN "Zenitsu charge funcs"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"

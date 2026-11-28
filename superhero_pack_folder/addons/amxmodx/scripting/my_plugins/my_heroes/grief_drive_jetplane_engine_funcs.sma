@@ -3,6 +3,7 @@
 #define I_WANT_QUICK_CHECKS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_INIT_UTILITIES
+#define I_WANT_MISC_FUNCS_3
 #include "../my_include/superheromod.inc"
 #include "jetplane_inc/sh_jetplane_funcs.inc"
 #include "jetplane_inc/sh_jetplane_engine_funcs.inc"
@@ -14,6 +15,10 @@
 #define PLUGIN "Superhero grief_drive jetty funcs"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
+
+
+#define JETPLANE_STANDSTILL_FUEL_REGEN_PERSEC 200.0
+#define JETPLANE_THOTTLE_FUEL_SPEND_PERSEC 10.0
 
 new pcvar_jetplane_fuel,
 pcvar_fuel_spend
@@ -70,7 +75,7 @@ public plugin_end(){
 
 	if(is_valid_ent(grief_drive_jet_monitor_entity)){
 
-		remove_entity(grief_drive_jet_monitor_entity)
+		remove_entity_safe(grief_drive_jet_monitor_entity)
 	}
 }
 public plugin_natives(){
@@ -334,12 +339,12 @@ public engine_loop(entity_id){
 		if(Get_BitVar(g_jetplane_throttle_mask, id)){
 
 
-			set_pev(user_jet,pev_fuser1,max_macro(0.0,fuel_ammount-(cvar_val(float, pcvar_fuel_spend)+((JETPLANE_THOTTLE_FUEL_SPEND_PERSEC* cvar_val(float, pcvar_fuel_spend))))))
+			set_pev(user_jet,pev_fuser1,max_macro(0.0,fuel_ammount-(cvar_val(float, pcvar_fuel_spend)+((ENGINE_TASK_PERIOD*JETPLANE_THOTTLE_FUEL_SPEND_PERSEC* cvar_val(float, pcvar_fuel_spend))))))
 		
 		}
 		else
 		{
-			set_pev(user_jet,pev_fuser1,min_macro(cvar_val(float, pcvar_jetplane_fuel),fuel_ammount+((entity_get_int(user_jet, EV_INT_flags) & FL_ONGROUND)?cvar_val(float, pcvar_fuel_spend)*JETPLANE_STANDSTILL_FUEL_REGEN_PERSEC:cvar_val(float, pcvar_fuel_spend))))
+			set_pev(user_jet,pev_fuser1,min_macro(cvar_val(float, pcvar_jetplane_fuel),fuel_ammount+(((entity_get_int(user_jet, EV_INT_flags) & FL_ONGROUND)?cvar_val(float, pcvar_fuel_spend)*JETPLANE_STANDSTILL_FUEL_REGEN_PERSEC:cvar_val(float, pcvar_fuel_spend)))*ENGINE_TASK_PERIOD))
 		}
 
 	}

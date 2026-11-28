@@ -92,9 +92,9 @@ models/shmod/shootlancer.mdl
 sprites/shmod/explodelancer.spr
 sprites/fire.spr
 models/rshell_big.mdl
+models/shell.mdl
 models/shmod/yakui/p_minigun.mdl
 models/shmod/yakui/v_minigun.mdl
-models/shell.mdl
 models/shmod/adriano/colt/v_m1911a1.mdl
 models/shmod/adriano/colt/p_m1911a1.mdl
 models/shmod/adriano/colt/w_m1911a1.mdl

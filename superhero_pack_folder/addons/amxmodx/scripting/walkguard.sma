@@ -21,7 +21,7 @@ enum ZONEMODE {
 	ZM_KILL_T1,	// DoD-Unterst�tzung
 	ZM_KILL_T2
 }
-
+#define my_entity_set_origin(%1,%2) engfunc(EngFunc_SetOrigin, %1,%2)
 new zonemode[ZONEMODE][] = { "ZONE_MODE_NONE", "ZONE_MODE_CAMPER", "ZONE_MODE_CAMPER_T1", "ZONE_MODE_CAMPER_T2", "ZONE_MODE_BLOCKING",  "ZONE_MODE_CHEATER",  "ZONE_MODE_CHEATER_T1",  "ZONE_MODE_CHEATER_T2" }
 new zonename[ZONEMODE][] = { "wgz_none", "wgz_camper", "wgz_camper_t1", "wgz_camper_t2", "wgz_block_all", "wgz_kill", "wgz_kill_t1", "wgz_kill_t2" }
 new solidtyp[ZONEMODE] = { SOLID_NOT, SOLID_TRIGGER, SOLID_TRIGGER, SOLID_TRIGGER, SOLID_BBOX, SOLID_TRIGGER, SOLID_TRIGGER, SOLID_TRIGGER }
@@ -273,7 +273,7 @@ public CreateZone(Float:position[3], Float:mins[3], Float:maxs[3], zm, campertim
 	new entity = fm_create_entity("info_target")
 	set_pev(entity, pev_classname, "walkguardzone")
 	fm_entity_set_model(entity, "models/gib_skull.mdl")
-	fm_entity_set_origin(entity, position)
+	my_entity_set_origin(entity, position)
 
 	set_pev(entity, pev_movetype, MOVETYPE_FLY)
 	new id = pev(entity, ZONEID)

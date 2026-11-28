@@ -2,6 +2,7 @@
 #define I_WANT_CONSTANTS
 #define I_WANT_RESOURCE_ALIASES
 #define I_WANT_CUSTOM_COLORS
+#define I_WANT_MISC_FUNCS_3
 
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -204,7 +205,7 @@ public _destroy_player_scanner(iPlugin,iParams){
 			emit_sound(get_player_launcher(id), CHAN_STATIC, LAUNCHER_SCAN_SFX, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 			entity_set_float(g_player_scanner[id], EV_FL_fuser1, 0.0);
 			entity_set_float(g_player_scanner[id], EV_FL_fuser2, 0.0);
-			remove_entity(g_player_scanner[id])
+			remove_entity_safe(g_player_scanner[id])
 			g_player_scanner[id]=0
 	
 	

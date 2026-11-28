@@ -4,15 +4,6 @@
 #define sh_molly_fx
 
 
-#define CAN_SELF_MOLLY 1
-
-#define EXTINGUISH_FIRE_SOUND "shmod/custom_grenades/co2_grenade.wav"
-
-#define MOLLY_FIRE_SFX "shmod/larissa/molotov/molotov_fire.wav"
-
-#define gSoundBurning "ambience/burning1.wav"
-#define gSoundScream "scientist/c1a0_sci_catscream.wav"
-
 #define BURN_DAMAGE 6.0
 #define MOLLY_PROPAGATE_RADIUS 100.0
 #define BURN_TIME 15.0

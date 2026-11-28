@@ -4,6 +4,7 @@
 #define I_WANT_BASIC_MACROS
 #define I_WANT_CUSTOM_COLORS
 #define I_WANT_RESOURCE_ALIASES
+#define I_WANT_MISC_FUNCS_3
 #include <float>
 #include <xs>
 #include "../my_include/superheromod.inc"
@@ -623,12 +624,12 @@ public camera_think(ent)
 	
 	return PLUGIN_CONTINUE
 }
-public remove_camera(pid){
+remove_camera(pid,bool:drastic_removal=false){
 	if(!is_user_connected(pid)) return
 	camman_set_has_camera(pid,0)
 	if(!is_valid_ent(user_camera[pid])) return
 	
-	remove_entity(user_camera[pid])
+	drastic_removal?remove_entity(user_camera[pid]):remove_entity_safe(user_camera[pid])
 
 	UnSet_BitVar(looking_with_camera_mask,pid);
 	UnSet_BitVar(camera_armed_mask,pid);
@@ -886,7 +887,7 @@ public _clear_cameras(iPlugin,iParams){
 	while(grenada) {
 
 		new owner=pev(grenada, pev_owner)
-		remove_camera(owner)
+		remove_camera(owner,true)
 		grenada = find_ent_by_class(grenada, CAMERA_CLASSNAME)
 	}
 

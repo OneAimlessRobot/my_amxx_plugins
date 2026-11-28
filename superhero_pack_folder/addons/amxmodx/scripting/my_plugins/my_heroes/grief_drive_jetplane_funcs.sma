@@ -6,6 +6,7 @@
 #define I_WANT_BASIC_MACROS
 #define I_WANT_PDATA_ALIASES
 #define I_WANT_ENTITY_VECTORS
+#define I_WANT_MISC_FUNCS_3
 
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
@@ -26,6 +27,31 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
+#define FlameRate 20
+#define SoundRate 1
+#define JETPLANE_GRAVITY_MULT 1.0
+#define JETPLANE_PHYS_UPDATE_TIME 0.05
+
+#define JETPLANE_THRUST 100.0
+#define JETPLANE_MAX_TURN_SPEED_THRESHOLD 1.0
+#define JETPLANE_MAX_SPEED_BOUNCE_RATIO 50.0
+#define JETPLANE_MIN_TURN_CONST 0.5
+#define JETPLANE_MIN_CRASH_SPEED_COEFF 0.85
+#define JETPLANE_MAX_BRAKE_SPEED_THRESHOLD 0.5
+#define JETPLANE_MIN_BRAKE_CONST 0.0
+#define JETPLANE_MASS 1.0
+#define JETPLANE_CAR 0.045
+#define JETPLANE_DIAMETER 16.666667
+#define JETPLANE_AREA ((JETPLANE_DIAMETER*JETPLANE_DIAMETER)*M_PI)
+#define JETPLANE_AIR_RESISTANCE 0.013
+#define JETPLANE_DRAG_CONST (JETPLANE_AREA*JETPLANE_CAR*JETPLANE_AIR_RESISTANCE)
+
+
+#define JETPLANE_FLY_SOUND "shmod/grief_drive/jetsounds/engine/fly2.wav"
+#define JETPLANE_IDLE_SOUND "shmod/grief_drive/jetsounds/engine/idle.wav"
+#define JETPLANE_BLOW_SOUND "shmod/grief_drive/jetsounds/engine/blow.wav"
+
+#define JETPLANE_ACCEL_PER_SEC (JETPLANE_THRUST/JETPLANE_MASS)
 
 
 
@@ -1000,14 +1026,14 @@ jet_destroy_aux(id,kill_user=false,inflictor=-1){
 
 		mg_destroy(id)
 		law_destroy(id)
-		remove_entity(g_jetplane[id]);
+		remove_entity_safe(g_jetplane[id]);
 		g_jetplane[id]=-1;
 	}
 	
 	if(camera[id] > 0)
 	{
 		attach_view(id, id)
-		remove_entity(camera[id])
+		remove_entity_safe(camera[id])
 		camera[id] = 0
 	}
 }

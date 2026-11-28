@@ -13,7 +13,9 @@ black_thinktime 2 //how long victims get to pray to their god
 
 */
 
+#define I_WANT_MISC_FUNCS_3
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
 // GLOBAL VARIABLES
 #define g_HeroName "Black Hole"
@@ -168,7 +170,7 @@ public black_loop()
 		gBHTimer = 0
 		new black_hole = find_ent_by_class(-1, "black_hole")
 		if (is_valid_ent(black_hole)){
-			remove_entity(black_hole)
+			remove_entity_safe(black_hole)
 		}
 		return
 	}
@@ -251,7 +253,7 @@ public black_endmode(id)
 	
 	new black_hole = find_ent_by_class(-1, "black_hole")
 	if (is_valid_ent(black_hole)){
-		remove_entity(black_hole)
+		remove_entity_safe(black_hole)
 	}
 }
 //-------------------------------------------------------------------------------------------------

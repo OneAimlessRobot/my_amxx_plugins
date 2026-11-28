@@ -41,8 +41,8 @@ naruto_hitchance 65	//How often the shadow clone hits its target the given perce
 		- fixed a minor bug that was accidentally added in the last version
 	v 0.8.4 beta - August 7 ,2010
 		- removed useless bools
-		- using fm_remove_entity(index) instead of engfunc(EngFunc_RemoveEntity,index)
-		- added new stock naruto_remove_entity(index) to set the entities to the right conditions before removing them
+		- using fm_remove_entity_safe(index) instead of engfunc(EngFunc_RemoveEntity,index)
+		- added new stock naruto_remove_entity_safe(index) to set the entities to the right conditions before removing them
 	v 0.8.3 beta - August 6, 2010
 		- optimized code
 		- weakened shadow clone
@@ -142,6 +142,7 @@ naruto_hitchance 65	//How often the shadow clone hits its target the given perce
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_BASIC_MACROS
+#define I_WANT_MISC_FUNCS_3
 #include <float>
 #include <xs>
 #include "../my_include/superheromod.inc"
@@ -352,11 +353,11 @@ public sh_client_death(id)
 	{	
 		if( pev_valid(entWeapon[id]) ) 
 		{
-			naruto_remove_entity(entWeapon[id])
+			naruto_remove_entity_safe(entWeapon[id])
 		}
 		if( pev_valid(botEnt[id]) )
 		{
-			naruto_remove_entity(botEnt[id])
+			naruto_remove_entity_safe(botEnt[id])
 			botent_clearbools(id)
 			
 			emit_sound(id, CHAN_ITEM, "shmod/naruto/narutoclonesd.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
@@ -369,11 +370,11 @@ public botent_clearbools(id)
 {
 	if( pev_valid(entWeapon[id]) ) 	//another check to make sure the weapon
 	{
-		naruto_remove_entity(entWeapon[id])
+		naruto_remove_entity_safe(entWeapon[id])
 	}
 	if(pev_valid(botEnt[id]))	//another check to make sure the bot is gone
 	{
-		naruto_remove_entity(botEnt[id])
+		naruto_remove_entity_safe(botEnt[id])
 	}
 	botEnt[id] = 0
 }
@@ -491,11 +492,11 @@ public client_disconnected(id)
 
 	if(pev_valid(entWeapon[id]))
 	{
-		naruto_remove_entity(entWeapon[id])
+		naruto_remove_entity_safe(entWeapon[id])
 	}
 	if(pev_valid(botEnt[id]))
 	{
-		naruto_remove_entity(botEnt[id])
+		naruto_remove_entity_safe(botEnt[id])
 		botent_clearbools(id)
 	}
 }
@@ -595,8 +596,8 @@ public FM_Think_hook(ent)
 					}
 					if(!pev_valid(botEnt[i]) && sh_get_user_has_hero(i,gHeroID)&& ent==botEnt[i])
 					{
-						naruto_remove_entity(entWeapon[i])
-						naruto_remove_entity(botEnt[i])
+						naruto_remove_entity_safe(entWeapon[i])
+						naruto_remove_entity_safe(botEnt[i])
 						botent_clearbools(i)
 	
 						sh_chat_message(i, gHeroID, "Your shadow clone defected! He will now vanish.")
@@ -642,11 +643,11 @@ public FM_Think_hook(ent)
 						{
 							if( pev_valid(entWeapon[i]))
 							{
-								naruto_remove_entity(entWeapon[i])
+								naruto_remove_entity_safe(entWeapon[i])
 							}
 							if( pev_valid(botEnt[i])) 
 							{
-								naruto_remove_entity(botEnt[i])
+								naruto_remove_entity_safe(botEnt[i])
 								botent_clearbools(i)
 								bot_cooldownwait[i] = floatround(halflife_time())
 								
@@ -721,8 +722,8 @@ public FM_Think_hook(ent)
 							}
 							else if(!pev_valid(ent))
 							{
-								naruto_remove_entity(entWeapon[i])
-								naruto_remove_entity(botEnt[i])
+								naruto_remove_entity_safe(entWeapon[i])
+								naruto_remove_entity_safe(botEnt[i])
 								botent_clearbools(i)
 								
 								sh_chat_message(i, gHeroID, "Your shadow clone defected! He will now vanish.")
@@ -733,11 +734,11 @@ public FM_Think_hook(ent)
 							{
 								if( pev_valid(entWeapon[i]))
 								{
-									naruto_remove_entity(entWeapon[i])
+									naruto_remove_entity_safe(entWeapon[i])
 								}
 								if( pev_valid(botEnt[i])) 
 								{
-									naruto_remove_entity(botEnt[i])
+									naruto_remove_entity_safe(botEnt[i])
 									botent_clearbools(i)
 								}
 								
@@ -1085,11 +1086,11 @@ public summoning_ring_effects(id)
 	message_end()
 }
 
-stock naruto_remove_entity(index) 
+stock naruto_remove_entity_safe(index) 
 {	
 	set_pev(index, pev_solid, SOLID_NOT)
 
-	my_remove_entity(index)
+	remove_entity_safe(index)
 }
 /* AMXX-Studio Notes - DO NOT MODIFY BELOW HERE
 *{\\ rtf1\\ ansi\\ deff0{\\ fonttbl{\\ f0\\ fnil Tahoma;}}\n\\ viewkind4\\ uc1\\ pard\\ lang1033\\ f0\\ fs16 \n\\ par }

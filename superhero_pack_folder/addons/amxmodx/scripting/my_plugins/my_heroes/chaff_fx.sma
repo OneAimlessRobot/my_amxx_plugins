@@ -14,6 +14,12 @@
 #include "../my_include/my_author_header.inc"
 
 
+#define CHAFF_PERIOD 2.0
+
+#define CHAFF_TIMES (the_time/CHAFF_PERIOD)
+
+#define CHAFF_ALPHA 2
+
 new CHAFF_TASKID
 
 public plugin_init(){

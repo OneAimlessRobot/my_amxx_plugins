@@ -7,6 +7,7 @@
 #define I_WANT_CUSTOM_COLORS
 #define I_WANT_RESOURCE_ALIASES
 #define I_WANT_BASIC_MACROS
+#define I_WANT_MISC_FUNCS_3
 
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -195,7 +196,7 @@ public rivette_thinque(ent){
 
 	if(!is_user_alive(owner)){
 
-		remove_entity(ent)	
+		remove_entity_safe(ent)	
 		return
 	}
 
@@ -534,7 +535,7 @@ public rrrrroovvetoooo_touque_playor(pToucher, pTouched)
 										MARIA_PROJECTILE_EXPLODE_FORCE,
 										explosion_sfx_show_nothing)
 	}
-	remove_entity(pToucher)
+	remove_entity_safe(pToucher)
 
 	if(is_user_connected(owner)&&is_user_alive(pTouched)&&!sh_clients_are_same_team(pTouched,owner)){
 		sh_apply_staged_stat_boost(pTouched,owner,STAT_DEFENSE_MULT,_:(is_direct_hit)+_:(is_air_shot),false)

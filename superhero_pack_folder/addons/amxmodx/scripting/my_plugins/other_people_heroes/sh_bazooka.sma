@@ -65,6 +65,7 @@ bazooka_spawndelay 0
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_ENTITY_VECTORS
+#define I_WANT_MISC_FUNCS_3
 
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
@@ -305,7 +306,7 @@ public bazooka_missile_touch(pToucher, pTouched) {
 	emit_sound(pToucher, CHAN_WEAPON, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	emit_sound(pToucher, CHAN_VOICE, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 
-	remove_entity(pToucher)
+	remove_entity_safe(pToucher)
 	is_heat_rocket[id] = 0
 	is_scan_rocket[id] = 0
 
@@ -324,7 +325,7 @@ public bazooka_missile_touch(pToucher, pTouched) {
 				is_heat_rocket[id2] = 0
 				is_scan_rocket[id2] = 0
 			}
-			remove_entity(pTouched)
+			remove_entity_safe(pTouched)
 		}
 	}
 }
@@ -1383,7 +1384,7 @@ public sh_round_end(){
 			}
 		}
 		if(has_rocket[i] > 0)
-			remove_missile(i,has_rocket[i])
+			remove_missile(i,has_rocket[i],true)
 	}
 	return PLUGIN_CONTINUE
 }
@@ -1412,7 +1413,7 @@ public sh_round_start(){
 	new iCurrent
 	while ((iCurrent = find_ent_by_class(-1, "bazooka_missile_ent")) > 0) {
 		new id = entity_get_edict(iCurrent, EV_ENT_owner)
-		remove_missile(id,iCurrent)
+		remove_missile(id,iCurrent,true)
 	}
 	return PLUGIN_CONTINUE
 }
@@ -1421,7 +1422,7 @@ public roundstart_delay(){
 	round_delay = 0
 }
 //----------------------------------------------------------------------------------------------
-remove_missile(id,missile){
+remove_missile(id,missile, bool:drastic_removal=false){
 
 	new Float:fl_origin[3]
 	entity_get_vector(missile, EV_VEC_origin, fl_origin)
@@ -1443,7 +1444,7 @@ remove_missile(id,missile){
 	is_scan_rocket[id] = 0
 	remove_task(missile)
 	attach_view(id,id)
-	remove_entity(missile)
+	drastic_removal?remove_entity(missile):remove_entity_safe(missile)
 	return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------

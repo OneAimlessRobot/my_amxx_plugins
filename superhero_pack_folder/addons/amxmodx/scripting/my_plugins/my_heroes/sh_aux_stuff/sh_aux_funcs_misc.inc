@@ -448,7 +448,7 @@ stock my_get_aim_origin(index, Float:origin[3]) {
 
 	return 1;
 }
-#define my_remove_entity(%1) engfunc(EngFunc_RemoveEntity, %1)
+#define my_remove_entity_safe(%1) engfunc(EngFunc_RemoveEntity, %1)
 
 stock bool:my_is_ent_visible(index, entity, ignoremonsters = 0) {
 	new Float:start[3], Float:dest[3];

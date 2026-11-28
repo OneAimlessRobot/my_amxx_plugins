@@ -416,7 +416,6 @@ weapons/ric5.wav
 weapons/ric_metal-1.wav
 weapons/ric_metal-2.wav
 weapons/ric_conc-2.wav
-debris/metal1.wav
 debris/bustcrate1.wav
 debris/bustcrate2.wav
 debris/bustglass1.wav

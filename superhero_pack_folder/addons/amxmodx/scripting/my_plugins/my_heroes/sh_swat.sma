@@ -6,6 +6,7 @@
 #define I_WANT_BASIC_MACROS
 #define I_WANT_PDATA_ALIASES
 #define I_WANT_ENTITY_VECTORS
+#define I_WANT_MISC_FUNCS_3
 
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
@@ -281,7 +282,7 @@ public nuke_hit(pToucher, pTouched) {
 
 	emit_sound(pToucher, CHAN_WEAPON, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	emit_sound(pToucher, CHAN_VOICE, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-	remove_entity(pToucher)
+	remove_entity_safe(pToucher)
 }
 //----------------------------------------------------------------------------------------------
 public make_beam(id)
@@ -417,7 +418,7 @@ public sh_round_end(){
 	new iCurrent
 	while ((iCurrent = find_ent_by_class(-1, "ICBM_missile")) > 0) {
 		new id = entity_get_edict(iCurrent, EV_ENT_owner)
-		remove_missile(id,iCurrent)
+		remove_missile(id,iCurrent,true)
 	}
 }
 public sh_client_death(victim){
@@ -425,7 +426,7 @@ public sh_client_death(victim){
 	remove_task(victim)
 }
 //----------------------------------------------------------------------------------------------
-remove_missile(id,missile){
+remove_missile(id,missile, bool:drastic_removal=false){
 
 	new Float:fl_origin[3]
 	entity_get_vector(missile, EV_VEC_origin, fl_origin)
@@ -444,7 +445,7 @@ remove_missile(id,missile){
 	emit_sound(missile, CHAN_VOICE, "ambience/particle_suck2.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	has_rocket[id] = 0;
 	attach_view(id,id)
-	remove_entity(missile)
+	drastic_removal?remove_entity(missile):remove_entity_safe(missile)
 	return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------

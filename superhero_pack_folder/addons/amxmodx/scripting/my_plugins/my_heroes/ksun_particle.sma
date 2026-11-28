@@ -6,6 +6,7 @@
 #define I_WANT_CUSTOM_COLORS
 #define I_WANT_BASIC_MACROS
 #define I_WANT_RESOURCE_ALIASES
+#define I_WANT_MISC_FUNCS_3
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "bleed_knife_inc/sh_bknife_fx.inc"
@@ -135,7 +136,7 @@ untrack_spore(spore){
 		new Float:origin[3]
 		entity_get_vector(spore,EV_VEC_origin,origin)
 		make_sparks(origin)
-		remove_entity(spore)
+		remove_entity_safe(spore)
 		dec_player_num_victims(spore_owner)
 		ksun_dec_num_available_spores(spore_owner)
 	}

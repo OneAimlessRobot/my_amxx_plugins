@@ -7,6 +7,7 @@
 #define I_WANT_RESOURCE_ALIASES
 #define I_WANT_BASIC_MACROS
 
+#define I_WANT_MISC_FUNCS_3
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "special_fx_inc/sh_yakui_get_set.inc"
@@ -20,6 +21,9 @@
 #define PLUGIN "Superhero yakui mk2 pt2"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
+
+#define GATLING_V_MODEL "models/shmod/yakui/v_minigun.mdl"
+#define GATLING_P_MODEL "models/shmod/yakui/p_minigun.mdl"
 
 
 #define PILL_CLASSNAME "pill_gatling_pill"
@@ -203,7 +207,7 @@ public FwdTouchWorld( pilula_sexualllllee, World ) {
 	make_sparks(origin);
 	gun_shot_decal(origin);
 	
-	remove_entity(pilula_sexualllllee)
+	remove_entity_safe(pilula_sexualllllee)
 }
 
 public fw_WeaponPrimaryAttackPre(entity)
@@ -698,7 +702,7 @@ public pill_think(ent)
 	
 	new id=entity_get_edict(ent,EV_ENT_owner)
 	if (!client_is_weapon_user(id, SH_PILLGATLING)) {
-		remove_entity(ent)
+		remove_entity_safe(ent)
 		return
 	}
 	new Float:newVelocity[3],Float:velocityVec[ 3 ]
@@ -792,7 +796,7 @@ public pilula_sexual_penetra_player(pToucher, pTouched)
 		new fx_id:fx_num=fx_id:entity_get_int(pToucher,EV_INT_iuser3)
 		make_effect(pTouched,id,5.0,gHeroID,fx_num,false)
 	}
-	remove_entity(pToucher)
+	remove_entity_safe(pToucher)
 }
 public fwPrecacheEvent(type, const name[]) {
 	for (new i = 0; i < sizeof g_guns_events; ++i) {

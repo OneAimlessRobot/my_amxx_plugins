@@ -4,10 +4,6 @@
 #define sh_tranq_fx
 
 
-#define CAN_SELF_SLEEP 1
-
-
-#define SLEEP_SFX "shmod/larissa/sleep/snore.wav"
 
 #define SLEEP_TIME 15.0
 

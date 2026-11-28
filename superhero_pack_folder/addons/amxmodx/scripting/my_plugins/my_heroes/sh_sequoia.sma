@@ -11,6 +11,7 @@
 #define I_WANT_BASIC_MACROS
 #define I_WANT_PDATA_ALIASES
 #define I_WANT_MATH_VECTORS
+#define I_WANT_MISC_FUNCS_3
 #define I_WANT_INIT_UTILITIES
 #include <float>
 #include <xs>
@@ -563,12 +564,6 @@ public sequoia_passive_loop(ent_id)
         entity_set_float(ent_id, EV_FL_nextthink, get_gametime() + SEQUOIA_PASSIVE_TASK_TIME_PERIOD)
         return PLUGIN_CONTINUE
     }
-    if(sh_is_freezetime()){
-        
-        entity_set_float(ent_id, EV_FL_nextthink, get_gametime() + SEQUOIA_PASSIVE_TASK_TIME_PERIOD)
-        return PLUGIN_CONTINUE
-    }
-
     static the_players[SH_MAXSLOTS], pnum, id
     get_players(the_players, pnum, "ah")
     for (new i = 0; i < pnum; i++) {
@@ -579,12 +574,36 @@ public sequoia_passive_loop(ent_id)
         new Float:the_alpha_floated  = 0.0,
             the_actual_alpha = 0
 
-        if ( !sh_get_user_has_hero(id,gHeroID)){
+        if ( sh_get_user_has_hero(id,gHeroID)){
             
-            continue
+            static Float:max_stamina; max_stamina=  cvar_val(float, pcvar_max_stamina)
+
+            the_alpha_floated = 
+                            
+                            cvar_val(float, pcvar_min_alpha)
+                                            
+                                            +
+
+                    ((cvar_val(float, pcvar_max_alpha) - cvar_val(float, pcvar_min_alpha))
+                        
+                                        *
+                        get_ratio(g_sequoia_damage_stamina[id] ,max_stamina))
+
+
+
+
+
+            the_actual_alpha = floatround( the_alpha_floated, floatround_round)
+
+            set_render_with_color_const(id,FX_NONE,1,the_actual_alpha,
+                                _,0,_,
+                                SEQUOIA_PASSIVE_TASK_TIME_PERIOD,0,_,kRenderTransAlpha,PRIO_RENDER_INVISIBILITY,gHeroID)
+
 
         }
-
+        else{
+            continue
+        }
 
         static alive = 0, dead = 0;
         
@@ -596,30 +615,6 @@ public sequoia_passive_loop(ent_id)
             reset_sequoia(id)
 
         }
-
-        static Float:max_stamina; max_stamina=  cvar_val(float, pcvar_max_stamina)
-
-        the_alpha_floated = 
-                        
-                        cvar_val(float, pcvar_min_alpha)
-                                        
-                                        +
-
-                ((cvar_val(float, pcvar_max_alpha) - cvar_val(float, pcvar_min_alpha))
-                    
-                                    *
-                    get_ratio(g_sequoia_damage_stamina[id] ,max_stamina))
-
-
-
-
-
-        the_actual_alpha = floatround( the_alpha_floated, floatround_round)
-
-        set_render_with_color_const(id,FX_NONE,1,the_actual_alpha,
-							_,0,_,
-                            SEQUOIA_PASSIVE_TASK_TIME_PERIOD,0,_,kRenderTransAlpha,PRIO_RENDER_INVISIBILITY,gHeroID)
-
         
         if(!is_user_bot(id)){
             static print_buff[512]
@@ -943,7 +938,7 @@ public sequoia_beam_terminal_think(ent_id){
     if(!is_user_alive(owner)){
     
     
-        remove_entity(ent_id);
+        remove_entity_safe(ent_id);
         reset_sequoia(owner)
         return PLUGIN_CONTINUE
     
@@ -951,7 +946,7 @@ public sequoia_beam_terminal_think(ent_id){
     }
     if(!sh_get_user_has_hero(owner,gHeroID) ){
 
-        remove_entity(ent_id);
+        remove_entity_safe(ent_id);
         reset_sequoia(owner)
         return PLUGIN_CONTINUE
 
@@ -1066,7 +1061,7 @@ public sequoia_beam_terminal_think(ent_id){
                         SH_NEW_DMG_DRAIN,
                         ANNIHILATION_wpn_id)
 
-        remove_entity(ent_id)
+        remove_entity_safe(ent_id)
         reset_sequoia(owner,true,_,true)
     }
     return PLUGIN_CONTINUE;

@@ -2,6 +2,7 @@
 #define I_WANT_RESOURCE_ALIASES
 #define I_WANT_CUSTOM_COLORS
 #define I_WANT_ENTITY_VECTORS
+#define I_WANT_MISC_FUNCS_3
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
@@ -328,7 +329,7 @@ public destroy_player_launcher(id){
 		
 		if(is_valid_ent(g_player_launcher[id])){
 			
-			remove_entity(g_player_launcher[id])
+			remove_entity_safe(g_player_launcher[id])
 			g_player_launcher[id]=0
 		
 		

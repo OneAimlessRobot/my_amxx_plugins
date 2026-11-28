@@ -6,6 +6,7 @@
 #define I_WANT_BASIC_MACROS
 #define I_WANT_PDATA_ALIASES
 #define I_WANT_ENTITY_VECTORS
+#define I_WANT_MISC_FUNCS_3
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -483,7 +484,7 @@ public guide_kamehameha(args[])
 	if ( !is_valid_ent(ent) ) return
 
 	if ( !is_user_connected(id) ) {
-		remove_entity(ent)
+		remove_entity_safe(ent)
 		return
 	}
 	if(!is_user_alive(id)){
@@ -712,7 +713,7 @@ public vegetto_power_touch(pToucher, pTouched) {
 		write_byte(decal_id)	//decal
 		message_end()
 	
-		remove_entity(pToucher)
+		remove_entity_safe(pToucher)
 
 		// Reset the Varibles
 		g_powerNum[id] = 0
@@ -740,7 +741,7 @@ public remove_power(id, powerID)
 	g_powerNum[id] = 0
 	g_powerID[id] = 0
 
-	remove_entity(powerID)
+	remove_entity_safe(powerID)
 }
 //----------------------------------------------------------------------------------------------
 public vegetto_loop()

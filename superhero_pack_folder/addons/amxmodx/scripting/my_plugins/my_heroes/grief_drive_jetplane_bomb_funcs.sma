@@ -6,6 +6,7 @@
 #define I_WANT_BASIC_MACROS
 #define I_WANT_PDATA_ALIASES
 #define I_WANT_ENTITY_VECTORS
+#define I_WANT_MISC_FUNCS_3
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "jetplane_inc/sh_jetplane_funcs.inc"
@@ -218,7 +219,7 @@ if(!is_valid_ent(pToucher)) return
 new the_owner=entity_get_edict(pToucher,EV_ENT_owner)
 if((pTouched==jet_get_user_jet(the_owner))){
 
-	remove_entity(pToucher)
+	remove_entity_safe(pToucher)
 	return
 
 }
@@ -241,7 +242,7 @@ explosion_custom_entity(pToucher,
 	_,
 	explosion_sfx_show_nothing)
 	
-remove_entity(pToucher)
+remove_entity_safe(pToucher)
 
 }
 

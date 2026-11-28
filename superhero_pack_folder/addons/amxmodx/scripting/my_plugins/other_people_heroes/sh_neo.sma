@@ -18,6 +18,7 @@ neo_toggle 0		//Def=0
 */
 #define I_WANT_CONSTANTS
 #define I_WANT_BASIC_MACROS
+#define I_WANT_MISC_FUNCS_3
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
@@ -294,7 +295,7 @@ public user_fly(parm[])
 		
 		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		remove_entity(xEnt) 
+		remove_entity_safe(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_FORWARD && get_user_button(id)&IN_MOVERIGHT && get_user_button(id)&IN_DUCK)  // FORWARD + MOVERIGHT + DUCK 
 	{ 
@@ -314,7 +315,7 @@ public user_fly(parm[])
 		
 		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		remove_entity(xEnt) 
+		remove_entity_safe(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_FORWARD && get_user_button(id)&IN_MOVELEFT && get_user_button(id)&IN_JUMP)  // FORWARD + MOVELEFT + JUMP 
 	{ 
@@ -334,7 +335,7 @@ public user_fly(parm[])
 		
 		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		remove_entity(xEnt) 
+		remove_entity_safe(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_FORWARD && get_user_button(id)&IN_MOVELEFT && get_user_button(id)&IN_DUCK)  // FORWARD + MOVELEFT + DUCK 
 	{ 
@@ -354,7 +355,7 @@ public user_fly(parm[])
 		
 		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		remove_entity(xEnt) 
+		remove_entity_safe(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_JUMP && get_user_button(id)&IN_MOVERIGHT && get_user_button(id)&IN_BACK)  // BACK + MOVERIGHT + JUMP 
 	{ 
@@ -374,7 +375,7 @@ public user_fly(parm[])
 		
 		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		remove_entity(xEnt) 
+		remove_entity_safe(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_BACK && get_user_button(id)&IN_MOVERIGHT && get_user_button(id)&IN_DUCK)  // BACK + MOVERIGHT + DUCK 
 	{ 
@@ -394,7 +395,7 @@ public user_fly(parm[])
 		
 		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		remove_entity(xEnt) 
+		remove_entity_safe(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_JUMP && get_user_button(id)&IN_MOVELEFT && get_user_button(id)&IN_BACK)  // BACK + MOVELEFT + JUMP 
 	{ 
@@ -414,7 +415,7 @@ public user_fly(parm[])
 		
 		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		remove_entity(xEnt) 
+		remove_entity_safe(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_BACK && get_user_button(id)&IN_MOVELEFT && get_user_button(id)&IN_DUCK)  // BACK + MOVELEFT + DUCK 
 	{ 
@@ -434,7 +435,7 @@ public user_fly(parm[])
 		
 		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		remove_entity(xEnt) 
+		remove_entity_safe(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_MOVERIGHT && get_user_button(id)&IN_FORWARD) //  MOVERIGHT  + FORWARD 
 	{ 
@@ -454,7 +455,7 @@ public user_fly(parm[])
 		
 		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		remove_entity(xEnt) 
+		remove_entity_safe(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_MOVERIGHT && get_user_button(id)&IN_BACK) // MOVERIGHT + BACK 
 	{ 
@@ -474,7 +475,7 @@ public user_fly(parm[])
 		
 		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		remove_entity(xEnt) 
+		remove_entity_safe(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_MOVELEFT && get_user_button(id)&IN_FORWARD) // MOVELEFT + FORWARD 
 	{ 
@@ -494,7 +495,7 @@ public user_fly(parm[])
 		
 		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		remove_entity(xEnt) 
+		remove_entity_safe(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_MOVELEFT && get_user_button(id)&IN_BACK) // MOVELEFT + BACK 
 	{ 
@@ -514,7 +515,7 @@ public user_fly(parm[])
 		
 		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		remove_entity(xEnt) 
+		remove_entity_safe(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_FORWARD && get_user_button(id)&IN_JUMP)  // FORWARD + JUMP 
 	{ 
@@ -533,7 +534,7 @@ public user_fly(parm[])
 		
 		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		remove_entity(xEnt) 
+		remove_entity_safe(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_FORWARD && get_user_button(id)&IN_DUCK)  // FORWARD + DUCK 
 	{ 
@@ -552,7 +553,7 @@ public user_fly(parm[])
 		
 		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		remove_entity(xEnt) 
+		remove_entity_safe(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_BACK && get_user_button(id)&IN_JUMP)  // BACK + JUMP 
 	{ 
@@ -572,7 +573,7 @@ public user_fly(parm[])
 		
 		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		remove_entity(xEnt) 
+		remove_entity_safe(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_BACK && get_user_button(id)&IN_DUCK)  // BACK + DUCK 
 	{ 
@@ -592,7 +593,7 @@ public user_fly(parm[])
 		
 		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		remove_entity(xEnt) 
+		remove_entity_safe(xEnt) 
 	}    
 	else if(get_user_button(id)&IN_MOVERIGHT && get_user_button(id)&IN_JUMP)  // MOVERIGHT + JUMP 
 	{ 
@@ -612,7 +613,7 @@ public user_fly(parm[])
 		
 		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		remove_entity(xEnt) 
+		remove_entity_safe(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_MOVERIGHT && get_user_button(id)&IN_DUCK)  // MOVERIGHT + DUCK 
 	{ 
@@ -632,7 +633,7 @@ public user_fly(parm[])
 		
 		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		remove_entity(xEnt) 
+		remove_entity_safe(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_MOVELEFT && get_user_button(id)&IN_JUMP)  // MOVELEFT + JUMP 
 	{ 
@@ -652,7 +653,7 @@ public user_fly(parm[])
 		
 		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		remove_entity(xEnt) 
+		remove_entity_safe(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_MOVELEFT && get_user_button(id)&IN_DUCK)  // MOVELEFT + DUCK 
 	{ 
@@ -672,7 +673,7 @@ public user_fly(parm[])
 		
 		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		remove_entity(xEnt) 
+		remove_entity_safe(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_FORWARD) // FORWARD 
 		velocity_by_aim(id, get_cvar_num("neo_flyspeed") , Velocity[id]) 
@@ -708,7 +709,7 @@ public user_fly(parm[])
 		
 		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		remove_entity(xEnt) 
+		remove_entity_safe(xEnt) 
 	} 
 	else if(get_user_button(id)&IN_MOVELEFT) // MOVELEFT 
 	{ 
@@ -728,7 +729,7 @@ public user_fly(parm[])
 		
 		velocity_by_aim(xEnt, get_cvar_num("neo_flyspeed"), Velocity[id]) 
 		
-		remove_entity(xEnt) 
+		remove_entity_safe(xEnt) 
 	} 
 	else 
 	{ 

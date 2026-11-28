@@ -17,7 +17,7 @@ lancer_blast_decals 1			//Show the burn decals from blast (Default 1)
 #define I_WANT_MISC_FUNCS
 #define I_WANT_RESOURCE_ALIASES
 #define I_WANT_ENTITY_VECTORS
-
+#define I_WANT_MISC_FUNCS_3
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
@@ -456,7 +456,7 @@ public torpedo_touch(pToucher, pTouched) {
 	emit_sound(id, CHAN_STATIC, "shmod/lancersound2.wav", 1.0, ATTN_NORM, sndStop, PITCH_NORM)
 	emit_sound(id, CHAN_STATIC, "shmod/lancersound4.wav", 1.0, ATTN_NORM, 0, PITCH_NORM)
 
-	remove_entity(pToucher)
+	remove_entity_safe(pToucher)
 
 	if ( get_cvar_float("lancer_cooldown") > 0.0 ) sh_set_cooldown(id, get_cvar_float("lancer_cooldown"))
 
@@ -466,9 +466,9 @@ public torpedo_touch(pToucher, pTouched) {
 
 }
 //----------------------------------------------------------------------------------------------
-public remove_power(id, powerID)
+remove_power(id, powerID, bool:drastic_removal=false)
 {
-	new Float:fl_vOrigin[3]
+	static Float:fl_vOrigin[3]
 
 	entity_get_vector(powerID, EV_VEC_origin, fl_vOrigin)
 
@@ -492,7 +492,7 @@ public remove_power(id, powerID)
 	emit_sound(powerID, CHAN_STATIC, "shmod/lancersound3.wav", 1.0, ATTN_NORM, sndStop, PITCH_NORM)
 	emit_sound(id, CHAN_STATIC, "shmod/lancersound2.wav", 1.0, ATTN_NORM, sndStop, PITCH_NORM)
 
-	remove_entity(powerID)
+	drastic_removal?remove_entity(powerID):remove_entity_safe(powerID)
 
 }
 //----------------------------------------------------------------------------------------------

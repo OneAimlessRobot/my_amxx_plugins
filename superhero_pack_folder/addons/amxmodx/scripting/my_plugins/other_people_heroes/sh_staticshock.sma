@@ -12,7 +12,9 @@ shock_armor 250			//Armor Starts with (def=250)
 
 */
 
-#include "../my_include/superheromod.inc" 
+#define I_WANT_MISC_FUNCS_3
+#include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
 // GLOBAL VARIABLES
 #define gHeroName "Static Shock"
@@ -257,7 +259,7 @@ public removeMark(id)
 		write_short(ice[id])
 		message_end()
 		
-		remove_entity(ice[id])
+		remove_entity_safe(ice[id])
 		ice[id] = 0
 		
 		set_user_rendering(id)
@@ -272,7 +274,7 @@ public make_trail(id,origin2[3])
   	new Float: vAngle[3]
   	new Float: Velocity[3]
   	
-	remove_entity(ice[id])
+	remove_entity_safe(ice[id])
 
 	entity_get_vector(id, EV_VEC_origin , Origin)
 	entity_get_vector(id, EV_VEC_v_angle, vAngle)
@@ -341,7 +343,7 @@ public sh_client_spawn(id)
 
   if (ice[id]) 
   {
-		remove_entity(ice[id])
+		remove_entity_safe(ice[id])
 		ice[id] = 0
 		g_jetPackRunning[id] = 0
 		sh_assign_id_bit(id, SH_JETPACK_RUNNING, false)

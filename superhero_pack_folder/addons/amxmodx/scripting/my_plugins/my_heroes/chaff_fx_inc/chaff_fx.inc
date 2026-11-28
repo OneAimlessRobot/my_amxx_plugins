@@ -5,12 +5,6 @@
 
 #define CHAFF_TIME 30.0
 
-#define CHAFF_PERIOD 2.0
-
-#define CHAFF_TIMES (the_time/CHAFF_PERIOD)
-
-#define CHAFF_ALPHA 2
-
 native sh_chaff_user(id, Float:the_time=CHAFF_TIME)
 native sh_unchaff_user(id)
 

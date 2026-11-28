@@ -7,6 +7,7 @@
 #define I_WANT_ENTITY_VECTORS
 #define I_WANT_PDATA_ALIASES
 #define I_WANT_INIT_UTILITIES
+#define I_WANT_MISC_FUNCS_3
 #include "../my_include/superheromod.inc"
 #include "freeze_fx/freeze_fx.inc"
 #include "girlb_includes/girlb_get_set.inc"
@@ -552,7 +553,7 @@ public ice_field_think(ent)
 	static Float:ent_pos[3]
 
 	if (entity_get_float(ent,EV_FL_fuser1)<0.0) {
-		remove_entity(ent)
+		remove_entity_safe(ent)
 		return
 	}
 	else{

@@ -10,6 +10,13 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 
+#define RADIOACTIVE_DAMAGE_VULNERABILITY_COEFF 3.40
+
+#define CAN_SELF_SLEEP 1
+
+
+#define SLEEP_SFX "shmod/larissa/sleep/snore.wav"
+
 
 #define PLUGIN "Superhero tranq fx"
 #define VERSION "1.0.0"

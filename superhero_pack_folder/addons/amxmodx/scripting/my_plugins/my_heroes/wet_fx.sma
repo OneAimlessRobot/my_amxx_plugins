@@ -13,6 +13,12 @@
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
 
 
+#define WET_SHOCK_DMG_MULTIPLIER 2.5
+
+
+#define CLEAN_THE_WITCH_BLEACH_HER_MELT_THE_SLUG_WITH_CLOROX 120.0
+
+
 #define PLUGIN "Superhero wet fx"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"

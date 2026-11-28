@@ -3,6 +3,7 @@
 
 #define I_WANT_CUSTOM_COLORS
 #define I_WANT_RESOURCE_ALIASES
+#define I_WANT_MISC_FUNCS_3
 #define I_WANT_PDATA_ALIASES
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
@@ -262,7 +263,7 @@ public blow_mine_up(ent, id)
 		explosion(gHeroID,ent,EXPLODE_RADIUS,MINE_DAMAGE,
 		_,_,_,_,_,_,_,_,_,true)
 		
-		remove_entity(ent)
+		remove_entity_safe(ent)
 }
 
 //----------------------------------------------------------------------------------------------
@@ -305,7 +306,7 @@ public disarm_task(param[1],id){
 	if((curr_disarm_charge[id]>=min_charge_time)){
 
 		gNumMines[id]= (gNumMines[id]+1);
-		remove_entity(param[0]);
+		remove_entity_safe(param[0]);
 		
 		if(!is_user_bot(id)){
 			client_print(id,print_center,"You retrieved and disarmed 1 mine! %d mines left now!",gNumMines[id]);

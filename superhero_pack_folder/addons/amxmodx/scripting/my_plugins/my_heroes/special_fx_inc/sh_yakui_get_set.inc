@@ -4,9 +4,6 @@
 #define sh_yakui_get_set
 
 
-#define GATLING_V_MODEL "models/shmod/yakui/v_minigun.mdl"
-#define GATLING_P_MODEL "models/shmod/yakui/p_minigun.mdl"
-
 
 native gatling_set_fx_num(id,fx_id:value_to_set)
 native fx_id:gatling_get_fx_num(id)

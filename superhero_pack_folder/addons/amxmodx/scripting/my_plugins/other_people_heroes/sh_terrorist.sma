@@ -7,8 +7,9 @@ terrorist_level 0
 
 */
 
+#define I_WANT_MISC_FUNCS_3
 #include "../my_include/superheromod.inc"
-
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
 // GLOBAL VARIABLES
 #define gHeroName "Terrorist"
@@ -126,7 +127,7 @@ public terrorist_dropweapons(id)
 		//If Velocities are all Zero its on the ground already and should stay there
 		if (weapvel[0] == 0.0 && weapvel[1] == 0.0 && weapvel[2] == 0.0) continue
 
-		remove_entity(iCurrent)
+		remove_entity_safe(iCurrent)
 	}
 }
 //----------------------------------------------------------------------------------------------
@@ -178,8 +179,8 @@ public create_bombtarget()
 //----------------------------------------------------------------------------------------------
 public remove_bombtarget()
 {
-  if(is_valid_ent(g_bombEnts[0])) remove_entity(g_bombEnts[0])
-  if(is_valid_ent(g_bombEnts[1])) remove_entity(g_bombEnts[1])
+  if(is_valid_ent(g_bombEnts[0])) remove_entity_safe(g_bombEnts[0])
+  if(is_valid_ent(g_bombEnts[1])) remove_entity_safe(g_bombEnts[1])
 }
 //----------------------------------------------------------------------------------------------
 public client_prethink(id)

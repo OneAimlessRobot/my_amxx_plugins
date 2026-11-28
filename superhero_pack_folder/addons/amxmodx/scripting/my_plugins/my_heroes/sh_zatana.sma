@@ -11,6 +11,8 @@
 #define I_WANT_BASIC_MACROS
 #define I_WANT_PDATA_ALIASES
 #define I_WANT_MATH_VECTORS
+#define I_WANT_INIT_UTILITIES
+#define I_WANT_MISC_FUNCS_3
 #include <float>
 #include <xs>
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -112,9 +114,10 @@ new pcvar_num_normal_strikes
 
 new Zatana_hudsync
 
-new ZATANA_PASSIVE_TASKID = -1,
-    ZATANA_ACTIVE_TASKID = -1,
-    ZATANA_HURT_TASKID = -1
+new ZATANA_HURT_TASKID = -1
+
+#define ZATANA_PASSIVE_ENTITY_CLASSNAME "ZATANA_PASSIVE"
+#define ZATANA_ACTIVE_ENTITY_CLASSNAME "ZATANA_ACTIVE"
 
 public plugin_init(){
 
@@ -174,14 +177,15 @@ public plugin_init(){
                                 dmg_source_name_log_fury_swipes,
                                 0)
 
-    ZATANA_PASSIVE_TASKID = allocate_typed_task_id(generic_task)
-
-    ZATANA_ACTIVE_TASKID = allocate_typed_task_id(generic_task)
 
     ZATANA_HURT_TASKID = allocate_typed_task_id(player_task)
 
-    set_task( ZATANA_PASSIVE_TASK_TIME_PERIOD, "zatana_passive_loop", ZATANA_PASSIVE_TASKID, _, _, "b")
-    set_task( ZATANA_ACTIVE_TASK_TIME_PERIOD, "zatana_active_loop", ZATANA_ACTIVE_TASKID, _, _, "b")
+    init_monitor_entity_based_global(ZATANA_PASSIVE_ENTITY_CLASSNAME, "zatana_passive_loop", ZATANA_PASSIVE_TASK_TIME_PERIOD)
+
+
+
+
+    init_monitor_entity_based_global(ZATANA_ACTIVE_ENTITY_CLASSNAME, "zatana_active_loop", ZATANA_ACTIVE_TASK_TIME_PERIOD)
 
 
 
@@ -204,26 +208,26 @@ public zatana_camera_think(camera_ent_id){
     if(!is_user_alive(owner)){
         
         attach_view(owner,owner)
-        remove_entity(camera_ent_id)
+        remove_entity_safe(camera_ent_id)
         return PLUGIN_CONTINUE
     }
     if(!sh_is_inround()){
         
         attach_view(owner,owner)
-        remove_entity(camera_ent_id)
+        remove_entity_safe(camera_ent_id)
         return PLUGIN_CONTINUE
     }
     if(!sh_get_user_has_hero(owner, gHeroID)){
 
         attach_view(owner,owner)
-        remove_entity(camera_ent_id)
+        remove_entity_safe(camera_ent_id)
         return PLUGIN_CONTINUE
     }
 
     if(!zatana_user_target_is_valid(owner, g_zatana_current_aimed_at_player[owner])){
         
         attach_view(owner,owner)
-        remove_entity(camera_ent_id)
+        remove_entity_safe(camera_ent_id)
         return PLUGIN_CONTINUE
     }
 
@@ -233,7 +237,7 @@ public zatana_camera_think(camera_ent_id){
     if(online_time_left <= 0.0){
 
         attach_view(owner,owner)
-        remove_entity(camera_ent_id)
+        remove_entity_safe(camera_ent_id)
         return PLUGIN_CONTINUE
 
     }
@@ -381,10 +385,27 @@ remove_user_float(id){
     }
 }
 //----------------------------------------------------------------------------------------------
-public zatana_active_loop(taskid)
+public zatana_active_loop(ent_id)
 {	
-    if ( !sh_is_active() || sh_is_freezetime() || !sh_is_inround() ) return
+    if(!is_valid_ent(ent_id)){
 
+        return PLUGIN_CONTINUE
+    }
+    if(!sh_is_active()){
+
+        entity_set_float(ent_id, EV_FL_nextthink, get_gametime() + ZATANA_ACTIVE_TASK_TIME_PERIOD)
+        return PLUGIN_CONTINUE
+    }
+    if(sh_is_freezetime()){
+
+        entity_set_float(ent_id, EV_FL_nextthink, get_gametime() + ZATANA_ACTIVE_TASK_TIME_PERIOD)
+        return PLUGIN_CONTINUE
+    }
+    if(!sh_is_inround()){
+
+        entity_set_float(ent_id, EV_FL_nextthink, get_gametime() + ZATANA_ACTIVE_TASK_TIME_PERIOD)
+        return PLUGIN_CONTINUE
+    }
     static the_players[SH_MAXSLOTS], pnum, id		
     get_players(the_players, pnum, "ah")
     for (new i = 0; i < pnum; i++) {
@@ -443,11 +464,31 @@ public zatana_active_loop(taskid)
 
 
     }
+    entity_set_float(ent_id, EV_FL_nextthink, get_gametime() + ZATANA_ACTIVE_TASK_TIME_PERIOD)
+    return PLUGIN_CONTINUE
 }
 //----------------------------------------------------------------------------------------------
-public zatana_passive_loop(taskid)
+public zatana_passive_loop(ent_id)
 {	
-    if ( !sh_is_active() || sh_is_freezetime() ) return
+    if(!is_valid_ent(ent_id)){
+
+        return PLUGIN_CONTINUE
+    }
+    if(!sh_is_active()){
+
+        entity_set_float(ent_id, EV_FL_nextthink, get_gametime() + ZATANA_PASSIVE_TASK_TIME_PERIOD)
+        return PLUGIN_CONTINUE
+    }
+    if(sh_is_freezetime()){
+
+        entity_set_float(ent_id, EV_FL_nextthink, get_gametime() + ZATANA_PASSIVE_TASK_TIME_PERIOD)
+        return PLUGIN_CONTINUE
+    }
+    if(!sh_is_inround()){
+
+        entity_set_float(ent_id, EV_FL_nextthink, get_gametime() + ZATANA_PASSIVE_TASK_TIME_PERIOD)
+        return PLUGIN_CONTINUE
+    }
 
     static the_players[SH_MAXSLOTS], pnum, id		
     get_players(the_players, pnum, "ah")
@@ -535,6 +576,9 @@ public zatana_passive_loop(taskid)
 
 
     }
+
+    entity_set_float(ent_id, EV_FL_nextthink, get_gametime() + ZATANA_PASSIVE_TASK_TIME_PERIOD)
+    return PLUGIN_CONTINUE
 }
 public plugin_natives(){
 

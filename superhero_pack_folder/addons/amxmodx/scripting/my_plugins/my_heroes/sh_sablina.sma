@@ -10,6 +10,7 @@
 #define I_WANT_CUSTOM_COLORS
 #define I_WANT_RESOURCE_ALIASES
 #define I_WANT_BASIC_MACROS
+#define I_WANT_MISC_FUNCS_3
 #define I_WANT_PDATA_ALIASES
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
@@ -564,7 +565,7 @@ public sablina_spike_think(ent_id){
 	//if(!is_user_alive(owner_id)||(!(entity_get_int(ent_id, EV_INT_flags)& FL_PARTIALGROUND))){
 	if(!is_user_alive(owner_id)){
 
-		remove_entity(ent_id)
+		remove_entity_safe(ent_id)
 
 		return PLUGIN_CONTINUE;
 	}
@@ -742,7 +743,7 @@ public sablina_stone_spike_die_delayed(parms[1],ent_id){
 	}
 	if(is_valid_ent(ent_id)){
 		
-		remove_entity(ent_id)
+		remove_entity_safe(ent_id)
 
 	}
 

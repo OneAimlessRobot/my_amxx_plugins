@@ -20,6 +20,7 @@ Forge_effects 2			//1 Regualy missile, no effects
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_ENTITY_VECTORS
+#define I_WANT_MISC_FUNCS_3
 
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
@@ -151,7 +152,7 @@ public missile_touch(pToucher, pTouched) {
 
 	forge_boom(vExplodeAt)
 
-	remove_entity(pToucher)
+	remove_entity_safe(pToucher)
 
 	if ( is_valid_ent(pTouched) ) {
 		new szClassName2[32]
@@ -161,7 +162,7 @@ public missile_touch(pToucher, pTouched) {
 			remove_task(pTouched)
 			emit_sound(pTouched, CHAN_WEAPON, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 			emit_sound(pTouched, CHAN_VOICE, "weapons/explode3.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
-			remove_entity(pTouched)
+			remove_entity_safe(pTouched)
 		}
 	}
 }

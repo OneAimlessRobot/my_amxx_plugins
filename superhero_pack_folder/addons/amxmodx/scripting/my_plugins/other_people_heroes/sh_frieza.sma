@@ -20,6 +20,7 @@ frieza_disklife 50
 #define I_WANT_CONSTANTS
 #define I_WANT_ENTITY_VECTORS
 #define I_WANT_MISC_FUNCS
+#define I_WANT_MISC_FUNCS_3
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_include/my_author_header.inc"
@@ -338,7 +339,7 @@ public special_effects(pToucher, pTouched, aimvec[3]) //effects for when disk to
 public decay_effects(NewEnt, origin[3])  //removes the entity plus adds a decaying effect
 {
 	if(is_valid_ent(NewEnt)){
-		remove_entity(NewEnt)
+		remove_entity_safe(NewEnt)
 		//To learn more about animation effects go to this link
 		//http://shero.rocks-hideout.com/forums/viewtopic.php?t=1941
 		message_begin(MSG_BROADCAST, SVC_TEMPENTITY)

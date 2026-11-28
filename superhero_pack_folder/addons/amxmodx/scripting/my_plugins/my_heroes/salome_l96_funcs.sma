@@ -7,6 +7,7 @@
 #define I_WANT_CUSTOM_COLORS
 #define I_WANT_RESOURCE_ALIASES
 #define I_WANT_BASIC_MACROS
+#define I_WANT_MISC_FUNCS_3
 #include "sh_aux_stuff/sh_aux_inc.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt2.inc"
@@ -197,7 +198,7 @@ public bulette_thinque(ent){
 
 	if(!is_user_alive(owner)){
 
-		remove_entity(ent)	
+		remove_entity_safe(ent)	
 		return
 	}
 
@@ -509,7 +510,7 @@ public FwdTouchWorld( bull_et, World ) {
 	
 	if(!is_valid_ent(World)){
 		
-		remove_entity(bull_et)
+		remove_entity_safe(bull_et)
 		return
 	}
 	
@@ -530,7 +531,7 @@ public FwdTouchWorld( bull_et, World ) {
 		ExecuteHamB(Ham_TakeDamage, World, bull_et, owner, damage, 0);
 
 	}
-	remove_entity(bull_et)
+	remove_entity_safe(bull_et)
 }
 public bulletina_touque_playor(pToucher, pTouched)
 {
@@ -652,7 +653,7 @@ public bulletina_touque_playor(pToucher, pTouched)
 	tank_impact_shot_fx(pToucher,origin,9)
 
 
-	remove_entity(pToucher)
+	remove_entity_safe(pToucher)
 	
 }
 public plugin_precache()

@@ -87,18 +87,18 @@ public nitro_car_think(car_id){
 
 	if(!is_user_alive(owner)){
 
-		remove_entity(car_id)
+		remove_entity_safe(car_id)
 		return PLUGIN_CONTINUE
 	}
 
 	if(sh_get_id_bit(owner, SH_CONTROLLING_VEHICLE)||sh_get_id_bit(owner,SH_USER_IS_FLYING)){
 
-		remove_entity(car_id)
+		remove_entity_safe(car_id)
 		return HAM_IGNORED
 	}
 	if(!g_is_running[owner]){
 
-		remove_entity(car_id)
+		remove_entity_safe(car_id)
 		return HAM_IGNORED
 	}
 

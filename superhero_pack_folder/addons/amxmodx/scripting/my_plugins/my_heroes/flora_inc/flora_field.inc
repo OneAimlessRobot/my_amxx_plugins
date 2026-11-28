@@ -3,7 +3,6 @@
 #endif
 #define sh_flora_field_funcs
 
-#define FLORA_FIELD_CLASSNAME "flora_field"
 
 
 native reset_flora_user(id, bool:newRound= false)

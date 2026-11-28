@@ -10,6 +10,30 @@
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
 
+#define ID_M1911A1 7634198
+#define STRN_M1911A1 "weapon_m1911a1"
+#define CLIP_M1911A1 8
+#define MAXAMMO_M1911A1 100
+
+enum
+{
+	ANIM_IDLE,
+	ANIM_IDLE_EMPTY,
+	ANIM_SHOOT1,
+	ANIM_SHOOT2,
+	ANIM_SHOOT_EMPTY,
+	ANIM_RELOAD,
+	ANIM_RELOAD_EMPTY,
+	ANIM_DRAW,
+	ANIM_DRAW_EMPTY
+}
+
+#define VIEWMODEL "models/shmod/adriano/colt/v_m1911a1.mdl"
+#define WEAPONMODEL "models/shmod/adriano/colt/p_m1911a1.mdl"
+#define WORLDMODEL "models/shmod/adriano/colt/w_m1911a1.mdl"
+
+#define SHOOTSOUND "weapons/adriano/colt/deagle-1.wav"
+
 
 new pPlayer, HookChain:TakeDamage, g_Msg_WeaponList = -1
 new wpn_name_for_future_lookup[50]

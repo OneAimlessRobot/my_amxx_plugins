@@ -7,6 +7,7 @@
 #define I_WANT_RESOURCE_ALIASES
 #define I_WANT_BASIC_MACROS
 #define I_WANT_ENTITY_VECTORS
+#define I_WANT_MISC_FUNCS_3
 
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
@@ -22,6 +23,17 @@
 #define PLUGIN "Superhero yakui mk2 pt4"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
+
+
+#define ROCKET_CLASSNAME "pill_gatling_rocket"
+
+#define ROCKET_SHOOT_PERIOD 4.0
+
+
+#define ROCKET_RADIUS 500.0
+
+#define ROCKET_SPEED 900.0
+
 
 #define DEBUG_ROCKET_THINK_PERIOD 0.01
 new const DEBUG = 0
@@ -326,14 +338,12 @@ message_end()
 emit_sound(missile, CHAN_VOICE, NULL_SOUND, VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 emit_sound(missile, CHAN_WEAPON, "weapons/rocketfire1.wav", VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
 emit_sound(missile, CHAN_VOICE, "weapons/rocket1.wav", VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-remove_entity(missile)
+remove_entity_safe(missile)
 return PLUGIN_CONTINUE
 }
 
 public plugin_precache()
 {
 engfunc(EngFunc_PrecacheSound,SMOKE_EXPLODE_SOUND)
-engfunc(EngFunc_PrecacheModel,GATLING_P_MODEL)
-engfunc(EngFunc_PrecacheModel,GATLING_V_MODEL)
 
 }

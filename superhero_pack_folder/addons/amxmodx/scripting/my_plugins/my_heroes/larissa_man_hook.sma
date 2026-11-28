@@ -5,6 +5,7 @@
 #define I_WANT_MATH_FUNCS
 #define I_WANT_RESOURCE_ALIASES
 #define I_WANT_PRECACHE_UTILITIES
+#define I_WANT_MISC_FUNCS_3
 #include <float>
 #include <xs>
 #include "../my_include/superheromod.inc"
@@ -196,7 +197,7 @@ stop_dragging(id,bool:deduct=false){
 		if(is_valid_ent(g_player_hook[id])){
 
 			sh_assign_id_bit(id,SH_USING_HOOK_ATTACK, false)
-			remove_entity(g_player_hook[id])
+			remove_entity_safe(g_player_hook[id])
 			g_player_hook[id]=-1
 		}
 }

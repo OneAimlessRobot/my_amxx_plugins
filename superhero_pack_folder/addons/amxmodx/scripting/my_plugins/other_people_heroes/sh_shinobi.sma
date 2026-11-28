@@ -1,5 +1,7 @@
 
+#define I_WANT_MISC_FUNCS_3
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
 #define SOUND_SMOKESCREEN  "weapons/sg_explode.wav"
 #define MODEL_SHURIKEN  "models/rshell_big.mdl"
@@ -113,7 +115,7 @@ public sh_hero_key(id, heroID, sh_key_mode:key)
 
 		playback_event(0, id, 26, 0.0, fOrigin, Float:{0.0, 0.0, 0.0}, 0.0, 0.0, 0, 1, 0, 0)
 		emit_sound(ent, CHAN_STATIC, SOUND_SMOKESCREEN, VOL_NORM, ATTN_NORM, 0, PITCH_HIGH)
-		remove_entity(ent)
+		remove_entity_safe(ent)
 	}
 	return PLUGIN_CONTINUE
 }
@@ -127,7 +129,7 @@ public sh_client_spawn(id)
 
 	new shurikens = -1
 	while((shurikens = find_ent_by_class(shurikens, "shuriken")))
-		remove_entity(shurikens)
+		remove_entity_safe(shurikens)
 
 
 }
@@ -356,7 +358,7 @@ public touch_World(id, world)
 public think_Shuriken(ent) if(is_valid_ent(ent))
 {
 	if((get_entity_flags(ent) & FL_ONGROUND))
-		remove_entity(ent)
+		remove_entity_safe(ent)
 	else
 		entity_set_float(ent, EV_FL_nextthink, halflife_time() + 0.01)
 }
@@ -388,7 +390,7 @@ public touch_Shuriken(ent, id)
 	if(get_user_team(attacker) != get_user_team(id)){
 		sh_extra_damage(id, attacker, get_pcvar_num(cvar_shur_damage))
 	}
-	remove_entity(ent)
+	remove_entity_safe(ent)
 
 	return PLUGIN_CONTINUE
 }

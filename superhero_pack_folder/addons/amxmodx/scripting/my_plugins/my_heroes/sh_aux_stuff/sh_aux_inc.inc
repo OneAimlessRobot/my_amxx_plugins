@@ -48,6 +48,10 @@ DEFINES FOR COMPILE TIME OPTIMIZATION:
 #include "sh_aux_funcs_misc_pt2.inc"
 #endif
 
+#if defined I_WANT_MISC_FUNCS_3
+#include "sh_aux_funcs_misc_pt3.inc"
+#endif
+
 #if defined I_WANT_PRECACHE_UTILITIES
 #include "sh_aux_precache_utilities.inc"
 #endif

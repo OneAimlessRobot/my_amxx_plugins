@@ -13,6 +13,7 @@ wildcard_damage 20		//Damage AK47 burst fire does
 #define I_WANT_MATH_FUNCS
 #define I_WANT_PDATA_ALIASES
 #define I_WANT_ENTITY_VECTORS
+#define I_WANT_MISC_FUNCS_3
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/bleed_knife_inc/sh_bknife_fx.inc"
@@ -149,7 +150,7 @@ public fm_Think(ent)
 	new id = pev(ent, pev_owner)
 
 	if ( !is_user_connected(id) ) {
-		remove_entity(ent)
+		remove_entity_safe(ent)
 		return
 	}
 

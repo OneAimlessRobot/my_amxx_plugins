@@ -4,23 +4,9 @@
 #define sh_disrupt_fx
 
 
-#define CAN_SELF_DISRUPT 1
-
-
-#define DISRUPT_PERIOD 1.0
 #define DISRUPT_TIME 5.0
-#define DISRUPT_TIMES floatround(floatdiv(the_time,DISRUPT_PERIOD))
 
 
-#define DISRUPT_AIM_RANDOMNESS 45.0
-#define DISRUPT_MOVE_RANDOMNESS 1.0
-#define DISORIENT_PERIOD 0.25
-#define DISORIENT_TIME DISRUPT_TIME
-#define DISORIENT_TIMES floatround(floatdiv(the_time,DISORIENT_PERIOD))
-
-
-
-stock const disrupt_color[4]={255, 255, 255,200}
 
 native sh_disrupt_user(id,attacker, Float:the_time = DISRUPT_TIME,gHeroID)
 native sh_undisrupt_user(id)

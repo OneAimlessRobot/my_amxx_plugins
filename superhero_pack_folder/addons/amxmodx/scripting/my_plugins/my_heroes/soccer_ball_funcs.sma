@@ -6,6 +6,7 @@
 #define I_WANT_CUSTOM_COLORS
 #define I_WANT_RESOURCE_ALIASES
 #define I_WANT_BASIC_MACROS
+#define I_WANT_MISC_FUNCS_3
 #include "../my_include/superheromod.inc"
 #include "soccer_ball_inc/sh_roberto_get_set.inc"
 #include "soccer_ball_inc/sh_soccer_funcs.inc"
@@ -138,7 +139,7 @@ public ball_touch_player(Ball, Player ) {
 			
 			//set pickability status
 			entity_set_int(Ball,EV_INT_iuser2,false)
-			remove_entity(Ball);
+			remove_entity_safe(Ball);
 			return
 			
 		}
@@ -272,7 +273,7 @@ public ball_think(ent)
 
 	new id=entity_get_edict(ent, EV_ENT_euser1)
 	if ( !is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)) {
-		remove_entity(ent)
+		remove_entity_safe(ent)
 		return
 	}
 	//get removal timer
@@ -283,7 +284,7 @@ public ball_think(ent)
 	}
 	else{
 
-		remove_entity(ent)
+		remove_entity_safe(ent)
 		return
 
 	}

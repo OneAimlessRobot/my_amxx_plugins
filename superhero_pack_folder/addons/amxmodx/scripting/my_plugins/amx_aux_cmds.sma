@@ -113,7 +113,7 @@ new is_entity_scanner_mode = 0
 
 new OrpheuFunction:handleApplyMultiDamage;
 new OrpheuFunction:handleClearMultiDamage;
-
+new murder_Ent, assault_ent, blow_ent
 public plugin_init()
 {
     handleClearMultiDamage = OrpheuGetFunction("ClearMultiDamage");
@@ -162,7 +162,26 @@ public plugin_init()
     }
     register_forward(FM_TraceLine, "entity_target_tracing",1)
 
+    murder_Ent = create_entity("info_target")
+    
+    (!is_valid_ent(murder_Ent))?server_print("Error while creating killer entity!^n")
+    
+                                            :
+                        entity_set_string(murder_Ent, EV_SZ_classname, "real murder (TM)")
+    
+    
+    blow_ent = create_entity("info_target")
+    (!is_valid_ent(blow_ent))?server_print("Error while creating hitter entity!^n")
+    
+                                :
+                 
+                 entity_set_string(blow_ent, EV_SZ_classname, "some_serious_harm")
 
+    assault_ent = create_entity("info_target")
+
+    (!is_valid_ent(assault_ent))?server_print("Error while creating killer entity!^n")
+                                            :
+                    entity_set_string(assault_ent, EV_SZ_classname, "real agression! TM!")
 
 }
 public amx_print_logs(id,level,cid){
@@ -370,15 +389,9 @@ public amx_stage_murder(id,level,cid){
         return PLUGIN_HANDLED    
             
     }
-    new Ent = create_entity("info_target")
-    if (!is_valid_ent(Ent)){
-        console_print(id,"Error while creating killer entity!^n")
-        return PLUGIN_HANDLED    
-    }
-    entity_set_string(Ent, EV_SZ_classname, "real murder (TM)")
     set_user_godmode(player2,0)
-    ExecuteHam(Ham_TakeDamage,player2,Ent,player,float(get_user_health(player2)*2),DMG_GENERIC);
-    remove_entity(Ent)
+    ExecuteHam(Ham_TakeDamage,player2,murder_Ent,player,float(get_user_health(player2)*2),DMG_GENERIC);
+
     new name[32]
     get_user_name(player,name,31)
     new name2[32]
@@ -412,15 +425,8 @@ public amx_stage_assault(id,level,cid){
         return PLUGIN_HANDLED    
             
     }
-    new Ent = create_entity("info_target")
-    if (!is_valid_ent(Ent)){
-        console_print(id,"Error while creating killer entity!^n")
-        return PLUGIN_HANDLED    
-    }
     new Float:damage=str_to_float(arg3)
-    entity_set_string(Ent, EV_SZ_classname, "real agression! TM!")
-    ExecuteHam(Ham_TakeDamage,player2,Ent,player,damage,DMG_GENERIC);
-    remove_entity(Ent)
+    ExecuteHam(Ham_TakeDamage,player2,assault_ent,player,damage,DMG_GENERIC);
     new name[32]
     get_user_name(player,name,31)
     new name2[32]
@@ -464,18 +470,12 @@ public amx_stage_hit(id,level,cid){
         return PLUGIN_HANDLED    
     }
 
-    new dmg_entity = create_entity("info_target")
-    if (!is_valid_ent(dmg_entity)){
-        console_print(id,"Error while creating hitter entity!^n")
-        return PLUGIN_HANDLED    
-    }
-    entity_set_string(dmg_entity, EV_SZ_classname, "some_serious_harm")
     new tr_handle=create_tr2()
     static Float:origin_1[3],Float:origin_2[3],Float:dir_vec[3]
 
     entity_get_vector(player2,EV_VEC_origin,origin_2)
     entity_get_vector(player,EV_VEC_origin,origin_1)
-    entity_set_edict(dmg_entity, EV_ENT_owner,player)
+    entity_set_edict(blow_ent, EV_ENT_owner,player)
 
     xs_vec_sub(origin_2,origin_1,dir_vec)
     xs_vec_normalize(dir_vec,dir_vec)
@@ -488,9 +488,7 @@ public amx_stage_hit(id,level,cid){
     
     ExecuteHamB(Ham_TraceAttack, player2,player,damage,dir_vec, tr_handle, DMG_BULLET)
 
-    OrpheuCall(handleApplyMultiDamage, dmg_entity,player)
-
-    remove_entity(dmg_entity)
+    OrpheuCall(handleApplyMultiDamage, blow_ent,player)
 
     free_tr2(tr_handle)
     new name[32]

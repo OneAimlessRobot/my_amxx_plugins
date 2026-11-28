@@ -4,6 +4,7 @@
 #define I_WANT_MISC_FUNCS_2
 #define I_WANT_BASIC_MACROS
 #define I_WANT_CUSTOM_COLORS
+#define I_WANT_MISC_FUNCS_3
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt11.inc"
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt16.inc"
@@ -246,7 +247,7 @@ public remove_power(id, powerID)
 	new sndStop=(1<<5)
 	emit_sound(id, CHAN_STATIC, "shmod/stealthoffinvis.wav", 1.0, ATTN_NORM, sndStop, PITCH_NORM)
 
-	remove_entity(powerID)
+	remove_entity_safe(powerID)
 
 	if ( is_user_connected(id) ) {
 		// Switch back to previous weapon and reset speed...

@@ -18,6 +18,7 @@ arcticPredator_explode_maxdamage 250
 #define I_WANT_RESOURCE_ALIASES
 #define I_WANT_BASIC_MACROS
 #define I_WANT_PDATA_ALIASES
+#define I_WANT_MISC_FUNCS_3
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -752,7 +753,7 @@ if ( is_user_alive(disc_owner) && discThrown[disc_owner] == true ) {
 else {
 	// Remove the seek loop
 	remove_task(disc+1000)
-	remove_entity(disc)
+	remove_entity_safe(disc)
 	discThrown[disc_owner] = false
 }
 }
@@ -791,7 +792,7 @@ public touch_event(pToucher, pTouched)  //This is triggered when two entites tou
 {
 if ( pTouched == entity_get_edict(pToucher, EV_ENT_owner) )
 {
-	remove_entity(pToucher)
+	remove_entity_safe(pToucher)
 	discThrown[pTouched] = false
 	client_print(pTouched, print_chat, "[SH] Arctic Predator: Disc returned")
 }

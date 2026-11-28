@@ -794,34 +794,37 @@ stock sh_screen_shake(id, Float:amplitude, Float:duration, Float:frequency)
  * @param render	The type of render. (see amxconst.inc)
  * @return		Returns 1 on success, 0 on failure.
  */
-stock sh_set_rendering(entity, r = 255, g = 255, b = 255, amount = 16, fx = kRenderFxNone, render = kRenderNormal)
+stock sh_set_rendering(entity, r = 255, g = 255, b = 255, amount = 16, fx = kRenderFxNone, render = kRenderNormal,
+													bool:transparency_decrease_allowed = false)
 {
 	if ( !pev_valid(entity) ) return 0;
 
-	new Float:alpha = float(amount);
+	static Float:alpha;
+	alpha = float(amount);
 
 	// This check is only to favor invisibility of a player over any other render expect a reset
 	if ( entity <= sh_maxplayers() ) {
-
+		static render_mode_here;
+		render_mode_here = pev(entity, pev_rendermode)
 		// If client is in an alpha render do we need to block this render setting.
-		if ( pev(entity, pev_rendermode) == kRenderTransAlpha ) {
+		if ( (render_mode_here== kRenderTransAlpha ) || (render_mode_here == kRenderTransColor )) {
 
 			// If just resetting render allow it to reset
 			if ( r != 255 || g != 255 || b != 255 || amount != 16 || fx != kRenderFxNone || render != kRenderNormal ) {
 
 				// Skip setting any other render type, allow user to stay in alpha render
-				if ( render != kRenderTransAlpha) return 0;
+				if ( (render != kRenderTransAlpha) && (render != kRenderTransColor)) return 0;
 
-				new Float:currentAlpha;
+				static Float:currentAlpha;
 				pev(entity, pev_renderamt, currentAlpha);
 
 				// Only set alpha render if equal or less visible (equal to allow color changes etc.)
-				if ( alpha > currentAlpha ) return 0;
+				if ( (alpha > currentAlpha) && !transparency_decrease_allowed ) return 0;
 			}
 		}
 	}
 
-	new Float:renderColor[3];
+	static Float:renderColor[3];
 	renderColor[0] = float(r);
 	renderColor[1] = float(g);
 	renderColor[2] = float(b);

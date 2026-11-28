@@ -26,7 +26,7 @@
 
 #include "special_fx_inc/sh_gatling_special_fx.inc"
 #include "sh_aux_stuff/sh_pokemon_dmg_framework.inc"
-
+#define I_WANT_MISC_FUNCS_3
 #define I_WANT_CONSTANTS
 #define I_WANT_MISC_FUNCS
 #define I_WANT_ENTITY_VECTORS
@@ -55,7 +55,7 @@
 new SH_CUSTOM_GRENADE_CHARGE_TASKID
 enum sh_grenade_struct{
 
-    sh_grenade_name[128],
+    sh_grenade_name[64],
     sh_grenade_modelname[128],
     sh_grenade_break_sound[128],
 	sh_grenade_def_wpn_name[50],
@@ -68,11 +68,11 @@ enum sh_grenade_struct{
 	Float:throw_period,
 	Float:after_touch_fuse,
 	bool:bot_allowed,
-	description[512]
+	description[230]
 
 
 }
-#define NUM_ENTITIES 6000
+#define NUM_ENTITIES 1500
 
 enum grenade_flags{
 
@@ -147,7 +147,7 @@ new sh_grenade_structs_arr[sh_grenade_type][sh_grenade_struct]={
 
 	{"CO2_grenade",
 					"models/shmod/custom_nades_hackaround/w_smokegrenade.mdl",
-					EXTINGUISH_FIRE_SOUND,
+					"shmod/custom_grenades/co2_grenade.wav",
 					"",
 					MY_CSW_SMOKEGRENADE,
 					LTGREEN,
@@ -993,7 +993,7 @@ if ( !pev_valid(id_grenade) ) return
 new owner=pev(id_grenade, pev_owner);
 
 if(!is_user_connected(owner)){
-	remove_entity(id_grenade)
+	remove_entity_safe(id_grenade)
 	return
 }
 static bool:prev_touched_wall,
@@ -1006,7 +1006,7 @@ the_type = sh_grenade_type:pev(id_grenade, pev_iuser3)
 if(the_type<=sh_grenade_type:0){
 
 
-	remove_entity(id_grenade)
+	remove_entity_safe(id_grenade)
 	return
 
 }
@@ -1062,7 +1062,7 @@ if not we exit early!
 */
 
 if(!result_neutral_fx){
-	remove_entity(id_grenade)
+	remove_entity_safe(id_grenade)
 	return
 
 
@@ -1082,7 +1082,7 @@ for( new i= 0;(i< numfound);i++){
 }
 
 
-remove_entity(id_grenade)
+remove_entity_safe(id_grenade)
 
 }
 
@@ -1176,7 +1176,7 @@ random_fx_gren_effect_func(grenade_ent, Float:the_origin_of_expolosion[3]){
 	new owner=pev(grenade_ent, pev_owner);
 
 	if(!is_user_connected(owner)){
-		remove_entity(grenade_ent)
+		remove_entity_safe(grenade_ent)
 		return
 	}
 
@@ -1209,7 +1209,7 @@ default_neutral_effect_func(grenade_ent,sh_grenade_type:gren_type, Float:the_ori
 	new owner=pev(grenade_ent, pev_owner);
 
 	if(!is_user_connected(owner)){
-		remove_entity(grenade_ent)
+		remove_entity_safe(grenade_ent)
 		return
 	}
 

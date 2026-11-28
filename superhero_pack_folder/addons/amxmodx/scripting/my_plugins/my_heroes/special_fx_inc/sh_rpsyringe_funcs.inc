@@ -3,16 +3,6 @@
 #endif
 #define sh_rocket_funcs
 
-#define SMOKE_EXPLODE_SOUND "shmod/yakui/rocket.wav"
-
-#define ROCKET_CLASSNAME "pill_gatling_rocket"
-
-#define ROCKET_SHOOT_PERIOD 4.0
-
-
-#define ROCKET_RADIUS 500.0
-
-#define ROCKET_SPEED 900.0
 
 
 

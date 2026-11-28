@@ -6,7 +6,7 @@
 #define I_WANT_ENTITY_VECTORS
 #define I_WANT_PDATA_ALIASES
 #define I_WANT_BASIC_MACROS
-
+#define I_WANT_MISC_FUNCS_3
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "laralel_spear_inc/sh_laralel_get_set.inc"
@@ -248,7 +248,7 @@ public spaar_thaank(ent){
 	
 	
 
-	remove_entity(ent)
+	remove_entity_safe(ent)
 
 
 }
@@ -553,7 +553,7 @@ public spaaaaeer_touch_player(pToucher, pTouched)
 					sh_chat_message(oid,gHeroID,"The launching charge of this spear was: %0.2f",charge_index)
 
 				}
-				remove_entity(pToucher);
+				remove_entity_safe(pToucher);
 			}
 			return
 		}

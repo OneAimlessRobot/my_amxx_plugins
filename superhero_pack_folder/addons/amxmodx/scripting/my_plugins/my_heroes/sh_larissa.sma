@@ -19,6 +19,10 @@
 // GLOBAL VARIABLES
 
 
+#define NAVALHA_V_MODEL  "models/shmod/larissa/knife/v_combat_knife.mdl"
+#define NAVALHA_P_MODEL  "models/shmod/larissa/knife/p_combat_knife.mdl"
+#define TRANQS_P_MODEL  "models/shmod/larissa/pistols/p_elite.mdl"
+#define TRANQS_V_MODEL  "models/shmod/larissa/pistols/v_elite.mdl"
 
 #define gHeroName "Larissa (Guts n Heroin)"
 

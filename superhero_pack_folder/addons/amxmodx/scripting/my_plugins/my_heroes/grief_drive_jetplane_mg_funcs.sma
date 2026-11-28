@@ -5,6 +5,7 @@
 #define I_WANT_ENTITY_VECTORS
 #define I_WANT_CUSTOM_COLORS
 #define I_WANT_RESOURCE_ALIASES
+#define I_WANT_MISC_FUNCS_3
 #include "../my_include/superheromod.inc"
 #include "jetplane_inc/sh_jetplane_funcs.inc"
 #include "jetplane_inc/sh_jetplane_mg_funcs.inc"
@@ -341,7 +342,7 @@ public shell_hit_wall(pToucher, pTouched){
 
 	if(!is_valid_ent(pTouched)){
 		
-		remove_entity(pToucher)
+		remove_entity_safe(pToucher)
 		return
 	}
 	
@@ -359,7 +360,7 @@ public shell_hit_wall(pToucher, pTouched){
 				0);
 
 	} 
-	remove_entity(pToucher)
+	remove_entity_safe(pToucher)
 
 }
 public shell_hit_player(pToucher, pTouched){
@@ -434,7 +435,7 @@ public shell_hit_player(pToucher, pTouched){
 			
 		}
 	}
-	remove_entity(pToucher)
+	remove_entity_safe(pToucher)
 }
 public shell_hit_jet(pToucher, pTouched)
 {
@@ -444,7 +445,7 @@ public shell_hit_jet(pToucher, pTouched)
 	new the_owner=entity_get_edict(pToucher,EV_ENT_owner)
 	if((pTouched==jet_get_user_jet(the_owner))){
 
-		remove_entity(pToucher)
+		remove_entity_safe(pToucher)
 		return
 
 	}
@@ -458,7 +459,7 @@ public shell_hit_jet(pToucher, pTouched)
 			jet_hurt_user_jet(jet_owner,the_owner,pToucher,cvar_val(float, pcvar_jetplane_mg_dmg))
 		}
 	}
-	remove_entity(pToucher)
+	remove_entity_safe(pToucher)
 }
 public plugin_precache()
 {
@@ -473,7 +474,7 @@ public _mg_destroy(iPlugin,iParams){
 	new id= get_param(1)
 	
 	if(is_valid_ent(user_mg[id])){
-		remove_entity(user_mg[id]);
+		remove_entity_safe(user_mg[id]);
 	}
 	user_mg[id]=-1;
 }

@@ -22,7 +22,7 @@ veronika_m203dmg 120
 #define I_WANT_CUSTOM_COLORS
 #define I_WANT_RESOURCE_ALIASES
 #define I_WANT_BASIC_MACROS
-
+#define I_WANT_MISC_FUNCS_3
 #include "../my_include/superheromod.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 #include "../my_heroes/sh_aux_stuff/sh_aux_stuff_natives_pt1.inc"
@@ -371,7 +371,7 @@ public veronika_gren_touch(pToucher, pTouched)
 	
 	emit_sound(pToucher, CHAN_WEAPON, "shmod/a_exm2.wav", VOL_NORM, ATTN_NORM, 0, PITCH_NORM)
 	
-	remove_entity(pToucher)
+	remove_entity_safe(pToucher)
 }
 
 do_victim(victim,attacker,damage,tk)

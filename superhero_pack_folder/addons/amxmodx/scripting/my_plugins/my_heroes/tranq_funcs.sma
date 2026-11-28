@@ -6,6 +6,7 @@
 #define I_WANT_ENTITY_VECTORS
 #define I_WANT_RESOURCE_ALIASES
 #define I_WANT_CUSTOM_COLORS
+#define I_WANT_MISC_FUNCS_3
 #define I_WANT_BASIC_MACROS
 #include "../my_include/superheromod.inc"
 #include "tranq_gun_inc/sh_larissa_get_set.inc"
@@ -21,6 +22,11 @@
 #define PLUGIN "Superhero larissa tranq funcs"
 #define VERSION "1.0.0"
 #include "../my_include/my_author_header.inc"
+
+
+#define SILENT_TRANQS_SFX  "shmod/larissa/silent_tranq/mga_soccom_pistol_sound.wav"
+
+
 
 #define DART_CLASSNAME "tranq_dart"
 enum{
@@ -175,7 +181,7 @@ public FwdTouchWorld( dirt, World ) {
 	make_sparks(origin);
 	gun_shot_decal(origin);
 
-	remove_entity(dirt)
+	remove_entity_safe(dirt)
 }
 public tranque_thinque(ent){
 
@@ -186,7 +192,7 @@ public tranque_thinque(ent){
 
 	if(!is_user_alive(owner)){
 
-		remove_entity(ent)
+		remove_entity_safe(ent)
 		return
 	}
 
@@ -569,7 +575,7 @@ public chorazy_II_toumpaeeeehm(pToucher, pTouched)
 			sh_apply_staged_stat_boost(oid,oid,STAT_ATTACK_MULT,stages_to_apply,true)
 		}
 	}
-	remove_entity(pToucher)
+	remove_entity_safe(pToucher)
 }
 
 public plugin_precache()

@@ -2,6 +2,7 @@
 #define I_WANT_RESOURCE_ALIASES
 #define I_WANT_CUSTOM_COLORS
 #define I_WANT_ENTITY_VECTORS
+#define I_WANT_MISC_FUNCS_3
 
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
@@ -94,7 +95,7 @@ public _shield_destroy(iPlugin,iParams){
 	g_jaqueo_shield_cooldown[id]=0;
 	g_jaqueo_shield_deployed[id]=false;
 	if(is_valid_ent(g_jaqueo_shield[id])){
-		remove_entity(g_jaqueo_shield[id]);
+		remove_entity_safe(g_jaqueo_shield[id]);
 		g_jaqueo_shield[id]=0;
 	}
 }
@@ -132,7 +133,7 @@ public _reset_jaqueo_user(iPlugin,iParams){
 	g_jaqueo_shield_deployed[id]=false;
 	if(is_valid_ent(g_jaqueo_shield[id])){
 		emit_sound(g_jaqueo_shield[id], CHAN_ITEM, shield_hum, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-		remove_entity(g_jaqueo_shield[id]);
+		remove_entity_safe(g_jaqueo_shield[id]);
 		g_jaqueo_shield[id]=0;
 	}
 	
@@ -293,7 +294,7 @@ uncharge_user(id){
 	g_jaqueo_shield_deployed[id]=0
 	if(is_valid_ent(g_jaqueo_shield[id])){
 		emit_sound(g_jaqueo_shield[id], CHAN_ITEM, shield_hum, VOL_NORM, ATTN_NORM, SND_STOP, PITCH_NORM)
-		remove_entity(g_jaqueo_shield[id]);
+		remove_entity_safe(g_jaqueo_shield[id]);
 		g_jaqueo_shield[id]=0;
 	}
 	g_jaqueo_shield_loaded[id]=1

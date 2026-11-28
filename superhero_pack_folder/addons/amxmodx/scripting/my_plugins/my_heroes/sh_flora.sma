@@ -8,6 +8,10 @@
 #include "../my_include/my_author_header.inc"
 #include "sh_aux_stuff/sh_aux_stuff_natives_pt5.inc"
 
+#define FLORA_PLAYER_MODEL "models/player/Flora/Flora.mdl"
+#define FLORA_PLAYER_MODEL_T "models/player/Flora/FloraT.mdl"
+
+
 
 stock const debug_hud_mode= false
 

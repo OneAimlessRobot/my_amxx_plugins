@@ -3,6 +3,7 @@
 #define I_WANT_CUSTOM_COLORS
 #define I_WANT_MATH_VECTORS
 #define I_WANT_PRECACHE_UTILITIES
+#define I_WANT_INIT_UTILITIES
 #include "../../include/float.inc"
 #include <xs>
 #include "../my_include/superheromod.inc"
@@ -50,7 +51,6 @@ new shinobu_visiting_sentences[][]={
 
 
 new TELEPORT_CHECK_TASKID
-new SHINOBU_GLOBAL_KNIFE_CLOAK_TASKID
 
 //nums
 new pcvar_shinobu_alpha
@@ -76,7 +76,9 @@ enum{
 
 new const DEBUG = 0
 
-#define TASK_PERIOD 0.333
+#define GLOBAL_TASK_PERIOD 0.05
+
+#define SHINOBU_GLOBAL_TASK_THINKER "shinobu_invis_thinker"
 
 public plugin_init(){
 	
@@ -84,14 +86,14 @@ public plugin_init(){
 	register_plugin(PLUGIN, VERSION, AUTHOR);
 
 	TELEPORT_CHECK_TASKID = allocate_typed_task_id(player_task)
-	SHINOBU_GLOBAL_KNIFE_CLOAK_TASKID = allocate_typed_task_id(generic_task)
 
 	pcvar_shinobu_alpha = create_cvar("shinobu_alpha","10")
 	set_pcvar_bounds(pcvar_shinobu_alpha,CvarBound_Lower,true,0.0)
 	set_pcvar_bounds(pcvar_shinobu_alpha,CvarBound_Upper,true,255.0)
 
-    
-	set_task(TASK_PERIOD,"shinobu_cloak_apply",SHINOBU_GLOBAL_KNIFE_CLOAK_TASKID,_,_,"b")
+
+	init_monitor_entity_based_global(SHINOBU_GLOBAL_TASK_THINKER, "shinobu_cloak_apply", GLOBAL_TASK_PERIOD)
+
 }
 
 public plugin_precache(){
@@ -124,10 +126,19 @@ public plugin_natives(){
 	register_native("nani_behind_player","_nani_behind_player")
 }
 
-public shinobu_cloak_apply(task_id){
+public shinobu_cloak_apply(ent_id){
+
+	if(!is_valid_ent(ent_id)){
+
+		return PLUGIN_CONTINUE
+	}
+	if(!sh_is_active()){
+
+		entity_set_float(ent_id, EV_FL_nextthink, get_gametime() + GLOBAL_TASK_PERIOD)
+		return PLUGIN_CONTINUE
+	}
 
 
-	if (! sh_is_active()) return
 	static the_players[SH_MAXSLOTS], pnum, id		
 	get_players(the_players, pnum, "ah")
 	for (new k = 0; k < pnum; k++) {
@@ -135,21 +146,24 @@ public shinobu_cloak_apply(task_id){
 		id = the_players[k]
 
 
-		if(!is_user_alive(id)||!sh_get_user_has_hero(id,gHeroID)) continue
+		if(!is_user_alive(id)) continue
 
 
 		apply_cloak(id)
-	
-	
+
+
 	}
+
+	entity_set_float(ent_id, EV_FL_nextthink, get_gametime() + GLOBAL_TASK_PERIOD)
+	return PLUGIN_CONTINUE
 }
 apply_cloak(id){
 
 
-	if(((entity_get_int(id, EV_INT_button) & IN_DUCK ))||(get_user_weapon(id)==CSW_KNIFE)){
+	if((((entity_get_int(id, EV_INT_button) & IN_DUCK ))||(get_user_weapon(id)==CSW_KNIFE))&&sh_get_user_has_hero(id,gHeroID)){
 
 		
-		set_render_with_color_const(id,INVIS,1,cvar_val(num, pcvar_shinobu_alpha),_,0,_,TASK_PERIOD,0,_,_,PRIO_RENDER_INVISIBILITY,gHeroID)
+		set_render_with_color_const(id,INVIS,1,cvar_val(num, pcvar_shinobu_alpha),_,0,_,GLOBAL_TASK_PERIOD,0,_,_,PRIO_RENDER_INVISIBILITY,gHeroID)
 
 	}
 

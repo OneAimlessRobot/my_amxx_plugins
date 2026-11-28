@@ -6,6 +6,7 @@
 #define I_WANT_RESOURCE_ALIASES
 #define I_WANT_MATH_VECTORS
 #define I_WANT_INIT_UTILITIES
+#define I_WANT_MISC_FUNCS_3
 #include "../my_include/superheromod.inc"
 #include "../task_allocator_inc/task_allocator_aux_stuff.inc"
 #include "sh_aux_stuff/sh_aux_inc.inc"
@@ -22,11 +23,12 @@
 #include "../my_include/my_author_header.inc"
 
 
+#define FLORA_FIELD_CLASSNAME "flora_field"
 
 
 
 #define FLORA_CHARGE_PERIOD 0.1
-#define FLORA_THINK_PERIOD 0.35
+#define FLORA_THINK_PERIOD 0.07
 
 #define FLORA_CHARGE_RATE 100.0
 #define FIELD_ACTIVE_TIME_BUFFER 10.0
@@ -271,7 +273,7 @@ clear_user_fields(id,bool:newRound= false){
 	new grenada = find_ent_by_owner(-1, FLORA_FIELD_CLASSNAME, id);
 	while(grenada) {
 		
-		destroy_field(grenada,1,_, newRound)
+		destroy_field(grenada,1,_, newRound,true)
 
 		grenada = find_ent_by_owner(-1, FLORA_FIELD_CLASSNAME, id);
 	}
@@ -373,7 +375,7 @@ flora_damage_code_reduction(id,Float:the_suffocation_health_fraction=1.0, remove
 		SH_NEW_DMG_SUFFOCATION,
 		generic_suffocation_wpn_id)
 }
-destroy_field(field_id,make_sound=0,planting=0, bool:start_of_round= false){
+destroy_field(field_id,make_sound=0,planting=0, bool:start_of_round= false, bool:drastic_removal=false){
 
 	if(is_valid_ent(field_id)){
 		new owner=entity_get_edict(field_id,EV_ENT_owner)
@@ -461,7 +463,7 @@ destroy_field(field_id,make_sound=0,planting=0, bool:start_of_round= false){
 		
 			}
 		}
-		remove_entity(field_id)
+		drastic_removal?remove_entity(field_id):remove_entity_safe(field_id)
 	}
 	
 }

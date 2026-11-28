@@ -15,6 +15,14 @@
 
 
 
+#define GRACIETE_CHARGE_PERIOD 0.1
+
+
+#define GRACIETE_CHARGE_RATE 100.0
+
+#define jp_jump "shmod/graciete/jp/rocketfire1.wav"
+#define jp_fly "shmod/graciete/jp/rocket1.wav"
+
 
 #define PLUGIN "Superhero graciete jetty funcs"
 #define VERSION "1.0.0"

@@ -75,8 +75,6 @@ new const render_priority_names[PRIO_RENDER_MAX_PRIORITY][128] = {
   	"PRIO_RENDER_DELETE_ASLEEP"
 }
 
-new REMOVE_GLOW_TASKID
-
 new DEBUG_HUD_TASKID = -1
 
 
@@ -84,25 +82,24 @@ new DEBUG_HUD_HUD_SYNC_OBJ = -1
 
 #define DEBUG_HUD_TASK_PERIOD 0.2
 
-new rendering_priority_consts:player_rendering_priorities_array[server_slot_idx] = 
-																		
-											{rendering_priority_consts:0,
-																		
-																		...}
-																		/*
-new rendering_priority_consts:last_attempted_player_rendering_priorities_array[server_slot_idx] = 
-																		
-											{rendering_priority_consts:0,
-																		
-																		...}
-																		*/
-new player_rendering_pctgs_array[server_slot_idx] = {0, ...}
-new player_rendering_modes_array[server_slot_idx] = {kRenderNormal, ...}
-new player_rendering_heroes_array[server_slot_idx] = {-1, ...}
 
-new Array:rendering_attempts_stack_obj[server_slot_idx]
+enum rendering_priority_struct{
+	rendering_priority_consts:curr_priority,
+	curr_color[3],
+	curr_alpha,
+	curr_pct,
+	curr_render_mode,
+	curr_hero_id,
+	Array:rendering_attempts_stack_obj,
+	player_hud_buffer_array[1024],
+	player_renderer_entity
 
-new player_hud_buffer_array[server_slot_idx][1024];
+}
+
+#define PLAYER_RENDER_MANAGER_ENTITY_CLASSNAME "sh_thrashbrat_player_renderer_manager"
+
+new player_rendering_priority_structs_array[server_slot_idx][rendering_priority_struct]
+
 
 public plugin_init(){
 	
@@ -114,18 +111,38 @@ public plugin_init(){
 
 		DEBUG_HUD_HUD_SYNC_OBJ = CreateHudSyncObj()
 
-		DEBUG_HUD_TASKID=allocate_typed_task_id(player_task)
+		DEBUG_HUD_TASKID=allocate_typed_task_id(generic_task)
 		
 		set_task(DEBUG_HUD_TASK_PERIOD,"debug_glow_hud_taskid",DEBUG_HUD_TASKID,_,_,"b")
 
-		for( new server_slot_idx:i = server_slot_idx:0; i< server_slot_idx;i++){
-			rendering_attempts_stack_obj[i] = ArrayCreate()
+		
+		for( new server_slot_idx:i = enum_one; i< server_slot_idx;i++){
+			player_rendering_priority_structs_array[i][rendering_attempts_stack_obj] = ArrayCreate()
 		}
 
 	}
+	for( new server_slot_idx:i = enum_one; i< server_slot_idx;i++){
+		static the_player_ent_here;
+		the_player_ent_here = create_entity("info_target")
+		if(!the_player_ent_here){
 
-	REMOVE_GLOW_TASKID=allocate_typed_task_id(entity_task)
+			the_player_ent_here = -1
+		}
+		else{
+			if(DEBUG){
 
+				server_print("Player render manager entity created for slot %d!^n",_:i)
+			}
+			entity_set_string(the_player_ent_here, EV_SZ_classname,PLAYER_RENDER_MANAGER_ENTITY_CLASSNAME)
+			entity_set_int(the_player_ent_here,EV_INT_iuser4, _:i)
+		
+		}
+
+		player_rendering_priority_structs_array[i][player_renderer_entity] = the_player_ent_here
+
+	}
+
+	register_think(PLAYER_RENDER_MANAGER_ENTITY_CLASSNAME, "render_removal_think")
 
 }
 public plugin_cfg(){
@@ -139,7 +156,7 @@ public plugin_end() {
 	if(DEBUG){
 
 		for( new server_slot_idx:i = server_slot_idx:0; i< server_slot_idx;i++){
-			ArrayDestroy(rendering_attempts_stack_obj[i])
+			ArrayDestroy(player_rendering_priority_structs_array[i][rendering_attempts_stack_obj])
 		}
 	
 	}
@@ -155,8 +172,9 @@ public plugin_natives(){
 clear_client_state(server_slot_idx:id){
 
 
-	player_rendering_pctgs_array[id]=0
-	player_rendering_priorities_array[id]=rendering_priority_consts:0
+	player_rendering_priority_structs_array[id][curr_pct] = 0
+	player_rendering_priority_structs_array[id][curr_priority] = enum_zero
+
 }
 public sh_client_spawn(id, bool:newRound){
 
@@ -176,10 +194,12 @@ aura_aux(id,const color[3]={255,255,255},life=3,decay=1){
 	
 	if ( !is_user_connected(id) ) return
 
-	new origin[3]
+	static origin[3]
 
 
 	get_user_origin(id, origin, 1)
+
+
 	message_begin(MSG_BROADCAST, SVC_TEMPENTITY)
 	write_byte(27)
 	write_coord(origin[0])	//pos
@@ -196,7 +216,7 @@ aura_aux(id,const color[3]={255,255,255},life=3,decay=1){
 }
 public _aura(iPlugins, iParams){
 	new id= get_param(1);
-	new color[3]
+	static color[3]
 	get_array(2,color,3)
 	new life=get_param(3)
 	new decay= get_param(4)
@@ -232,31 +252,15 @@ public _set_render_with_color_const(iPlugins,iParams){
 
 		return
 	}
-	if(DEBUG){
-	
-		if(ArraySize(rendering_attempts_stack_obj[server_slot_idx:id])<1){
-				ArrayPushCell(rendering_attempts_stack_obj[server_slot_idx:id],
-								the_priority)
-
-
-		}
-		else{
-				ArrayInsertCellBefore(rendering_attempts_stack_obj[server_slot_idx:id],
-								0
-								,
-								the_priority)
-		}
-	
-	}
-	
+	/*
 	if(DEBUG){
 		sh_chat_message(id,heroID,"We are about to try to change glow! The target glow type is: %s",render_priority_names[the_priority])
-	}
+	}*/
 
 	
 	if(glow_user_hud){
 		
-		if(player_rendering_priorities_array[server_slot_idx:id]<=the_priority){
+		if(player_rendering_priority_structs_array[server_slot_idx:id][curr_priority]<=the_priority){
 			if((sh_get_id_bit(id,SH_IS_SLEEPING)&&is_sleep)||!sh_get_id_bit(id,SH_IS_SLEEPING)){
 
 				sh_screen_fade(id, 0.1, 0.9,
@@ -271,70 +275,138 @@ public _set_render_with_color_const(iPlugins,iParams){
 	
 	if(glow_on_user){
 
-		if(task_exists(id+REMOVE_GLOW_TASKID)&&client_is_within_range(id)){
-			remove_task(id+REMOVE_GLOW_TASKID)
-		}
+		if(DEBUG){
+		
+			if(ArraySize(player_rendering_priority_structs_array[server_slot_idx:id][rendering_attempts_stack_obj])<1){
+					ArrayPushCell(player_rendering_priority_structs_array[server_slot_idx:id][rendering_attempts_stack_obj],
+									the_priority)
 
-		if(player_rendering_priorities_array[server_slot_idx:id]>the_priority){
+
+			}
+			else{
+					ArrayInsertCellBefore(player_rendering_priority_structs_array[server_slot_idx:id][rendering_attempts_stack_obj],
+									0
+									,
+									the_priority)
+			}
+		
+		}
+		if(player_rendering_priority_structs_array[server_slot_idx:id][curr_priority]>the_priority){
 			
+			/*
 			if(DEBUG){
 				sh_chat_message(id,heroID,"We tried changing glow and nothing happened because of priority!")
 				sh_chat_message(id,heroID,"The priority attempted to be changed out was:  %s",render_priority_names[player_rendering_priorities_array[server_slot_idx:id]])
 			}
+			*/
 			return;
 
 
 		}
+
+		/*
 		if(DEBUG){
 				
 			sh_chat_message(id,heroID,"We are about to try to change glow! The priority test passed!");
 			sh_chat_message(id,heroID, "The attempted glow type is: %s",render_priority_names[the_priority])
 			sh_chat_message(id,heroID, "Our glow type is: %s",render_priority_names[player_rendering_priorities_array[server_slot_idx:id]])
-		}
+		}*/
 
-
-		static invis_from_player_pct;
+		static invis_from_player_pct,
+				invis_pct_to_set_pct;
 		
 		invis_from_player_pct = sh_get_player_cloak_pct(id)
-		
-		if((the_priority==PRIO_RENDER_INVISIBILITY)&&(player_rendering_priorities_array[server_slot_idx:id]==PRIO_RENDER_INVISIBILITY)){
 
 		
-			static invis_pct_to_set_pct;
+		invis_pct_to_set_pct = ALPHA_PCT_CALC_FROM_RENDER_MODE_AND_AMT(rendering_mode, float(alpha))
+		
+		if((the_priority==PRIO_RENDER_INVISIBILITY)&&(player_rendering_priority_structs_array[server_slot_idx:id][curr_priority]==PRIO_RENDER_INVISIBILITY)){
 			
-			invis_pct_to_set_pct = ALPHA_PCT_CALC_FROM_RENDER_MODE_AND_AMT(rendering_mode, float(alpha))
-				
+			
+			/*
+			if(DEBUG){
+					
+				sh_chat_message(id,heroID,"We are about to try to change transparency!");
+				sh_chat_message(id,heroID, "The attempted transparency is: %d",invis_pct_to_set_pct)
+				sh_chat_message(id,heroID, "Our transparency is: %d",invis_from_player_pct)
+				sh_chat_message(id,heroID, "Our current rendering hero is: %d",player_rendering_priority_structs_array[server_slot_idx:id][curr_hero_id])
+				sh_chat_message(id,heroID, "The attempted rendering hero is: %d",heroID)
+			}
+			*/
+			
 
-			if((invis_from_player_pct>invis_pct_to_set_pct)&&(player_rendering_heroes_array[server_slot_idx:id]!=heroID)){
+			if((invis_from_player_pct>invis_pct_to_set_pct)&&(player_rendering_priority_structs_array[server_slot_idx:id][curr_hero_id]!=heroID)){
 				
-				if(DEBUG){
+				//if(DEBUG){
 				
-					sh_chat_message(id,heroID,"We tried changing glow and nothing happened because of transparency!")
+					//sh_chat_message(id,heroID,"We tried changing glow and nothing happened because of transparency!")
 				
-				}
+				//}
 				
 				return
 			}
 		}
+		
+		player_rendering_priority_structs_array[server_slot_idx:id][curr_pct] = invis_from_player_pct
+		player_rendering_priority_structs_array[server_slot_idx:id][curr_priority] = the_priority
+		player_rendering_priority_structs_array[server_slot_idx:id][curr_render_mode] = rendering_mode
+		player_rendering_priority_structs_array[server_slot_idx:id][curr_hero_id] = heroID
+		player_rendering_priority_structs_array[server_slot_idx:id][curr_alpha] = alpha
 
-		player_rendering_pctgs_array[server_slot_idx:id] = invis_from_player_pct
-		player_rendering_priorities_array[server_slot_idx:id] = the_priority
-		player_rendering_modes_array[server_slot_idx:id] = rendering_mode
-		player_rendering_heroes_array[server_slot_idx:id] = heroID
-		sh_set_rendering(id,
-						LineColors[the_color_const][0],
-						LineColors[the_color_const][1],
-						LineColors[the_color_const][2],
-						(alpha<0)?255:alpha,
-						rendering_fx,
-						rendering_mode)
-		if((the_priority!=PRIO_RENDER_INVISIBILITY)&&set_aura_glow){
-			aura_aux(id,LineColors[the_color_const])
-		}
-		if((the_glow_timer>0.1)){
+		player_rendering_priority_structs_array[server_slot_idx:id][curr_color][0] = LineColors[the_color_const][0]
+		player_rendering_priority_structs_array[server_slot_idx:id][curr_color][1] = LineColors[the_color_const][1]
+		player_rendering_priority_structs_array[server_slot_idx:id][curr_color][2] = LineColors[the_color_const][2]
+
+		/*if(DEBUG){
+		
+			sh_chat_message(id,player_rendering_priority_structs_array[server_slot_idx:id][curr_hero_id],
 			
-			remove_glow_user_aux(id,the_priority,alpha,rendering_mode,the_glow_timer,heroID)
+						"We SHOULD be seeing new rendering, here!")
+		
+		}*/
+		/*
+		static bool:result;
+		result = bool:*/
+		sh_set_rendering(id,
+						player_rendering_priority_structs_array[server_slot_idx:id][curr_color][0],
+						player_rendering_priority_structs_array[server_slot_idx:id][curr_color][1],
+						player_rendering_priority_structs_array[server_slot_idx:id][curr_color][2],
+						(alpha<0)?255:player_rendering_priority_structs_array[server_slot_idx:id][curr_alpha],
+						rendering_fx,
+						player_rendering_priority_structs_array[server_slot_idx:id][curr_render_mode], true)
+		
+		/*
+		if(DEBUG){
+		
+			sh_chat_message(id,player_rendering_priority_structs_array[server_slot_idx:id][curr_hero_id],
+			
+						"sh_set_rendering returned: %s", result?"Success!":"Failure...")
+		
+		}*/
+		
+
+		if((the_priority!=PRIO_RENDER_INVISIBILITY)&&set_aura_glow){
+
+			aura_aux(id,player_rendering_priority_structs_array[server_slot_idx:id][curr_color])
 		}
+		
+		if(is_valid_ent(player_rendering_priority_structs_array[server_slot_idx:id][player_renderer_entity])){
+
+			if((entity_get_float(player_rendering_priority_structs_array[server_slot_idx:id][player_renderer_entity],EV_FL_nextthink)>0.0)&&client_is_within_range(id)){
+
+			//if(client_is_within_range(id)){
+
+				if(DEBUG){
+					sh_chat_message(id,player_rendering_priority_structs_array[server_slot_idx:id][curr_hero_id],
+					
+								"does this even get called?")
+				}					
+				entity_set_float(player_rendering_priority_structs_array[server_slot_idx:id][player_renderer_entity],
+										EV_FL_nextthink,0.0)
+			
+			}
+		}
+		remove_glow_user_aux(id,the_priority,alpha,rendering_mode,the_glow_timer,heroID)
 
 	}
 }
@@ -344,24 +416,45 @@ remove_glow_user_aux(id,
                   the_rendering_mode_obtained = kRenderTransColor,
                   Float:delay = 0.0,
                   heroID = -1){
-
-	if(player_rendering_priorities_array[server_slot_idx:id]>the_priority){
+	if(player_rendering_priority_structs_array[server_slot_idx:id][curr_priority]>the_priority){
 		
 		
 
 		return
 	}
+
 
 	if(!client_is_within_range(id)){
 
 		return
 	}
-	if((the_priority==PRIO_RENDER_INVISIBILITY)&&(player_rendering_priorities_array[server_slot_idx:id]==PRIO_RENDER_INVISIBILITY)){
 
-		new gating_invis_pct = ALPHA_PCT_CALC_FROM_RENDER_MODE_AND_AMT(the_rendering_mode_obtained, float(gating_alpha)),
-			invis_from_player_pct = sh_get_player_cloak_pct(id)
+	static gating_invis_pct,
+		invis_from_player_pct;
+	
+	gating_invis_pct = ALPHA_PCT_CALC_FROM_RENDER_MODE_AND_AMT(the_rendering_mode_obtained, float(gating_alpha)),
+	invis_from_player_pct = sh_get_player_cloak_pct(id)
 
-		if((invis_from_player_pct>gating_invis_pct)&&(player_rendering_heroes_array[server_slot_idx:id]!=heroID)){
+	/*if(DEBUG){
+			
+		sh_chat_message(id,heroID,"We are about to try to remove glow! The priority test passed!");
+		sh_chat_message(id,heroID, "The attempted glow  removal type is: %s",render_priority_names[the_priority])
+		sh_chat_message(id,heroID, "Our glow type is: %s",render_priority_names[player_rendering_priorities_array[server_slot_idx:id]])
+	}*/
+
+	if((the_priority==PRIO_RENDER_INVISIBILITY)&&(player_rendering_priority_structs_array[server_slot_idx:id][curr_priority] ==PRIO_RENDER_INVISIBILITY)){
+
+		/*
+		if(DEBUG){
+				
+			sh_chat_message(id,heroID,"We are about to try to remove transparency!");
+			sh_chat_message(id,heroID, "The attempted transparency to remove is: %d",gating_invis_pct)
+			sh_chat_message(id,heroID, "Our transparency is: %d",invis_from_player_pct)
+			sh_chat_message(id,heroID, "Our current rendering hero is: %d",player_rendering_heroes_array[server_slot_idx:id])
+			sh_chat_message(id,heroID, "The attempted rendering hero is: %d",heroID)
+		}*/
+
+		if((invis_from_player_pct>gating_invis_pct)&&(player_rendering_priority_structs_array[server_slot_idx:id][curr_hero_id] !=heroID)){
 			
 			if(DEBUG){
 			
@@ -373,17 +466,11 @@ remove_glow_user_aux(id,
 		}
 
 	}
+	if(delay > 0.0){
+		entity_set_float(player_rendering_priority_structs_array[server_slot_idx:id][player_renderer_entity],
+							EV_FL_nextthink, get_gametime()+delay)
 
-
-
-
-	if(delay<0.1){
-
-		remove_glow_task(id+REMOVE_GLOW_TASKID)
-		return;
 	}
-	set_task(delay,"remove_glow_task",id+REMOVE_GLOW_TASKID)
-
 
 
 }
@@ -411,14 +498,24 @@ public _remove_glow_user(iPlugin,iParams){
 				
 
 }
-public remove_glow_task(id){
+public render_removal_think(ent_id){
 
-	id-=REMOVE_GLOW_TASKID
-	if(!sh_is_active()||!is_user_connected(id)||!is_user_alive(id)){
-		return
+	if(!is_valid_ent(ent_id)){
+
+		return PLUGIN_CONTINUE
 	}
+
+	static id;
+	id = entity_get_int(ent_id,EV_INT_iuser4)
+
+	if(!sh_is_active()||!is_user_connected(id)||!is_user_alive(id)){
+		return PLUGIN_CONTINUE
+	}
+	
 	clear_client_state(server_slot_idx:id)
 	sh_set_rendering(id)
+	
+	return PLUGIN_CONTINUE
 
 }
 public debug_glow_hud_taskid(task_id){
@@ -434,36 +531,41 @@ public debug_glow_hud_taskid(task_id){
 
 			continue;
 		}
-		arrayset(player_hud_buffer_array[server_slot_idx:id],0,sizeof player_hud_buffer_array[]);
+		arrayset(player_rendering_priority_structs_array[server_slot_idx:id][player_hud_buffer_array],0,1023);
 
 		new rendering_priority_consts:latest_recorded_attempt_at_change = rendering_priority_consts:0;
 
 
-		if(ArraySize(rendering_attempts_stack_obj[server_slot_idx:id])>0)
+		if(ArraySize(player_rendering_priority_structs_array[server_slot_idx:id][rendering_attempts_stack_obj])>0)
 		{
 			
-			latest_recorded_attempt_at_change = (ArrayGetCell(rendering_attempts_stack_obj[server_slot_idx:id],
-															ArraySize(rendering_attempts_stack_obj[server_slot_idx:id])-1))
+			latest_recorded_attempt_at_change = (ArrayGetCell(player_rendering_priority_structs_array[server_slot_idx:id][rendering_attempts_stack_obj],
+															ArraySize(player_rendering_priority_structs_array[server_slot_idx:id][rendering_attempts_stack_obj])-1))
 															
 		
-			ArrayDeleteItem(rendering_attempts_stack_obj[server_slot_idx:id],ArraySize(rendering_attempts_stack_obj[server_slot_idx:id])-1)
+			ArrayDeleteItem(player_rendering_priority_structs_array[server_slot_idx:id][rendering_attempts_stack_obj],ArraySize(player_rendering_priority_structs_array[server_slot_idx:id][rendering_attempts_stack_obj])-1)
 		}	
-		new hero_name[MAX_HERO_NAME_LENGTH]
+		static hero_name[MAX_HERO_NAME_LENGTH]
 		
-		(player_rendering_heroes_array[server_slot_idx:id]<0)?formatex(hero_name,sizeof hero_name,"%s","Some Generic Hero"):sh_get_hero_name_from_id(player_rendering_heroes_array[server_slot_idx:id],hero_name);
+		(player_rendering_priority_structs_array[server_slot_idx:id][curr_hero_id]<0)?formatex(hero_name,sizeof hero_name,"%s","Some Generic Hero"):sh_get_hero_name_from_id(player_rendering_priority_structs_array[server_slot_idx:id][curr_hero_id],hero_name);
 	
-		formatex(player_hud_buffer_array[server_slot_idx:id],sizeof player_hud_buffer_array[],
-									"Last applicant hero: %s^nPrevious glow priority: %s^nCurrent glow priority: %s^nPrevious invisibility percentage: %d^nCurrent invisibility percentage: %d^nCurrent render mode: %s^n",
+		formatex(player_rendering_priority_structs_array[server_slot_idx:id][player_hud_buffer_array],1023,
+									"Last applicant hero: %s^nPrevious glow priority: %s^nCurrent glow priority: %s^nCurrent Alpha: %d^nPrevious invisibility percentage: %d^nCurrent invisibility percentage: %d^nCurrent render mode: %s^n",
 									hero_name,
 									render_priority_names[latest_recorded_attempt_at_change],
-									render_priority_names[player_rendering_priorities_array[server_slot_idx:id]],
-									player_rendering_pctgs_array[server_slot_idx:id],
+									render_priority_names[player_rendering_priority_structs_array[server_slot_idx:id][curr_priority]],
+									player_rendering_priority_structs_array[server_slot_idx:id][curr_alpha],
+									player_rendering_priority_structs_array[server_slot_idx:id][curr_pct],
 									sh_get_player_cloak_pct(id),
 									render_mode_names[clamp(entity_get_int(id, EV_INT_rendermode),0,_:kRenderTransAdd)])
 		
 
-		set_hudmessage(255, 255, 255, -1.0, 0.48, 2, 0.1, 2.0, 0.02, 0.02, -1)
-		ShowSyncHudMsg(id, DEBUG_HUD_HUD_SYNC_OBJ, "%s", player_hud_buffer_array[server_slot_idx:id])
+		set_hudmessage(player_rendering_priority_structs_array[server_slot_idx:id][curr_color][0],
+						player_rendering_priority_structs_array[server_slot_idx:id][curr_color][1],
+						player_rendering_priority_structs_array[server_slot_idx:id][curr_color][2],
+						 -1.0, 0.48, 0, 0.1, 2.0, 0.02, 0.02, -1)
+
+		ShowSyncHudMsg(id, DEBUG_HUD_HUD_SYNC_OBJ, "%s",player_rendering_priority_structs_array[server_slot_idx:id][player_hud_buffer_array])
 
 
 

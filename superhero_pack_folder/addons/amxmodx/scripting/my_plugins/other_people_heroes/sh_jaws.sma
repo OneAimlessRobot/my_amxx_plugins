@@ -1,4 +1,7 @@
+
+#define I_WANT_MISC_FUNCS_3
 #include "../my_include/superheromod.inc"
+#include "../my_heroes/sh_aux_stuff/sh_aux_inc.inc"
 
 new dmg_source_name_short_jaws[SAFE_BUFFER_SIZE+1]="Jaws"
 new dmg_source_name_log_jaws[SAFE_BUFFER_SIZE+1]="Jaws"
@@ -100,7 +103,7 @@ public test_target(id)
 	Testnr++
 	if(Testnr>4) Testnr = 0
 	
-	if(TestEnt[Testnr]) remove_entity(TestEnt[Testnr])
+	if(TestEnt[Testnr]) remove_entity_safe(TestEnt[Testnr])
 	
 	TestEnt[Testnr] = create_entity("info_target")
 	entity_set_string(TestEnt[Testnr], EV_SZ_classname, "testtarget")
@@ -177,7 +180,7 @@ public jaws_destroy()
 
 	if(!JawsEnt) return
 	
-	remove_entity(JawsEnt)
+	remove_entity_safe(JawsEnt)
 	JawsEnt = 0
 	Target = 0
 	Status = IDLE
